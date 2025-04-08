@@ -14,15 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->dateTime('start_date');
+            $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
+            $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
-            $table->enum('status', ['upcoming', 'ongoing', 'past'])->default('upcoming');
-            $table->timestamps();
+            $table->string('location')->nullable();
+            $table->string('type', 100)->nullable();
+            $table->integer('max_participants')->nullable(); // int(11)
+            $table->string('image')->nullable();
+            $table->timestamps(); // created_at et updated_at (nullable)
         });
-        
     }
 
     /**

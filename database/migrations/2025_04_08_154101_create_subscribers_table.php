@@ -11,16 +11,14 @@ return new class extends Migration
      *
      * @return void
      */
-    
-
     public function up()
-{
-    Schema::create('subscribers', function (Blueprint $table) {
-        $table->id();
-        $table->string('email')->unique();
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('subscribers', function (Blueprint $table) {
+            $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
+            $table->string('email')->unique(); // UNIQUE KEY `subscribers_email_unique` (`email`)
+            $table->timestamps(); // created_at et updated_at (nullable)
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -32,4 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('subscribers');
     }
 };
-
