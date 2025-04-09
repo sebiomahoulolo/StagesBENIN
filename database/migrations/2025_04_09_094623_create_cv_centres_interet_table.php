@@ -13,15 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('cv_centre_interets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('role')->default('etudiant');
-            $table->index('role');
-            $table->rememberToken();
+            $table->foreignId('cv_profile_id')->constrained('cv_profiles')->onDelete('cascade');
+            $table->string('nom'); // Ex: Photographie, Voyages
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('cv_centres_interet');
     }
 };

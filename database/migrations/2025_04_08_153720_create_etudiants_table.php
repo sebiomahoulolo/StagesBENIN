@@ -25,6 +25,12 @@ return new class extends Migration
             $table->string('cv_path')->nullable();
             $table->string('photo_path')->nullable();
             $table->timestamps(); // created_at et updated_at
+
+            $table->foreignId('user_id')
+                  ->nullable()           // Permet à un étudiant d'exister sans compte lié
+                  ->unique()             // Assure relation 1-1 User <-> Etudiant
+                  ->constrained('users') // Clé étrangère vers la table 'users'
+                  ->onDelete('cascade'); // Supprime l'étudiant si l'utilisateur est supprimé
         });
     }
 

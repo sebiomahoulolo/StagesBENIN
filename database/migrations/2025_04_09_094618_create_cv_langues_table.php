@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('cv_langues', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('role')->default('etudiant');
-            $table->index('role');
-            $table->rememberToken();
+            $table->foreignId('cv_profile_id')->constrained('cv_profiles')->onDelete('cascade');
+            $table->string('langue'); // Ex: Français, Anglais
+            $table->string('niveau'); // Ex: Natif, Courant (C1), Intermédiaire (B2), Débutant (A2)
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('cv_langues');
     }
 };

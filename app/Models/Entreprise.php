@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,23 +9,30 @@ class Entreprise extends Model
 {
     use HasFactory;
 
+     // Ajoutez 'user_id' aux fillable
     protected $fillable = [
+        'user_id', // Clé étrangère
         'nom',
         'secteur',
         'description',
         'adresse',
-        'email',
+        'email', // Peut être redondant
         'telephone',
         'site_web',
         'logo_path',
-        'contact_principal'
+        'contact_principal',
     ];
 
-    // Relation avec les recrutements
-    public function recrutements()
+    // Relation inverse vers User
+    public function user()
     {
-        return $this->hasMany(Recrutement::class);
+        return $this->belongsTo(User::class);
     }
+
+    // Relation vers les offres de recrutement (si pertinent)
+     public function recrutements()
+     {
+         // Assurez-vous que le modèle Recrutement existe et a la relation belongsTo Entreprise
+         // return $this->hasMany(Recrutement::class);
+     }
 }
-
-

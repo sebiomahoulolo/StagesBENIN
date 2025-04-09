@@ -25,6 +25,12 @@ return new class extends Migration
             $table->string('logo_path')->nullable();
             $table->string('contact_principal')->nullable();
             $table->timestamps(); // created_at et updated_at
+
+            $table->foreignId('user_id')
+                  ->nullable()             // Permet à une entreprise d'exister sans compte lié
+                  ->unique()               // Assure relation 1-1 User <-> Entreprise
+                  ->constrained('users')   // Clé étrangère vers la table 'users'
+                  ->onDelete('cascade');   // Supprime l'entreprise si l'utilisateur est supprimé
         });
     }
 

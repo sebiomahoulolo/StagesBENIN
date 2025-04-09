@@ -12,19 +12,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Gardez ceci si vous utilisez des factories pour les utilisateurs de test
-        // \App\Models\User::factory(10)->create();
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->command->info('Début du seeding...');
 
-        // Appeler vos seeders spécifiques
+        // Appeler les seeders pour chaque type d'utilisateur
         $this->call([
-            EtudiantsSeeder::class,
-            EventsSeeder::class,
-            SubscribersSeeder::class,
-            // Ajoutez ici d'autres seeders si vous en créez (ex: ActualitesSeeder, etc.)
+            AdminUserSeeder::class,       // Crée l'administrateur
+            EtudiantsSeeder::class,       // Crée des utilisateurs étudiants et leurs profils
+            EntreprisesSeeder::class,     // Crée des utilisateurs recruteurs et leurs entreprises
+
+           
+            // EventsSeeder::class,      
+            // SubscribersSeeder::class, 
+            // ActualitesSeeder::class,
+            // CatalogueSeeder::class,
+            // RecrutementsSeeder::class,
+                                       
         ]);
+
+         $this->command->info('Seeding terminé avec succès !');
     }
 }
