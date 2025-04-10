@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "phpmailer/phpmailer": "^6.9",
+        "spatie/browsershot": "^5.0",
         "spatie/laravel-permission": "^6.16"
     },
     "require-dev": {

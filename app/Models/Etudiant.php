@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cv\CvProfile; // Si vous avez implémenté le CV
+use App\Models\CvProfile; // Si vous avez implémenté le CV
 
 class Etudiant extends Model
 {

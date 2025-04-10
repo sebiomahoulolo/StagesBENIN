@@ -143,14 +143,56 @@ Route::middleware(['auth', EnsureUserHasRole::class.':etudiant'])->prefix('etudi
     // Routes pour la gestion du CV (déjà correctement préfixées et nommées à l'intérieur)
     // Le préfixe de groupe s'ajoute, donc l'URL sera /etudiants/cv/edit, etc.
     // Les noms seront etudiants.cv.edit, etudiants.cv.update, etc.
+   // --- NOUVELLES ROUTES POUR LE CV ---
     Route::prefix('cv')->name('cv.')->group(function () {
-        Route::get('/edit', [CvController::class, 'edit'])->name('edit');
-        Route::put('/update', [CvController::class, 'update'])->name('update');
-        Route::get('/preview', [CvController::class, 'preview'])->name('preview');
-        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf');
-        // Route::post('/upload-photo', [CvController::class, 'uploadPhoto'])->name('upload.photo');
-    });
+        // Afficher l'éditeur (l'ancienne route edit)
+        Route::get('/', [CvController::class, 'edit'])->name('edit'); // URL: /etudiant/cv
 
+        // Sauvegarde des infos générales (Profile) via AJAX
+        Route::put('/profile', [CvController::class, 'updateProfile'])->name('profile.update');
+
+        // --- AJAX CRUD pour les sections ---
+        // Formations
+        Route::post('/formations', [CvController::class, 'storeFormation'])->name('formations.store');
+        Route::put('/formations/{formation}', [CvController::class, 'updateFormation'])->name('formations.update');
+        Route::delete('/formations/{formation}', [CvController::class, 'destroyFormation'])->name('formations.destroy');
+
+        // Expériences
+        Route::post('/experiences', [CvController::class, 'storeExperience'])->name('experiences.store');
+        Route::put('/experiences/{experience}', [CvController::class, 'updateExperience'])->name('experiences.update');
+        Route::delete('/experiences/{experience}', [CvController::class, 'destroyExperience'])->name('experiences.destroy');
+
+        // Compétences
+        Route::post('/competences', [CvController::class, 'storeCompetence'])->name('competences.store');
+        Route::put('/competences/{competence}', [CvController::class, 'updateCompetence'])->name('competences.update');
+        Route::delete('/competences/{competence}', [CvController::class, 'destroyCompetence'])->name('competences.destroy');
+
+        // Langues
+        Route::post('/langues', [CvController::class, 'storeLangue'])->name('langues.store');
+        Route::put('/langues/{langue}', [CvController::class, 'updateLangue'])->name('langues.update');
+        Route::delete('/langues/{langue}', [CvController::class, 'destroyLangue'])->name('langues.destroy');
+
+        // Centres d'intérêt
+        Route::post('/centres-interet', [CvController::class, 'storeInteret'])->name('centres_interet.store');
+        Route::put('/centres-interet/{centreInteret}', [CvController::class, 'updateInteret'])->name('centres_interet.update'); // Attention: nom variable
+        Route::delete('/centres-interet/{centreInteret}', [CvController::class, 'destroyInteret'])->name('centres_interet.destroy'); // Attention: nom variable
+
+        // Certifications
+        Route::post('/certifications', [CvController::class, 'storeCertification'])->name('certifications.store');
+        Route::put('/certifications/{certification}', [CvController::class, 'updateCertification'])->name('certifications.update');
+        Route::delete('/certifications/{certification}', [CvController::class, 'destroyCertification'])->name('certifications.destroy');
+
+        // Projets
+        Route::post('/projets', [CvController::class, 'storeProjet'])->name('projets.store');
+        Route::put('/projets/{projet}', [CvController::class, 'updateProjet'])->name('projets.update');
+        Route::delete('/projets/{projet}', [CvController::class, 'destroyProjet'])->name('projets.destroy');
+
+        // --- Visualisation et Export ---
+        Route::get('/show', [CvController::class, 'showCv'])->name('show'); // Page pour visualiser
+        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf'); // Télécharger PDF
+        Route::get('/export/png', [CvController::class, 'exportPng'])->name('export.png'); // Télécharger PNG
+    });
+   
     // Ajoutez ici d'autres routes spécifiques à l'étudiant
     // Ex: Voir ses candidatures, etc.
 });
