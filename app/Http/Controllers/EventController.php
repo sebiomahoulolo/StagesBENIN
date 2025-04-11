@@ -13,7 +13,28 @@ class EventController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */
+     */ 
+    // Méthode pour afficher uniquement les événements publiés
+    public function index()
+    {
+        // Récupérer uniquement les événements publiés
+        $events = Event::where('is_published', 1)->get();
+
+        return view('evenements.index', compact('events'));
+    }
+
+    public function toggleStatus($id)
+{
+    $event = Event::findOrFail($id);
+
+    // Si l'événement est privé (0), on le rend publié (1)
+    $event->is_published = !$event->is_published;
+
+    $event->save();
+
+    return redirect()->back()->with('success', 'Statut de l’événement mis à jour.');
+}
+
     public function store(Request $request)
     {
         // Validation des données
@@ -50,7 +71,8 @@ class EventController extends Controller
             'location' => $request->location,
             'type' => $request->type,
             'max_participants' => $request->max_participants,
-            'image' => $imagePath
+            'image' => $imagePath,
+            'is_published' => 0
         ]);
 
         return response()->json([
@@ -59,4 +81,37 @@ class EventController extends Controller
             'event' => $event
         ], 201);
     }
+
+
+
+public function show($id)
+{
+    $event = Event::findOrFail($id);
+    return view('evenements.show', compact('event'));
+}
+
+
+
+public function edit($id)
+{
+    $event = Event::findOrFail($id);
+    return view('evenements.edit', compact('event'));
+}
+public function update(Request $request, $id)
+{
+    $event = Event::findOrFail($id);
+    $event->update($request->all());
+
+    return redirect()->route('evenements.show', $event->id)->with('success', 'Événement mis à jour avec succès.');
+}
+// app/Http/Controllers/EventController.php
+
+public function destroy($id)
+{
+    $event = Event::findOrFail($id);
+    $event->delete();
+
+    return redirect()->route('evenements.index')->with('success', 'Événement supprimé avec succès.');
+}
+
 }

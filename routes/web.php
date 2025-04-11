@@ -181,14 +181,36 @@ Route::middleware(['auth', EnsureUserHasRole::class.':recruteur'])->prefix('entr
     // Ex: Voir les candidats pour une offre, etc.
 });
 
+Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
+Route::get('/evenements/{id}', [EventController::class, 'show'])->name('evenements.show');
+Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');
+Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenements.update');
+Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');
+Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
+
+// Géré par register.etudiant.store
+Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');
+Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat'])->name('candidat.dashboard');
+Route::get('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'createEntretien'])->name('etudiants.entretiens');
+Route::post('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('etudiants.entretiens');
+Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
+Route::get('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
+Route::post('/etudiants/{id}/accepter', [EtudiantController::class, 'accepterCandidature'])->name('candidatures.accepter');
+Route::post('/etudiants/{id}/rejeter', [EtudiantController::class, 'rejeterCandidature'])->name('candidatures.rejeter');
+Route::patch('/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('etudiants.toggleStatus');
+Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('etudiants.show');
+Route::get('/etudiants/{id}/edit', [EtudiantController::class, 'edit'])->name('etudiants.edit');
+Route::put('/etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiants.update');
+Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+Route::get('/etudiants/{id}/cv', [EtudiantController::class, 'downloadCV'])->name('etudiants.cv.download');
+Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store'); 
 // ==================================================================
 // ROUTES POST PUBLIQUES ORIGINALES (MAINTENANT OBSOLÈTES/DÉPLACÉES)
 // ==================================================================
 
-// Route::post('/events', [EventController::class, 'store'])->name('events.store'); // Déplacé dans admin group
-// Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store'); // Géré par register.etudiant.store
-// Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
-// Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
-// Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
-// Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)
+  // Déplacé dans admin group
+ Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
+ Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
+ Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
+ Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)

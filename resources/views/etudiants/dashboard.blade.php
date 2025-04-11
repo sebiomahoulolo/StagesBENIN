@@ -1,3 +1,7 @@
+@extends('layouts.app')
+
+@section('content')
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -398,10 +402,10 @@
                     <span>Blog</span>
                 </a>
                 <a href="#" class="menu-item">
-                    <i class="fas fa-bullseye"></i>
+                    <i class="fas fa-bullseye"></i>&
                     <span>Objectifs</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="{{ route('etudiants.examen', ['etudiant_id' => $etudiant->id]) }}" class="menu-item">
                     <i class="fas fa-comments"></i>
                     <span>Entretiens en cours</span>
                 </a>
@@ -423,7 +427,10 @@
         <main class="main-content">
             <div class="dashboard-header">
                 <div class="welcome-message">
-                    <h1>Bonjour, Thomas</h1>
+                    <div style="text-align: center; margin-top: 20px;">
+   
+</div>
+
                     <p>Voici un aperçu de votre activité récente et des opportunités à venir</p>
                 </div>
                 <div class="quick-actions">
@@ -472,17 +479,35 @@
                     </div>
                 </div>
                 
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3 class="card-title">Entretiens</h3>
-                    </div>
-                    <div class="card-content">
-                        <p><strong>2 entretiens</strong> programmés cette semaine</p>
-                        <p style="margin-top: 8px">Prochain: Dev Full Stack chez TechCorp (demain)</p>
-                    </div>
-                </div>
-            </div>
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-calendar-check"></i>
+            <h3 class="card-title d-inline-block ml-2">Entretiens programmés</h3>
+        </div>
+        <div class="card-body">
+            @if(!empty($entretiens) && count($entretiens) > 0)
+                <p><strong>{{ count($entretiens) }} entretien{{ count($entretiens) > 1 ? 's' : '' }}</strong> programmé{{ count($entretiens) > 1 ? 's' : '' }} cette semaine</p>
+
+                <ul class="list-group">
+                    @foreach($entretiens as $entretien)
+                        <li class="list-group-item">
+                            <strong>{{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y H:i') }}</strong> -
+                            <span>{{ $entretien->entreprise->nom ?? 'Entreprise inconnue' }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-warning">⚠️ Aucun entretien programmé pour le moment.</p>
+            @endif
+        </div>
+    </div>
+
+ </div>
+
+
+
             
             <div class="recent-activity">
                 <div class="section-header">
@@ -553,5 +578,5 @@
             </div>
         </main>
     </div>
-</body>
-</html>
+
+ @endsection

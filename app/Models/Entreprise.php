@@ -29,6 +29,10 @@ class Entreprise extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function entretiens()
+    {
+        return $this->hasMany(Entretien::class);
+    }
     // Relation vers les offres de recrutement (si pertinent)
      public function recrutements()
      {

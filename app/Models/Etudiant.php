@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Cv\CvProfile; // Si vous avez implémenté le CV
@@ -35,4 +34,13 @@ class Etudiant extends Model
     {
         return $this->hasOne(CvProfile::class);
     }
+    public function entretiens()
+{
+    return $this->hasMany(Entretien::class);
+}
+public function entreprise()
+{
+    return $this->belongsTo(Entreprise::class);
+}
+
 }

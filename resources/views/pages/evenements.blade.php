@@ -5,33 +5,33 @@
 @section('content')
 
 @php
-    // Récupération des événements avec tri par date
-    $upcomingEvents = App\Models\Event::where('start_date', '>', now())
+    // Récupération des événements publiés uniquement
+    $upcomingEvents = App\Models\Event::where('is_published', 1)
+                                     ->where('start_date', '>', now())
                                      ->orderBy('start_date', 'asc')
                                      ->take(6)
                                      ->get();
     
-    // Correction de la requête pour les événements en cours
-    $ongoingEvents = App\Models\Event::where('start_date', '<=', now())
+    $ongoingEvents = App\Models\Event::where('is_published', 1)
+                                    ->where('start_date', '<=', now())
                                     ->where('end_date', '>=', now())
                                     ->orderBy('end_date', 'asc')
                                     ->take(6)
                                     ->get();
-    
-    $pastEvents = App\Models\Event::where('end_date', '<', now())
+
+    $pastEvents = App\Models\Event::where('is_published', 1)
+                                 ->where('end_date', '<', now())
                                  ->orderBy('end_date', 'desc')
-                                 ->take(6)  
+                                 ->take(6)
                                  ->get();
     
-   
     $formatDate = function($date) {
         return \Carbon\Carbon::parse($date)->format('d/m/Y à H:i');
     };
-    
 
     $currentDate = now()->format('d/m/Y à H:i');
 @endphp
-
+ 
 <div class="events-container">
     <div class="current-date">
         <i class="fas fa-calendar-day"></i> Aujourd'hui: {{ $currentDate }}
