@@ -82,9 +82,9 @@
          @if(session('success')) <div class="flash-message flash-success" style="flex-basis: 100%; text-align:center;">{{ session('success') }}</div> @endif
          @if(session('error')) <div class="flash-message flash-error" style="flex-basis: 100%; text-align:center;">{{ session('error') }}</div> @endif
         <div class="buttons">
-            <a href="{{ route('etudiant.cv.edit') }}" class="btn-edit"><i class="fas fa-edit"></i> Modifier</a>
-            <a href="{{ route('etudiant.cv.export.pdf') }}" class="btn-pdf" target="_blank"><i class="fas fa-file-pdf"></i> Télécharger PDF</a>
-            <a href="{{ route('etudiant.cv.export.png') }}" class="btn-png" target="_blank"><i class="fas fa-file-image"></i> Télécharger PNG</a>
+            <a href="{{ route('etudiants.cv.edit') }}" class="btn-edit"><i class="fas fa-edit"></i> Modifier</a>
+            <a href="{{ route('etudiants.cv.export.pdf') }}" class="btn-pdf" target="_blank"><i class="fas fa-file-pdf"></i> Télécharger PDF</a>
+            <a href="{{ route('etudiants.cv.export.png') }}" class="btn-png" target="_blank"><i class="fas fa-file-image"></i> Télécharger PNG</a>
         </div>
     </div>
 

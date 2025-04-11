@@ -14,7 +14,9 @@ class CvExperience extends Model {
         'date_debut', 
         'date_fin', 
         'description', 
-        'taches_realisations', 
+        'tache_1',
+        'tache_2',
+        'tache_3',
         'order'
     ];
 

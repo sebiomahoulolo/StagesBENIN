@@ -131,71 +131,32 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
 });
 
 
-// --- Groupe Étudiant ---
-// Utilisation du préfixe et nommage existant 'etudiants'
-Route::middleware(['auth', EnsureUserHasRole::class.':etudiant'])->prefix('etudiants')->name('etudiants.')->group(function () {
-    // Route pour le dashboard étudiant
-    Route::get('/', [EtudiantController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /etudiants -> etudiants.dashboard
+Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiants.')->group(function () {
 
-    // Route pour la recherche de stages
-    Route::get('/search-internships', [EtudiantController::class, 'searchInternships'])->name('search_internships'); // Conserve etudiant.search_internships (devient etudiants.search_internships)
+    // ... Route pour le dashboard étudiant ...
+    Route::get('/dashboard', [EtudiantController::class, 'index'])->name('dashboard');
 
-    // Routes pour la gestion du CV (déjà correctement préfixées et nommées à l'intérieur)
-    // Le préfixe de groupe s'ajoute, donc l'URL sera /etudiants/cv/edit, etc.
-    // Les noms seront etudiants.cv.edit, etudiants.cv.update, etc.
-   // --- NOUVELLES ROUTES POUR LE CV ---
+    // --- Routes pour le CV ---
     Route::prefix('cv')->name('cv.')->group(function () {
-        // Afficher l'éditeur (l'ancienne route edit)
-        Route::get('/', [CvController::class, 'edit'])->name('edit'); // URL: /etudiant/cv
+        // La route pour l'éditeur (utilise maintenant Livewire)
+        Route::get('/edit', [CvController::class, 'edit'])->name('edit'); // Pointe vers la méthode edit mise à jour
 
-        // Sauvegarde des infos générales (Profile) via AJAX
-        Route::put('/profile', [CvController::class, 'updateProfile'])->name('profile.update');
+        // Route pour visualiser le CV
+        Route::get('/show', [CvController::class, 'show'])->name('show');
 
-        // --- AJAX CRUD pour les sections ---
-        // Formations
-        Route::post('/formations', [CvController::class, 'storeFormation'])->name('formations.store');
-        Route::put('/formations/{formation}', [CvController::class, 'updateFormation'])->name('formations.update');
-        Route::delete('/formations/{formation}', [CvController::class, 'destroyFormation'])->name('formations.destroy');
+        // Routes pour l'export
+        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export/png', [CvController::class, 'exportPng'])->name('export.png');
 
-        // Expériences
-        Route::post('/experiences', [CvController::class, 'storeExperience'])->name('experiences.store');
-        Route::put('/experiences/{experience}', [CvController::class, 'updateExperience'])->name('experiences.update');
-        Route::delete('/experiences/{experience}', [CvController::class, 'destroyExperience'])->name('experiences.destroy');
+        // --- LES ANCIENNES ROUTES AJAX NE SONT PLUS NÉCESSAIRES POUR CETTE VUE ---
+        // Route::put('/profile', [CvController::class, 'updateProfile'])->name('profile.update');
+        // Route::post('/formations', [CvController::class, 'storeFormation'])->name('formations.store');
+        // Route::put('/formations/{id}', [CvController::class, 'updateFormation'])->name('formations.update');
+        // Route::delete('/formations/{id}', [CvController::class, 'destroyFormation'])->name('formations.destroy');
+        // ... (idem pour experiences, competences, langues, etc.) ...
 
-        // Compétences
-        Route::post('/competences', [CvController::class, 'storeCompetence'])->name('competences.store');
-        Route::put('/competences/{competence}', [CvController::class, 'updateCompetence'])->name('competences.update');
-        Route::delete('/competences/{competence}', [CvController::class, 'destroyCompetence'])->name('competences.destroy');
-
-        // Langues
-        Route::post('/langues', [CvController::class, 'storeLangue'])->name('langues.store');
-        Route::put('/langues/{langue}', [CvController::class, 'updateLangue'])->name('langues.update');
-        Route::delete('/langues/{langue}', [CvController::class, 'destroyLangue'])->name('langues.destroy');
-
-        // Centres d'intérêt
-        Route::post('/centres-interet', [CvController::class, 'storeInteret'])->name('centres_interet.store');
-        Route::put('/centres-interet/{centreInteret}', [CvController::class, 'updateInteret'])->name('centres_interet.update'); // Attention: nom variable
-        Route::delete('/centres-interet/{centreInteret}', [CvController::class, 'destroyInteret'])->name('centres_interet.destroy'); // Attention: nom variable
-
-        // Certifications
-        Route::post('/certifications', [CvController::class, 'storeCertification'])->name('certifications.store');
-        Route::put('/certifications/{certification}', [CvController::class, 'updateCertification'])->name('certifications.update');
-        Route::delete('/certifications/{certification}', [CvController::class, 'destroyCertification'])->name('certifications.destroy');
-
-        // Projets
-        Route::post('/projets', [CvController::class, 'storeProjet'])->name('projets.store');
-        Route::put('/projets/{projet}', [CvController::class, 'updateProjet'])->name('projets.update');
-        Route::delete('/projets/{projet}', [CvController::class, 'destroyProjet'])->name('projets.destroy');
-
-        // --- Visualisation et Export ---
-        Route::get('/show', [CvController::class, 'showCv'])->name('show'); // Page pour visualiser
-        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf'); // Télécharger PDF
-        Route::get('/export/png', [CvController::class, 'exportPng'])->name('export.png'); // Télécharger PNG
-    });
-   
-    // Ajoutez ici d'autres routes spécifiques à l'étudiant
-    // Ex: Voir ses candidatures, etc.
-});
+    }); // Fin du groupe cv
+}); // Fin du groupe étudiant
 
 
 // --- Groupe Recruteur (Entreprise) ---

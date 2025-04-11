@@ -22,7 +22,9 @@ return new class extends Migration
             $table->date('date_debut');
             $table->date('date_fin')->nullable(); // Null si poste actuel
             $table->text('description')->nullable(); // Description générale
-            $table->text('taches_realisations')->nullable(); // Liste des tâches/réalisations (peut être JSON ou texte formaté)
+            $table->text('tache_1')->nullable(); // Liste des tâches/réalisations (peut être JSON ou texte formaté)
+            $table->text('tache_2')->nullable(); // Liste des tâches/réalisations (peut être JSON ou texte formaté)
+            $table->text('tache_3')->nullable(); // Liste des tâches/réalisations (peut être JSON ou texte formaté)
             $table->integer('order')->default(0);
             $table->timestamps();
         });
