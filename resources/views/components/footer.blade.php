@@ -1,219 +1,91 @@
-<footer class="bg-dark text-light py-5 mt-5">
-<div id="subscribeModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 90%; max-width: 380px; background: rgb(136, 187, 238); padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); text-align: center; z-index: 10000; transition: transform 0.3s ease-out, opacity 0.3s ease-out; opacity: 0;">
-    <p style="font-size: 14px; color: black; margin-bottom: 10px;">Restez informé de nos dernières offres et actualités.</p>
-     
-    <p id="responseMessage" style="font-size: 14px; color: green; display: none; margin-top: 10px;"></p>
-    <input type="email" id="emailInput" placeholder="Votre adresse email" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-        <button id="subscribeBtn" style="flex: 1; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">S'abonner</button>
-        <button id="closeModalBtn" style="flex: 1; padding: 10px; background: none; border: 1px solid rgb(243, 28, 31); color: rgb(243, 28, 31); border-radius: 5px; cursor: pointer; font-size: 14px;">Fermer</button>
+<!-- Modal d'abonnement -->
+<div id="subscribeModal" class="subscribe-modal">
+    <p class="modal-text">Restez informé de nos dernières offres et actualités.</p>
+
+    <p id="responseMessage" class="response-message" style="display: none;"></p>
+    <input type="email" id="emailInput" placeholder="Votre adresse email" class="modal-input">
+
+    <div class="modal-buttons">
+        <button id="subscribeBtn" class="btn btn-primary modal-btn">S'abonner</button>
+        <button id="closeModalBtn" class="btn btn-outline-danger modal-btn">Fermer</button>
     </div>
-  
 </div>
-<!-- Bouton Retour en Haut avec icône -->
-<button id="scrollToTopBtn" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 50%; cursor: pointer;">
+
+<!-- Bouton Retour en Haut -->
+<button id="scrollToTopBtn" class="scroll-to-top-btn" title="Retour en haut">
   <i class="fas fa-arrow-up"></i>
 </button>
-  <style>
-  #scrollToTopBtn:hover {
-  background-color: #0056b3;
-}
 
-    </style>
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const subscribeModal = document.getElementById("subscribeModal");
-    const closeModalBtn = document.getElementById("closeModalBtn");
-    const subscribeBtn = document.getElementById("subscribeBtn");
-    const responseMessage = document.getElementById("responseMessage");
-
-    // Afficher le modal après 30s
-    setTimeout(function () {
-        subscribeModal.style.display = "block";
-        setTimeout(() => {
-            subscribeModal.style.opacity = "1";
-            subscribeModal.style.transform = "translate(-50%, -50%) scale(1)";
-        }, 10);
-    }, 30000);
-
-    function closeModal() {
-        subscribeModal.style.opacity = "0";
-        subscribeModal.style.transform = "translate(-50%, -50%) scale(0.95)";
-        setTimeout(() => {
-            subscribeModal.style.display = "none";
-        }, 300);
-    }
-
-    closeModalBtn.addEventListener("click", closeModal);
-    
-    subscribeBtn.addEventListener("click", function () {
-        const emailInput = document.getElementById("emailInput").value;
-        if (!emailInput) {
-            responseMessage.style.display = "block";
-            responseMessage.style.color = "red";
-            responseMessage.textContent = "Veuillez entrer une adresse email valide.";
-            return;
-        }
-        
-        fetch('http://127.0.0.1:8000/subscribe', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({ email: emailInput }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            responseMessage.style.display = "block";
-            responseMessage.style.color = data.success ? "green" : "success";
-            responseMessage.textContent = data.message;
-
-            // Fermer en 5s si le message est "Merci pour l’abonnement" ou "Déjà abonné"
-            if (data.message === "Merci pour votre abonnement !" || data.message === "Vous êtes déjà abonné(e). Merci pour votre fidélité.") {
-                setTimeout(closeModal, 5000);
-            }
-        })
-        .catch(error => {
-            responseMessage.style.display = "block";
-            responseMessage.style.color = "success";
-            responseMessage.textContent = "Erreur : " + error.message;
-        });
-    });
-});
-
-    document.addEventListener("scroll", function () {
-        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-
-        
-        if (window.scrollY > 300) {
-            scrollToTopBtn.style.display = "block";
-        } else {
-            scrollToTopBtn.style.display = "none";
-        }
-    });
-
-    document.getElementById("scrollToTopBtn").addEventListener("click", function () {
-        
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    });
-
-
-</script>
-
-
-
-
-
-
+<!-- Footer principal -->
+<footer class="bg-dark text-light py-5 mt-5 site-footer">
     <div class="container">
-        <div class="row" >
-          
-            <div class="col-md-3 mb-4">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('assets/images/stagebenin.png') }}" alt="StagesBENIN Logo">
-            </a>
+        <div class="row">
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('assets/images/stagebenin.png') }}" alt="StagesBENIN Logo Footer" class="footer-logo mb-3">
+                </a>
+                <p class="footer-tagline">Votre partenaire pour les stages et l'emploi au Bénin.</p>
             </div>
 
-    
-<div class="col-md-3 mb-4">
-    <h5>Liens utiles</h5>
-    <div class="row">
-        <div class="col">
-            <ul class="list-unstyled">
-                <li><a href="{{ url('/') }}" class="text-light">Accueil</a></li>
-                <li><a href="{{ route('pages.services') }}" class="text-light">Nos services</a></li>
-                <li><a href="#" class="text-light">Offres disponibles</a></li>
-                <li><a href="#" class="text-light">Espace recruteurs</a></li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul class="list-unstyled">
-                <li><a href="#" class="text-light">Espace candidats</a></li>
-                <li><a href="{{ route('pages.programmes') }}" class="text-light">Nos programmes</a></li>
-                <li><a href="{{ route('pages.evenements') }}" class="text-light">Événements</a></li>
-                <li><a href="{{ route('pages.contact') }}" class="text-light">Contact</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-
-            <!-- Galerie -->
-            <div class="col-md-3 mb-4">
-                <h5>Galerie</h5>
-                <div class="row">
-                    <div class="col-4 mb-2">
-                        <img src="{{ asset('assets/images/IMG-20240904-WA0025.jpg') }}" class="img-fluid rounded" alt="Galerie 1">
-                    </div>
-                    <div class="col-4 mb-2">
-                        <img src="{{ asset('assets/images/IMG_4438-scaled.jpg') }}" class="img-fluid rounded" alt="Galerie 2">
-                    </div>
-                    <div class="col-4 mb-2">
-                        <img src="{{ asset('assets/images/IMG_4567-scaled.jpg') }}" class="img-fluid rounded" alt="Galerie 3">
-                    </div>
-                </div>
-                 <a href="#" class="service-btn btn btn-primary">Voir plus</a>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5>Liens utiles</h5>
+                 <ul class="list-unstyled footer-links">
+                    <li><a href="{{ url('/') }}">Accueil</a></li>
+                    <li><a href="{{ route('pages.catalogue') }}">Catalogues</a></li>
+                    <li><a href="{{ route('pages.services') }}">Nos services</a></li>
+                    <li><a href="{{ route('pages.programmes') }}">Nos programmes</a></li>
+                    <li><a href="{{ route('pages.evenements') }}">Événements</a></li>
+                    <li><a href="{{ route('pages.apropos') }}">À Propos</a></li>
+                    <li><a href="{{ route('pages.contact') }}">Contact</a></li>
+                    {{-- Ajouter d'autres liens si nécessaire --}}
+                 </ul>
             </div>
-            <style>
-a.text-light {
-    text-decoration: none; /* Supprime le soulignement */
-}
 
-a.text-light:hover {
-    text-decoration: underline; /* Facultatif : ajoute un soulignement au survol */
-}</style>
-            <!-- Autres sites -->
-            <div class="col-md-3 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4">
                 <h5>Autres sites</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-light">FHC group</a></li>
-                    <li><a href="https://africa-location.com/" class="text-light">AfricaLOCATION</a></li>
-                    <li><a href="https://fhcschoolbenin.com/" class="text-light">Hosanna school</a></li>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#" target="_blank" rel="noopener noreferrer">FHC group</a></li>
+                    <li><a href="https://africa-location.com/" target="_blank" rel="noopener noreferrer">AfricaLOCATION</a></li>
+                    <li><a href="https://fhcschoolbenin.com/" target="_blank" rel="noopener noreferrer">Hosanna school</a></li>
                 </ul>
+                 <h5 class="mt-3">Galerie</h5>
+                <div class="footer-gallery">
+                     <img src="{{ asset('assets/images/IMG-20240904-WA0025.jpg') }}" alt="Galerie 1">
+                     <img src="{{ asset('assets/images/IMG_4438-scaled.jpg') }}" alt="Galerie 2">
+                     <img src="{{ asset('assets/images/IMG_4567-scaled.jpg') }}" alt="Galerie 3">
+                </div>
+                {{-- Remplacer par un lien vers une page galerie si elle existe --}}
+                 <a href="#" class="btn btn-outline-light btn-sm mt-2">Voir plus</a>
+            </div>
+
+             <div class="col-lg-3 col-md-6 mb-4">
+                 <h5>Contact</h5>
+                 <ul class="list-unstyled footer-contact">
+                    <li><i class="bi bi-geo-alt me-2"></i>Kindonou, Cotonou - Bénin</li>
+                    <li><i class="bi bi-telephone me-2"></i>+229 01 41 73 28 96</li>
+                    <li><i class="bi bi-whatsapp me-2"></i>+229 01 66 69 39 56</li>
+                    <li><i class="bi bi-envelope me-2"></i>contact@stagesbenin.com</li>
+                 </ul>
+                 <h5 class="mt-4">Suivez-nous</h5>
+                 <div class="footer-social">
+                    <a href="https://www.facebook.com/stagesbenin" target="_blank" rel="noopener noreferrer"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.linkedin.com/company/stagesbenin/?viewAsMember=true" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://www.tiktok.com/@stagesbenin6?_t=8lH68SpT4HG&_r=1" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://wa.me/22966693956" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i></a>
+                 </div>
             </div>
         </div>
 
-        <hr class="bg-light">
+        <hr class="footer-divider">
 
         <div class="row">
-            <!-- Contact -->
-            <div class="col-md-6">
-                <h5>Contact</h5>
-                <p><i class="bi bi-geo-alt"></i> Kindonou, Cotonou - Bénin</p>
-                <p><i class="bi bi-telephone"></i> +229 01 41 73 28 96 /+229 01 66 69 39 56</p>
-                <p><i class="bi bi-envelope"></i> contact@stagesbenin.com</p>
+            <div class="col-md-6 text-center text-md-start">
+                <p class="footer-copyright">© {{ date('Y') }} StagesBENIN. Développé par <a href="#" target="_blank" rel="noopener noreferrer">FHC Groupe Sarl</a>.</p>
             </div>
-
-            <!-- Réseaux sociaux -->
-            <div class="col-md-6 text-md-end">
-                <h5>Suivez-nous</h5>
-                <a href="https://www.facebook.com/stagesbenin" class="text-light me-3"><i class="bi bi-facebook"></i></a>
-                <a href="https://www.linkedin.com/company/stagesbenin/?viewAsMember=true" class="text-light me-3"><i class="bi bi-linkedin"></i></a>
-                <a href="https://www.tiktok.com/@stagesbenin6?_t=8lH68SpT4HG&_r=1" class="text-light me-3"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://wa.me/22966693956" class="text-light"><i class="bi bi-whatsapp"></i></a>
-            </div>
-  <hr class="bg-light">
-          
-<div class="col-md-6">
-                
-                <p>© StagesBENIN 2025, Développé par FHC Groupe Sarl.</p>
-               
-         
-            </div>
- <!-- Réseaux sociaux -->
-            <div class="col-md-6 text-md-end">
-              <p>Politique | Confidentialité</p>
+            <div class="col-md-6 text-center text-md-end">
+               <p class="footer-legal"><a href="#">Politique de confidentialité</a> | <a href="#">Conditions d'utilisation</a></p>
             </div>
         </div>
     </div>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </footer>
-

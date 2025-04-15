@@ -1,0 +1,115 @@
+/* --- Header Styles --- */
+
+/* Bannière */
+.banner {
+    background-color: #0056b3; /* Bleu principal */
+    color: white;
+    padding: 8px 25px; /* Ajustement padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permet le retour à la ligne si manque de place */
+    position: fixed; /* Fixe en haut */
+    top: 0;
+    width: 100%;
+    z-index: 1040; /* Au-dessus de la navbar */
+    font-size: 0.9rem; /* Taille de police légèrement réduite */
+    gap: 15px; /* Espace entre les groupes d'éléments */
+}
+
+.banner .info {
+    display: flex;
+    gap: 20px; /* Espace entre les infos */
+    align-items: center;
+    flex-wrap: wrap; /* Permet le retour à la ligne des infos */
+}
+.banner .info span { /* Utiliser span au lieu de p pour moins d'espace vertical par défaut */
+    margin-bottom: 0; /* Annuler marge par défaut des p si on les garde */
+    white-space: nowrap; /* Empêche le retour à la ligne au milieu d'une info */
+}
+
+
+.banner .social-icons a {
+    color: white;
+    margin: 0 6px; /* Espace entre icones */
+    font-size: 18px; /* Taille icones */
+    transition: opacity 0.3s ease;
+}
+.banner .social-icons a:hover {
+    opacity: 0.8;
+}
+
+.banner .date-time {
+    font-size: 0.85rem; /* Taille de police date/heure */
+    font-weight: normal; /* Police normale */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Bordure plus discrète */
+    padding: 4px 8px; /* Padding date/heure */
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.banner .btn-light { /* Style spécifique pour les boutons Connexion/Inscription */
+    padding: 4px 10px;
+    font-size: 0.85rem;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed; /* Fixe sous la bannière */
+    top: 45px; /* Hauteur approx de la bannière (ajuster si nécessaire) */
+    width: 100%;
+    z-index: 1030; /* En dessous de la bannière */
+    padding-top: 8px;
+    padding-bottom: 8px;
+    transition: top 0.3s ease-in-out; /* Pour une transition douce sur mobile */
+}
+
+.navbar-brand .navbar-logo {
+    max-height: 45px; /* Hauteur maximale du logo */
+    width: auto; /* Largeur automatique */
+}
+
+.navbar .nav-link {
+    color: #0e2891 !important; /* Couleur bleu foncé texte */
+    font-weight: 600; /* Semi-bold */
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-transform: uppercase; /* Liens en majuscules */
+    font-size: 0.9rem;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link.active { /* Style pour le lien actif */
+    background-color: #0e2891; /* Fond bleu au survol/focus/actif */
+    color: white !important; /* Texte blanc */
+}
+
+/* Ajustements pour petits écrans */
+@media (max-width: 767.98px) { /* Utiliser la breakpoint 'md' de Bootstrap */
+    .banner {
+        display: none; /* Masquer la bannière */
+    }
+
+    .navbar {
+        top: 0; /* La navbar remonte en haut */
+    }
+
+    .navbar-brand .navbar-logo {
+        max-height: 40px; /* Logo légèrement plus petit */
+    }
+
+    .navbar .nav-link {
+        padding: 10px 15px; /* Un peu plus de padding vertical sur mobile */
+        text-align: center; /* Centrer le texte dans le menu burger */
+        border-bottom: 1px solid #eee; /* Séparateur léger */
+    }
+    .navbar .nav-link:last-child {
+        border-bottom: none; /* Pas de bordure pour le dernier élément */
+    }
+
+    .navbar .navbar-nav {
+        margin-top: 10px; /* Espace au-dessus des liens dans le menu burger */
+    }
+}

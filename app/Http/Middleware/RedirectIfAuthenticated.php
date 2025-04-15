@@ -33,7 +33,7 @@ class RedirectIfAuthenticated
                     return redirect()->intended(route('etudiants.dashboard', [], false));
                 } elseif ($user->isRecruteur()) {
                     // Rediriger vers le dashboard Recruteur
-                    return redirect()->intended(route('recruteur.dashboard', [], false));
+                    return redirect()->intended(route('entreprises.dashboard', [], false));
                 } else {
                     // Redirection par défaut si aucun rôle connu (ou fallback)
                     return redirect()->intended(route('dashboard', [], false));

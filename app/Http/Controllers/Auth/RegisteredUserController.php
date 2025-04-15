@@ -102,55 +102,49 @@ class RegisteredUserController extends Controller
     public function storeRecruteur(Request $request): RedirectResponse
     {
          $request->validate([
-            // User fields
-            'name' => ['required', 'string', 'max:255'], // Nom du contact recruteur
+            // Validation ultra-simplifiée
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // Entreprise fields
-            'nom_entreprise' => ['required', 'string', 'max:255'],
-            'email_entreprise' => ['required', 'string', 'email', 'max:255', /* 'unique:'.Entreprise::class.',email' si email entreprise doit être unique */],
-            'telephone_entreprise' => ['nullable', 'string', 'max:20'],
-            'secteur' => ['nullable', 'string', 'max:255'],
-            'adresse' => ['nullable', 'string'],
+            // nom_entreprise n'est plus validé ici
         ]);
 
         DB::beginTransaction();
         try {
-             // Créer l'utilisateur
-             $user = User::create([
-                 'name' => $request->name, // Nom du contact
-                 'email' => $request->email, // Email de connexion
-                 'password' => Hash::make($request->password),
-                 'role' => User::ROLE_RECRUTEUR, // Rôle Recruteur
-             ]);
+            // Extraire la partie locale de l'email pour le nom d'utilisateur
+            $emailParts = explode('@', $request->email);
+            $userName = $emailParts[0];
 
-             // Créer le profil entreprise associé
-             $entreprise = Entreprise::create([
-                 'user_id' => $user->id,
-                 'nom' => $request->nom_entreprise,
-                 'secteur' => $request->secteur,
-                 'adresse' => $request->adresse,
-                 'email' => $request->email_entreprise, // Email public de l'entreprise
-                 'telephone' => $request->telephone_entreprise,
-                 'contact_principal' => $request->name, // Utiliser le nom du contact user par défaut
-                 // Initialiser description, site_web, logo à null
-             ]);
+            // Créer l'utilisateur
+            $user = User::create([
+                'name' => $userName, // Utilise la partie locale de l'email
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => User::ROLE_RECRUTEUR,
+            ]);
 
-             DB::commit();
+            // Créer le profil entreprise associé avec un nom par défaut
+            // $entreprise = Entreprise::create([
+            //     'user_id' => $user->id,
+            //     'nom' => 'Entreprise - ' . $request->email, // Nom par défaut
+            //     // Les autres champs seront null ou valeur par défaut
+            // ]);
 
-             event(new Registered($user));
+            DB::commit();
 
-             Auth::login($user);
+            event(new Registered($user));
 
-             // Rediriger vers le dashboard recruteur
-             return redirect()->route('recruteur.dashboard'); // Assurez-vous que cette route existe
+            Auth::login($user);
+
+            // Rediriger vers le dashboard recruteur avec le bon nom de route
+            return redirect()->route('entreprises.dashboard');
 
          } catch (\Exception $e) {
              DB::rollBack();
              // Log::error("Erreur inscription recruteur: " . $e->getMessage());
+             // Renvoyer un message d'erreur plus générique si le nom d'entreprise était la cause
              return redirect()->back()
-                      ->withInput()
-                      ->with('error', "Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
+                      ->withInput($request->only('email')) // Ne renvoyer que l'email
+                      ->with('error', "Une erreur est survenue l\'inscription. Veuillez réessayer.");
          }
     }
 

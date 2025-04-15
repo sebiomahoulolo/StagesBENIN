@@ -1,97 +1,148 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register.recruteur.store') }}">
-        @csrf
+{{-- Utilise le layout principal de l'application --}}
+@extends('layouts.layout')
 
-         <h2 style="text-align: center; margin-bottom: 1.5rem; color: #333;">Inscription Recruteur / Entreprise</h2>
+{{-- Définit le titre spécifique de la page --}}
+@section('title', 'Inscription Recruteur - StagesBENIN')
 
-         {{-- Affichage des erreurs générales (optionnel) --}}
-          @if (session('error'))
-              <div style="color: red; margin-bottom: 1rem; text-align: center;">{{ session('error') }}</div>
-          @endif
+{{-- Injecte les styles spécifiques pour cette page --}}
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/register-recruteur.css') }}">
+@endsection
 
-         <h3 style="font-weight: bold; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Informations de Connexion (Contact)</h3>
+{{-- Contenu principal de la page --}}
+@section('content')
+    <div class="recruiter-signup-wrapper">
+        <div class="container">
+            <div class="row align-items-center justify-content-center center-form-md">
 
-        <!-- Name (Contact Person) -->
-        <div>
-            <x-input-label for="name" :value="__('Votre Nom Complet (Contact)')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+                <!-- Colonne Formulaire -->
+                <div class="col-lg-6 col-md-8 col-sm-11">
+                    <div class="signup-form-container">
 
-        <!-- Email Address (Login) -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Votre Email de Connexion')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+                        <h2 class="signup-form-title">Inscription Recruteur</h2>
+                        <p class="signup-form-subtitle">Créez votre compte entreprise.</p>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Mot de passe')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+                        {{-- Formulaire HTML Classique --}}
+                        <form class="signup-form" method="POST" action="{{ route('register.recruteur.store') }}">
+                            @csrf
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+                            {{-- Affichage des erreurs générales (session flash) --}}
+                            @if (session('error'))
+                                <div class="alert alert-danger mb-3 text-center">{{ session('error') }}</div>
+                            @endif
 
+                            {{-- Affichage global des erreurs de validation --}}
+                            @if ($errors->any())
+                                <div class="alert alert-danger mb-4">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
-        <h3 style="font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Informations Entreprise</h3>
+                            <!-- Email Address (Login) -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">{{ __('Votre Email de Connexion') }}</label>
+                                <input type="email"
+                                       id="email"
+                                       name="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       value="{{ old('email') }}"
+                                       required
+                                       autocomplete="username">
+                                @error('email')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-         <!-- Nom Entreprise -->
-        <div class="mt-4">
-            <x-input-label for="nom_entreprise" :value="__('Nom de l\'Entreprise')" />
-            <x-text-input id="nom_entreprise" class="block mt-1 w-full" type="text" name="nom_entreprise" :value="old('nom_entreprise')" required />
-            <x-input-error :messages="$errors->get('nom_entreprise')" class="mt-2" />
-        </div>
+                            <!-- Password -->
+                            <div class="mb-3 password-wrapper">
+                                <label for="signup-password" class="form-label">{{ __('Mot de passe') }}</label>
+                                <input type="password"
+                                       id="signup-password"
+                                       name="password"
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       required
+                                       autocomplete="new-password">
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                                @error('password')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-         <!-- Email Entreprise -->
-        <div class="mt-4">
-            <x-input-label for="email_entreprise" :value="__('Email Public de l\'Entreprise')" />
-            <x-text-input id="email_entreprise" class="block mt-1 w-full" type="email" name="email_entreprise" :value="old('email_entreprise')" required />
-            <x-input-error :messages="$errors->get('email_entreprise')" class="mt-2" />
-        </div>
+                            <!-- Confirm Password -->
+                            <div class="mb-3 password-wrapper">
+                                <label for="signup-password-confirm" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
+                                <input type="password"
+                                       id="signup-password-confirm"
+                                       name="password_confirmation"
+                                       class="form-control"
+                                       required
+                                       autocomplete="new-password">
+                                {{-- Erreur 'confirmed' gérée automatiquement --}}
+                            </div>
 
-         <!-- Telephone Entreprise -->
-         <div class="mt-4">
-            <x-input-label for="telephone_entreprise" :value="__('Téléphone Entreprise (Optionnel)')" />
-            <x-text-input id="telephone_entreprise" class="block mt-1 w-full" type="tel" name="telephone_entreprise" :value="old('telephone_entreprise')" />
-            <x-input-error :messages="$errors->get('telephone_entreprise')" class="mt-2" />
-        </div>
+                            {{-- Suppression du champ Nom Entreprise effectuée --}}
 
-         <!-- Secteur -->
-         <div class="mt-4">
-            <x-input-label for="secteur" :value="__('Secteur d\'activité (Optionnel)')" />
-            <x-text-input id="secteur" class="block mt-1 w-full" type="text" name="secteur" :value="old('secteur')" />
-            <x-input-error :messages="$errors->get('secteur')" class="mt-2" />
-        </div>
+                            {{-- Wrapper pour aligner le lien et le bouton --}}
+                            <div class="login-link-wrapper">
+                                <div class="login-link">
+                                    <a href="{{ route('login') }}">
+                                        {{ __('Déjà inscrit?') }}
+                                    </a>
+                                </div>
+                                {{-- Bouton HTML classique --}}
+                                <button type="submit" class="btn btn-submit">
+                                    {{ __('S\'inscrire comme Recruteur') }}
+                                </button>
+                            </div>
 
-         <!-- Adresse -->
-         <div class="mt-4">
-            <x-input-label for="adresse" :value="__('Adresse (Optionnel)')" />
-            <x-text-input id="adresse" class="block mt-1 w-full" type="text" name="adresse" :value="old('adresse')" />
-            <x-input-error :messages="$errors->get('adresse')" class="mt-2" />
-        </div>
+                            {{-- Lien optionnel pour s'inscrire comme étudiant --}}
+                            <div class="text-center mt-4">
+                                <a class="text-sm" style="color: var(--custom-primary); text-decoration: underline;" href="{{ route('register.etudiant.create') }}">
+                                    {{ __('S\'inscrire comme Étudiant ?') }}
+                                </a>
+                            </div>
+                        </form>
 
+                    </div> {{-- Fin .signup-form-container --}}
+                </div> {{-- Fin .col (formulaire) --}}
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Déjà inscrit?') }}
-            </a>
+                <!-- Colonne Image -->
+                <div class="col-lg-6 d-none d-lg-block text-center ps-lg-5">
+                    <img src="{{ asset('assets/images/bonne-verification-documents-par-experts.png') }}" alt="Inscription Recruteur Illustration" class="signup-illustration-img">
+                </div>
 
-            <x-primary-button class="ms-4">
-                {{ __('S\'inscrire comme Recruteur') }}
-            </x-primary-button>
-        </div>
+            </div> {{-- Fin .row --}}
+        </div> {{-- Fin .container --}}
+    </div> {{-- Fin .recruiter-signup-wrapper --}}
+@endsection {{-- <<< Fin de la section 'content' --}}
 
-        <div class="text-center mt-4">
-             <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('register.etudiant.create') }}">
-                {{ __('S\'inscrire comme Étudiant ?') }}
-            </a>
-        </div>
-    </form>
-</x-guest-layout>
+{{-- Injecte les scripts spécifiques --}}
+@section('scripts')
+    <script>
+        // Script pour voir/cacher le mot de passe
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#signup-password'); // Cible l'input par ID
+
+        if (togglePassword && passwordInput) {
+            // Initialise l'icône
+             if (passwordInput.getAttribute('type') === 'password') {
+                 togglePassword.classList.remove('fa-eye-slash');
+                 togglePassword.classList.add('fa-eye');
+            } else {
+                 togglePassword.classList.remove('fa-eye');
+                 togglePassword.classList.add('fa-eye-slash');
+            }
+            // Ajoute l'écouteur d'événement
+             togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        } // <<< Fin du IF pour le script JS
+    </script>
+@endsection {{-- <<< Fin de la section 'scripts' --}}

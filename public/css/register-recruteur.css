@@ -1,0 +1,285 @@
+/* Variables de couleur (si non définies globalement) */
+:root {
+    --custom-primary: #0056b3;
+    --custom-secondary: #555555;
+    --custom-white: #FFFFFF;
+    --custom-light-gray: #f8f9fa;
+}
+
+body{
+    background-image: url("../assets/images/Partenaire-stage-Benin.webp"); /* Chemin relatif depuis le dossier css */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Changé à fixed pour que l'overlay fonctionne mieux */
+    position: relative; /* Nécessaire pour le positionnement absolu de l'overlay */
+    min-height: 100vh; /* Assure que le body prend au moins toute la hauteur */
+}
+
+body::before {
+    content: '';
+    position: fixed; /* Fixe par rapport au viewport */
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1; /* Derrière le contenu, mais au-dessus du background du body */
+}
+
+/* --- Styles pour appliquer le fond et l'overlay --- */
+.recruiter-signup-wrapper {
+    /* Suppression des propriétés background-image et ::before */
+    background-color: transparent; /* Rend le wrapper transparent */
+    position: relative;
+    padding: 4rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1; /* Doit être au-dessus de l'overlay body::before */
+    min-height: 100vh; /* Ajusté pour prendre toute la hauteur */
+}
+
+/* --- Styles du conteneur de formulaire --- */
+.signup-form-container {
+    background-color: rgba(255, 255, 255, 0.98);
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 86, 179, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    position: relative;
+    z-index: 2;
+}
+
+.signup-form-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--custom-primary);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.7rem;
+}
+
+.signup-form-subtitle {
+    text-align: center;
+    color: var(--custom-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* --- Styles pour les éléments de formulaire HTML --- */
+.signup-form .form-label { /* Cible les <label> */
+    font-weight: 600;
+    color: var(--custom-secondary);
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    display: block;
+}
+
+.signup-form .form-control { /* Cible les <input>, <select>, <textarea> avec la classe .form-control */
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 0.6rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    margin-top: 0.25rem;
+    display: block; /* Assure la largeur pleine */
+}
+
+.signup-form .form-control:focus {
+    border-color: var(--custom-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+    background-color: white;
+    outline: none;
+}
+
+/* Style pour les erreurs de validation */
+.invalid-feedback {
+    color: #dc3545; /* Rouge Bootstrap standard */
+    font-size: 0.875em; /* Légèrement plus petit */
+    display: none; /* Caché par défaut */
+    width: 100%;
+    margin-top: 0.25rem;
+}
+/* Classe pour forcer l'affichage (utilisé avec @error) */
+.d-block {
+    display: block !important;
+}
+/* Ajoute une bordure rouge à l'input invalide */
+ .form-control.is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + .75rem); /* Espace pour icône potentielle */
+    /* L'URL SVG pour l'icône d'erreur doit rester telle quelle */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+.form-control.is-invalid:focus {
+   border-color: #dc3545;
+   box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, .25);
+}
+
+
+/* Spécifique pour la checkbox */
+.signup-form .form-check {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex; /* Aligne label et input */
+    align-items: center;
+}
+.signup-form .form-check-input {
+     /* Styles Bootstrap par défaut sont souvent suffisants */
+     border: 1px solid #adb5bd;
+     width: 1em; /* Taille standard */
+     height: 1em;
+     margin-top: 0; /* Reset margin top */
+}
+ .signup-form .form-check-input:checked {
+     background-color: var(--custom-primary);
+     border-color: var(--custom-primary);
+ }
+ .signup-form .form-check-input:focus {
+     box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+ }
+ .signup-form .form-check-input.is-invalid {
+    border-color: #dc3545;
+ }
+ .signup-form .form-check-input.is-invalid ~ .form-check-label {
+     color: #dc3545;
+ }
+
+
+.signup-form .form-check-label {
+    font-size: 0.85rem;
+    color: var(--custom-secondary);
+    margin-left: 0.5rem;
+}
+.signup-form .form-check-label a {
+    color: var(--custom-primary);
+    text-decoration: underline;
+}
+
+/* Style pour le bouton */
+.signup-form .btn-submit { /* Cible le bouton par sa classe spécifique */
+    background-color: var(--custom-primary);
+    border: 1px solid var(--custom-primary); /* Ajout d'une bordure */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: auto; /* Ajusté pour ne pas prendre toute la largeur par défaut */
+    margin-top: 1rem;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+    cursor: pointer; /* Ajoute un curseur pointeur */
+    text-align: center;
+}
+/* Style spécifique pour le bouton dans le wrapper */
+.login-link-wrapper .btn-submit {
+     width: auto; /* Garde la largeur auto */
+}
+ /* Hover state */
+ .signup-form .btn-submit:hover {
+    background-color: #003d80;
+    border-color: #003d80;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 86, 179, 0.4);
+}
+
+/* Style pour le lien "Déjà inscrit ?" */
+.login-link-wrapper {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     margin-top: 1.5rem;
+     flex-wrap: wrap;
+}
+.login-link {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem; /* Espace si ça passe à la ligne */
+    margin-right: 1rem; /* Espace entre le lien et le bouton */
+}
+.login-link a {
+    color: var(--custom-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Wrapper pour mot de passe + icône */
+.password-wrapper {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 12px; /* Ajusté pour l'input .form-control */
+    top: 57%; /* Ajusté empiriquement pour .form-control */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    z-index: 3;
+}
+.toggle-password:hover {
+    color: #333;
+}
+
+/* Style pour l'image illustration */
+.signup-illustration-img {
+    max-width: 100%;
+    height: auto; /* Rétablir la hauteur auto pour un scaling naturel */
+    object-fit: contain; /* Garder les proportions */
+    display: block;
+    margin: auto; /* Centrage horizontal */
+    align-self: center; /* Centrage vertical dans la colonne flex */
+}
+
+/* Titres de section dans le formulaire */
+.form-section-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    color: #333;
+}
+
+/* Styles pour le bloc d'erreurs global */
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+.alert-danger ul {
+    padding-left: 1.5rem; /* Indentation de la liste */
+    margin-bottom: 0;
+}
+
+
+/* Responsive (adapté du PHP) */
+ @media (max-width: 991px) { /* Tablette */
+    .recruiter-signup-wrapper { padding: 3rem 1rem; }
+    .signup-form-container { padding: 2rem; }
+    .signup-illustration-img { display: none; }
+     .center-form-md {
+        display: flex;
+        justify-content: center;
+    }
+ }
+ @media (max-width: 767px) { /* Mobile */
+     .recruiter-signup-wrapper { padding: 2rem 1rem; align-items: flex-start; min-height: unset;} /* Reset min-height pour mobile si nécessaire */
+     .signup-form-container { padding: 1.5rem; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+     .signup-form-title { font-size: 1.5rem; }
+     .login-link-wrapper { justify-content: center; text-align: center; flex-direction: column-reverse; } /* Bouton en premier, puis lien */
+     .login-link { margin-right: 0; margin-top: 1rem; margin-bottom: 0; width: 100%;}
+     .login-link-wrapper .btn-submit { width: 100%; } /* Bouton pleine largeur */
+ } 

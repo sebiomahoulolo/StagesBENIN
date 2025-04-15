@@ -1,0 +1,190 @@
+/* --- Footer Styles --- */
+
+.site-footer {
+    background-color: #212529; /* bg-dark */
+    color: #adb5bd; /* text-light légèrement atténué */
+    font-size: 0.9rem;
+}
+
+.site-footer h5 {
+    color: #ffffff; /* Blanc pour les titres */
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-logo {
+    max-width: 180px;
+    height: auto;
+    opacity: 0.9;
+}
+
+.footer-tagline {
+    font-style: italic;
+    color: #ced4da;
+}
+
+.footer-links li,
+.footer-contact li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a,
+.footer-legal a {
+    color: #adb5bd;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-legal a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.footer-contact i {
+    color: #0d6efd; /* Bleu Bootstrap pour les icônes contact */
+    width: 20px; /* Aligner le texte */
+    text-align: center;
+}
+
+.footer-gallery {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.footer-gallery img {
+    width: 60px; /* Taille des miniatures */
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+.footer-gallery img:hover {
+    opacity: 1;
+}
+
+.footer-social a {
+    color: #adb5bd;
+    font-size: 1.3rem;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+.footer-social a:last-child {
+    margin-right: 0;
+}
+.footer-social a:hover {
+    color: #ffffff;
+}
+
+.footer-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-copyright,
+.footer-legal {
+    font-size: 0.85rem;
+    color: #6c757d; /* Gris plus foncé */
+}
+.footer-copyright a {
+    color: #adb5bd;
+    font-weight: 500;
+}
+
+
+/* --- Modal d'Abonnement --- */
+.subscribe-modal {
+    display: none;
+    position: fixed;
+    top: 50%; /* Centrer verticalement */
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 380px;
+    background: #f8f9fa; /* Fond clair */
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 10000;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+    border: 1px solid #dee2e6;
+}
+
+.subscribe-modal.show { /* Classe pour afficher le modal */
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+
+.modal-text {
+    font-size: 1rem;
+    color: #343a40; /* Texte foncé */
+    margin-bottom: 15px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.response-message {
+    font-size: 0.9rem;
+    margin-top: -10px; /* Remonter un peu */
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+.response-message.success {
+    color: #198754; /* Vert Bootstrap */
+}
+.response-message.error {
+    color: #dc3545; /* Rouge Bootstrap */
+}
+
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.modal-btn {
+    flex: 1; /* Prendre la même largeur */
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+
+/* --- Bouton Scroll to Top --- */
+.scroll-to-top-btn {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #0d6efd; /* Bleu Bootstrap */
+    color: white;
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 9999;
+    font-size: 1.2rem;
+    line-height: 1; /* Centrer l'icône verticalement */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-to-top-btn:hover {
+    background-color: #0056b3; /* Bleu plus foncé au survol */
+    transform: translateY(-3px); /* Petit effet de soulèvement */
+}
