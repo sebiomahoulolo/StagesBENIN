@@ -1,0 +1,113 @@
+/* public/css/dashboard.css */
+
+/* Styles UNIQUEMENT pour le CONTENU de la page dashboard */
+
+/* En-tête spécifique au dashboard (si différent de .content-header général) */
+/* .dashboard-header { ... } */ /* Déjà défini dans app.css via .content-header */
+
+/* Cartes du dashboard */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Style des cartes (si différent du .card général) */
+/* Note: Les styles .card, .card-header, .card-title, .card-content */
+/* pourraient être considérés comme UI Commun et mis dans app.css */
+/* Laissons-les ici pour l'instant pour spécificité dashboard */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+.card-header i {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+.card-title {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+.card-content {
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    flex-grow: 1;
+}
+.card-content p { margin-bottom: 0.5rem; }
+.card-content p:last-child { margin-bottom: 0; }
+
+/* Sections Activité / Événements */
+.recent-activity, .upcoming-events {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    /* margin-bottom géré par .row dans le HTML */
+}
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.section-title {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+.view-all {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 500;
+}
+.view-all:hover { text-decoration: underline; }
+
+/* Liste Activité / Événements */
+.activity-list, .event-list { display: flex; flex-direction: column; gap: 1rem; }
+.activity-item, .event-item { display: flex; padding: 1rem; border-radius: 6px; background-color: var(--light-gray); align-items: center; }
+.activity-icon, .event-icon { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(52, 152, 219, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; flex-shrink: 0; }
+.activity-details, .event-details { flex: 1; }
+.activity-title, .event-title { font-weight: 600; margin-bottom: 0.2rem; color: var(--secondary-color); font-size: 0.95rem; }
+.activity-time, .event-time { font-size: 0.85rem; color: var(--dark-gray); }
+.event-date { font-size: 0.85rem; color: var(--accent-color); font-weight: bold; margin-bottom: 0.2rem; }
+
+
+/* Responsive spécifique au contenu du dashboard */
+@media (max-width: 992px) {
+     /* Ajustements spécifiques tablettes pour contenu dashboard si besoin */
+     .dashboard-cards { grid-template-columns: repeat(2, 1fr); } /* Déjà présent, mais peut être ajusté */
+}
+
+@media (max-width: 768px) {
+     /* Ajustements spécifiques mobile pour contenu dashboard si besoin */
+    .dashboard-cards { grid-template-columns: 1fr; }
+    .col-lg-6 { flex: 0 0 100%; max-width: 100%; } /* Assure empilement Activité/Événements */
+    .col-lg-6.mb-4.mb-lg-0 { margin-bottom: 1.5rem !important; } /* Marge basse forcée */
+}

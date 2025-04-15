@@ -1,0 +1,63 @@
+/* public/css/layout/sidebar.css */
+
+aside.app-sidebar {
+    width: var(--sidebar-width);
+    /* *** CORRECTION PRINCIPALE : Assurer un fond opaque *** */
+    background-color: var(--sidebar-bg, white); /* Utilise variable, fallback blanc */
+    /* Ou directement : background-color: white; */
+    /* Ou si vous voulez une autre couleur : background-color: #f8f9fa; */
+    /* --------------------------------------------------------- */
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15); /* Ombre un peu plus marquée */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 1001; /* Important : Au-dessus de l'overlay (1000) */
+    padding-top: var(--header-height);
+    transform: translateX(0); /* Visible sur grand écran */
+    transition: var(--sidebar-transition);
+}
+
+/* Bouton Fermer (X) dans la sidebar */
+.sidebar-close-btn {
+    display: none;
+    position: absolute;
+    top: calc((var(--header-height) - 30px) / 2);
+    right: 15px;
+    background: none; border: none; font-size: 1.5rem;
+    color: var(--secondary-color);
+    cursor: pointer; padding: 5px; line-height: 1;
+    z-index: 1002;
+}
+.sidebar-close-btn:hover { color: var(--accent-color); }
+
+
+/* Menu Items */
+aside.app-sidebar .sidebar-menu { padding-top: 1rem; padding-bottom: 1rem; }
+aside.app-sidebar .menu-item { padding: 0.8rem 1.5rem; display: flex; align-items: center; color: var(--dark-gray); text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease; font-size: 0.95rem; border-left: 3px solid transparent; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+aside.app-sidebar .menu-item i.fa-fw { margin-right: 12px; width: 20px; text-align: center; font-size: 1rem; flex-shrink: 0; color: var(--gray); transition: color 0.2s ease; }
+aside.app-sidebar .menu-item span { flex-grow: 1; }
+aside.app-sidebar .menu-item:hover { background-color: rgba(52, 152, 219, 0.08); color: var(--primary-color); }
+aside.app-sidebar .menu-item:hover i.fa-fw { color: var(--primary-color); }
+aside.app-sidebar .menu-item.active { background-color: rgba(52, 152, 219, 0.1); color: var(--primary-color); border-left-color: var(--primary-color); font-weight: 600; }
+aside.app-sidebar .menu-item.active i.fa-fw { color: var(--primary-color); }
+aside.app-sidebar .menu-item .notifications-badge { margin-left: auto; background-color: var(--accent-color); color: white; border-radius: 10px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; line-height: 1; }
+
+
+/* --- Responsive Sidebar Off-Canvas --- */
+@media (max-width: 991.98px) {
+    aside.app-sidebar {
+        transform: translateX(-100%); /* Cachée par défaut */
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    aside.app-sidebar.open {
+        transform: translateX(0); /* Révèle */
+    }
+
+    aside.app-sidebar.open .sidebar-close-btn {
+         display: block; /* Afficher le bouton X */
+    }
+}

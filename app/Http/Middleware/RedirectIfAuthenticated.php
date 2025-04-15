@@ -23,8 +23,24 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $user = Auth::guard($guard)->user();
+            
+                if ($user->isAdmin()) {
+                    // Rediriger vers le dashboard Admin
+                    return redirect()->intended(route('admin.dashboard', [], false));
+                } elseif ($user->isEtudiant()) {
+                    // Rediriger vers le dashboard Etudiant
+                    return redirect()->intended(route('etudiants.dashboard', [], false));
+                } elseif ($user->isRecruteur()) {
+                    // Rediriger vers le dashboard Recruteur
+                    return redirect()->intended(route('recruteur.dashboard', [], false));
+                } else {
+                    // Redirection par défaut si aucun rôle connu (ou fallback)
+                    return redirect()->intended(route('dashboard', [], false));
+                }
             }
+            
+            
         }
 
         return $next($request);

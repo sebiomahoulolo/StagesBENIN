@@ -1,0 +1,91 @@
+/* public/css/profile-edit.css */
+
+.profile-page-container {
+    /* Optionnel: Limiter la largeur max des sections de formulaire */
+    /* max-width: 800px; */
+    /* margin: 0 auto; */
+}
+
+/* Utiliser .form-section pour chaque bloc (Infos, MDP, Photo) */
+.form-section {
+    background: white;
+    padding: 1.5rem 2rem; /* Padding ajusté */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem; /* Espace entre sections */
+}
+
+.form-section header { /* Style pour l'en-tête de chaque section */
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color, #eee);
+}
+
+.form-section h2.section-title {
+    font-size: 1.25rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.form-section p.section-description {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
+
+/* Style spécifique pour la section photo */
+.profile-photo-section .current-photo {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.profile-photo-section .photo-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+}
+.profile-photo-section .photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-photo-section .photo-preview i {
+    font-size: 2rem;
+    color: var(--gray);
+}
+
+.profile-photo-section .upload-area label {
+    cursor: pointer;
+}
+.profile-photo-section .upload-area input[type="file"] {
+   /* Basic styling, improve if needed */
+   border: 1px dashed var(--border-color);
+   padding: 0.5rem;
+   border-radius: 4px;
+   display: block;
+   width: 100%; /* Prendre la largeur dispo */
+}
+
+/* Boutons dans les formulaires */
+.form-section .flex { display: flex; }
+.form-section .items-center { align-items: center; }
+.form-section .gap-4 { gap: 1rem; }
+.form-section .mt-4 { margin-top: 1rem; }
+.form-section .text-sm { font-size: 0.875rem; }
+.form-section .text-gray-600 { color: #4a5568; } /* Ajuster couleur */
+
+/* Utilisation des classes de boutons générales définies dans app.css */
+/* .form-section button { ... } */
+
+/* Ajustements pour les messages de succès (status) */
+.form-section .text-success { color: var(--success-color); }
+.form-section .font-medium { font-weight: 500; }

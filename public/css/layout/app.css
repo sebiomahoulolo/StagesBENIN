@@ -1,0 +1,118 @@
+/* public/css/layout/app.css */
+
+/* ===== Variables CSS ===== */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --accent-color: #e74c3c;
+    /* ... autres couleurs ... */
+    --border-color: #e0e0e0;
+    --body-bg: #f9f9f9;
+    --header-height: 66px;
+    --sidebar-width: 250px;
+    --sidebar-transition: transform 0.3s ease-in-out;
+}
+
+/* ===== Reset & Base ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: var(--body-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; font-size: 1rem; }
+a { text-decoration: none; color: var(--primary-color); }
+a:hover { text-decoration: underline; }
+
+/* ===== Layout Principal ===== */
+.app-container {
+    display: flex;
+    /* L'espace pour le header est géré par position:fixed du header et le padding-top du contenu/sidebar */
+}
+
+main.main-content {
+    flex: 1;
+    padding: 2rem; /* Espace intérieur */
+    min-height: 100vh; /* Assure qu'il prend au moins la hauteur de l'écran */
+    padding-top: calc(var(--header-height) + 2rem); /* Espace pour header + padding normal */
+    /* Marge gauche par défaut pour laisser place à la sidebar fixe */
+    margin-left: var(--sidebar-width);
+    /* La transition est sur la sidebar (transform), pas besoin ici */
+}
+
+/* --- Overlay --- */
+.sidebar-overlay {
+    position: fixed; inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Sous la sidebar (1001) */
+    opacity: 0; visibility: hidden;
+    /* Transitions gérées par Alpine */
+}
+[x-cloak] { display: none !important; }
+div[x-show="isSidebarOpen"] { visibility: visible; } /* Pour l'overlay */
+
+
+/* --- Blocage Scroll Body --- */
+/* Appliqué par Alpine sur le body */
+body.overflow-hidden { overflow: hidden; }
+
+
+/* ===== Éléments UI Communs (Boutons, Alertes, Formulaires Base, etc.) ===== */
+/* ... (Collez ici les styles pour .content-header, .action-button, .alert, .form-*, .row, .col qui étaient dans la version précédente de app.css) ... */
+/* En-tête de section dans le contenu (ex: titre page + actions) */
+.content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.content-header .welcome-message h1 { font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 0.3rem; font-weight: 600; }
+.content-header .welcome-message p { color: var(--dark-gray); font-size: 1rem; margin-top: 0; }
+.content-header .quick-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+/* Boutons d'action généraux */
+.action-button { padding: 0.6rem 1.2rem; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; transition: all 0.3s ease; text-decoration: none; font-size: 0.9rem; font-weight: 500; white-space: nowrap; }
+.action-button:hover { background-color: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+.action-button i { margin-right: 8px; }
+.action-button.save-btn, .action-button.btn-success { background-color: var(--success-color); }
+.action-button.save-btn:hover, .action-button.btn-success:hover { background-color: #27ae60; }
+.action-button.btn-secondary { background-color: var(--gray); }
+.action-button.btn-secondary:hover { background-color: var(--dark-gray); }
+.action-button.btn-danger { background-color: var(--accent-color); }
+.action-button.btn-danger:hover { background-color: #c0392b; }
+/* Boutons plus petits */
+.btn-sm { padding: 0.3rem 0.8rem; font-size: 0.85em; }
+/* Alertes / Messages Flash */
+.alert, .flash-message { padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border: 1px solid transparent; font-size: 0.95rem; }
+.alert-success, .flash-success { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
+.alert-danger, .flash-error { background-color: #f8d7da; color: #842029; border-color: #f5c2c7; }
+.alert-warning { background-color: #fff3cd; color: #664d03; border-color: #ffecb5; }
+.alert-info { background-color: #cff4fc; color: #055160; border-color: #b6effb; }
+/* Formulaires Base */
+.form-section { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2.5rem; }
+.form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; }
+.form-section-header h4 { margin: 0; color: var(--primary-color); font-size: 1.3rem; font-weight: 600; }
+.form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--secondary-color); }
+.form-group { margin-bottom: 1.2rem; }
+.form-control { width: 100%; padding: 0.6rem 1rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.95rem; line-height: 1.5; background-color: #fff; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out; }
+.form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); outline: 0; }
+.form-control.form-control-sm { min-height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5rem; font-size: .875rem; border-radius: 0.2rem; }
+textarea.form-control { min-height: 80px; }
+.form-control[readonly], .form-control:disabled { background-color: var(--light-gray); opacity: 0.8; }
+.form-control.is-invalid { border-color: var(--accent-color) !important; }
+.invalid-feedback { color: var(--accent-color); font-size: 0.8em; display: block; margin-top: 0.25rem; min-height: 1.2em; }
+/* Row/Col */
+.row { display: flex; flex-wrap: wrap; margin-left: -0.75rem; margin-right: -0.75rem; margin-bottom: 1rem; }
+.col, .col-md-6, .col-md-4, .col-lg-6 { flex-basis: 0; flex-grow: 1; max-width: 100%; padding-left: 0.75rem; padding-right: 0.75rem; }
+@media (min-width: 768px) { .col-md-6 { flex: 0 0 50%; max-width: 50%; } .col-md-4 { flex: 0 0 33.3333%; max-width: 33.3333%; } }
+@media (min-width: 992px) { .col-lg-6 { flex: 0 0 50%; max-width: 50%; } }
+
+
+/* ===== Responsive Layout ===== */
+/* Styles pour écrans <= 991px (tablettes et mobiles) */
+@media (max-width: 991.98px) {
+    main.main-content {
+        margin-left: 0; /* La sidebar est cachée, le contenu prend toute la place */
+        padding: 1.5rem; /* Réduire le padding */
+    }
+    /* Le style body.overflow-hidden est géré par Alpine.js */
+}
+
+/* Styles additionnels pour mobiles si nécessaire (< 768px) */
+@media (max-width: 767.98px) {
+     main.main-content { padding: 1rem; } /* Encore moins de padding */
+     /* Ajustements pour les UI communs si besoin */
+    .content-header { text-align: center; flex-direction: column; }
+    .quick-actions { justify-content: center; }
+    .row { margin-left: -0.5rem; margin-right: -0.5rem; }
+    .col, .col-md-6, .col-md-4, .col-lg-6 { padding-left: 0.5rem; padding-right: 0.5rem; }
+}

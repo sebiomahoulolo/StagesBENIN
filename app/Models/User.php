@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens; // Si vous utilisez Sanctum
 
 // Importer les modèles liés
 use App\Models\Etudiant;
+
 use App\Models\Entreprise;
 
 // Remplacer implements MustVerifyEmail si vous ne l'utilisez pas
@@ -90,4 +91,5 @@ class User extends Authenticatable // implements MustVerifyEmail
          }
          return null; // Pour admin ou autre
      }
+     
 }
