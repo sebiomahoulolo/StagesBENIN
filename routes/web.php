@@ -41,7 +41,7 @@ Route::post('/subscribe', [SubscriberController::class, 'subscribe'])->name('sub
 // Routes Publiques des Pages statiques/info via PageController
 Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->name('pages.apropos'); // URL conservée
 Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name('pages.contact'); // URL conservée
-Route::get('/les-actulites', [PageController::class, 'actulites'])->name('pages.actulites'); // Liste publique des actualités
+Route::get('/les-actualites', [PageController::class, 'actualites'])->name('pages.actualites'); // Liste publique des actualités
 Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogue'])->name('pages.catalogue'); // Liste publique des entreprises ?
 Route::get('/nos-evenements', [PageController::class, 'evenements'])->name('pages.evenements'); // Liste publique des événements
 Route::get('/nos-programmes', [PageController::class, 'programmes'])->name('pages.programmes');
@@ -115,19 +115,8 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     Route::get('/', [AdminController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /admin -> admin.dashboard
     Route::get('/manage-users', [AdminController::class, 'manageUsers'])->name('manage_users'); // Conserve admin.manage_users
 
-    // Gestion CRUD des Actualités par l'Admin
-    Route::resource('actualites', ActualiteController::class); // Noms: admin.actualites.index, admin.actualites.create, etc.
-
-    // Gestion CRUD du Catalogue par l'Admin
-    Route::resource('catalogue', CatalogueController::class); // Noms: admin.catalogue.index, admin.catalogue.create, etc.
-
-    // Gestion CRUD des Événements par l'Admin (sauf index/show publics)
     Route::resource('events', EventController::class)->except(['index', 'show']); // Noms: admin.events.create, admin.events.store, etc.
-    // La route /create-event pointe maintenant vers admin.events.create si elle doit être protégée
-    // Route::get('/create-event', [EventController::class, 'create'])->name('events.create'); // Déplacée
 
-    // Ajoutez ici d'autres routes spécifiques à l'admin
-    // Ex: Validation des entreprises, etc.
 });
 
 
@@ -141,8 +130,7 @@ Route::middleware(['auth', EnsureUserHasRole::class.':etudiant'])->prefix('etudi
     Route::get('/search-internships', [EtudiantController::class, 'searchInternships'])->name('search_internships'); // Conserve etudiant.search_internships (devient etudiants.search_internships)
 
     // Routes pour la gestion du CV (déjà correctement préfixées et nommées à l'intérieur)
-    // Le préfixe de groupe s'ajoute, donc l'URL sera /etudiants/cv/edit, etc.
-    // Les noms seront etudiants.cv.edit, etudiants.cv.update, etc.
+ 
     Route::prefix('cv')->name('cv.')->group(function () {
         Route::get('/edit', [CvController::class, 'edit'])->name('edit');
         Route::put('/update', [CvController::class, 'update'])->name('update');
@@ -180,7 +168,22 @@ Route::middleware(['auth', EnsureUserHasRole::class.':recruteur'])->prefix('entr
     // Ajoutez ici d'autres routes recruteur
     // Ex: Voir les candidats pour une offre, etc.
 });
+//actulites
+Route::resource('actualites', ActualiteController::class);
+Route::get('/les-actualites', [ActualiteController::class, 'actualites'])->name('pages.actualites');
 
+Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
+Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
+Route::get('/entreprises/create', [EntrepriseController::class, 'create'])->name('entreprises.create');
+Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store');
+Route::get('/entreprises/{id}', [EntrepriseController::class, 'show'])->name('entreprises.show');
+Route::get('/entreprises/{id}/edit', [EntrepriseController::class, 'edit'])->name('entreprises.edit');
+Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('entreprises.update');
+Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
+Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
+Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
+
+//evenements
 Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
 Route::get('/evenements/{id}', [EventController::class, 'show'])->name('evenements.show');
 Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');

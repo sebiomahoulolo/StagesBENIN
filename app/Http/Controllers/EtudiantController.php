@@ -33,16 +33,12 @@ class EtudiantController extends Controller
      {
          $etudiant = auth()->user()->etudiant; 
     
-    $userId = $request->user()->id;
+   
 
-    // Récupérer les entretiens programmés pour l'utilisateur
-    $entretiens = Entretien::where('user_id', $userId)
-        ->where('date', '>=', now()) // Filtrer les entretiens futurs
-        ->orderBy('date', 'asc')    // Trier par date croissante
-        ->get();
+
 
     // Retourner les entretiens à la vue
-    return view('etudiants.dashboard', compact('entretiens','etudiant'));
+    return view('etudiants.dashboard', compact('etudiant'));
 }
 
    

@@ -767,7 +767,66 @@ Use code with caution.
                     </div>
                      <div class="content-area table-responsive">
                         <h4>Liste des Entreprises</h4>
-                        <p>Tableau des entreprises apparaîtra ici.</p>
+@if(isset($entreprises) && !$entreprises->isEmpty())
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Secteur</th>
+                                    <th>Description</th>
+                                    <th>Adresse</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>Site Web</th>
+                                    <th>Logo</th>
+                                    <th>Contact Principal</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($entreprises as $entreprise)
+                                <tr>
+                                    <td>{{ $entreprise->id }}</td>
+                                    <td>{{ $entreprise->nom }}</td>
+                                    <td>{{ $entreprise->secteur }}</td>
+                                    <td>{{ Str::limit($entreprise->description, 50) }}</td>
+                                    <td>{{ $entreprise->adresse }}</td>
+                                    <td>{{ $entreprise->email }}</td>
+                                    <td>{{ $entreprise->telephone }}</td>
+                                    <td>{{ $entreprise->site_web }}</td>
+                                    <td>
+                                        @if($entreprise->logo_path)
+                                            <img src="{{ Storage::url($entreprise->logo_path) }}" alt="Logo" style="width:50px;height:50px;">
+                                        @else
+                                            <span>Pas de logo</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $entreprise->contact_principal }}</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('entreprises.show', $entreprise->id) }}" class="btn btn-info btn-sm">Voir</a>
+                                            <a href="{{ route('entreprises.contact', $entreprise->id) }}" class="btn btn-primary btn-sm">Contacter</a>
+                                            <a href="{{ route('entreprises.follow', $entreprise->id) }}" class="btn btn-success btn-sm">Suivre</a>
+                                            <a href="{{ route('entreprises.edit', $entreprise->id) }}" class="btn btn-warning btn-sm">Éditer</a>
+                                            <form action="{{ route('entreprises.destroy', $entreprise->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $entreprises->links() }}
+                    @else
+                        <div class="alert alert-info">Aucune entreprise trouvée pour le moment.</div>
+                    @endif
+          
+
+
                      </div>
                 </div>
 
@@ -795,7 +854,49 @@ Use code with caution.
                    </div>
                     <div class="content-area table-responsive">
                        <h4>Liste des Actualités</h4>
-            
+@if(isset($actualites) && !$actualites->isEmpty())
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>Auteur</th>
+                <th>Catégorie</th>
+                <th>Date de publication</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($actualites as $actualite)
+            <tr>
+                <td>{{ $actualite->titre }}</td>
+                <td>{{ Str::limit($actualite->contenu, 50) }}</td>
+                <td>{{ $actualite->auteur }}</td>
+                <td>{{ $actualite->categorie }}</td>
+                <td>{{ \Carbon\Carbon::parse($actualite->date_publication)->format('d/m/Y') }}</td>
+                <td>
+                    <div class="d-flex gap-1">
+                        <!--a href="{{ route('actualites.show', $actualite->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a-->
+                        <a href="{{ route('actualites.edit', $actualite->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        <form action="{{ route('actualites.destroy', $actualite->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Confirmer la suppression de cette actualité ?')">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
+
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {{ $actualites->links() }}
+@else
+    <div class="alert alert-info">Aucune actualité trouvée pour le moment.</div>
+@endif
+
 
 
                     </div>

@@ -32,9 +32,9 @@ class PageController extends Controller
     public function services()
     {
         return view('pages.services'); 
-    } public function actulites()
+    } public function actualites()
     {
-        return view('pages.actulites'); 
+        return view('pages.actualites'); 
     }
 
     public function programmes()

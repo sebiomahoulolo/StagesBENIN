@@ -126,6 +126,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                   
+                        <li class="nav-item"><a class="nav-link" href="{{ url('/') }}
+">ACCUEIL</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('pages.catalogue') }}
 ">CATALOGUES DES ENTREPRISES</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('pages.services') }}
