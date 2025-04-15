@@ -95,9 +95,9 @@ typeWriterEffect();
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
-                        <li> Forum de l'emploi - 10 Avril</li>
-                        <li> Conférence sur le numérique - 15 Avril</li>
-                        <li> Hackathon pour étudiants - 20 Avril</li>
+                        <li> Forum de l'emploi </li>
+                        <li> Conférence sur le numérique </li>
+                        <li> Hackathon pour étudiants </li>
                     </ul>
                 </div>
                 <div class="card-footer text-center">
@@ -121,7 +121,7 @@ typeWriterEffect();
                     </ul>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{{ route('pages.actulites') }}
+                    <a href="{{ route('pages.actualites') }}
 " class="btn btn-outline-primary">Voir plus</a>
                 </div>
             </div>
@@ -129,187 +129,62 @@ typeWriterEffect();
     </div>
 </div>
 <br>
-
-    <section class="catalogue-section py-5">
+<section class="catalogue-section py-5" style="background-color:rgb(226, 226, 229);; background-size: cover; background-position: center; background-repeat: no-repeat;">
   <div class="container">
-    <h2 class="catalogue-title text-center fw-bold mb-4">Catalogue des Entreprises</h2>
+    <h2 class="catalogue-title text-center fw-bold mb-4 ">Catalogue des Entreprises</h2>
+    <div class="row align-items-center">
+      <!-- Texte à gauche -->
+      <div class="col-md-6">
+        <p class="fs-5">
+          Explorez une sélection prestigieuse d'entreprises leaders dans leurs domaines respectifs. Chacune d'elles 
+          incarne l'innovation, l'excellence et la vision stratégique. Ce catalogue est votre porte d'accès à des partenaires 
+          fiables et des solutions adaptées à vos besoins, peu importe votre secteur ou vos ambitions.
+        </p>
+        <a href="{{ route('pages.catalogue') }}" class="btn btn-lg btn-primary shadow">Découvrir le Catalogue</a>
+      </div>
+      <!-- Image à droite -->
+      <div class="col-md-6 text-center">
+        <img src=" {{ asset('assets/images/besoins-en-recrutement.jpeg') }}" alt="Illustration Catalogue" class="img-fluid rounded shadow">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+<section class="services-section py-5" style="background-color:rgb(193, 220, 247);">
+  <div class="container">
+    <h2 class="services-title text-center fw-bold mb-4 text-primary">Nos Services</h2>
     
-    <!-- Carrousel Bootstrap -->
-    <div id="catalogueCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        
-        <!-- Première ligne d'entreprises -->
-        <div class="carousel-item active">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 1.avif" alt="Entreprise 1" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise A</h5>
-                  <p>Spécialisée en technologie et.</p>
-                  <a href="{{ route('pages.catalogue') }}
-" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 2.avif" alt="Entreprise 2" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise B</h5>
-                  <p>Leader dans le commerce international.</p>
-                  <a href="{{ route('pages.catalogue') }}" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 3.avif" alt="Entreprise 3" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise C</h5>
-                  <p>Expert en finance et gestion.</p>
-                  <a href="{{ route('pages.catalogue') }}" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Deuxième ligne d'entreprises -->
-        <div class="carousel-item">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 4.avif" alt="Entreprise 4" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise D</h5>
-                  <p>Solutions en intelligence artificielle.</p>
-                  <a href="{{ route('pages.catalogue') }}" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 5.avif" alt="Entreprise 5" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise E</h5>
-                  <p>Expert en marketing digital.</p>
-                  <a href="{{ route('pages.catalogue') }}" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card catalogue-card shadow border rounded">
-                <img src="entreprise 6.avif" alt="Entreprise 6" class="card-img-top">
-                <div class="catalogue-card-body p-3 text-center">
-                  <h5 class="fw-bold">Entreprise F</h5>
-                  <p>Spécialiste en ingénierie.</p>
-                  <a href="{{ route('pages.catalogue') }}" class="btn btn-primary">Découvrir</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Row: Service Description -->
+    <div class="row align-items-center mb-5">
+      <!-- Image à gauche -->
+      <div class="col-md-6 text-center">
+        <img src="{{ asset('assets/images/R.jpg') }}" alt="Illustration des Services" class="img-fluid rounded shadow">
       </div>
       
-      <!-- Boutons de navigation du carrousel -->
-      <button class="carousel-control-prev" type="button" data-bs-target="#catalogueCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Précédent</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#catalogueCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Suivant</span>
-      </button>
-    </div>
-  </div>
-</section>
-
-
-
-
-
-<section class="services-section py-5">
-  <div class="container">
-    <h2 class="services-title text-center fw-bold mb-4" style ="color: #007bff; ">Nos Services</h2>
-    
-    <div class="row">
-      <!-- Service 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service1.avif" alt="Service 1" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Consulting & Stratégie</h5>
-            <p>Des conseils d’experts pour booster votre entreprise.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 2 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service2.avif" alt="Service 2" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Développement Web</h5>
-            <p>Création de sites web modernes et performants.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 3 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service3.avif" alt="Service 3" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Marketing Digital</h5>
-            <p>Optimisation SEO et stratégies digitales efficaces.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-4">
-      <!-- Service 4 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service4.avif" alt="Service 4" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Graphisme & Branding</h5>
-            <p>Designs uniques pour renforcer votre image de marque.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 5 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service5.avif" alt="Service 5" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Développement Mobile</h5>
-            <p>Applications Android & iOS sur mesure et web.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Service 6 -->
-      <div class="col-md-4 mb-4">
-        <div class="card service-card shadow border rounded">
-          <img src="service6.avif" alt="Service 6" class="card-img-top">
-          <div class="service-info p-3 text-center">
-            <h5 class="fw-bold">Support & Maintenance</h5>
-            <p>Un service client réactif pour assurer votre succès.</p>
-            <a href="{{ route('pages.services') }}" class="service-btn btn btn-primary">En savoir plus</a>
-          </div>
-        </div>
+      <!-- Texte à droite -->
+      <div class="col-md-6">
+        <p class="fs-5">
+          StagesBENIN est une start-up spécialisée dans l’insertion professionnelle et la visibilité digitale des entreprises. 
+          Nous accompagnons les jeunes en transition vers le monde professionnel grâce à un coaching personnalisé, et soutenons 
+          nos entreprises partenaires avec des campagnes efficaces et des solutions innovantes pour leur croissance.
+        </p>
+        <p class="fs-5 mb-4">
+          Nos packs, adaptés aux besoins des entreprises et des candidats, incluent des services tels que la CV thèque, 
+          campagnes digitales, études de marché, création d'entreprise, et bien plus encore.
+        </p>
+        <a href="{{ route('pages.services') }}" class="btn btn-lg btn-primary shadow">Voir Plus</a>
       </div>
     </div>
   </div>
 </section>
+
 
 
 

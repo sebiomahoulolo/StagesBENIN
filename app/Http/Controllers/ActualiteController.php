@@ -14,6 +14,15 @@ class ActualiteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+     public function actualites()
+     {
+         $actualites = Actualite::all(); // Récupération des actualités depuis la base de données
+         return view('pages.actualites', compact('actualites')); // Transfert des actualités à la vue
+     }
+     
+     
+     
     public function store(Request $request)
     {
         // Validation des données
@@ -55,4 +64,60 @@ class ActualiteController extends Controller
             'actualite' => $actualite
         ], 201);
     }
+
+    public function show($id)
+{
+    $actualite = Actualite::findOrFail($id); // Récupérer l'actualité par son ID
+    return view('actualites.show', compact('actualite'));
+}
+
+public function destroy($id)
+{
+    $actualite = Actualite::findOrFail($id); // Récupérer l'actualité par son ID
+    $actualite->delete(); // Supprimer l'actualité
+    return redirect()->route('admin.dashboard')->with('success', 'Actualité supprimée avec succès.');
+}
+
+
+public function edit($id)
+{
+    $actualite = Actualite::findOrFail($id); // Récupérer l'actualité par son ID
+    return view('actualites.edit', compact('actualite'));
+}
+
+public function update(Request $request, $id)
+    {
+        // Validation des données reçues
+        $validated = $request->validate([
+            'titre' => 'required|string|max:255',
+            'contenu' => 'required|string',
+            'date_publication' => 'required|date',
+            'categorie' => 'nullable|string|max:255',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Récupérer l'actualité à mettre à jour
+        $actualite = Actualite::findOrFail($id);
+
+        // Mise à jour des champs
+        $actualite->titre = $validated['titre'];
+        $actualite->contenu = $validated['contenu'];
+        $actualite->date_publication = $validated['date_publication'];
+        $actualite->categorie = $validated['categorie'] ?? null;
+
+        // Gestion de l'image si elle a été modifiée
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/actualites'), $imageName);
+            $actualite->image_path = 'images/actualites/' . $imageName;
+        }
+
+        // Sauvegarder les modifications
+        $actualite->save();
+
+        // Redirection avec un message de succès
+        return redirect()->route('admin.dashboard')->with('success', 'Actualité mise à jour avec succès.');
+    }
+
 }
