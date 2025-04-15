@@ -74,6 +74,10 @@ require __DIR__.'/auth.php';
 // Routes d'inscription spécifiques (remplacent la route /register de Breeze)
 Route::middleware('guest')->group(function () {
     // Affichage des formulaires
+    Route::get('/register', function() {
+        return view('auth.register-choice'); // Assurez-vous que ceci existe
+    })->name('register');
+    
     Route::get('register/etudiant', [RegisteredUserController::class, 'createEtudiant'])->name('register.etudiant.create');
     Route::get('register/recruteur', [RegisteredUserController::class, 'createRecruteur'])->name('register.recruteur.create');
 
