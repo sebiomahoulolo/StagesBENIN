@@ -19,9 +19,13 @@ class EntrepriseController extends Controller
      public function index()
      {
          $entreprises = Entreprise::paginate(10);
-         return view('entreprises.index', compact('entreprises'));
+         return view('entreprises.dashboard', compact('entreprises'));
      }
-     
+     public function dashboard()
+{
+    return view('entreprises.dashboard');
+}
+
      /**
       * Affiche une entreprise spécifique
       */

@@ -44,7 +44,13 @@ Route::post('/subscribe', [SubscriberController::class, 'subscribe'])->name('sub
 Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->name('pages.apropos'); // URL conservée
 Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name('pages.contact'); // URL conservée
 Route::get('/les-actualites', [PageController::class, 'actualites'])->name('pages.actualites'); // Liste publique des actualités
-Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogue'])->name('pages.catalogue'); // Liste publique des entreprises ?
+Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue'); 
+Route::get('/catalogues-des-entreprises/{id}', [PageController::class, 'catalogueplus'])->name('pages.catalogueplus');
+Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogueplus'])->name('pages.catalogueplus');
+Route::get('/catalogue/{id}', [PageController::class, 'show'])->name('catalogueplus');
+Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
+Route::put('/catalogue/{id}', [CatalogueController::class, 'update'])->name('catalogue.update');
+
 Route::get('/nos-evenements', [PageController::class, 'evenements'])->name('pages.evenements'); // Liste publique des événements
 Route::get('/nos-programmes', [PageController::class, 'programmes'])->name('pages.programmes');
 Route::get('/les-dernieres-publications', [PageController::class, 'publication'])->name('pages.publication'); // Peut-être fusionner avec pages.actualites ?
@@ -95,6 +101,7 @@ Route::middleware('guest')->group(function () {
 // ===============================================
 // ROUTES PROTÉGÉES (Nécessitent Connexion)
 // ===============================================
+Route::get('/entreprises/dashboard', [EntrepriseController::class, 'dashboard'])->name('entreprises.dashboard');
 
 // Dashboard générique (Redirige immédiatement selon le rôle)
 Route::get('/dashboard', function () {
@@ -205,6 +212,11 @@ Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('
 Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
+
+
+Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
+Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
+
 
 //evenements
 Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
