@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actualite;
 use App\Models\Event;
+use App\Models\Catalogue;
 use Illuminate\Http\Request;
 use App\Models\Etudiant;
 class AdminController extends Controller
@@ -13,15 +14,27 @@ class AdminController extends Controller
 
     public function index()
     {
-        $etudiants = Etudiant::paginate(10); // Pagination des étudiants
-        $actualites = Actualite::paginate(10); // Pagination des actualités
-        $events = Event::paginate(10); // Pagination des événements
+        // Récupération des données avec pagination
+        $etudiants = Etudiant::paginate(10);
+        $actualites = Actualite::paginate(10);
+        $events = Event::paginate(10);
+        $catalogues = Catalogue::paginate(10);
+
+        // Statistiques globales
         $totalEtudiants = Etudiant::count();
-        $progression = "N/A"; // Placeholder pour la progression, modifiez si nécessaire
-    
-        return view('admin.dashboard', compact('events', 'totalEtudiants', 'progression', 'etudiants', 'actualites'));
+        $progression = "N/A"; // À remplacer par une vraie logique si disponible
+
+        return view('admin.dashboard', compact(
+            'etudiants',
+            'actualites',
+            'events',
+            'catalogues',
+            'totalEtudiants',
+            'progression'
+        ));
     }
-    
+ 
+
 
 
     public function manageUsers()

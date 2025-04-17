@@ -1,125 +1,118 @@
-    @extends('layouts.layout')
+@extends('layouts.layout')
 
 @section('title', 'StagesBENIN')
 
 @section('content')
+
+<style>
+    .catalog-container {
+        margin: 30px 0;
+    }
     
+    .catalog-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #0056b3;
+    }
     
-    <style>
-        
+    .catalog-item {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    
+    .catalog-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .catalog-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+    
+    .catalog-content {
+        padding: 15px;
+    }
+    
+    .catalog-title {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .catalog-desc {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .catalog-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #eee;
+    }
+    
+    .catalog-date {
+        color: #777;
+        font-size: 13px;
+    }
+    
+    .btn-consult {
+        background-color: #0056b3;
+        color: white;
+        padding: 6px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s;
+    }
+    
+    .btn-consult:hover {
+        background-color: #003d80;
+        text-decoration: none;
+        color: white;
+    }
+</style>
 
-        .card-custom {
-            background: linear-gradient(135deg, #007BFF, #0056b3);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            height: 100%;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-custom:hover {
-            transform: translateY(-10px);
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        .card-custom a {
-            color: #0000ff;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
-            transition: color 0.3s ease;
-            background: white;
-            padding: 10px
+<div class="container catalog-container">
 
-        }
-        .card-custom a:hover {
-            color:rgb(151, 139, 7);
-        }
-        .icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-    </style>
+    
+    <div class="row">
+        @foreach($catalogues as $catalogue)
+            <div class="col-md-4">
+                <div class="catalog-item">
+                    @if($catalogue->image)
+                        <img src="{{ asset('assets/images/formations/' . $catalogue->image) }}" alt="{{ $catalogue->titre }}" class="catalog-image">
+                    @endif
+                    
+                    <div class="catalog-content">
+                        <h4 class="catalog-title">{{ $catalogue->titre }}</h4>
+                        <p class="catalog-desc">{{ $catalogue->description }}</p>
+                    </div>
+                    
+                    <div class="catalog-footer">
+                        <span class="catalog-date">
+                            {{ \Carbon\Carbon::parse($catalogue->created_at)->locale('fr')->format('d F Y') }}
+                        </span>
+                       <a href="{{ route('catalogueplus', ['id' => $catalogue->id]) }}" class="btn-consult">CONSULTER »</a>
 
-<div class="hero-section">
-    <div class="hero-overlay">
-        <h1>Catalogue des entreprises</h1>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>
 
-<div class="container mt-4">
-        <div class="row g-4">
-            <!-- EBENI EVENTS -->
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-calendar-alt icon"></i>
-                    <h5><strong>EBENI EVENTS</strong></h5>
-                    <p>Plongez dans une expérience d'événementiel empreinte de bien-être et de principes avec Aebeni Events.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>13 février 2024</small></p>
-                </div>
-            </div>
-
-            <!-- SMT 
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-truck-loading icon"></i>
-                    <h5><strong>SMT</strong></h5>
-                    <p>SMT, votre commissionnaire d'engins de chantier dédié à simplifier vos opérations de construction.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>26 janvier 2024</small></p>
-                </div>
-            </div>
-
-        
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-tools icon"></i>
-                    <h5><strong>CONSODATE SARL</strong></h5>
-                    <p>Votre partenaire de confiance en quincaillerie générale et matériaux de construction.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>26 janvier 2024</small></p>
-                </div>
-            </div>
-
-        
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-utensils icon"></i>
-                    <h5><strong>ZMC SARL</strong></h5>
-                    <p>Explorez le concept novateur de ZMC SARL, où la cuisine et la coiffure fusionnent harmonieusement.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>24 janvier 2024</small></p>
-                </div>
-            </div>
-
-           
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-shield-alt icon"></i>
-                    <h5><strong>VOLCAN SECURITE</strong></h5>
-                    <p>Votre partenaire de confiance dans le domaine du gardiennage et de la sécurité.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>24 janvier 2024</small></p>
-                </div>
-            </div>
-
-            
-            <div class="col-md-4">
-                <div class="card-custom p-3 text-center">
-                    <i class="fas fa-paint-brush icon"></i>
-                    <h5><strong>EBENI EVENTS</strong></h5>
-                    <p>Votre partenaire créatif pour la décoration et la coordination d’événements exceptionnels.</p>
-                    <a href="#">CONSULTER »</a>
-                    <p class="mt-3"><small>24 janvier 2024</small></p>
-                </div>
-            </div>-->
-        </div>
-    </div>
-
- 
-
-
- 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 @endsection

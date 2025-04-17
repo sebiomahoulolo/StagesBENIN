@@ -975,8 +975,49 @@ Use code with caution.
                         </div>
                     </div>
                      <div class="content-area table-responsive">
-                        <h4>Catalogue de Formations</h4>
-                        <p>Contenu du catalogue apparaîtra ici.</p>
+                        <h4>Catalogue des entreprises</h4>
+                       @if(isset($catalogues) && !$catalogues->isEmpty())
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Nom de l'Établissement</th>
+                <th>Description</th>
+                <th>Localisation</th>
+                <th>Activité Principale</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($catalogues as $catalogue)
+                <tr>
+                    <td>{{ $catalogue->titre }}</td>
+                    <td>{{ Str::limit($catalogue->description, 60) }}</td>
+                    <td>{{ $catalogue->localisation }}</td>
+                    <td>{{ $catalogue->activite_principale }}</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{{ route('catalogue.edit', $catalogue->id) }}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('catalogue.destroy', $catalogue->id) }}" method="POST" onsubmit="return confirm('Confirmer la suppression de ce catalogue ?')" style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{ $catalogues->links() }}
+@else
+    <div class="alert alert-info">Aucun catalogue disponible pour le moment.</div>
+@endif
+
                      </div>
                 </div>
             </div>
@@ -1337,73 +1378,91 @@ Use code with caution.
   </div>
 </div>
 
-<!-- Catalog Modal -->
 <div class="modal fade" id="catalogueModal" tabindex="-1" aria-labelledby="catalogueModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="catalogueModalLabel">Ajouter une formation au catalogue</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="catalogueModalLabel">Ajouter un catalogue</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
-       <form id="catalogueForm" action="{{ route('catalogue.store') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+      <form id="catalogueForm" action="{{ route('catalogue.store') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
         @csrf
         <div class="modal-body">
-            <div class="mb-3">
-              <label for="catalogue_titre" class="form-label">Titre de la formation*</label>
-              <input type="text" class="form-control" id="catalogue_titre" name="titre" required>
-              <div class="invalid-feedback">Veuillez saisir un titre.</div>
+          <p class="text-muted">
+            Les informations saisies permettront de créer une page publique. Merci de fournir des données exactes.
+          </p>
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="titre" class="form-label">Nom Officiel de l'Établissement*</label>
+              <input type="text" class="form-control" id="titre" name="titre" required>
+              <div class="invalid-feedback">Veuillez saisir le nom de l'établissement.</div>
             </div>
-            <div class="mb-3">
-              <label for="catalogue_description" class="form-label">Description*</label>
-              <textarea class="form-control" id="catalogue_description" name="description" rows="3" required></textarea>
+
+            <div class="col-md-12 mb-3">
+              <label for="description" class="form-label">Description de l'Établissement*</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
               <div class="invalid-feedback">Veuillez saisir une description.</div>
             </div>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label for="catalogue_duree" class="form-label">Durée</label>
-                <input type="text" class="form-control" id="catalogue_duree" name="duree" placeholder="Ex: 3 jours, 35 heures...">
-              </div>
-              <div class="col-md-4 mb-3">
-                <label for="catalogue_type" class="form-label">Type</label>
-                <select class="form-select" id="catalogue_type" name="type">
-                  <option value="">Sélectionner un type</option>
-                  <option value="Présentiel">Présentiel</option>
-                  <option value="Distanciel">Distanciel</option>
-                  <option value="Hybride">Hybride</option>
-                </select>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label for="catalogue_niveau" class="form-label">Niveau</label>
-                <select class="form-select" id="catalogue_niveau" name="niveau">
-                  <option value="">Sélectionner un niveau</option>
-                  <option value="Débutant">Débutant</option>
-                  <option value="Intermédiaire">Intermédiaire</option>
-                  <option value="Avancé">Avancé</option>
-                  <option value="Expert">Expert</option>
-                </select>
-              </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="logo" class="form-label">Logo</label>
+              <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
             </div>
-            <div class="mb-3">
-              <label for="catalogue_prerequis" class="form-label">Pré-requis</label>
-              <textarea class="form-control" id="catalogue_prerequis" name="pre_requis" rows="2"></textarea>
+
+            <div class="col-md-12 mb-3">
+              <label for="localisation" class="form-label">Localisation*</label>
+              <input type="text" class="form-control" id="localisation" name="localisation" required>
             </div>
-            <div class="mb-3">
-              <label for="catalogue_contenu" class="form-label">Contenu de la formation</label>
-              <textarea class="form-control" id="catalogue_contenu" name="contenu" rows="4"></textarea>
+
+            <div class="col-md-12 mb-3">
+              <label for="nb_activites" class="form-label">Nombre d'activités*</label>
+              <input type="number" class="form-control" id="nb_activites" name="nb_activites" required>
             </div>
-            <div class="mb-3">
-              <label for="catalogue_image" class="form-label">Image</label>
-              <input type="file" class="form-control" id="catalogue_image" name="image" accept="image/*">
+
+            <div class="col-md-12 mb-3">
+              <label for="activite_principale" class="form-label">Activité Principale*</label>
+              <input type="text" class="form-control" id="activite_principale" name="activite_principale" required>
             </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="desc_activite_principale" class="form-label">Description de l'activité principale*</label>
+              <textarea class="form-control" id="desc_activite_principale" name="desc_activite_principale" rows="2" required></textarea>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="activite_secondaire" class="form-label">Activité Secondaire</label>
+              <input type="text" class="form-control" id="activite_secondaire" name="activite_secondaire">
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="desc_activite_secondaire" class="form-label">Description de l'activité secondaire</label>
+              <textarea class="form-control" id="desc_activite_secondaire" name="desc_activite_secondaire" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="autres" class="form-label">Autres informations</label>
+              <textarea class="form-control" id="autres" name="autres" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="image" class="form-label">Image de fond</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+          </div>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="submit" class="btn btn-primary submit-btn" id="submitCatalogue">Enregistrer</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+
+
 
 
 <!-- Toast Container -->

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Catalogue;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -16,10 +16,7 @@ class PageController extends Controller
     {
         return view('pages.contact'); 
     }
-    public function catalogue()
-    {
-        return view('pages.catalogue'); 
-    }
+  
 
     public function evenements()
     {
@@ -61,4 +58,25 @@ class PageController extends Controller
     {
         return view('pages.pee'); 
     }
+    public function catalogueplus($id)
+{
+    $catalogue = Catalogue::findOrFail($id);
+    return view('pages.catalogueplus', compact('catalogue'));
+}
+
+
+public function show($id)
+{
+    $catalogue = Catalogue::findOrFail($id);
+    return view('pages.catalogueplus', compact('catalogue'));
+}
+
+    
+
+public function catalogue()
+{
+    $catalogues = Catalogue::all();
+    return view('pages.catalogue', compact('catalogues'));
+}
+
 }
