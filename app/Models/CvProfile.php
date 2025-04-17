@@ -11,6 +11,7 @@ use App\Models\CvLangue; // Import the CvLangue model
 use App\Models\CvCentreInteret; // Import the CvCentreInteret model
 use App\Models\CvCertification; // Import the CvCertification model
 use App\Models\CvProjet; // Import the CvProjet model
+use App\Models\CvReference; // Import the CvReference model
 
 
 class CvProfile extends Model
@@ -28,6 +29,14 @@ class CvProfile extends Model
         'portfolio_url',
         'photo_cv_path', 
         'template_slug',
+        'situation_matrimoniale',
+        'nationalite',
+        'date_naissance',
+        'lieu_naissance',
+    ];
+
+    protected $casts = [
+        'date_naissance' => 'date', // Caster la date de naissance en objet Date
     ];
 
     // Relation inverse avec Etudiant
@@ -56,6 +65,11 @@ class CvProfile extends Model
     }
     public function projets() {
         return $this->hasMany(CvProjet::class)->orderBy('order');
+    }
+
+    // Nouvelle relation pour les références
+    public function references() {
+        return $this->hasMany(CvReference::class)->orderBy('order');
     }
 
     // Accesseur pour obtenir la photo (priorité photo_cv, sinon photo etudiant)

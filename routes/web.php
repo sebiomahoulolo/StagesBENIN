@@ -123,6 +123,9 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
 
     Route::resource('events', EventController::class)->except(['index', 'show']); // Noms: admin.events.create, admin.events.store, etc.
 
+    // Route pour visualiser les détails d'un étudiant
+    Route::get('/etudiants/{etudiant}/details', [App\Http\Controllers\Admin\EtudiantController::class, 'showDetails'])
+        ->name('etudiants.show'); // Utilisation de .show comme convention
 });
 
 
@@ -168,7 +171,7 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiant
 // Utilisation du préfixe et nommage existant 'entreprises'
 Route::middleware(['auth', EnsureUserHasRole::class.':recruteur'])->prefix('entreprises')->name('entreprises.')->group(function () {
     // Route pour le dashboard recruteur/entreprise
-    Route::get('/', [EntrepriseController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /entreprises -> entreprises.dashboard
+    Route::get('/dasboard', [EntrepriseController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /entreprises -> entreprises.dashboard
 
     // Route pour le formulaire de création d'offre
     Route::get('/post-job', [EntrepriseController::class, 'postJobOffer'])->name('post_job_offer'); // Conserve entreprises.post_job_offer (pointe vers le form)

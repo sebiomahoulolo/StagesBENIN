@@ -68,6 +68,39 @@
         </div>
     </div>
 
+    {{-- Ajout des nouveaux champs personnels --}}
+    <div class="row">
+        <div class="col form-group">
+            <label for="profile_sit_mat_{{ $componentId }}" class="form-label">Situation Matrimoniale</label>
+            <select id="profile_sit_mat_{{ $componentId }}" wire:model.lazy="situation_matrimoniale" class="form-control @error('situation_matrimoniale') is-invalid @enderror">
+                <option value="">-- Choisir --</option>
+                <option value="Célibataire">Célibataire</option>
+                <option value="Marié(e)">Marié(e)</option>
+                <option value="Divorcé(e)">Divorcé(e)</option>
+                <option value="Veuf(ve)">Veuf(ve)</option>
+                <option value="Autre">Autre</option>
+            </select>
+            @error('situation_matrimoniale') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+        <div class="col form-group">
+            <label for="profile_nationalite_{{ $componentId }}" class="form-label">Nationalité</label>
+            <input type="text" id="profile_nationalite_{{ $componentId }}" wire:model.lazy="nationalite" class="form-control @error('nationalite') is-invalid @enderror">
+            @error('nationalite') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+    </div>
+    <div class="row">
+        <div class="col form-group">
+            <label for="profile_date_nais_{{ $componentId }}" class="form-label">Date de Naissance</label>
+            <input type="date" id="profile_date_nais_{{ $componentId }}" wire:model.lazy="date_naissance" class="form-control @error('date_naissance') is-invalid @enderror">
+            @error('date_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+        <div class="col form-group">
+            <label for="profile_lieu_nais_{{ $componentId }}" class="form-label">Lieu de Naissance</label>
+            <input type="text" id="profile_lieu_nais_{{ $componentId }}" wire:model.lazy="lieu_naissance" class="form-control @error('lieu_naissance') is-invalid @enderror">
+            @error('lieu_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+    </div>
+
     {{-- Remplacement de Trix par Textarea --}}
     <div class="form-group">
         <label for="resume_profil_textarea_{{ $componentId }}" class="form-label">Résumé du Profil</label>

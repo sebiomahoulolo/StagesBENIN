@@ -34,38 +34,35 @@ class RegisteredUserController extends Controller
     public function storeEtudiant(Request $request): RedirectResponse
     {
         $request->validate([
-            'nom' => ['required', 'string', 'max:100'],
-            'prenom' => ['required', 'string', 'max:100'],
+            'nom' => ['required', 'string', 'max:100'], // Re-added
+            'prenom' => ['required', 'string', 'max:100'], // Re-added
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // Ajoutez ici les validations pour les champs spécifiques étudiants (si présents sur le form)
-            'telephone' => ['nullable', 'string', 'max:20'],
-            'formation' => ['nullable', 'string', 'max:255'],
-            'niveau' => ['nullable', 'string', 'max:50'],
-            'date_naissance' => ['nullable', 'date'],
+            // Validation for other fields removed previously
         ]);
 
         DB::beginTransaction();
         try {
+            // Removed username generation from email
+            // $emailParts = explode('@', $request->email);
+            // $userName = $emailParts[0];
+
             // Créer l'utilisateur
             $user = User::create([
-                'name' => $request->prenom . ' ' . $request->nom, // Concaténer nom/prénom
+                'name' => $request->prenom . ' ' . $request->nom, // Use nom + prenom
+                // 'name' => $userName,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role' => User::ROLE_ETUDIANT, // Rôle Etudiant
             ]);
 
-            // Créer le profil étudiant associé
+            // Re-create the associated Etudiant profile with minimal info
             $etudiant = Etudiant::create([
                 'user_id' => $user->id,
                 'nom' => $request->nom,
                 'prenom' => $request->prenom,
-                'email' => $request->email, // Redondant mais ok pour l'instant
-                'telephone' => $request->telephone,
-                'formation' => $request->formation,
-                'niveau' => $request->niveau,
-                'date_naissance' => $request->date_naissance,
-                // Initialiser photo/cv path à null ou gérer l'upload ici si besoin
+                'email' => $request->email,
+                // Other fields will be null by default (ensure they are nullable in migration)
             ]);
 
             DB::commit();
@@ -80,7 +77,9 @@ class RegisteredUserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // Log::error("Erreur inscription étudiant: " . $e->getMessage());
+            // Flash all inputs now
             return redirect()->back()
+                     // ->withInput($request->only('email')) // Flash all inputs
                      ->withInput()
                      ->with('error', "Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
         }
@@ -102,7 +101,8 @@ class RegisteredUserController extends Controller
     public function storeRecruteur(Request $request): RedirectResponse
     {
          $request->validate([
-            // Validation ultra-simplifiée
+            // Add validation for nom_entreprise
+            'nom_entreprise' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             // nom_entreprise n'est plus validé ici
@@ -110,7 +110,7 @@ class RegisteredUserController extends Controller
 
         DB::beginTransaction();
         try {
-            // Extraire la partie locale de l'email pour le nom d'utilisateur
+            // Keep username generation from email for User model
             $emailParts = explode('@', $request->email);
             $userName = $emailParts[0];
 
@@ -122,12 +122,13 @@ class RegisteredUserController extends Controller
                 'role' => User::ROLE_RECRUTEUR,
             ]);
 
-            // Créer le profil entreprise associé avec un nom par défaut
-            // $entreprise = Entreprise::create([
-            //     'user_id' => $user->id,
-            //     'nom' => 'Entreprise - ' . $request->email, // Nom par défaut
-            //     // Les autres champs seront null ou valeur par défaut
-            // ]);
+            // Create the associated Entreprise profile with minimal info
+            $entreprise = Entreprise::create([
+                'user_id' => $user->id,
+                'nom' => $request->nom_entreprise, // Use submitted name
+                'email' => $request->email,
+                // Other fields will be null (ensure nullable in migration)
+            ]);
 
             DB::commit();
 
@@ -143,8 +144,8 @@ class RegisteredUserController extends Controller
              // Log::error("Erreur inscription recruteur: " . $e->getMessage());
              // Renvoyer un message d'erreur plus générique si le nom d'entreprise était la cause
              return redirect()->back()
-                      ->withInput($request->only('email')) // Ne renvoyer que l'email
-                      ->with('error', "Une erreur est survenue l\'inscription. Veuillez réessayer.");
+                      ->withInput() // Flash all inputs
+                      ->with('error', "Une erreur est survenue l'inscription. Veuillez réessayer.");
          }
     }
 

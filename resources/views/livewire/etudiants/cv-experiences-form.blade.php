@@ -163,10 +163,17 @@
                  @else
                      {{-- === AFFICHAGE "CARTE" (Item de la grille) === --}}
                      <div class="experience-card-body">
-                         {{-- Boutons d'action discrets --}}
-                         <div class="item-actions" style="top: 1rem; right: 1rem;"> {{-- Ajustement position boutons --}}
-                            <button type="button" wire:click="edit({{ $index }})" class="edit-item-btn" title="Modifier"><i class="fas fa-pencil-alt"></i></button>
-                            <button type="button" wire:click="removeExperience({{ $index }})" wire:confirm="Êtes-vous sûr ?" class="delete-item-btn" title="Supprimer"><i class="fas fa-trash"></i></button>
+                         {{-- Boutons d'action directs --}}
+                         <div class="experience-direct-actions">
+                             <i class="fas fa-pencil-alt text-primary experience-action-icon"
+                                wire:click="edit({{ $index }})"
+                                title="Modifier" aria-label="Modifier l'expérience'"
+                                style="cursor: pointer;"></i>
+                             <i class="fas fa-trash text-danger experience-action-icon"
+                                wire:click="removeExperience({{ $index }})"
+                                wire:confirm="Êtes-vous sûr ?"
+                                title="Supprimer" aria-label="Supprimer l'expérience'"
+                                style="cursor: pointer;"></i>
                         </div>
 
                          {{-- Contenu de la carte --}}
@@ -216,45 +223,29 @@
 
 
 <style>
-    /* Style de base pour la section */
-    .form-section {
-        margin-bottom: 2rem;
-        /* background-color: #f8f9fa; */ /* Optionnel: léger fond pour la section */
-        /* padding: 1.5rem; */         /* Optionnel: padding global */
-        /* border-radius: 0.375rem; */ /* Optionnel: coins arrondis */
-    }
-    .form-section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid #dee2e6;
-    }
-    .form-section-header h4 {
-        margin: 0;
-        color: #343a40; /* Couleur titre */
-    }
+    /* Style de base (similaire à Formation) */
+    .form-section { margin-bottom: 2rem; }
+    .form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #dee2e6; }
+    .form-section-header h4 { margin: 0; color: #343a40; }
 
     /* Conteneur de la grille */
-    .experience-grid {
+    .experience-grid { /* Nom adapté */
         display: grid;
-        /* 3 colonnes égales, 1fr = fraction de l'espace dispo */
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem; /* Espace entre les cartes */
+        grid-template-columns: 1fr; /* Changé pour une seule colonne (style Formation) */
+        gap: 1rem; /* Ajusté (style Formation) */
     }
 
     /* Style pour la carte d'expérience */
-    .experience-card {
+    .experience-card { /* Nom adapté */
         background-color: #fff;
-        border: 1px solid #e9ecef; /* Bordure légère */
-        border-radius: 0.375rem; /* Coins arrondis (style Bootstrap) */
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Ombre discrète */
-        padding: 1.25rem; /* Espacement intérieur */
-        position: relative; /* Pour positionner les actions */
-        display: flex; /* Pour s'assurer que le contenu remplit la hauteur si nécessaire */
+        border: 1px solid #e9ecef;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        padding: 1.25rem;
+        position: relative;
+        display: flex;
         flex-direction: column;
-        transition: box-shadow 0.2s ease-in-out; /* Effet au survol */
+        transition: box-shadow 0.2s ease-in-out;
     }
     .experience-card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
@@ -262,47 +253,24 @@
 
     /* Style pour l'élément en cours d'édition */
     .editing-item {
-        /* Prend toute la largeur de la grille */
-        grid-column: 1 / -1;
-        /* Style similaire au formulaire d'ajout pour la cohérence */
-        margin-bottom: 1.5rem; /* Marge pour séparer du reste */
+        margin-bottom: 1.5rem; /* Gardé de Formation */
+         /* La règle grid-column: 1 / -1; est supprimée car la grille est sur 1 colonne */
     }
 
     /* Contenu de la carte */
-    .experience-card-body {
-        flex-grow: 1; /* Permet au corps de grandir */
-    }
-    .experience-card-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--primary-color, #0056b3); /* Couleur titre poste */
-        margin-bottom: 0.25rem;
-    }
-    .experience-card-subtitle {
-        font-size: 0.95rem;
-        color: #495057; /* Gris foncé pour entreprise/ville */
-        margin-bottom: 0.5rem;
-    }
-    .experience-card-dates {
-        font-size: 0.85rem;
-        color: #6c757d; /* Gris plus clair pour les dates */
-        margin-bottom: 1rem;
-        border-bottom: 1px dashed #dee2e6; /* Séparateur léger */
-        padding-bottom: 0.75rem;
-    }
-    .experience-card-description {
-        font-size: 0.9rem;
-        color: #343a40;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-    }
+    .experience-card-body { flex-grow: 1; }
+    /* Couleurs adaptées au style Formation (titre=secondaire, sous-titre=primaire) */
+    .experience-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; }
+    .experience-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; }
+    .experience-card-dates { font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem; border-bottom: 1px dashed #dee2e6; padding-bottom: 0.75rem; }
+    .experience-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; /* Ajouté de Formation (respecte sauts de ligne) */ }
 
-    /* Section des tâches/réalisations */
+    /* Section des tâches/réalisations (Spécifique à Experience, conservée) */
     .experience-card-tasks {
         background-color: #f8f9fa; /* Fond très léger */
         border-left: 3px solid var(--primary-color-light, #6caeff); /* Indicateur visuel */
         padding: 0.75rem 1rem;
-        margin-top: 1rem;
+        margin-top: 1rem; /* Gardé, espace avant les tâches */
         border-radius: 0.25rem;
         font-size: 0.88rem;
     }
@@ -318,57 +286,59 @@
         padding: 0;
         color: #495057;
     }
-    .experience-card-tasks li {
-        margin-bottom: 0.3rem;
-    }
-    .experience-card-tasks li:last-child {
-        margin-bottom: 0;
-    }
+    .experience-card-tasks li { margin-bottom: 0.3rem; }
+    .experience-card-tasks li:last-child { margin-bottom: 0; }
 
-    /* Boutons d'action sur la carte */
-    .experience-card-actions {
+    /* Styles pour les icônes d'action directes (adapté de Formation) */
+    .experience-direct-actions { /* Nom adapté */
         position: absolute;
         top: 0.75rem;
         right: 0.75rem;
         display: flex;
-        gap: 0.5rem; /* Espace entre les boutons */
-        opacity: 0.6; /* Moins visibles par défaut */
+        gap: 0.8rem; /* Espacement entre les icônes (style Formation) */
+        z-index: 5;
+    }
+    .experience-action-icon { /* Nom adapté */
+        font-size: 1rem; /* Taille de l'icône (style Formation) */
+        vertical-align: middle;
+        opacity: 0.7; /* Légère transparence par défaut */
         transition: opacity 0.2s ease-in-out;
     }
-    .experience-card:hover .experience-card-actions {
-        opacity: 1; /* Visibles au survol de la carte */
+     .experience-action-icon:hover {
+        opacity: 1; /* Pleinement visible au survol */
     }
-    .experience-card-actions button i {
-        font-size: 0.9rem; /* Taille icônes */
+    /* Forcer les couleurs spécifiques pour les icônes */
+    .experience-direct-actions .fa-pencil-alt {
+        color: var(--bs-primary, #0d6efd);
     }
-
-
-    /* Responsive: Passer à 2 colonnes sur écrans moyens, 1 colonne sur petits écrans */
-    @media (max-width: 991.98px) { /* Medium devices (tablets, less than 992px) */
-        .experience-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem; /* Réduire l'espace */
-        }
-        .editing-item { grid-column: 1 / -1; } /* Garde toute la largeur */
+    .experience-direct-actions .fa-trash {
+        color: var(--bs-danger, #dc3545);
     }
 
-    @media (max-width: 767.98px) { /* Small devices (landscape phones, less than 768px) */
-        .experience-grid {
-            grid-template-columns: 1fr; /* Une seule colonne */
-            gap: 1rem;
-        }
-         /* Plus besoin de forcer l'item en édition sur toute la largeur */
-        .editing-item { grid-column: auto; }
+
+    /* Responsive */
+    /* Les styles pour 2 ou 3 colonnes sont supprimés ou commentés car on passe à 1 colonne */
+    /* @media (max-width: 991.98px) { ... } */
+    /* @media (max-width: 767.98px) { ... } */
+
+    /* Ajustement du gap sur petits écrans (gardé de Formation) */
+     @media (max-width: 767.98px) {
+        .experience-grid { gap: 0.75rem; }
     }
 
-    /* Ajustements pour les formulaires (si nécessaire) */
+    /* Ajustements Formulaires (style Formation) */
     .form-label { font-size: 0.875rem; margin-bottom: 0.25rem; }
     .form-control-sm { font-size: 0.875rem; }
+    .experience-add-form, /* Nom adapté */
+    .editing-item .p-3 { background-color: #f8f9fa; } /* Fond léger pour forms (style Formation) */
 
-    /* Définir des variables de couleur si ce n'est pas déjà fait */
+    /* Variables CSS (fusionnées et adaptées de Formation) */
     :root {
-        --primary-color: #0d6efd; /* Couleur primaire Bootstrap */
-        --primary-color-light: #6caeff; /* Version claire pour bordure */
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d; /* Ajouté de Formation */
+        --primary-color-light: #6caeff;
+        /* Assurez-vous que les couleurs Bootstrap sont disponibles ou définies */
+        --bs-primary: var(--primary-color);
+        --bs-danger: #dc3545; /* Rouge Bootstrap standard */
     }
-
 </style>

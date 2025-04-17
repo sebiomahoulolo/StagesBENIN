@@ -230,12 +230,9 @@ body::before {
 
 /* Style pour l'image illustration */
 .signup-illustration-img {
-    max-width: 100%;
-    height: auto; /* Rétablir la hauteur auto pour un scaling naturel */
-    object-fit: contain; /* Garder les proportions */
-    display: block;
-    margin: auto; /* Centrage horizontal */
-    align-self: center; /* Centrage vertical dans la colonne flex */
+    max-width: 530px; /* Prend la largeur de sa colonne */
+    height: 600px;
+    object-fit: cover;
 }
 
 /* Titres de section dans le formulaire */

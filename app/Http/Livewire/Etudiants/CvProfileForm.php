@@ -28,6 +28,10 @@ class CvProfileForm extends Component
     public $portfolio_url;
     public $photo_cv_path;
     public $photo_cv;
+    public $situation_matrimoniale;
+    public $nationalite;
+    public $date_naissance;
+    public $lieu_naissance;
 
     public $cvProfileId;
 
@@ -57,6 +61,10 @@ class CvProfileForm extends Component
         $this->portfolio_url = $profile->portfolio_url;
         $this->photo_cv_path = $profile->photo_cv_path;
         $this->photo_cv = null;
+        $this->situation_matrimoniale = $profile->situation_matrimoniale;
+        $this->nationalite = $profile->nationalite;
+        $this->date_naissance = $profile->date_naissance ? $profile->date_naissance->format('Y-m-d') : null;
+        $this->lieu_naissance = $profile->lieu_naissance;
     }
 
     protected function rules()
@@ -70,6 +78,10 @@ class CvProfileForm extends Component
             'linkedin_url' => 'nullable|url|max:255',
             'portfolio_url' => 'nullable|url|max:255',
             'photo_cv' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'situation_matrimoniale' => 'nullable|string|max:100',
+            'nationalite' => 'nullable|string|max:100',
+            'date_naissance' => 'nullable|date_format:Y-m-d',
+            'lieu_naissance' => 'nullable|string|max:100',
         ];
     }
 
@@ -79,6 +91,7 @@ class CvProfileForm extends Component
           'email_cv.unique' => 'Cet email de contact est déjà utilisé.',
           '*.url' => 'Le champ :attribute doit être une URL valide.',
           'photo_cv.*' => 'La photo doit être une image valide (jpeg, png, jpg) de 2Mo max.',
+          'date_naissance.date_format' => 'La date de naissance doit être au format AAAA-MM-JJ.',
      ];
 
     public function updatedPhotoCv() { $this->validateOnly('photo_cv'); }

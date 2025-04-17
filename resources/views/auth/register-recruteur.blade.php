@@ -4,145 +4,152 @@
 {{-- Définit le titre spécifique de la page --}}
 @section('title', 'Inscription Recruteur - StagesBENIN')
 
-{{-- Injecte les styles spécifiques pour cette page --}}
+{{-- Injecte les styles spécifiques pour cette page (vous pouvez créer un CSS dédié si besoin) --}}
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/register-recruteur.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/register-recruteur.css') }}"> --}}
+    {{-- Réutiliser le CSS étudiant si le style est similaire --}}
+    <link rel="stylesheet" href="{{ asset('css/register-etudiant.css') }}">
 @endsection
 
 {{-- Contenu principal de la page --}}
 @section('content')
-    <div class="recruiter-signup-wrapper">
+<main id="content" class="site-main">
+    {{-- Section contenant le formulaire --}}
+    <section class="candidate-signup-section"> {{-- Reuse class or create new --}}
         <div class="container">
-            <div class="row align-items-center justify-content-center center-form-md">
-
-                <!-- Colonne Formulaire -->
-                <div class="col-lg-6 col-md-8 col-sm-11">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-9 col-sm-11"> {{-- Colonne pour le formulaire --}}
                     <div class="signup-form-container">
 
                         <h2 class="signup-form-title">Inscription Recruteur</h2>
-                        <p class="signup-form-subtitle">Créez votre compte entreprise.</p>
+                        <p class="signup-form-subtitle">Créez votre compte entreprise pour publier des offres.</p>
 
-                        {{-- Formulaire HTML Classique --}}
+                        {{-- Formulaire utilisant les classes Bootstrap et les directives Blade --}}
                         <form class="signup-form" method="POST" action="{{ route('register.recruteur.store') }}">
                             @csrf
 
-                            {{-- Affichage des erreurs générales (session flash) --}}
+                            {{-- Affichage des erreurs générales --}}
                             @if (session('error'))
-                                <div class="alert alert-danger mb-3 text-center">{{ session('error') }}</div>
+                                <div class="alert alert-danger mb-3 text-center small">{{ session('error') }}</div>
                             @endif
 
-                            {{-- Affichage global des erreurs de validation --}}
-                            @if ($errors->any())
-                                <div class="alert alert-danger mb-4">
-                                    <ul class="mb-0">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
-                            <!-- Email Address (Login) -->
+                             <!-- Nom de l'entreprise -->
                             <div class="mb-3">
-                                <label for="email" class="form-label">{{ __('Votre Email de Connexion') }}</label>
+                                <label for="nom_entreprise" class="form-label">{{ __("Nom de l'entreprise") }}</label>
+                                <input type="text"
+                                       id="nom_entreprise"
+                                       name="nom_entreprise"
+                                       class="form-control @error('nom_entreprise') is-invalid @enderror"
+                                       value="{{ old('nom_entreprise') }}"
+                                       required
+                                       autofocus
+                                       autocomplete="organization">
+                                @error('nom_entreprise')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Email Address -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">{{ __('Email') }}</label>
                                 <input type="email"
                                        id="email"
                                        name="email"
                                        class="form-control @error('email') is-invalid @enderror"
                                        value="{{ old('email') }}"
                                        required
-                                       autocomplete="username">
+                                       autocomplete="email"> {{-- Use 'email' instead of 'username' for company --}}
                                 @error('email')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Password -->
                             <div class="mb-3 password-wrapper">
-                                <label for="signup-password" class="form-label">{{ __('Mot de passe') }}</label>
+                                <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
                                 <input type="password"
-                                       id="signup-password"
+                                       id="password"
                                        name="password"
                                        class="form-control @error('password') is-invalid @enderror"
                                        required
                                        autocomplete="new-password">
-                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                                <span class="toggle-password" id="togglePassword"><i class="fas fa-eye"></i></span>
                                 @error('password')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Confirm Password -->
                             <div class="mb-3 password-wrapper">
-                                <label for="signup-password-confirm" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
+                                <label for="password_confirmation" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
                                 <input type="password"
-                                       id="signup-password-confirm"
+                                       id="password_confirmation"
                                        name="password_confirmation"
                                        class="form-control"
                                        required
                                        autocomplete="new-password">
-                                {{-- Erreur 'confirmed' gérée automatiquement --}}
+                                <span class="toggle-password" id="toggleConfirmPassword"><i class="fas fa-eye"></i></span>
                             </div>
 
-                            {{-- Suppression du champ Nom Entreprise effectuée --}}
+                            {{-- Bouton de soumission --}}
+                            <button type="submit" class="btn btn-submit">
+                                {{ __('S\'inscrire comme Recruteur') }}
+                            </button>
 
-                            {{-- Wrapper pour aligner le lien et le bouton --}}
-                            <div class="login-link-wrapper">
+                             {{-- Liens en bas --}}
+                            <div class="bottom-links-wrapper">
                                 <div class="login-link">
                                     <a href="{{ route('login') }}">
                                         {{ __('Déjà inscrit?') }}
                                     </a>
                                 </div>
-                                {{-- Bouton HTML classique --}}
-                                <button type="submit" class="btn btn-submit">
-                                    {{ __('S\'inscrire comme Recruteur') }}
-                                </button>
+                                 <div class="switch-register-link">
+                                    <a href="{{ route('register.etudiant.create') }}">
+                                        {{ __('S\'inscrire comme Étudiant ?') }}
+                                    </a>
+                                </div>
                             </div>
 
-                            {{-- Lien optionnel pour s'inscrire comme étudiant --}}
-                            <div class="text-center mt-4">
-                                <a class="text-sm" style="color: var(--custom-primary); text-decoration: underline;" href="{{ route('register.etudiant.create') }}">
-                                    {{ __('S\'inscrire comme Étudiant ?') }}
-                                </a>
-                            </div>
                         </form>
-
                     </div> {{-- Fin .signup-form-container --}}
-                </div> {{-- Fin .col (formulaire) --}}
-
-                <!-- Colonne Image -->
-                <div class="col-lg-6 d-none d-lg-block text-center ps-lg-5">
-                    <img src="{{ asset('assets/images/bonne-verification-documents-par-experts.png') }}" alt="Inscription Recruteur Illustration" class="signup-illustration-img">
-                </div>
-
+                </div> {{-- Fin .col --}}
             </div> {{-- Fin .row --}}
         </div> {{-- Fin .container --}}
-    </div> {{-- Fin .recruiter-signup-wrapper --}}
-@endsection {{-- <<< Fin de la section 'content' --}}
+    </section>
+</main>
+@endsection
 
-{{-- Injecte les scripts spécifiques --}}
+{{-- Injecte les scripts spécifiques (identique à l'étudiant pour le toggle password) --}}
 @section('scripts')
     <script>
-        // Script pour voir/cacher le mot de passe
-        const togglePassword = document.querySelector('#togglePassword');
-        const passwordInput = document.querySelector('#signup-password'); // Cible l'input par ID
+        // Fonction générique pour basculer la visibilité d'un champ mot de passe
+        function setupPasswordToggle(toggleId, inputId) {
+            const toggleElement = document.getElementById(toggleId);
+            const inputElement = document.getElementById(inputId);
 
-        if (togglePassword && passwordInput) {
-            // Initialise l'icône
-             if (passwordInput.getAttribute('type') === 'password') {
-                 togglePassword.classList.remove('fa-eye-slash');
-                 togglePassword.classList.add('fa-eye');
-            } else {
-                 togglePassword.classList.remove('fa-eye');
-                 togglePassword.classList.add('fa-eye-slash');
+            if (toggleElement && inputElement) {
+                const icon = toggleElement.querySelector('i');
+
+                if (inputElement.getAttribute('type') === 'password') {
+                     icon.classList.add('fa-eye');
+                     icon.classList.remove('fa-eye-slash');
+                } else {
+                     icon.classList.add('fa-eye-slash');
+                     icon.classList.remove('fa-eye');
+                }
+
+                toggleElement.addEventListener('click', function () {
+                    const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+                    inputElement.setAttribute('type', type);
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
             }
-            // Ajoute l'écouteur d'événement
-             togglePassword.addEventListener('click', function () {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        } // <<< Fin du IF pour le script JS
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPasswordToggle('togglePassword', 'password');
+            setupPasswordToggle('toggleConfirmPassword', 'password_confirmation');
+        });
     </script>
-@endsection {{-- <<< Fin de la section 'scripts' --}}
+@endsection

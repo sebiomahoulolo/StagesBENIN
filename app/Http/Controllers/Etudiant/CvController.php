@@ -48,7 +48,8 @@ class CvController extends Controller
             'langues' => fn($query) => $query->orderBy('order', 'asc'),
             'centresInteret' => fn($query) => $query->orderBy('order', 'asc'),
             'certifications' => fn($query) => $query->orderBy('annee', 'desc')->orderBy('order', 'asc'),
-            'projets' => fn($query) => $query->orderBy('order', 'asc')
+            'projets' => fn($query) => $query->orderBy('order', 'asc'),
+            'references' => fn($query) => $query->orderBy('order', 'asc')
         ]);
 
         // Vérification après chargement (au cas où firstOrCreate retournerait null, bien que peu probable)
