@@ -47,6 +47,7 @@
              @livewire('etudiants.cv-centres-interet-form', ['cvProfileId' => $cvProfile->id], key('lw-interets-'.$cvProfile->id))
              @livewire('etudiants.cv-certifications-form', ['cvProfileId' => $cvProfile->id], key('lw-certs-'.$cvProfile->id))
              @livewire('etudiants.cv-projets-form', ['cvProfileId' => $cvProfile->id], key('lw-projets-'.$cvProfile->id))
+             @livewire('etudiants.cv-references-form', ['cvProfileId' => $cvProfile->id], key('lw-references-'.$cvProfile->id))
          @else
              <div class="alert alert-danger">
                  <strong>Erreur Critique :</strong> Le profil CV nécessaire pour l'édition n'a pas pu être chargé.

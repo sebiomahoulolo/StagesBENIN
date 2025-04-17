@@ -149,19 +149,17 @@
                 @else
                     {{-- === AFFICHAGE "CARTE" (Item de la grille) === --}}
                     <div class="formation-card-body">
-                        {{-- Boutons d'action : Uniquement les icônes colorées --}}
-                        <div class="formation-card-actions">
-                            <button type="button" wire:click="edit({{ $index }})"
-                                    class="btn btn-link text-primary p-0"
-                                    title="Modifier" aria-label="Modifier la formation">
-                                <i class="fas fa-pencil-alt fa-fw"></i>
-                            </button>
-                            <button type="button" wire:click="removeFormation({{ $index }})"
-                                    wire:confirm="Êtes-vous sûr de vouloir supprimer cette formation ?"
-                                    class="btn btn-link text-danger p-0"
-                                    title="Supprimer" aria-label="Supprimer la formation">
-                               <i class="fas fa-trash fa-fw"></i>
-                            </button>
+                        {{-- Icônes d'action (placées différemment) --}}
+                        <div class="formation-direct-actions">
+                             <i class="fas fa-pencil-alt text-primary formation-action-icon"
+                                wire:click="edit({{ $index }})"
+                                title="Modifier" aria-label="Modifier la formation"
+                                style="cursor: pointer;"></i>
+                             <i class="fas fa-trash text-danger formation-action-icon"
+                                wire:click="removeFormation({{ $index }})"
+                                wire:confirm="Êtes-vous sûr de vouloir supprimer cette formation ?"
+                                title="Supprimer" aria-label="Supprimer la formation"
+                                style="cursor: pointer;"></i>
                         </div>
 
                         {{-- Contenu de la carte --}}
@@ -208,8 +206,8 @@
     /* Conteneur de la grille */
     .formation-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
-        gap: 1.5rem;
+        grid-template-columns: 1fr; /* Changé pour une seule colonne */
+        gap: 1rem; /* Ajustez si nécessaire */
     }
 
     /* Style pour la carte de formation */
@@ -230,7 +228,6 @@
 
     /* Style pour l'élément en cours d'édition */
     .editing-item {
-        grid-column: 1 / -1;
         margin-bottom: 1.5rem;
     }
 
@@ -239,20 +236,43 @@
     .formation-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; } /* Couleur différente ? */
     .formation-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; } /* Couleur différente ? */
     .formation-card-dates { font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem; border-bottom: 1px dashed #dee2e6; padding-bottom: 0.75rem; }
-    .formation-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; white-space: pre-wrap; /* Respecte les sauts de ligne */ }
+    .formation-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; /* Respecte les sauts de ligne */ }
 
-    /* Boutons d'action (icônes) */
-    .formation-card-actions {
-        position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.6rem; opacity: 0; transition: opacity 0.2s ease-in-out; z-index: 10;
+    /* Styles pour les icônes d'action directes */
+    .formation-direct-actions {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        display: flex;
+        gap: 0.8rem; /* Espacement entre les icônes */
+        z-index: 5; /* Moins élevé que les anciens boutons, mais toujours au-dessus */
     }
-    .formation-card:hover .formation-card-actions { opacity: 1; }
-    .formation-card-actions .btn-link { line-height: 1; text-decoration: none; padding: 0.2rem; }
-    .formation-card-actions .btn-link i { font-size: 1rem; vertical-align: middle; }
-    .formation-card-actions .btn-link:focus { box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); outline: none; }
+    .formation-action-icon {
+        font-size: 1rem; /* Taille de l'icône */
+        vertical-align: middle;
+    }
+    /* Forcer les couleurs spécifiques pour les icônes */
+    .formation-direct-actions .fa-pencil-alt {
+        color: var(--bs-primary, #0d6efd); /* Bleu Bootstrap */
+    }
+    .formation-direct-actions .fa-trash {
+        color: var(--bs-danger, #dc3545); /* Rouge Bootstrap */
+    }
+
+    /* Optionnel: Légère interaction au survol si désiré, sinon supprimer */
+    .formation-action-icon:hover {
+       opacity: 0.8;
+    }
 
     /* Responsive */
-    @media (max-width: 991.98px) { .formation-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .editing-item { grid-column: 1 / -1; } }
-    @media (max-width: 767.98px) { .formation-grid { grid-template-columns: 1fr; gap: 1rem; } .editing-item { grid-column: auto; } }
+    /* Supprimez ou commentez les lignes suivantes */
+    /* @media (max-width: 991.98px) { .formation-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .editing-item { grid-column: 1 / -1; } } */
+    /* @media (max-width: 767.98px) { .formation-grid { grid-template-columns: 1fr; gap: 1rem; } .editing-item { grid-column: auto; } } */
+
+    /* Vous pouvez garder un ajustement du gap si vous le souhaitez */
+     @media (max-width: 767.98px) {
+        .formation-grid { gap: 0.75rem; }
+    }
 
     /* Ajustements Formulaires */
     .form-label { font-size: 0.875rem; margin-bottom: 0.25rem; }

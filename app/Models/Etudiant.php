@@ -23,6 +23,16 @@ class Etudiant extends Model
         'photo_path',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'date_naissance' => 'date',
+        'email_verified_at' => 'datetime', // Si vous l'avez dans la table users et voulez la caster ici
+    ];
+
     // Relation inverse vers User
     public function user()
     {

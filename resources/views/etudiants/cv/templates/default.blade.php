@@ -6,104 +6,74 @@
     <title>CV - {{ $cvProfile->nom_complet ?? 'Mon CV' }}</title>
     <style>
         /* =========================================== */
-        /* === STYLES INTÉGRÉS POUR PDF (ET PNG) === */
+        /* === STYLES INTÉGRÉS POUR PDF (SIMPLIFIÉS) === */
         /* =========================================== */
 
-        /* --- Variables (utilisées ici pour clarté, mais seront remplacées) --- */
-        :root {
-            --primary-color-hex: #3498db; /* Bleu primaire */
-            --secondary-color-hex: #2c3e50; /* Bleu foncé */
-            --header-gradient-start: #1a4a8b;
-            --header-gradient-end: #0078d4;
-            --header-border: #005a9e;
-            --right-column-bg: #f8f9fa; /* Gris clair colonne droite */
-            --text-color: #333333;
-            --text-light: #555555;
-            --text-link: #005a9e;
-            --border-light: #eaeaea;
-            --skill-bar-bg: #e9ecef;
-            --interest-bg: #e8f4fc;
-            --interest-text: #005a9e;
-        }
+        /* --- Couleurs Fixes (remplacement des variables) --- */
+        /* Bleu foncé principal (titres, etc.) */
+        /* #2c3e50 */
+        /* Bleu moyen (liens, accents) */
+        /* #005a9e */
+        /* Bleu header (section titre) */
+        /* #1a4a8b */
+        /* Bordure header */
+        /* #005a9e */
+        /* Fond colonne droite */
+        /* #f8f9fa */
+        /* Texte normal */
+        /* #333333 */
+        /* Texte léger (dates, niveaux) */
+        /* #555555 */
+        /* Bordures légères */
+        /* #eaeaea */
+        /* Fond barres compétences */
+        /* #e9ecef */
+        /* Remplissage barres compétences & points langues */
+        /* #0078d4 */
 
         /* --- Reset & Base --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DejaVu Sans', Arial, sans-serif; /* DejaVu Sans est crucial pour les caractères spéciaux en PDF */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DejaVu Sans', Arial, sans-serif; }
         body { background-color: white; color: #333333; line-height: 1.4; font-size: 10pt; -webkit-font-smoothing: antialiased; }
-        h1, h2, h3, h4, h5, h6 { font-weight: 600; color: #2c3e50; } /* Couleur titres par défaut */
+        h1, h2, h3, h4, h5, h6 { font-weight: 600; color: #2c3e50; }
         p { margin-bottom: 0.6em; }
         a { color: #005a9e; text-decoration: none; }
-        ul { list-style-position: outside; } /* Puces à l'extérieur */
+        ul { list-style-position: outside; }
 
         /* --- Conteneur Principal --- */
-        .cv-container {
-            width: 100%; /* Prend toute la largeur disponible */
-            max-width: 800px; /* Limite max */
-            margin: 0 auto; /* Centre si largeur limitée */
-            background-color: white;
-            border: 1px solid #eeeeee; /* Bordure légère */
-        }
+        .cv-container { width: 100%; max-width: 800px; margin: 0 auto; background-color: white; border: 1px solid #eeeeee; }
 
-        /* --- En-tête --- */
+        /* --- En-tête (couleur unie) --- */
         .cv-header {
-            background-color: #1a4a8b; /* Fallback si gradient échoue */
-            /* background: linear-gradient(135deg, #1a4a8b 0%, #0078d4 100%); gradients sont peu fiables en PDF */
+            background-color: #1a4a8b; /* Couleur unie */
             color: white;
             padding: 25px 35px;
             border-bottom: 4px solid #005a9e;
-            /* Utilisation de "table" pour aligner photo et contenu (plus fiable que flex pour PDF) */
             display: block; /* Ou table */
             width: 100%;
         }
         .header-table { display: table; width: 100%; border-spacing: 0; }
         .header-table-row { display: table-row; }
-        .header-photo-cell { display: table-cell; width: 130px; /* Largeur fixe pour la photo + marge */ vertical-align: top; padding-right: 30px; }
+        .header-photo-cell { display: table-cell; width: 130px; vertical-align: top; padding-right: 30px; }
         .header-content-cell { display: table-cell; vertical-align: middle; }
 
-        .photo-container {
-            width: 110px; /* Taille photo */
-            height: 110px;
-            overflow: hidden;
-            border-radius: 50%;
-            border: 3px solid white;
-            background-color: #e0e0e0; /* Fond si image absente */
-        }
+        .photo-container { width: 110px; height: 110px; overflow: hidden; border-radius: 50%; border: 3px solid white; background-color: #e0e0e0; }
         .photo-container img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
         .header-content h1 { font-size: 22pt; font-weight: 700; margin-bottom: 5px; color: white; }
-        .header-content h2 { font-size: 13pt; font-weight: 400; margin-bottom: 15px; opacity: 0.95; color: white; }
+        .header-content h2 { font-size: 13pt; font-weight: 400; margin-bottom: 15px; color: white; opacity: 0.95; }
         .contact-info { margin-top: 15px; }
-        /* Affichage en ligne des infos contact */
-        .contact-item { margin-right: 15px; margin-bottom: 5px; display: inline-block; /* Affichage en ligne */ font-size: 9pt; color: white; white-space: nowrap; }
-        .contact-item i { margin-right: 6px; width: 14px; text-align: center; font-family: 'DejaVu Sans', 'Font Awesome 6 Free'; font-weight: 900; /* Utiliser la police FA si définie */ }
-         .contact-item i.fab { font-family: 'DejaVu Sans', 'Font Awesome 6 Brands'; font-weight: 400; } /* Pour les icônes de marque */
+        .contact-item { margin-right: 15px; margin-bottom: 5px; display: inline-block; font-size: 9pt; color: white; white-space: nowrap; }
+        /* Icônes gérées par ::before plus bas */
         .contact-item a { color: white; text-decoration: none; }
 
-        /* --- Corps du CV - Layout Deux Colonnes (SANS FLEXBOX) --- */
-        .cv-body {
-             /* display: block; */ /* Plus besoin de flex */
-             padding: 0; /* Pas de padding sur le conteneur body */
-             font-size: 0; /* Hack pour enlever espace entre inline-block elements */
-        }
-        .left-column, .right-column {
-            display: inline-block; /* Affichage en ligne */
-            vertical-align: top;   /* Alignement en haut */
-            width: 100%;           /* Assurer que la largeur est calculée */
-            padding: 25px;         /* Padding interne */
-            font-size: 10pt;       /* Rétablir la taille de police */
-        }
-        .left-column {
-            width: 65%; /* Largeur colonne gauche */
-             padding-right: 30px;
-             border-right: 1px solid #eaeaea; /* Séparateur */
-        }
-        .right-column {
-            width: 35%; /* Largeur colonne droite */
-            padding-left: 20px;
-            background-color: #f8f9fa; /* Fond léger */
-        }
+        /* --- Corps du CV - Layout Deux Colonnes --- */
+        .cv-body { padding: 0; font-size: 0; /* Hack inline-block */ }
+        .left-column, .right-column { display: inline-block; vertical-align: top; width: 100%; padding: 25px; font-size: 10pt; }
+        .left-column { width: 65%; padding-right: 30px; border-right: 1px solid #eaeaea; }
+        .right-column { width: 35%; padding-left: 20px; background-color: #f8f9fa; }
 
         /* --- Sections --- */
-        .section { margin-bottom: 25px; page-break-inside: avoid; /* Tente d'éviter coupure PDF */ }
+        .section { margin-bottom: 25px; page-break-inside: avoid; }
         .section:last-child { margin-bottom: 0; }
         .section-title { font-size: 14pt; color: #1a4a8b; padding-bottom: 8px; margin-bottom: 15px; font-weight: 600; border-bottom: 2px solid #0078d4; }
 
@@ -111,72 +81,89 @@
         .profile-text { font-size: 10pt; line-height: 1.5; color: #444444; text-align: justify; }
 
         /* Items Expérience, Formation etc. */
-        .experience-item, .education-item, .certification-item, .project-item { margin-bottom: 20px; position: relative; padding-left: 18px; page-break-inside: avoid; }
+        .experience-item, .education-item, .certification-item, .project-item {
+            margin-bottom: 20px; position: relative; padding-left: 18px; page-break-inside: avoid;
+        }
         .experience-item:last-child, .education-item:last-child, .certification-item:last-child, .project-item:last-child { margin-bottom: 0; }
         /* Puce personnalisée */
-        .experience-item::before, .education-item::before, .certification-item::before, .project-item::before { content: "•"; position: absolute; left: 0; top: 1px; /* Ajuster position verticale */ font-size: 14pt; color: #0078d4; line-height: 1; }
+        .experience-item::before, .education-item::before, .certification-item::before, .project-item::before {
+            content: "•"; position: absolute; left: 0; top: 1px; font-size: 14pt; color: #0078d4; line-height: 1;
+        }
 
         .job-title, .degree, .certification-name, .project-name { font-size: 11pt; font-weight: bold; color: #2c3e50; margin-bottom: 2px; }
         .company, .school, .organization, .project-url { font-size: 10pt; font-weight: 500; color: #005a9e; margin-bottom: 2px; }
         .project-url a { color: #005a9e; text-decoration: none; word-break: break-all; }
         .period, .year { font-size: 9pt; color: #555555; margin-bottom: 6px; font-style: italic; }
-        .period i { margin-right: 5px; font-family: 'DejaVu Sans', 'Font Awesome 6 Free'; font-weight: 900; } /* Police FA */
+        /* Icône calendrier gérée par ::before plus bas */
 
-        .item-description, .job-description, .project-description { font-size: 10pt; color: #444444; margin-bottom: 8px; line-height: 1.4; text-align: justify; white-space: pre-wrap; /* Respecte sauts de ligne */ }
-        .technologies { font-size: 9pt; color:#0078d4; margin-top: 5px; font-style: italic; }
+        .item-description, .job-description, .project-description { font-size: 10pt; color: #444444; margin-bottom: 8px; line-height: 1.4; text-align: justify; white-space: pre-wrap; }
+        .technologies { font-size: 9pt; color: #0078d4; margin-top: 5px; font-style: italic; }
 
         /* Liste à puces pour Réalisations (Tâches) */
         .achievements-title { font-size: 10pt; font-weight: 600; color: #333333; margin-top: 8px; margin-bottom: 4px; }
-        ul.achievements { padding-left: 15px; /* Indentation réduite */ margin-left: 5px; margin-top: 0; list-style-type: disc; /* Puces standard */ list-style-position: outside; }
-        ul.achievements li { margin-bottom: 4px; color: #444444; font-size: 9.5pt; line-height: 1.4; text-align: left; /* Justifier peut être moins lisible pour listes */ page-break-inside: avoid; }
+        ul.achievements { padding-left: 15px; margin-left: 5px; margin-top: 0; list-style-type: disc; list-style-position: outside; }
+        ul.achievements li { margin-bottom: 4px; color: #444444; font-size: 9.5pt; line-height: 1.4; text-align: left; page-break-inside: avoid; }
 
         /* Compétences */
         .skill-category { margin-bottom: 15px; page-break-inside: avoid;}
         .skill-title { font-weight: 600; margin-bottom: 8px; color: #1a4a8b; font-size: 10.5pt; }
-        .skill-item { margin-bottom: 8px; } /* Espace réduit */
+        .skill-item { margin-bottom: 8px; }
         .skill-bar { height: 7px; background-color: #e9ecef; border-radius: 3px; overflow: hidden; margin-top: 3px; }
-        .skill-fill { height: 100%; background-color: #0078d4; border-radius: 3px; } /* Couleur unie */
-        .skill-percent { display: block; margin-bottom: 2px; /* Pour affichage simple nom + barre */ }
-        .skill-name { font-weight: 500; font-size: 10pt; display:inline-block; margin-right: 5px;} /* Nom compétence */
-        .skill-level-text { font-size: 8.5pt; color: #555555; display: inline-block; } /* Pourcentage optionnel */
+        .skill-fill { height: 100%; background-color: #0078d4; border-radius: 3px; }
+        .skill-percent { display: block; margin-bottom: 2px; }
+        .skill-name { font-weight: 500; font-size: 10pt; display:inline-block; margin-right: 5px;}
+        .skill-level-text { font-size: 8.5pt; color: #555555; display: inline-block; }
 
         /* Langues */
         .language-item { margin-bottom: 10px; }
-        .language-name { font-weight: 500; display: block; /* Affichage simple */ font-size: 10pt; margin-bottom: 2px; }
+        .language-name { font-weight: 500; display: block; font-size: 10pt; margin-bottom: 2px; }
         .language-level-text { font-size: 9pt; color: #555555; font-style: italic; display: block; }
-        .language-level-dots { margin-top: 3px; line-height: 1; } /* Pour les points */
-        .level-dot { width: 9px; height: 9px; background-color: #e0e0e0; border-radius: 50%; margin-right: 4px; display: inline-block; } /* Affichage en ligne */
+        .language-level-dots { margin-top: 3px; line-height: 1; }
+        .level-dot { width: 9px; height: 9px; background-color: #e0e0e0; border-radius: 50%; margin-right: 4px; display: inline-block; }
         .level-dot.active { background-color: #0078d4; }
 
         /* Centres d'intérêt */
-        .interests { line-height: 1.8; /* Augmenter interligne pour lisibilité */ }
-        .interest-item {
-             /* Affichage simple en ligne avec séparateur */
-            display: inline;
-            font-size: 9pt;
-            color: #005a9e;
-            /* Ajouter un séparateur visuel */
-            padding: 0 5px;
-            border-right: 1px solid #cccccc;
-        }
+        .interests { line-height: 1.8; }
+        .interest-item { display: inline; font-size: 9pt; color: #005a9e; padding: 0 5px; border-right: 1px solid #cccccc; }
          .interest-item:first-child { padding-left: 0; }
          .interest-item:last-child { border-right: none; padding-right: 0; }
 
+        /* Informations Personnelles */
+        .personal-info-section .info-item { margin-bottom: 8px; font-size: 10pt; page-break-inside: avoid; }
+        .personal-info-section .info-label { font-weight: 600; color: #1a4a8b; display: inline-block; width: 80px; }
+        .personal-info-section .info-value { color: #444444; }
 
-        /* Icônes PDF (Déjà défini, semble correct) */
-        /* ... (garder les ::before pour les icônes) ... */
+        /* Références */
+        .references-section .reference-item { margin-bottom: 15px; font-size: 10pt; page-break-inside: avoid; border-left: 3px solid #e9ecef; padding-left: 10px; }
+        .references-section .reference-name { font-weight: 600; color: #2c3e50; margin-bottom: 2px; }
+        .references-section .reference-position { font-size: 9.5pt; color: #005a9e; margin-bottom: 2px; }
+        .references-section .reference-relation { font-size: 9pt; color: #555555; font-style: italic; margin-bottom: 4px; display: inline-block; margin-left: 5px; }
+        .references-section .reference-contact { font-size: 9pt; color: #444444; }
+
          /* Correction icônes PDF (via ::before) */
-        .contact-item i::before, .period i::before, .project-url i::before { display: inline-block; font-style: normal; font-variant: normal; text-rendering: auto; -webkit-font-smoothing: antialiased; font-family: 'DejaVu Sans', 'Font Awesome 6 Free'; font-weight: 900; width: 15px; text-align: center; margin-right: 8px; }
-        .contact-item i.fab::before { font-family: 'DejaVu Sans', 'Font Awesome 6 Brands'; font-weight: 400; } /* Spécifique pour Brands */
-
-        .contact-item i.fa-phone::before { content: '\f095'; }
-        .contact-item i.fa-envelope::before { content: '\f0e0'; }
-        .contact-item i.fa-map-marker-alt::before { content: '\f3c5'; }
-        .contact-item i.fa-link::before { content: '\f0c1'; }
-        .contact-item i.fab.fa-linkedin::before { content: '\f0e1'; } /* Utilise fab */
-        .period i.fa-calendar-alt::before { content: '\f073'; }
-        .project-url i.fa-link::before { content: '\f0c1'; }
-
+        /* Assurez-vous que la police FontAwesome est bien chargée si vous utilisez ses glyphes Unicode */
+        /* Utilisation de DejaVu Sans pour des symboles basiques peut être plus fiable */
+        .contact-item i::before, .period i::before, .project-url i::before, .certification-item .period i::before /* Cibler aussi icone lien certification */ {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            font-family: 'DejaVu Sans'; /* Priorité à DejaVu */
+            font-weight: normal; /* Normal pour DejaVu */
+            width: 15px;
+            text-align: center;
+            margin-right: 8px;
+        }
+        /* Mapping des icônes vers les caractères DejaVu Sans ou Unicode standard si possible */
+        .contact-item i.fa-phone::before { content: '\260E'; } /* Symbole téléphone standard */
+        .contact-item i.fa-envelope::before { content: '\2709'; } /* Symbole enveloppe standard */
+        .contact-item i.fa-map-marker-alt::before { content: '\1F4CD'; } /* Punaise ronde */
+        .contact-item i.fa-link::before { content: '\1F517'; } /* Chaînon */
+        .contact-item i.fab.fa-linkedin::before { content: 'L'; font-weight: bold; } /* Fallback texte */
+        .period i.fa-calendar-alt::before { content: '\1F4C5'; } /* Calendrier */
+        .project-url i.fa-link::before { content: '\1F517'; } /* Chaînon */
+        .certification-item .period i.fa-link::before { content: '\1F517'; } /* Chaînon */
 
     </style>
 </head>
@@ -284,6 +271,28 @@
 
             {{-- COLONNE DROITE --}}
             <div class="right-column">
+                 {{-- Ajout de la section Informations Personnelles --}}
+                 <div class="section personal-info-section">
+                     <h3 class="section-title">INFORMATIONS</h3>
+                     <div class="info-item">
+                         <span class="info-label">Naissance:</span>
+                         <span class="info-value">{{ $cvProfile->date_naissance ? $cvProfile->date_naissance->translatedFormat('d F Y') : 'N/A' }}{{ $cvProfile->lieu_naissance ? ' à ' . e($cvProfile->lieu_naissance) : '' }}</span>
+                     </div>
+                     @if($cvProfile->nationalite)
+                     <div class="info-item">
+                         <span class="info-label">Nationalité:</span>
+                         <span class="info-value">{{ e($cvProfile->nationalite) }}</span>
+                     </div>
+                     @endif
+                     @if($cvProfile->situation_matrimoniale)
+                     <div class="info-item">
+                         <span class="info-label">Situation:</span>
+                         <span class="info-value">{{ e($cvProfile->situation_matrimoniale) }}</span>
+                     </div>
+                     @endif
+                 </div>
+                 {{-- Fin section Informations Personnelles --}}
+
                  @if($cvProfile->competences->isNotEmpty())
                 <div class="section skills-section">
                     <h3 class="section-title">COMPÉTENCES</h3>
@@ -345,6 +354,23 @@
                     </p>
                 </div>
                 @endif
+
+                {{-- Ajout Section Références --}}
+                @if($cvProfile->references->isNotEmpty())
+                <div class="section references-section">
+                    <h3 class="section-title">RÉFÉRENCES</h3>
+                    @foreach($cvProfile->references as $ref)
+                    <div class="reference-item">
+                        <div class="reference-name">{{ $ref->nom_complet }}</div>
+                        @if($ref->poste)<div class="reference-position">{{ $ref->poste }}</div>@endif
+                        @if($ref->relation)<div class="reference-relation">({{ $ref->relation }})</div>@endif
+                        <div class="reference-contact">Contact: {{ $ref->contact }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+                {{-- Fin Section Références --}}
+
             </div>
         </div>
     </div>

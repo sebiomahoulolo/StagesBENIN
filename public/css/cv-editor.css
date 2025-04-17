@@ -1,52 +1,241 @@
+/* --- Styles Globaux & Variables --- */
+:root {
+    --primary-color: #3498db;   /* Bleu doux */
+    --secondary-color: #555; /* Gris foncé pour textes */
+    --accent-color: #e74c3c;    /* Rouge pour suppression/erreurs */
+    --background-color: #f4f7f6; /* Fond général léger */
+    --light-gray: #ecf0f1;
+    --dark-gray: #7f8c8d;
+    --border-color: #dee2e6;  /* Couleur de bordure standard */
+    --box-shadow: 0 2px 10px rgba(0,0,0,0.08); /* Ombre standard */
+    --border-radius: 6px; /* Rayon de bordure standard */
+    --success-color: #28a745; /* Vert succès */
+    --danger-color: var(--accent-color); /* Rouge danger */
+}
    
        /* --- Styles Main Content & Formulaires --- */
-       main.main-content { flex: 1; padding: 5rem; overflow-y: auto; }
+main.main-content {
+    flex: 1;
+    padding: 3rem 4rem;
+    overflow-y: auto;
+    background-color: var(--background-color);
+}
        /* .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; } */
        .welcome-message h1 { font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 0.5rem; }
        .welcome-message p { color: var(--dark-gray); }
        .quick-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-       .action-button { padding: 0.7rem 1.5rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; transition: all 0.3s; text-decoration: none; font-size: 0.9rem; }
-       .action-button:hover { background-color: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-       .action-button i { margin-right: 8px; }
-       .action-button.save-btn { background-color: var(--success-color); }
-       /* ... autres styles boutons ... */
-       .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.85em; }
-       .btn-secondary { background-color: var(--gray); color: white; border:none; border-radius: 4px; cursor:pointer; }
-       .btn-secondary:hover { background-color: var(--dark-gray); }
-       .btn-primary { background-color: var(--primary-color); color: white; border:none; border-radius: 4px; cursor:pointer; }
-       .btn-primary:hover { background-color: #2980b9; }
-       .btn-danger { background-color: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
-       .alert { padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; border: 1px solid transparent; }
+
+/* --- Styles Boutons Généraux --- */
+.action-button, .btn { /* Style de base commun */
+    padding: 0.7rem 1.3rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; /* Centrer contenu */
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease, filter 0.2s ease;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: white; /* Couleur texte par défaut */
+}
+
+.action-button:hover, .btn:hover {
+    filter: brightness(110%);
+}
+
+.action-button:active, .btn:active {
+    transform: scale(0.98);
+    filter: brightness(100%); /* Reset filter on active */
+}
+
+.action-button i, .btn i {
+    margin-right: 8px;
+}
+
+/* Variations de couleur */
+.action-button, .btn-primary {
+    background-color: var(--primary-color);
+}
+.action-button:hover, .btn-primary:hover {
+    background-color: #2980b9; /* Bleu plus foncé */
+    filter: none;
+}
+
+.action-button.save-btn, .btn-success { /* Utiliser btn-success pour cohérence */
+    background-color: var(--success-color);
+}
+.action-button.save-btn:hover, .btn-success:hover {
+    background-color: #218838; /* Vert plus foncé */
+    filter: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+    filter: none;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+}
+.btn-danger:hover {
+    background-color: #c82333; /* Rouge plus foncé */
+    filter: none;
+}
+
+/* Tailles */
+.btn-sm {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+/* --- Alertes --- */
+.alert {
+    padding: 1rem;
+    border-radius: var(--border-radius); /* Utiliser variable */
+    margin-bottom: 1.5rem;
+    border: 1px solid transparent;
+}
        .alert-success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
        .alert-danger { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
-       /* Styles Formulaires Livewire */
-       .cv-editor-container { }
-       .cv-form-section { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; }
-       .form-section { margin-bottom: 2.5rem; }
-       .form-repeater-item { border: 1px solid #eee; padding: 1.5rem; margin-bottom: 1rem; border-radius: 5px; position: relative; background: #fafafa; }
-       .item-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
-       .item-actions button { border: none; background: none; cursor: pointer; padding: 0; font-size: 1.1em; line-height: 1; }
-       .item-actions .edit-item-btn { color: var(--primary-color); }
-       .item-actions .delete-item-btn { color: var(--accent-color); }
-       /* .form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; }
-       .form-section-header h4 { margin: 0; color: var(--primary-color); font-size: 1.3rem; } */
-       .add-item-btn { font-size: 0.9em; padding: 0.4rem 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center;}
-       .add-item-btn i { margin-right: 5px; }
-       .form-control { width: 100%; padding: 0.7rem 1rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.2rem; font-size: 0.95rem; }
-       .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); outline: none; }
-       .form-label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem; color: var(--secondary-color); }
-       .form-group { margin-bottom: 1rem; }
-       .row { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1rem; }
-       .col { flex: 1; min-width: 200px; }
-       /* Validation Livewire */
-       .form-control.is-invalid { border-color: var(--accent-color) !important; }
-       .invalid-feedback { color: var(--accent-color); font-size: 0.8em; display: block; min-height: 1.2em; }
-       /* Styles Trix Editor */
-       trix-toolbar [data-trix-button-group="file-tools"] { display: none; }
-       .trix-content { background-color: white; border: 1px solid #ccc; border-radius: 4px; padding: 0.5rem; min-height: 100px; margin-top: 0.2rem; }
-       .trix-content:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); outline: none;}
-       .trix-content.is-invalid { border-color: var(--accent-color) !important; }
-        /* Style pour affichage carte */
-        .description-display { font-size: 0.9em; color: #555; background-color: #f0f0f0; border-radius: 4px; padding: 8px 12px; margin-top: 8px; word-wrap: break-word; }
-        /* Responsive */
-       @media (max-width: 768px) { /* ... styles responsive ... */ }
+
+/* --- Styles Formulaires Livewire --- */
+.cv-editor-container {
+    max-width: 1100px;
+    margin: 2rem auto; /* Augmenter marge verticale */
+    padding: 0 1.5rem; /* Augmenter padding horizontal */
+}
+
+.cv-form-section {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    border: 1px solid var(--border-color);
+    margin-bottom: 3rem; /* Espace entre sections */
+}
+
+.form-section-header { /* Assurez-vous que ce style est utilisé ou définissez-le */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem; /* Plus d'espace */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.form-section-header h2 {
+    font-size: 1.5rem; /* Taille titre section */
+    color: var(--secondary-color);
+    margin: 0; /* Retirer marge par défaut */
+}
+
+.form-repeater-item {
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    position: relative;
+    background: #fff;
+    transition: box-shadow 0.2s ease-in-out;
+}
+.form-repeater-item:hover {
+     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Styles Actions sur Items (Cartes Formation, Expérience, etc.) --- */
+.item-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 15px;
+    /* Assurer la visibilité par défaut */
+    opacity: 1;
+    visibility: visible;
+}
+
+.item-actions button { /* Style pour les icônes cliquables */
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0; /* Pas de padding pour ressembler à une icône */
+    font-size: 1.3em; /* Taille de l'icône */
+    line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease; /* Transition douce */
+    color: var(--secondary-color); /* Couleur par défaut gris */
+}
+
+.item-actions button:hover {
+    transform: scale(1.15); /* Effet grossissant au survol */
+}
+
+.item-actions .edit-item-btn {
+    color: var(--primary-color); /* Couleur bleue pour éditer */
+}
+.item-actions .edit-item-btn:hover {
+    color: #2980b9; /* Bleu plus foncé au survol */
+}
+
+.item-actions .delete-item-btn {
+    color: var(--danger-color); /* Couleur rouge pour supprimer */
+}
+.item-actions .delete-item-btn:hover {
+    color: #c0392b; /* Rouge plus foncé au survol */
+}
+
+/* --- Styles Champs Formulaire --- */
+.form-group {
+    margin-bottom: 1.5rem; /* Espacement entre groupes de champs */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600; /* Labels en gras */
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.form-control { /* Style de base pour input, select, textarea */
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem; /* Padding confortable */
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057; /* Couleur texte standard */
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: var(--primary-color); /* Bordure bleue au focus */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); /* Ombre douce au focus */
+}
+
+/* Ajustements spécifiques si nécessaire */
+textarea.form-control {
+    min-height: 100px; /* Hauteur minimale pour les textareas */
+}
+
+.form-actions { /* Conteneur pour les boutons Enregistrer/Annuler d'un formulaire */
+    display: flex;
+    justify-content: flex-end; /* Aligner les boutons à droite */
+    gap: 1rem; /* Espace entre boutons */
+    margin-top: 2rem; /* Espace au-dessus des boutons */
+    padding-top: 1.5rem; /* Espace au-dessus des boutons */
+    border-top: 1px solid var(--border-color); /* Ligne de séparation */
+}
