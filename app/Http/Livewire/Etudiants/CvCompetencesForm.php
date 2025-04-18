@@ -102,16 +102,20 @@ class CvCompetencesForm extends Component
      public function updateCompetence()
     {
         if ($this->editingIndex === null) return;
-        $validatedData = $this->validate($this->rules())['editingCompetence'];
+        $validatedData = $this->validate([
+            'editingCompetence.nom' => ['required', 'string', 'max:100'],
+            'editingCompetence.niveau' => ['required', 'integer', 'min:1', 'max:5'],
+            'editingCompetence.categorie' => ['nullable', 'string', 'max:100'],
+        ])['editingCompetence'];
         $competenceId = $this->competences[$this->editingIndex]['id'] ?? null;
 
         if ($competenceId) {
             $competence = CvCompetence::where('cv_profile_id', $this->cvProfileId)->find($competenceId);
             if ($competence) {
-                 $competence->update($validatedData);
-                 $this->loadCompetences(); // Recharger pour l'ordre
-                 $this->resetForms();
-                 session()->flash('competence_message', 'Compétence mise à jour.');
+                $competence->update($validatedData);
+                $this->loadCompetences();
+                $this->resetForms();
+                session()->flash('competence_message', 'Compétence mise à jour.');
             } else { session()->flash('competence_error', 'Erreur: Compétence non trouvée.'); }
         } else { session()->flash('competence_error', 'Erreur: ID de compétence manquant.'); }
     }

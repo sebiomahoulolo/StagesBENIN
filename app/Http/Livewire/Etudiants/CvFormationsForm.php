@@ -121,22 +121,26 @@ class CvFormationsForm extends Component
      // Met à jour une formation existante
      public function updateFormation()
      {
-         if ($this->editingIndex === null || !isset($this->formations[$this->editingIndex])) return;
+         if ($this->editingIndex === null) return;
+         $validatedData = $this->validate([
+             'editingFormation.diplome' => ['required', 'string', 'max:100'],
+             'editingFormation.etablissement' => ['required', 'string', 'max:100'],
+             'editingFormation.lieu' => ['nullable', 'string', 'max:100'],
+             'editingFormation.debut' => ['required', 'date'],
+             'editingFormation.fin' => ['nullable', 'date', 'after_or_equal:editingFormation.debut'],
+             'editingFormation.description' => ['nullable', 'string'],
+         ])['editingFormation'];
+         $formationId = $this->formations[$this->editingIndex]['id'] ?? null;
 
-         // Valide les données préfixées 'editingFormation.'
-         $validatedData = $this->validate($this->rules())['editingFormation'];
-         $formationId = $this->formations[$this->editingIndex]['id']; // ID de la formation à éditer
-
-         $formation = CvFormation::where('cv_profile_id', $this->cvProfileId)->find($formationId);
-         if ($formation) {
-             // Met à jour directement avec les données validées (description est une string)
-             $formation->update($validatedData);
-             $this->loadFormations(); // Recharge les données
-             $this->resetForms(); // Réinitialise l'état
-             session()->flash('formation_message', 'Formation mise à jour avec succès.');
-         } else {
-             session()->flash('formation_error_'.$this->editingIndex, 'Erreur lors de la mise à jour.'); // Erreur spécifique à l'item
-         }
+         if ($formationId) {
+             $formation = CvFormation::where('cv_profile_id', $this->cvProfileId)->find($formationId);
+             if ($formation) {
+                 $formation->update($validatedData);
+                 $this->loadFormations();
+                 $this->resetForms();
+                 session()->flash('formation_message', 'Formation mise à jour.');
+             } else { session()->flash('formation_error', 'Erreur: Formation non trouvée.'); }
+         } else { session()->flash('formation_error', 'Erreur: ID de formation manquant.'); }
      }
 
      // Ajoute une nouvelle formation

@@ -55,7 +55,7 @@
                      </div>
                 </div>
 
-                 {{-- ** REMPLACEMENT DE TRIX PAR TEXTAREA ** --}}
+                 {{-- Textarea pour Description --}}
                  <div class="form-group mb-3">
                      <label for="new_form_desc" class="form-label">Description (optionnel)</label>
                      <textarea id="new_form_desc"
@@ -63,8 +63,7 @@
                                class="form-control form-control-sm @error('newFormation.description') is-invalid @enderror"
                                rows="3"
                                maxlength="1000"
-                               placeholder="Détails supplémentaires, matières principales...">
-                     </textarea>
+                               placeholder="Détails supplémentaires, matières principales..."></textarea>
                      @error('newFormation.description') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                  </div>
 
@@ -125,15 +124,14 @@
                                 </div>
                             </div>
 
-                            {{-- ** REMPLACEMENT DE TRIX PAR TEXTAREA ** --}}
+                            {{-- Textarea pour Description --}}
                             <div class="form-group mb-3">
                                 <label for="edit_form_desc_{{ $index }}" class="form-label">Description</label>
                                 <textarea id="edit_form_desc_{{ $index }}"
                                             wire:model.lazy="editingFormation.description"
                                             class="form-control form-control-sm @error('editingFormation.description') is-invalid @enderror"
                                             rows="3"
-                                            maxlength="1000">
-                                </textarea>
+                                            maxlength="1000"></textarea>
                                 @error('editingFormation.description') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                             </div>
 
@@ -151,15 +149,12 @@
                     <div class="formation-card-body">
                         {{-- Icônes d'action (placées différemment) --}}
                         <div class="formation-direct-actions">
-                             <i class="fas fa-pencil-alt text-primary formation-action-icon"
-                                wire:click="edit({{ $index }})"
-                                title="Modifier" aria-label="Modifier la formation"
-                                style="cursor: pointer;"></i>
-                             <i class="fas fa-trash text-danger formation-action-icon"
-                                wire:click="removeFormation({{ $index }})"
-                                wire:confirm="Êtes-vous sûr de vouloir supprimer cette formation ?"
-                                title="Supprimer" aria-label="Supprimer la formation"
-                                style="cursor: pointer;"></i>
+                             <button type="button" class="btn-action-icon" wire:click="edit({{ $index }})" title="Modifier" aria-label="Modifier la formation">
+                                <i class="fas fa-pencil-alt text-primary"></i>
+                             </button>
+                             <button type="button" class="btn-action-icon" wire:click="removeFormation({{ $index }})" wire:confirm="Êtes-vous sûr de vouloir supprimer cette formation ?" title="Supprimer" aria-label="Supprimer la formation">
+                                <i class="fas fa-trash text-danger"></i>
+                             </button>
                         </div>
 
                         {{-- Contenu de la carte --}}
@@ -185,9 +180,8 @@
             </div> {{-- Fin .formation-card ou .editing-item --}}
         @empty
              {{-- Message si aucune formation n'est ajoutée --}}
-
             @unless($showAddForm || $editingIndex !== null)
-                <div style="text-align: center; color: var(--dark-gray); padding: 1rem; border: 1px dashed !important; grid-column: 1 / -1; border-radius: 4px;"> Aucune formation ajoutée. </div>
+                <div class="empty-message"> Aucune formation ajoutée. </div>
             @endunless
         @endforelse
     </div> {{-- Fin .formation-grid --}}
@@ -198,16 +192,25 @@
 {{-- === CSS (Adapté pour les formations) === --}}
 {{-- ====================================================================== --}}
 <style>
-    /* Style de base (identique à Experience) */
+    /* Style de base */
     .form-section { margin-bottom: 2rem; }
-    .form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #dee2e6; }
+    .form-section-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #dee2e6; }
     .form-section-header h4 { margin: 0; color: #343a40; }
+    .add-item-btn span { margin-left: 0.3rem; }
+
+    /* Formulaire d'ajout */
+    .formation-add-form {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
 
     /* Conteneur de la grille */
     .formation-grid {
         display: grid;
-        grid-template-columns: 1fr; /* Changé pour une seule colonne */
-        gap: 1rem; /* Ajustez si nécessaire */
+        grid-template-columns: 1fr; /* Une seule colonne */
+        gap: 1rem;
     }
 
     /* Style pour la carte de formation */
@@ -221,69 +224,128 @@
         display: flex;
         flex-direction: column;
         transition: box-shadow 0.2s ease-in-out;
+        overflow: hidden; /* Empêche le débordement */
     }
     .formation-card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     }
+     .formation-card:hover .formation-direct-actions,
+     .formation-card:focus-within .formation-direct-actions {
+         opacity: 1; /* Afficher les actions au survol/focus */
+     }
 
     /* Style pour l'élément en cours d'édition */
     .editing-item {
         margin-bottom: 1.5rem;
     }
+     .editing-item .p-3 {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem; /* Homogénéiser padding */
+    }
 
     /* Contenu de la carte */
-    .formation-card-body { flex-grow: 1; }
-    .formation-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; } /* Couleur différente ? */
-    .formation-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; } /* Couleur différente ? */
+    .formation-card-body { flex-grow: 1; padding-right: 40px; /* Espace pour les boutons ajusté */ word-break: break-word; }
+    .formation-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; overflow-wrap: break-word; }
+    .formation-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; overflow-wrap: break-word; }
     .formation-card-dates { font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem; border-bottom: 1px dashed #dee2e6; padding-bottom: 0.75rem; }
-    .formation-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; /* Respecte les sauts de ligne */ }
+    .formation-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: break-word; /* Améliore le rendu de la description */}
 
-    /* Styles pour les icônes d'action directes */
+    /* Styles pour les boutons d'action directs */
     .formation-direct-actions {
         position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
+        top: 0.5rem; /* Ajusté */
+        right: 0.5rem; /* Ajusté */
         display: flex;
-        gap: 0.8rem; /* Espacement entre les icônes */
-        z-index: 5; /* Moins élevé que les anciens boutons, mais toujours au-dessus */
+        flex-direction: column; /* Mettre les boutons en colonne */
+        gap: 0.4rem; /* Espacement entre les boutons */
+        z-index: 5;
+        opacity: 0; /* Caché par défaut */
+        transition: opacity 0.2s ease-in-out;
     }
-    .formation-action-icon {
-        font-size: 1rem; /* Taille de l'icône */
+    /* Style des boutons repris de Experience */
+    .btn-action-icon {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid #eee;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        cursor: pointer;
+        line-height: 1;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .btn-action-icon i {
+        font-size: 0.85rem;
         vertical-align: middle;
     }
-    /* Forcer les couleurs spécifiques pour les icônes */
-    .formation-direct-actions .fa-pencil-alt {
-        color: var(--bs-primary, #0d6efd); /* Bleu Bootstrap */
-    }
-    .formation-direct-actions .fa-trash {
-        color: var(--bs-danger, #dc3545); /* Rouge Bootstrap */
-    }
+    .formation-direct-actions .text-primary { color: var(--bs-primary, #0d6efd) !important; }
+    .formation-direct-actions .text-danger { color: var(--bs-danger, #dc3545) !important; }
 
-    /* Optionnel: Légère interaction au survol si désiré, sinon supprimer */
-    .formation-action-icon:hover {
-       opacity: 0.8;
+    .btn-action-icon:hover {
+       background: rgba(240, 240, 240, 0.9);
+       opacity: 1;
+       box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
-    /* Responsive */
-    /* Supprimez ou commentez les lignes suivantes */
-    /* @media (max-width: 991.98px) { .formation-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .editing-item { grid-column: 1 / -1; } } */
-    /* @media (max-width: 767.98px) { .formation-grid { grid-template-columns: 1fr; gap: 1rem; } .editing-item { grid-column: auto; } } */
-
-    /* Vous pouvez garder un ajustement du gap si vous le souhaitez */
-     @media (max-width: 767.98px) {
-        .formation-grid { gap: 0.75rem; }
+    /* Message vide */
+    .empty-message {
+        text-align: center;
+        color: var(--dark-gray, #6c757d);
+        padding: 1rem;
+        border: 1px dashed #ced4da !important;
+        border-radius: 4px;
+        margin-top: 1rem;
     }
 
     /* Ajustements Formulaires */
     .form-label { font-size: 0.875rem; margin-bottom: 0.25rem; }
     .form-control-sm { font-size: 0.875rem; }
-    .formation-add-form,
-    .editing-item .p-3 { background-color: #f8f9fa; }
+    .text-danger { color: #dc3545 !important; }
 
-    /* Variables CSS (si non définies globalement) */
+    /* Responsive */
+     @media (max-width: 767.98px) {
+        .formation-grid { gap: 0.75rem; }
+        .formation-card { padding: 1rem; }
+        .formation-card-body { padding-right: 40px; /* Ajuster espace boutons */ }
+        .formation-card-title { font-size: 1rem; }
+        .formation-card-subtitle { font-size: 0.9rem; }
+        .formation-card-dates { font-size: 0.8rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; }
+        .formation-card-description { font-size: 0.85rem; }
+        .form-section-header {
+             flex-direction: column;
+             align-items: flex-start;
+        }
+         /* Empiler colonnes formulaire ajout/edition */
+        .formation-add-form .row > div:not(:last-child),
+        .editing-item .row > div:not(:last-child) {
+            margin-bottom: 1rem; /* Espace entre champs empilés */
+         }
+         .formation-add-form .col-md-6,
+         .formation-add-form .col-md-4,
+         .editing-item .col-md-6,
+         .editing-item .col-md-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+         }
+    }
+    @media (max-width: 575.98px) {
+        .formation-card-body { padding-right: 35px; }
+        .btn-action-icon { width: 28px; height: 28px; }
+        .btn-action-icon i { font-size: 0.8rem; }
+     }
+
+    /* Variables CSS */
     :root {
         --primary-color: #0d6efd;
-        --secondary-color: #6c757d; /* Ajout ou utilisation existante */
+        --secondary-color: #6c757d;
+        --dark-gray: #343a40;
         --primary-color-light: #6caeff; /* Pourrait être utilisé ailleurs */
+        --bs-primary: #0d6efd;
+        --bs-danger: #dc3545;
     }
 </style>

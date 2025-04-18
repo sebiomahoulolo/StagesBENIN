@@ -165,15 +165,12 @@
                      <div class="experience-card-body">
                          {{-- Boutons d'action directs --}}
                          <div class="experience-direct-actions">
-                             <i class="fas fa-pencil-alt text-primary experience-action-icon"
-                                wire:click="edit({{ $index }})"
-                                title="Modifier" aria-label="Modifier l'expérience'"
-                                style="cursor: pointer;"></i>
-                             <i class="fas fa-trash text-danger experience-action-icon"
-                                wire:click="removeExperience({{ $index }})"
-                                wire:confirm="Êtes-vous sûr ?"
-                                title="Supprimer" aria-label="Supprimer l'expérience'"
-                                style="cursor: pointer;"></i>
+                            <button type="button" class="btn-action-icon" wire:click="edit({{ $index }})" title="Modifier" aria-label="Modifier l'expérience">
+                                <i class="fas fa-pencil-alt text-primary"></i>
+                             </button>
+                             <button type="button" class="btn-action-icon" wire:click="removeExperience({{ $index }})" wire:confirm="Êtes-vous sûr ? " title="Supprimer" aria-label="Supprimer l'expérience">
+                                <i class="fas fa-trash text-danger"></i>
+                             </button>
                         </div>
 
                          {{-- Contenu de la carte --}}
@@ -211,9 +208,8 @@
             </div>
         @empty
             {{-- Message si aucune expérience n'est ajoutée (en dehors de la grille si elle est vide) --}}
-
             @unless($showAddForm || $editingIndex !== null)
-                <div style="text-align: center; color: var(--dark-gray); padding: 1rem; border: 1px dashed !important; grid-column: 1 / -1; border-radius: 4px;"> Aucune expérience professionnelle ajoutée. </div>
+                <div class="empty-message"> Aucune expérience professionnelle ajoutée. </div>
             @endunless
 
         @endforelse
@@ -223,16 +219,25 @@
 
 
 <style>
-    /* Style de base (similaire à Formation) */
+    /* Style de base */
     .form-section { margin-bottom: 2rem; }
-    .form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #dee2e6; }
+    .form-section-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #dee2e6; }
     .form-section-header h4 { margin: 0; color: #343a40; }
+    .add-item-btn span { margin-left: 0.3rem; }
+
+    /* Formulaire d'ajout */
+    .experience-add-form {
+         background-color: #f8f9fa;
+         padding: 1.5rem;
+         border: 1px solid #dee2e6;
+         border-radius: 0.375rem;
+    }
 
     /* Conteneur de la grille */
     .experience-grid { /* Nom adapté */
         display: grid;
-        grid-template-columns: 1fr; /* Changé pour une seule colonne (style Formation) */
-        gap: 1rem; /* Ajusté (style Formation) */
+        grid-template-columns: 1fr; /* Une seule colonne */
+        gap: 1rem;
     }
 
     /* Style pour la carte d'expérience */
@@ -246,31 +251,40 @@
         display: flex;
         flex-direction: column;
         transition: box-shadow 0.2s ease-in-out;
+        overflow: hidden; /* Empêche le débordement interne */
     }
     .experience-card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     }
+     .experience-card:hover .experience-direct-actions,
+     .experience-card:focus-within .experience-direct-actions {
+         opacity: 1;
+     }
 
     /* Style pour l'élément en cours d'édition */
     .editing-item {
-        margin-bottom: 1.5rem; /* Gardé de Formation */
-         /* La règle grid-column: 1 / -1; est supprimée car la grille est sur 1 colonne */
+        margin-bottom: 1.5rem;
+    }
+    .editing-item .p-3 {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem; /* Homogénéiser padding */
     }
 
     /* Contenu de la carte */
-    .experience-card-body { flex-grow: 1; }
-    /* Couleurs adaptées au style Formation (titre=secondaire, sous-titre=primaire) */
-    .experience-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; }
-    .experience-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; }
+    .experience-card-body { flex-grow: 1; padding-right: 40px; /* Espace boutons ajusté */ word-break: break-word; /* Retour ligne global */ }
+    .experience-card-title { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color, #6c757d); margin-bottom: 0.25rem; overflow-wrap: break-word; }
+    .experience-card-subtitle { font-size: 0.95rem; color: var(--primary-color, #0056b3); margin-bottom: 0.5rem; overflow-wrap: break-word; }
     .experience-card-dates { font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem; border-bottom: 1px dashed #dee2e6; padding-bottom: 0.75rem; }
-    .experience-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; /* Ajouté de Formation (respecte sauts de ligne) */ }
+    .experience-card-description { font-size: 0.9rem; color: #343a40; margin-top: 1rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: break-word; }
 
-    /* Section des tâches/réalisations (Spécifique à Experience, conservée) */
+    /* Section des tâches/réalisations */
     .experience-card-tasks {
-        background-color: #f8f9fa; /* Fond très léger */
-        border-left: 3px solid var(--primary-color-light, #6caeff); /* Indicateur visuel */
+        background-color: #f8f9fa;
+        border-left: 3px solid var(--primary-color-light, #6caeff);
         padding: 0.75rem 1rem;
-        margin-top: 1rem; /* Gardé, espace avant les tâches */
+        margin-top: 1rem;
         border-radius: 0.25rem;
         font-size: 0.88rem;
     }
@@ -286,59 +300,104 @@
         padding: 0;
         color: #495057;
     }
-    .experience-card-tasks li { margin-bottom: 0.3rem; }
+    .experience-card-tasks li { margin-bottom: 0.3rem; overflow-wrap: break-word; /* Assurer retour à la ligne */}
     .experience-card-tasks li:last-child { margin-bottom: 0; }
 
-    /* Styles pour les icônes d'action directes (adapté de Formation) */
+    /* Styles pour les boutons d'action directs */
     .experience-direct-actions { /* Nom adapté */
         position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
+        top: 0.5rem;
+        right: 0.5rem;
         display: flex;
-        gap: 0.8rem; /* Espacement entre les icônes (style Formation) */
+        flex-direction: column; /* En colonne */
+        gap: 0.4rem;
         z-index: 5;
-    }
-    .experience-action-icon { /* Nom adapté */
-        font-size: 1rem; /* Taille de l'icône (style Formation) */
-        vertical-align: middle;
-        opacity: 0.7; /* Légère transparence par défaut */
+        opacity: 0; /* Caché par défaut */
         transition: opacity 0.2s ease-in-out;
     }
-     .experience-action-icon:hover {
-        opacity: 1; /* Pleinement visible au survol */
+    .btn-action-icon {
+        background: rgba(255, 255, 255, 0.8); /* Fond un peu plus opaque */
+        border: 1px solid #eee; /* Légère bordure */
+        border-radius: 50%; /* Rond */
+        width: 30px; /* Légèrement plus grand */
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        cursor: pointer;
+        line-height: 1;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Légère ombre */
     }
-    /* Forcer les couleurs spécifiques pour les icônes */
-    .experience-direct-actions .fa-pencil-alt {
-        color: var(--bs-primary, #0d6efd);
+    .btn-action-icon i {
+        font-size: 0.85rem; /* Taille icône */
+        vertical-align: middle;
     }
-    .experience-direct-actions .fa-trash {
-        color: var(--bs-danger, #dc3545);
+    .experience-direct-actions .text-primary { color: var(--bs-primary, #0d6efd) !important; }
+    .experience-direct-actions .text-danger { color: var(--bs-danger, #dc3545) !important; }
+
+    .btn-action-icon:hover {
+       background: rgba(240, 240, 240, 0.9);
+       opacity: 1;
+       box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
-
-    /* Responsive */
-    /* Les styles pour 2 ou 3 colonnes sont supprimés ou commentés car on passe à 1 colonne */
-    /* @media (max-width: 991.98px) { ... } */
-    /* @media (max-width: 767.98px) { ... } */
-
-    /* Ajustement du gap sur petits écrans (gardé de Formation) */
-     @media (max-width: 767.98px) {
-        .experience-grid { gap: 0.75rem; }
+    /* Message vide */
+    .empty-message {
+        text-align: center;
+        color: var(--dark-gray, #6c757d);
+        padding: 1rem;
+        border: 1px dashed #ced4da !important;
+        grid-column: 1 / -1;
+        border-radius: 4px;
+        margin-top: 1rem;
     }
 
-    /* Ajustements Formulaires (style Formation) */
+    /* Ajustements Formulaires */
     .form-label { font-size: 0.875rem; margin-bottom: 0.25rem; }
     .form-control-sm { font-size: 0.875rem; }
-    .experience-add-form, /* Nom adapté */
-    .editing-item .p-3 { background-color: #f8f9fa; } /* Fond léger pour forms (style Formation) */
+    .text-danger { color: #dc3545 !important; }
 
-    /* Variables CSS (fusionnées et adaptées de Formation) */
+    /* Responsive */
+     @media (max-width: 767.98px) {
+        .experience-grid { gap: 0.75rem; }
+        .experience-card { padding: 1rem; }
+        .experience-card-body { padding-right: 40px; /* Garder espace minimal */ }
+        .experience-card-title { font-size: 1rem; }
+        .experience-card-subtitle { font-size: 0.9rem; }
+        .experience-card-dates { font-size: 0.8rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; }
+        .experience-card-description { font-size: 0.85rem; }
+        .experience-card-tasks { font-size: 0.85rem; padding: 0.6rem 0.8rem; }
+         .form-section-header {
+             flex-direction: column;
+             align-items: flex-start;
+         }
+          /* Empiler colonnes formulaire ajout/edition */
+         .experience-add-form .row > div:not(:last-child),
+         .editing-item .row > div:not(:last-child) {
+             margin-bottom: 1rem; /* Espace entre champs empilés */
+         }
+         .experience-add-form .col-md-6,
+         .experience-add-form .col-md-4,
+         .editing-item .col-md-6,
+         .editing-item .col-md-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+         }
+    }
+     @media (max-width: 575.98px) {
+        .experience-card-body { padding-right: 35px; /* Encore moins d'espace */ }
+        .btn-action-icon { width: 28px; height: 28px; }
+        .btn-action-icon i { font-size: 0.8rem; }
+     }
+
+    /* Variables CSS */
     :root {
         --primary-color: #0d6efd;
-        --secondary-color: #6c757d; /* Ajouté de Formation */
+        --secondary-color: #6c757d;
+        --dark-gray: #343a40;
         --primary-color-light: #6caeff;
-        /* Assurez-vous que les couleurs Bootstrap sont disponibles ou définies */
-        --bs-primary: var(--primary-color);
-        --bs-danger: #dc3545; /* Rouge Bootstrap standard */
+        --bs-primary: #0d6efd;
+        --bs-danger: #dc3545;
     }
 </style>

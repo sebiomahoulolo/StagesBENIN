@@ -122,7 +122,7 @@
 
     .langue-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 1rem;
     }
 
@@ -140,31 +140,32 @@
     .langue-card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     }
-    .langue-card:hover .item-actions {
+    .langue-card:hover .item-actions,
+    .langue-card:focus-within .item-actions {
          opacity: 1;
      }
 
     .langue-card-body {
         flex-grow: 1;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 30px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 5px;
     }
     .langue-name {
-        font-weight: 500;
-        color: var(--secondary-color, #6c757d);
-        margin-right: 0.5rem;
+        font-weight: 600;
+        color: var(--secondary-color, #343a40);
+        margin-bottom: 0.3rem;
         overflow-wrap: break-word;
         word-break: break-word;
     }
     .langue-level {
-       font-size: 0.85em;
-       color: var(--dark-gray, #343a40);
-       background-color: #eee;
-       padding: 3px 10px;
-       border-radius: 12px;
-       white-space: nowrap;
+        font-size: 0.85em;
+        color: var(--dark-gray, #343a40);
+        background-color: #e9ecef;
+        padding: 2px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
     }
 
     .langue-card .item-actions {
@@ -187,6 +188,7 @@
        background: none;
        border: none;
        line-height: 1;
+       cursor: pointer;
     }
     .langue-card .item-actions .edit-item-btn { color: var(--bs-primary, #0d6efd); }
     .langue-card .item-actions .delete-item-btn { color: var(--bs-danger, #dc3545); }
@@ -230,9 +232,6 @@
     .text-danger { color: #dc3545 !important; }
 
     @media (max-width: 991.98px) {
-        .langue-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
         .langue-add-form .col-md-6,
         .langue-editing-item .col-md-6 {
             flex: 0 0 100%;
@@ -245,29 +244,25 @@
     }
     @media (max-width: 767.98px) {
         .langue-grid {
-            grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
         }
-    }
-    @media (max-width: 575.98px) {
         .langue-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         }
-         .langue-card .item-actions {
-             opacity: 1;
-             background-color: transparent;
-             position: static;
-             justify-content: flex-end;
-             padding: 0;
-             margin-bottom: 0.5rem;
-         }
-         .langue-card-body {
-            flex-direction: column;
-            align-items: flex-start;
-            min-height: unset;
-         }
-         .langue-level { margin-top: 0.25rem;}
+        .form-section-header {
+             flex-direction: column;
+             align-items: flex-start;
+             gap: 0.5rem;
+        }
     }
+     @media (max-width: 575.98px) {
+         .langue-grid {
+             grid-template-columns: 1fr;
+         }
+          .langue-card .item-actions {
+              /* Ajustements si nécessaire pour une seule colonne */
+         }
+     }
 
     :root {
         --primary-color: #0d6efd;

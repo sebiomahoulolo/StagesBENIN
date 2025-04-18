@@ -160,16 +160,11 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiant
         Route::get('/show', [CvController::class, 'show'])->name('show');
 
         // Routes pour l'export
-        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export/pdf', [CvController::class, 'exportPdf'])->name('export.pdf'); // Réactivé: Export PDF géré côté serveur via dompdf
         Route::get('/export/png', [CvController::class, 'exportPng'])->name('export.png');
 
-        // --- LES ANCIENNES ROUTES AJAX NE SONT PLUS NÉCESSAIRES POUR CETTE VUE ---
-        // Route::put('/profile', [CvController::class, 'updateProfile'])->name('profile.update');
-        // Route::post('/formations', [CvController::class, 'storeFormation'])->name('formations.store');
-        // Route::put('/formations/{id}', [CvController::class, 'updateFormation'])->name('formations.update');
-        // Route::delete('/formations/{id}', [CvController::class, 'destroyFormation'])->name('formations.destroy');
         // ... (idem pour experiences, competences, langues, etc.) ...
-
+        Route::get('/projets', [CvController::class, 'showProjects'])->name('projets'); // Exemple si vous ajoutez d'autres sections
     }); // Fin du groupe cv
 }); // Fin du groupe étudiant
 

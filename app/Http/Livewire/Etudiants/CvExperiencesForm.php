@@ -138,21 +138,27 @@ class CvExperiencesForm extends Component
 
      public function updateExperience()
     {
-         if ($this->editingIndex === null) return;
-         // Valide les données incluant les 3 tâches
-         $validatedData = $this->validate($this->rules())['editingExperience'];
-         $experienceId = $this->experiences[$this->editingIndex]['id'] ?? null;
+        if ($this->editingIndex === null) return;
+        $validatedData = $this->validate([
+            'editingExperience.poste' => ['required', 'string', 'max:100'],
+            'editingExperience.entreprise' => ['required', 'string', 'max:100'],
+            'editingExperience.lieu' => ['nullable', 'string', 'max:100'],
+            'editingExperience.debut' => ['required', 'date'],
+            'editingExperience.fin' => ['nullable', 'date', 'after_or_equal:editingExperience.debut'],
+            'editingExperience.description' => ['nullable', 'string'],
+            'editingExperience.est_actuel' => ['boolean'],
+        ])['editingExperience'];
+        $experienceId = $this->experiences[$this->editingIndex]['id'] ?? null;
 
-         if ($experienceId) {
-             $experience = CvExperience::where('cv_profile_id', $this->cvProfileId)->find($experienceId);
-             if ($experience) {
-                 // Enregistre directement les données validées (pas de Trix/Purifier)
-                 $experience->update($validatedData);
-                 $this->loadExperiences(); // Recharge pour màj et ordre
-                 $this->resetForms();
-                 session()->flash('experience_message', 'Expérience mise à jour.');
-             } else { session()->flash('experience_error_' . $this->editingIndex, 'Erreur: Expérience non trouvée.'); }
-         } else { session()->flash('experience_error_' . $this->editingIndex, 'Erreur: ID d\'expérience manquant.'); }
+        if ($experienceId) {
+            $experience = CvExperience::where('cv_profile_id', $this->cvProfileId)->find($experienceId);
+            if ($experience) {
+                $experience->update($validatedData);
+                $this->loadExperiences();
+                $this->resetForms();
+                session()->flash('experience_message', 'Expérience mise à jour.');
+            } else { session()->flash('experience_error', 'Erreur: Expérience non trouvée.'); }
+        } else { session()->flash('experience_error', 'Erreur: ID d\'expérience manquant.'); }
     }
 
     public function addExperience()

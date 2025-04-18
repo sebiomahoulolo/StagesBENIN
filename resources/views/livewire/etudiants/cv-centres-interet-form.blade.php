@@ -66,9 +66,9 @@
                             </button>
                          </div>
                          {{-- Le span est maintenant le contenu principal de la "carte" --}}
-                         <span class="interet-nom"> {{-- Classe ajoutée pour le style --}}
+                        <span style="background-color: #e8f4fc; padding: 5px 12px; border-radius: 15px; font-size: 0.9em; color: var(--primary-color); display: inline-block;">
                             {{ $interet['nom'] }}
-                         </span>
+                        </span>
                      </div> {{-- Fin .interet-card-body --}}
                  @endif
             </div> {{-- Fin .interet-item --}}
@@ -92,20 +92,14 @@
     /* Grille pour les centres d'intérêt */
     .interet-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr); /* 5 colonnes par défaut */
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Utilise auto-fill pour un nombre de colonnes flexible */
         gap: 0.75rem; /* Espace entre les éléments */
     }
 
     /* Style de chaque élément d'intérêt */
     .interet-item {
         position: relative;
-        /* background-color: #f8f9fa; /* Fond léger si désiré */
-        /* border: 1px solid #e9ecef; /* Bordure supprimée */
-        border-radius: 0.25rem;
-        padding: 0.75rem 1rem; /* Ajuster le padding */
         text-align: center; /* Centrer le contenu */
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Légère ombre pour la séparation */
-        background-color: #fff; /* Fond blanc */
     }
 
     .interet-card-body {
@@ -113,39 +107,55 @@
         flex-direction: column;
         align-items: center;
         justify-content: center; /* Centre verticalement si hauteur fixe */
-        min-height: 50px; /* Hauteur minimale pour l'alignement */
+        min-height: 60px; /* Hauteur minimale pour l'alignement et les boutons */
+        padding: 1.5rem 0.5rem 0.5rem; /* Ajouter de l'espace en haut pour les boutons */
     }
 
-    .interet-nom {
+    .interet-nom-display { /* Nouveau conteneur pour le nom pour un meilleur contrôle */
+        background-color: #e8f4fc;
+        padding: 5px 12px;
+        border-radius: 15px;
         font-size: 0.9em;
-        color: var(--primary-color, #0056b3);
-        font-weight: 500;
-        display: block; /* Prend toute la largeur */
-        word-wrap: break-word; /* Coupe les mots longs */
-        margin-top: 1rem; /* Espace par rapport aux boutons */
+        color: var(--primary-color, #0d6efd);
+        display: inline-block; /* Ou block selon le besoin */
+        word-wrap: break-word; /* Assure la césure des mots longs */
+        margin-top: 0; /* Remplacé par le padding du parent */
+        line-height: 1.4;
     }
 
     /* Positionnement des boutons d'action (Modifier/Supprimer) */
     .interet-item .item-actions {
         position: absolute;
-        top: 0.4rem;
-        right: 0.4rem;
+        top: 0.2rem; /* Positionnement en haut */
+        right: 0.2rem; /* Positionnement à droite */
         display: flex;
         gap: 0.5rem;
+        z-index: 10; /* Pour être au-dessus du contenu */
+        opacity: 0; /* Caché par défaut */
+        transition: opacity 0.2s ease-in-out;
     }
+    .interet-item:hover .item-actions,
+    .interet-item:focus-within .item-actions { /* Afficher au survol ou focus */
+        opacity: 1;
+    }
+
     .interet-item .item-actions button {
-        background: none;
+        background: rgba(255, 255, 255, 0.7); /* Fond léger pour visibilité */
         border: none;
-        padding: 0;
+        padding: 3px 5px;
+        border-radius: 3px;
         cursor: pointer;
+        line-height: 1;
     }
     .interet-item .item-actions .edit-item-btn i,
     .interet-item .item-actions .delete-item-btn i {
-        font-size: 0.9rem; /* Taille réduite pour moins d'encombrement */
+        font-size: 0.85rem; /* Taille ajustée */
     }
-     .interet-item .item-actions .edit-item-btn:hover i { color: var(--bs-primary-dark, #0a58ca); }
-     .interet-item .item-actions .delete-item-btn:hover i { color: var(--bs-danger-dark, #b02a37); }
+    .interet-item .item-actions .edit-item-btn { color: var(--bs-primary, #0d6efd); }
+    .interet-item .item-actions .delete-item-btn { color: var(--bs-danger, #dc3545); }
 
+     .interet-item .item-actions .edit-item-btn:hover { color: var(--bs-primary-dark, #0a58ca); background: rgba(255, 255, 255, 0.9); }
+     .interet-item .item-actions .delete-item-btn:hover { color: var(--bs-danger-dark, #b02a37); background: rgba(255, 255, 255, 0.9); }
 
     /* Style pour l'élément en cours d'édition */
     .interet-item.editing-item {
@@ -158,26 +168,41 @@
     }
     .interet-item.editing-item .p-3 { /* Le conteneur du formulaire d'édition */
          background-color: #f8f9fa;
+         border: 1px solid #dee2e6;
+         border-radius: 4px;
     }
 
-    /* Responsive */
-    @media (max-width: 1199.98px) {
-        .interet-grid { grid-template-columns: repeat(4, 1fr); } /* 4 colonnes sur grand écran */
-    }
-    @media (max-width: 991.98px) {
-        .interet-grid { grid-template-columns: repeat(3, 1fr); } /* 3 colonnes sur tablette */
-    }
-    @media (max-width: 767.98px) {
-        .interet-grid { grid-template-columns: repeat(2, 1fr); } /* 2 colonnes sur mobile */
-    }
+    /* Responsive - les media queries précédentes sont remplacées par auto-fill */
+    /* On peut ajouter des ajustements spécifiques si nécessaire */
     @media (max-width: 575.98px) {
-        .interet-grid { grid-template-columns: repeat(2, 1fr); } /* 2 colonnes sur très petit écran */
-        .interet-item .item-actions { /* Ajuster position/gap sur petits écrans */
-             top: 0.2rem;
-             right: 0.2rem;
+        .interet-grid {
+             gap: 0.5rem; /* Réduire l'écart */
+             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Taille min plus petite */
+        }
+        .interet-card-body {
+             min-height: 50px;
+             padding: 1.2rem 0.3rem 0.3rem;
+        }
+        .interet-nom-display {
+            font-size: 0.85em;
+            padding: 4px 10px;
+        }
+        .interet-item .item-actions { /* Rapprocher les boutons */
+             top: 0.1rem;
+             right: 0.1rem;
              gap: 0.3rem;
         }
-         .interet-nom { font-size: 0.85em; }
+         .interet-item .item-actions button {
+            padding: 2px 4px;
+         }
+         .interet-item .item-actions i {
+            font-size: 0.8rem;
+         }
+         .form-section-header {
+             flex-direction: column;
+             align-items: flex-start;
+             gap: 0.5rem;
+         }
     }
 
     /* Variables (si non définies globalement) */
