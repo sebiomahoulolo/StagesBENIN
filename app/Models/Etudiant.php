@@ -53,4 +53,12 @@ public function entreprise()
     return $this->belongsTo(Entreprise::class);
 }
 
+/**
+ * Obtenir les plaintes et suggestions soumises par l'étudiant.
+ */
+public function complaintsSuggestions()
+{
+    return $this->hasMany(ComplaintSuggestion::class);
+}
+
 }

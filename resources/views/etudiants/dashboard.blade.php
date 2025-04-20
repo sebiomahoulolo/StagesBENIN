@@ -34,6 +34,11 @@
                     <span>Mettre à jour mon CV</span>
                 </a>
             @endif
+            {{-- Bouton pour soumettre une plainte ou suggestion --}}
+            <a href="{{ route('etudiants.complaints.create') }}" class="action-button">
+                <i class="fas fa-comment-alt"></i>
+                <span>Soumettre une plainte/suggestion</span>
+            </a>
         </div>
     </div>
 

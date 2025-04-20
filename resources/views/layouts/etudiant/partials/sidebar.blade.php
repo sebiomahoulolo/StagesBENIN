@@ -80,7 +80,7 @@
                  @if(Auth::user()->etudiant)
                     <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}"> <i class="fas fa-comments fa-fw"></i><span>Entretiens</span> </a>
                  @endif
-                 <a href="#" class="menu-item"> {{-- Route Suggestions/Plaintes --}}
+                 <a href="{{ route('etudiants.complaints.index') }}" class="menu-item {{ request()->routeIs('etudiants.complaints.*') ? 'active' : '' }}">
                      <i class="fas fa-comment-alt fa-fw"></i>
                      <span>Suggestions/Plaintes</span>
                  </a>

@@ -51,6 +51,15 @@
                 <span class="menu-badge absolute-badge">{{ $unreadAdminMessages }}</span>
             @endif --}}
         </a>
+        
+        <a href="{{ route('admin.complaints.index') }}" class="menu-item {{ request()->routeIs('admin.complaints.*') ? 'active' : '' }}">
+            <span class="menu-icon" aria-hidden="true"><i class="fas fa-comment-alt"></i></span>
+            <span class="menu-text">Plaintes & Suggestions</span>
+            {{-- Si vous souhaitez un badge pour les nouvelles plaintes, décommentez et configurez ci-dessous --}}
+            {{-- @if(isset($newComplaints) && $newComplaints > 0)
+                <span class="menu-badge absolute-badge">{{ $newComplaints }}</span>
+            @endif --}}
+        </a>
 
         <div class="menu-category">Configuration</div>
          <a href="#" class="menu-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"> {{-- Adjust route name --}}

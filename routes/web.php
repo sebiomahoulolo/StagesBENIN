@@ -17,6 +17,8 @@ use App\Http\Controllers\RecrutementController;
 use App\Http\Controllers\ActualiteController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\Etudiant\CvController; // Contrôleur CV Étudiant
+use App\Http\Controllers\Etudiant\ComplaintSuggestionController as EtudiantComplaintController; // Contrôleur plaintes/suggestions étudiant
+use App\Http\Controllers\Admin\ComplaintSuggestionController as AdminComplaintController; // Contrôleur plaintes/suggestions admin
 
 // --- Contrôleurs d'Authentification (Breeze & Modifiés) ---
 use App\Http\Controllers\Auth\RegisteredUserController; // Votre contrôleur d'inscription modifié
@@ -133,6 +135,11 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     // Route pour visualiser les détails d'un étudiant
     Route::get('/etudiants/{etudiant}/details', [App\Http\Controllers\Admin\EtudiantController::class, 'showDetails'])
         ->name('etudiants.show'); // Utilisation de .show comme convention
+
+    // Routes pour les plaintes et suggestions côté admin
+    // IMPORTANT: La route de filtre doit être définie AVANT la route resource pour éviter les conflits
+    Route::get('complaints/filter', [AdminComplaintController::class, 'filter'])->name('complaints.filter');
+    Route::resource('complaints', AdminComplaintController::class)->except(['create', 'store']);
 });
 
 
@@ -166,6 +173,9 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiant
         // ... (idem pour experiences, competences, langues, etc.) ...
         Route::get('/projets', [CvController::class, 'showProjects'])->name('projets'); // Exemple si vous ajoutez d'autres sections
     }); // Fin du groupe cv
+
+    // Routes pour les plaintes et suggestions côté étudiant
+    Route::resource('complaints', EtudiantComplaintController::class)->except(['edit', 'update']);
 }); // Fin du groupe étudiant
 
 
