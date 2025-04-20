@@ -11,22 +11,7 @@
        <a href="https://www.tiktok.com/@stagesbenin6?_t=8lH68SpT4HG&_r=1" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok"></i></a>
        <a href="https://wa.me/22966693956" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i></a>
     </div>
-    <div>
-        @guest {{-- Afficher si l'utilisateur n'est pas connecté --}}
-            <a href="{{ route('login') }}" class="btn btn-light btn-sm text-primary">CONNEXION</a>
-            <a href="{{ route('register') }}" class="btn btn-light btn-sm text-primary">INSCRIPTION</a>
-        @else {{-- Afficher si l'utilisateur est connecté --}}
-            {{-- Exemple: Lien vers le tableau de bord et bouton de déconnexion --}}
-            <a href="{{ route('dashboard') }}" class="btn btn-light btn-sm text-primary">{{ Auth::user()->name }}</a>
-            <a href="{{ route('logout') }}" class="btn btn-light btn-sm text-danger"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                DÉCONNEXION
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-        @endguest
-    </div>
+
 </div>
 
 <!-- Navbar (Toujours visible) -->
@@ -47,11 +32,49 @@
                 <li class="nav-item"><a class="nav-link {{ Request::routeIs('pages.evenements') ? 'active' : '' }}" href="{{ route('pages.evenements') }}">ÉVÉNEMENTS</a></li>
                 <li class="nav-item"><a class="nav-link {{ Request::routeIs('pages.apropos') ? 'active' : '' }}" href="{{ route('pages.apropos') }}">À PROPOS</a></li>
                 <li class="nav-item"><a class="nav-link {{ Request::routeIs('pages.contact') ? 'active' : '' }}" href="{{ route('pages.contact') }}">CONTACT</a></li>
-                {{-- Liens Connexion/Inscription sur mobile si la bannière est cachée --}}
+                
+                {{-- Dropdown profile pour connexion/déconnexion --}}
                 @guest
+                    <li class="nav-item d-none d-md-block">
+                        <div class="dropdown">
+                            <button class="btn nav-link dropdown-toggle" type="button" id="dropdownLoginButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle fa-fw"></i> CONNEXION
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLoginButton">
+                                <li><a class="dropdown-item" href="{{ route('login') }}"><i class="fas fa-sign-in-alt fa-fw"></i> CONNEXION</a></li>
+                                <li><a class="dropdown-item" href="{{ route('register') }}"><i class="fas fa-user-plus fa-fw"></i> INSCRIPTION</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item d-md-none"><a class="nav-link" href="{{ route('login') }}">CONNEXION</a></li>
                     <li class="nav-item d-md-none"><a class="nav-link" href="{{ route('register') }}">INSCRIPTION</a></li>
                 @else
+                    <li class="nav-item d-none d-md-block">
+                        <div class="dropdown">
+                            <button class="btn nav-link dropdown-toggle" type="button" id="dropdownProfileButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{-- Ajout de la photo de profil --}}
+                                <span class="profile-image-container" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; vertical-align: middle; margin-right: 5px;">
+                                    @if(Auth::user() && Auth::user()->etudiant?->cvProfile?->photo_url)
+                                        <img src="{{ Storage::url(Auth::user()->etudiant->photo_path) }}" alt="Profil" style="width: 100%; height: 100%; object-fit: cover;">
+                                    @else
+                                        <i class="fas fa-user-circle fa-fw" style="font-size: 1.5rem;"></i>
+                                    @endif
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfileButton">
+                                <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-home fa-fw"></i> Tableau de bord</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-navbar').submit();">
+                                        <i class="fas fa-sign-out-alt fa-fw"></i> Déconnexion
+                                    </a>
+                                    <form id="logout-form-navbar" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item d-md-none"><a class="nav-link" href="{{ route('dashboard') }}">{{ Auth::user()->name }}</a></li>
                     <li class="nav-item d-md-none">
                          <a class="nav-link text-danger" href="{{ route('logout') }}"

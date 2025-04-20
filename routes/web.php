@@ -257,3 +257,22 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
  Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
  Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
  Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)
+
+// Routes pour la messagerie avec middleware auth
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('messaging')->name('messaging.')->group(function () {
+        Route::get('/', [App\Http\Controllers\MessagingController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\MessagingController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\MessagingController::class, 'store'])->name('store');
+        Route::get('/{conversation}', [App\Http\Controllers\MessagingController::class, 'show'])->name('show');
+        Route::post('/{conversation}/messages', [App\Http\Controllers\MessagingController::class, 'sendMessage'])->name('send-message');
+        Route::post('/{conversation}/mark-as-read', [App\Http\Controllers\MessagingController::class, 'markAsRead'])->name('mark-as-read');
+        
+        // Routes pour le nouveau MessageController
+        Route::prefix('api')->name('api.')->group(function () {
+            Route::post('/conversations/{conversationId}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+            Route::delete('/messages/{messageId}', [App\Http\Controllers\MessageController::class, 'destroy'])->name('messages.destroy');
+            Route::get('/conversations/{conversationId}/messages', [App\Http\Controllers\MessageController::class, 'getMessages'])->name('messages.get');
+        });
+    });
+});

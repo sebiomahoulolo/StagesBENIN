@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\Conversation;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,12 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+// Canal pour les conversations privées
+Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
+    $conversation = Conversation::findOrFail($conversationId);
+    
+    // Vérifier si l'utilisateur est un participant de cette conversation
+    return $conversation->isParticipant($user->id);
 });

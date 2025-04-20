@@ -10,6 +10,16 @@
             <i class="fas fa-home fa-fw"></i><span>Tableau de bord</span>
         </a>
 
+        <a href="#" class="menu-item1"> {{-- Route Boostage --}}
+             <i class="fas fa-rocket fa-fw"></i>
+             <span>Boostage</span>
+        </a>
+
+
+        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+            <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
+        </a>
+         
         {{-- Section CV --}}
         <div x-data="{ open: {{ request()->routeIs('etudiants.cv.*') || request()->routeIs('cvtheque.route') ? 'true' : 'false' }} }">
             <!-- <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('etudiants.cv.*') || request()->routeIs('cvtheque.route') ? 'active' : '' }}">
@@ -57,7 +67,7 @@
                      <i class="fas fa-building fa-fw"></i>
                      <span>Entreprises suivies</span>
                 </a>
-                 <a href="#" class="menu-item"> {{-- Route Événements --}}
+                 <a href="{{ route('pages.evenements') }}" class="menu-item"> {{-- Route Événements --}}
                      <i class="fas fa-calendar-day fa-fw"></i>
                      <span>Événements</span>
                  </a>
@@ -65,17 +75,21 @@
         </div>
 
          {{-- Section Communication & Suivi --}}
-         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') ? 'active' : '' }}">
+         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') ? 'true' : 'false' }} }"> {{-- Ajoutez messaging.* --}}
+            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') ? 'active' : '' }}">
                  <i class="fas fa-comments fa-fw"></i>
                  <span>Communication</span>
                   <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
              </button>
              <div x-show="open" class="menu-section-content">
-                 <a href="#" class="menu-item"> {{-- Route Messagerie --}}
+                 <a href="{{ route('messaging.index') }}" class="menu-item {{ request()->routeIs('messaging.*') ? 'active' : '' }}">
                      <i class="fas fa-envelope fa-fw"></i>
                      <span>Messagerie</span>
-                      {{-- <span class="notifications-badge">2</span> --}}
+                     @auth
+                         @if(Auth::user()->unreadMessagesCount() > 0)
+                             <span class="notifications-badge">{{ Auth::user()->unreadMessagesCount() }}</span>
+                         @endif
+                     @endauth
                  </a>
                  @if(Auth::user()->etudiant)
                     <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}"> <i class="fas fa-comments fa-fw"></i><span>Entretiens</span> </a>
@@ -114,15 +128,10 @@
 
              </div>
          </div>
+         
 
         {{-- Section Compte (éléments restants toujours visibles ou groupés différemment si nécessaire) --}}
-        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-            <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
-        </a>
-         <a href="#" class="menu-item1"> {{-- Route Boostage --}}
-             <i class="fas fa-rocket fa-fw"></i>
-             <span>Boostage</span>
-         </a>
+       
         <a href="{{ route('logout') }}" class="menu-item1" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="fas fa-sign-out-alt fa-fw"></i><span>Déconnexion</span>
         </a>
