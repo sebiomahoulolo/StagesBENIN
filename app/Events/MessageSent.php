@@ -20,7 +20,6 @@ class MessageSent implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  Message  $message
      * @return void
      */
     public function __construct(Message $message)
@@ -35,9 +34,19 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('conversation.' . $this->message->conversation_id);
+        return new Channel('new-message');
     }
-
+    
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'MessageSent';
+    }
+    
     /**
      * Get the data to broadcast.
      *
@@ -45,26 +54,18 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastWith()
     {
-        // Inclure les informations nécessaires pour afficher le message
         return [
-            'id' => $this->message->id,
-            'user_id' => $this->message->user_id,
-            'user_name' => $this->message->user->name,
-            'body' => $this->message->body,
-            'type' => $this->message->type,
-            'created_at' => $this->message->created_at->toIso8601String(),
-            'attachments' => $this->message->attachments->map(function ($attachment) {
-                return [
-                    'id' => $attachment->id,
-                    'file_name' => $attachment->file_name,
-                    'file_type' => $attachment->file_type,
-                    'file_size' => $attachment->file_size,
-                    'url' => $attachment->getUrl(),
-                    'is_image' => $attachment->isImage(),
-                    'is_video' => $attachment->isVideo(),
-                    'is_audio' => $attachment->isAudio(),
-                ];
-            }),
+            'message' => [
+                'id' => $this->message->id,
+                'conversation_id' => $this->message->conversation_id,
+                'user_id' => $this->message->user_id,
+                'body' => $this->message->body,
+                'created_at' => $this->message->created_at->toDateTimeString(),
+                'user' => [
+                    'id' => $this->message->user->id,
+                    'name' => $this->message->user->name,
+                ]
+            ]
         ];
     }
 } 

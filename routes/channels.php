@@ -18,10 +18,16 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-// Canal pour les conversations privées
+// Canal public pour les messages
+Broadcast::channel('new-message', function () {
+    return true;
+});
+
+// Canal privé pour chaque conversation
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    $conversation = Conversation::findOrFail($conversationId);
-    
-    // Vérifier si l'utilisateur est un participant de cette conversation
-    return $conversation->isParticipant($user->id);
+    return \App\Models\Conversation::where('id', $conversationId)
+        ->whereHas('participants', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->exists();
 });

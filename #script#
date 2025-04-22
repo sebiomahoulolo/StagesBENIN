@@ -1,1 +1,1 @@
-php artisan make:migration create_complaints_suggestions_table
+php artisan make:livewire Messaging/MainComponent

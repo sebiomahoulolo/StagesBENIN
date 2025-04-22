@@ -1,183 +1,221 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Messagerie')
+@section('title', 'Messages')
 
-@section('content')
-<div class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center bg-white">
-            <h1 class="h4 mb-0">Messagerie</h1>
-            <a href="{{ route('messaging.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> Nouvelle conversation
-            </a>
-        </div>
-        
-        <div class="card-body p-0">
-            <div class="messaging-container">
-                <div class="conversations-container">
-                    @if($conversations->isEmpty())
-                        <div class="p-4 text-center">
-                            <div class="empty-state">
-                                <i class="fas fa-comments text-muted" style="font-size: 3rem;"></i>
-                                <p class="mt-3">Vous n'avez aucune conversation.</p>
-                                <a href="{{ route('messaging.create') }}" class="btn btn-sm btn-primary mt-2">
-                                    Démarrer une nouvelle conversation
-                                </a>
-                            </div>
-                        </div>
-                    @else
-                        <div class="conversation-list">
-                            @foreach($conversations as $conversation)
-                                @php
-                                    $otherParticipants = $conversation->participants->where('id', '!=', Auth::id());
-                                    $lastMessage = $conversation->lastMessage;
-                                    $unreadCount = $conversation->unreadMessagesCount(Auth::id());
-                                @endphp
-                                <a href="{{ route('messaging.show', $conversation->id) }}" class="conversation-item {{ request()->route('conversation') && request()->route('conversation')->id == $conversation->id ? 'active' : '' }}">
-                                    <div class="conversation-avatar">
-                                        @if($conversation->is_group)
-                                            <div class="group-avatar">
-                                                <i class="fas fa-users"></i>
-                                            </div>
-                                        @else
-                                            <div class="user-avatar">
-                                                <i class="fas fa-user"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div class="conversation-info">
-                                        <div class="conversation-name">
-                                            @if($conversation->is_group)
-                                                {{ $conversation->name }}
-                                            @else
-                                                {{ $otherParticipants->first()->name ?? 'Utilisateur inconnu' }}
-                                            @endif
-                                            @if($unreadCount > 0)
-                                                <span class="badge bg-primary">{{ $unreadCount }}</span>
-                                            @endif
-                                        </div>
-                                        <div class="conversation-last-message">
-                                            @if($lastMessage)
-                                                @if($lastMessage->user_id == Auth::id())
-                                                    <span class="text-muted">Vous: </span>
-                                                @else
-                                                    <span class="text-muted">{{ $lastMessage->user->name ?? 'Inconnu' }}: </span>
-                                                @endif
-                                                
-                                                @if($lastMessage->type === 'text')
-                                                    {{ Str::limit($lastMessage->body, 30) }}
-                                                @elseif($lastMessage->type === 'image')
-                                                    <i class="fas fa-image"></i> Image
-                                                @elseif($lastMessage->type === 'video')
-                                                    <i class="fas fa-video"></i> Vidéo
-                                                @elseif($lastMessage->type === 'audio')
-                                                    <i class="fas fa-microphone"></i> Audio
-                                                @elseif($lastMessage->type === 'file')
-                                                    <i class="fas fa-file"></i> Fichier
-                                                @endif
-                                            @else
-                                                <span class="text-muted">Aucun message</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="conversation-time">
-                                        @if($lastMessage)
-                                            {{ $lastMessage->created_at->diffForHumans(null, true, true) }}
-                                        @endif
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@push('styles')
+        <!-- Theme CSS -->
+        <link rel="stylesheet" href="{{ asset('css/theme.bundle.css') }}" id="stylesheetLTR">
+        <link rel="stylesheet" href="{{ asset('css/theme.rtl.bundle.css') }}" id="stylesheetRTL">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+
+<!-- Select2 pour les sélections multiples -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
 <style>
-    .messaging-container {
-        display: flex;
-        height: calc(100vh - 280px);
-        min-height: 500px;
-        border-radius: 0.375rem;
+    .container-fluid {
+        height: calc(100vh - 60px);
     }
-    
-    .conversations-container {
-        width: 100%;
-        border-right: 1px solid #e5e7eb;
-        overflow-y: auto;
-    }
-    
-    .conversation-list {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .conversation-item {
-        display: flex;
-        padding: 15px;
-        border-bottom: 1px solid #f3f4f6;
-        text-decoration: none;
-        color: inherit;
-        transition: background-color 0.15s ease-in-out;
-    }
-    
-    .conversation-item:hover, .conversation-item.active {
-        background-color: #f9fafb;
-    }
-    
-    .conversation-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 15px;
-        flex-shrink: 0;
-    }
-    
-    .user-avatar, .group-avatar {
-        font-size: 1.5rem;
-        color: #6b7280;
-    }
-    
-    .conversation-info {
+    .flex-md-grow-1 {
         flex-grow: 1;
-        overflow: hidden;
     }
-    
-    .conversation-name {
-        font-weight: 600;
-        margin-bottom: 5px;
+    .h-100 {
+        height: 100%;
+    }
+    .min-vh-50 {
+        min-height: 50vh;
+    }
+    .min-vh-md-25 {
+        min-height: 25vh;
+    }
+    .typing:after {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background-color: currentColor;
+        display: inline-block;
+        animation: typing 1.5s infinite;
+        border-radius: 50%;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        vertical-align: middle;
+    }
+    @keyframes typing {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+    }
+    .avatar-xs {
+        width: 32px;
+        height: 32px;
+    }
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+    }
+    .avatar-circle {
+        border-radius: 50%;
+    }
+    .bg-light-green {
+        background-color: rgba(42, 180, 111, 0.08);
+    }
+    .avatar-title {
         display: flex;
-        justify-content: space-between;
-    }
-    
-    .conversation-last-message {
-        color: #6b7280;
-        font-size: 0.875rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .conversation-time {
-        font-size: 0.75rem;
-        color: #9ca3af;
-        margin-left: 10px;
-        white-space: nowrap;
-    }
-    
-    .empty-state {
-        display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 3rem;
-        color: #6b7280;
+        width: 100%;
+        height: 100%;
+        background-color: #6c757d;
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .avatar-online:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 25%;
+        height: 25%;
+        background-color: #2ab46f;
+        border: 2px solid #fff;
+        border-radius: 50%;
+    }
+    .w-40px {
+        width: 40px;
+    }
+    .w-50px {
+        width: 50px;
+    }
+    .h-40px {
+        height: 40px;
+    }
+    .h-50px {
+        height: 50px;
+    }
+    .scroll-shadow {
+        background:
+            /* Shadow Cover TOP */
+            linear-gradient(white 30%, rgba(255, 255, 255, 0)) center top,
+            /* Shadow Cover BOTTOM */
+            linear-gradient(rgba(255, 255, 255, 0), white 70%) center bottom,
+            /* Shadow TOP */
+            radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) center top,
+            /* Shadow BOTTOM */
+            radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) center bottom;
+        background-repeat: no-repeat;
+        background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+        background-attachment: local, local, scroll, scroll;
+    }
+    .avatar-group .avatar:not(:first-child) {
+        margin-left: -0.5rem;
+    }
+    .avatar-group {
+        display: flex;
+    }
+    .text-bg-primary-soft {
+        background-color: rgba(13, 110, 253, 0.2);
+        color: #0d6efd;
+    }
+    .text-bg-success-soft {
+        background-color: rgba(25, 135, 84, 0.2);
+        color: #198754;
+    }
+    .text-bg-danger-soft {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+    .text-bg-info-soft {
+        background-color: rgba(13, 202, 240, 0.2);
+        color: #0dcaf0;
+    }
+    .text-bg-warning-soft {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+    }
+    .text-bg-dark-soft {
+        background-color: rgba(33, 37, 41, 0.2);
+        color: #212529;
     }
 </style>
-@endsection 
+@endpush
+
+@section('content')
+    @livewire('messaging.main-component')
+@endsection
+
+@push('scripts')
+<!-- jQuery (nécessaire pour Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 pour les sélections multiples -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script>
+            // Theme switcher
+            let themeSwitcher = document.getElementById('themeSwitcher');
+
+            const getPreferredTheme = () => {
+                if (localStorage.getItem('theme') != null) {
+                    return localStorage.getItem('theme');
+                }
+                return document.documentElement.dataset.theme;
+    };
+
+            const setTheme = function(theme) {
+                if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                } else {
+                    document.documentElement.dataset.theme = theme;
+                }
+                localStorage.setItem('theme', theme);
+            };
+
+            const showActiveTheme = theme => {
+                const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
+                document.querySelectorAll('[data-theme-value]').forEach(element => {
+                    element.classList.remove('active');
+        });
+                activeBtn && activeBtn.classList.add('active');
+
+                // Set button if demo mode is enabled
+                document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
+                    if (element.value == theme) {
+                        element.checked = true;
+                    }
+        });
+    };
+
+            function reloadPage() {
+                window.location = window.location.pathname;
+            }
+
+            setTheme(getPreferredTheme());
+
+            if (typeof themeSwitcher != 'undefined') {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                    if (localStorage.getItem('theme') != null) {
+                        if (localStorage.getItem('theme') == 'auto') {
+                            reloadPage();
+                        }
+                    }
+        });
+
+                window.addEventListener('load', () => {
+                    showActiveTheme(getPreferredTheme());
+
+                    document.querySelectorAll('[data-theme-value]').forEach(element => {
+                        element.addEventListener('click', () => {
+                            const theme = element.getAttribute('data-theme-value');
+                            localStorage.setItem('theme', theme);
+                            reloadPage();
+                })
+            })
+        });
+            }
+        </script>
+
+        <!-- Theme JS -->
+<script src="{{ asset('js/theme.bundle.js') }}"></script>
+@endpush
