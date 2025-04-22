@@ -1,0 +1,28 @@
+/* --- App Global Styles --- */
+
+body {
+    /* Espace en haut pour compenser le header fixe (bannière + navbar) */
+    /* Hauteur approx bannière (45px) + hauteur navbar (61px) + marge = ~110px */
+    padding-top: 110px;
+    transition: padding-top 0.3s ease-in-out; /* Pour une transition douce sur mobile */
+}
+
+/* Quand la bannière est cachée sur mobile, réduire le padding */
+@media (max-width: 767.98px) {
+    body {
+        /* Espace pour la navbar seulement (hauteur navbar ~60px) */
+        padding-top: 70px;
+    }
+}
+
+/* Autres styles globaux si nécessaire */
+main {
+    min-height: calc(100vh - 110px - 200px); /* Calcul approximatif pour pousser le footer en bas (100% hauteur - hauteur header - hauteur footer estimée) */
+    /* Ajuster la hauteur du footer (200px ici) si nécessaire */
+}
+
+@media (max-width: 767.98px) {
+     main {
+        min-height: calc(100vh - 70px - 200px); /* Ajustement pour mobile */
+    }
+}

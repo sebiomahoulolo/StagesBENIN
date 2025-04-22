@@ -1,0 +1,257 @@
+/* public/css/layout/header.css */
+
+/* ============================================ */
+/* === Styles Header Existants (Conservés) === */
+/* ============================================ */
+
+header.app-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 0 1.5rem; /* Padding horizontal */
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1002; /* Au-dessus de tout */
+}
+
+.header-start { display: flex; align-items: center; }
+
+/* Bouton Hamburger/Croix */
+.sidebar-toggle-btn {
+    display: none; /* Caché sur grand écran */
+    background: transparent; border: none; color: white;
+    font-size: 1.4rem; cursor: pointer;
+    padding: 0.5rem; line-height: 1;
+    margin-right: 0.75rem;
+}
+.sidebar-toggle-btn:hover { opacity: 0.8; }
+.sidebar-toggle-btn i[x-cloak] { display: none !important; }
+
+/* Logo */
+.logo { font-size: 1.6rem; font-weight: bold; display: flex; align-items: center; color: white; text-decoration: none; }
+.logo i { margin-right: 10px; }
+.logo span.logo-text { /* Styles spécifiques au texte si besoin */ }
+
+
+/* Actions Droite */
+.header-actions { display: flex; align-items: center; gap: 0.5rem; /* Gap réduit */ }
+
+/* Conteneur pour chaque icône cliquable + dropdown */
+.header-dropdown-container {
+    position: relative; /* Contexte pour le dropdown */
+}
+
+/* Bouton/Icône qui déclenche le dropdown */
+.header-icon-button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0.5rem; /* Zone cliquable */
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative; /* Pour le badge notif */
+    line-height: 1;
+    transition: background-color 0.2s ease;
+}
+.header-icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.header-icon-button i {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+/* Spécifique au bouton profil contenant l'image */
+.profile-trigger-button {
+    padding: 0; /* Pas de padding si image */
+}
+
+
+/* Notifications Icon & Badge (Styles existants ajustés) */
+.notifications {
+    /* Plus besoin de position relative ici si on utilise .header-icon-button */
+}
+.notifications i {
+    /* Style géré par .header-icon-button */
+}
+.notifications-badge {
+    position: absolute; top: 0px; right: 0px; /* Position par rapport au bouton */
+    background-color: var(--accent-color); color: white;
+    border-radius: 50%; padding: 2px 6px;
+    font-size: 0.7rem; line-height: 1; font-weight: bold;
+    pointer-events: none; /* Important */
+}
+
+/* Profile Menu & Image (Styles existants ajustés) */
+.profile-menu {
+     /* Plus besoin de position relative ici si on utilise .header-icon-button */
+}
+.profile-image {
+    width: 38px; height: 38px; border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9); display: flex;
+    align-items: center; justify-content: center;
+    color: var(--primary-color); overflow: hidden;
+    /* Transition si l'image change ? */
+}
+.profile-image i { font-size: 1.1rem; }
+.profile-image img { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* ============================================ */
+/* === NOUVEAUX Styles Dropdown Menu === */
+/* ============================================ */
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.75rem); /* Sous le trigger + espace */
+    right: 0; /* Alignement à droite */
+    background-color: white;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 8px; /* Coins plus arrondis */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12); /* Ombre plus nette */
+    min-width: 240px; /* Largeur minimum */
+    z-index: 1020; /* Au-dessus du header */
+    padding: 0.5rem 0; /* Padding vertical interne */
+    color: #333; /* Couleur texte par défaut */
+    /* display: none; est géré par Alpine x-show */
+    /* Transitions gérées par Alpine x-transition dans le HTML */
+}
+
+/* Dropdown spécifique Notifications */
+.notifications-dropdown {
+    min-width: 320px; /* Plus large */
+    max-width: 360px;
+}
+
+/* Header du Dropdown (ex: "Notifications") */
+.dropdown-header {
+    padding: 0.75rem 1.25rem; /* Padding ajusté */
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-color, #eee);
+    margin-bottom: 0.25rem; /* Petit espace avant contenu */
+}
+
+/* Zone de contenu scrollable */
+.dropdown-content {
+    max-height: 350px; /* Hauteur max avant scroll */
+    overflow-y: auto;
+    /* Style scrollbar (optionnel, dépend des navigateurs) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray) var(--light-gray);
+}
+.dropdown-content::-webkit-scrollbar { width: 6px; }
+.dropdown-content::-webkit-scrollbar-track { background: var(--light-gray); border-radius: 3px;}
+.dropdown-content::-webkit-scrollbar-thumb { background-color: var(--gray); border-radius: 3px; }
+
+/* Item générique dans le dropdown */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1.25rem; /* Padding item */
+    color: var(--secondary-color, #333);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+    white-space: normal; /* Permet au texte de passer à la ligne */
+}
+.dropdown-item:hover {
+    background-color: var(--light-gray, #f5f7fa);
+    color: var(--primary-color);
+}
+/* Icône dans un item */
+.dropdown-item i.fa-fw {
+    margin-right: 0.75rem;
+    width: 18px;
+    text-align: center;
+    color: var(--gray);
+}
+.dropdown-item:hover i.fa-fw {
+    color: var(--primary-color);
+}
+
+/* Séparateur */
+.dropdown-separator {
+    height: 1px;
+    background-color: var(--border-color, #eee);
+    margin: 0.5rem 0;
+}
+
+/* Footer du dropdown (ex: "Voir tout") */
+.dropdown-footer {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    border-top: 1px solid var(--border-color, #eee);
+    margin-top: 0.25rem; /* Espace après contenu */
+    transition: background-color 0.2s ease;
+}
+.dropdown-footer:hover {
+    background-color: var(--light-gray, #f5f7fa);
+}
+
+/* --- Styles spécifiques Notifications Item --- */
+.notification-item {
+    padding: 0.75rem 1.25rem;
+    align-items: flex-start; /* Pour texte potentiellement long */
+    border-bottom: 1px solid var(--border-color, #eee); /* Séparateur léger */
+}
+.notification-item:last-child {
+    border-bottom: none; /* Pas de bordure pour le dernier */
+}
+.notification-icon {
+    width: 32px; height: 32px; /* Taille icône notif */
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-right: 1rem; /* Espace icône/détails */
+}
+.notification-icon i { font-size: 0.9rem; }
+/* Couleurs spécifiques par type de notif (via classes ajoutées dans le HTML) */
+.notification-item .text-primary { color: var(--primary-color); }
+.notification-item .text-success { color: var(--success-color); }
+.notification-item .text-warning { color: var(--warning-color); }
+/* ... etc ... */
+.notification-details { flex-grow: 1; }
+.notification-title { font-weight: 500; color: var(--secondary-color); margin-bottom: 0.1rem; font-size: 0.9rem; line-height: 1.3; }
+.notification-time { font-size: 0.75rem; color: var(--gray); }
+.no-notifications { padding: 1.5rem 1rem; text-align: center; color: var(--gray); font-style: italic; font-size: 0.9rem; }
+
+/* --- Styles spécifiques Profil Dropdown --- */
+.profile-dropdown {
+    min-width: 200px; /* Un peu moins large que notifs */
+}
+.dropdown-user-info {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-color, #eee);
+    line-height: 1.3;
+}
+.dropdown-user-info .text-base { font-size: 0.95rem; }
+.dropdown-user-info .text-sm { font-size: 0.8rem; }
+.dropdown-user-info .font-medium { font-weight: 500; }
+.dropdown-user-info .text-gray-800 { color: #2d3748; }
+.dropdown-user-info .text-gray-500 { color: #718096; }
+
+
+/* ============================================ */
+/* === Styles Header Responsive (Conservés) === */
+/* ============================================ */
+@media (max-width: 991.98px) {
+    .sidebar-toggle-btn { display: block; }
+    header.app-header { padding: 0 1rem; }
+}
+@media (max-width: 767.98px) {
+    header.app-header .logo span.logo-text { display: none; }
+    header.app-header .logo { font-size: 1.5rem; }
+    header.app-header .header-actions { gap: 0.5rem; } /* Rapprocher icônes */
+     /* Positionner les dropdowns pour éviter sortie écran */
+     .dropdown-menu { min-width: 250px; } /* Assurer largeur suffisante */
+     .notifications-dropdown { min-width: 280px; max-width: 90vw; }
+}

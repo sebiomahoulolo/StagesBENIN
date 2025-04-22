@@ -1,0 +1,165 @@
+/* Styles spécifiques pour resources/views/auth/register-choice.blade.php */
+
+/* Variables (si elles ne sont pas globales dans votre layout CSS) */
+:root {
+    --custom-primary: #0056b3;
+    --custom-secondary: #555555;
+    --custom-white: #FFFFFF;
+    --custom-light-gray: #f8f9fa;
+    --custom-font-poppins: 'Poppins', sans-serif;
+    --custom-font-montserrat: 'Montserrat', sans-serif;
+    --custom-font-roboto: 'Roboto', sans-serif;
+}
+
+/* --- Section Titre de Page --- */
+.page-title-section {
+    /* background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); /* Fond dégradé très léger */
+    border-bottom: 1px solid #dee2e6;
+    text-align: center; /* Centrer tout le contenu de la section */
+    padding-top: 3rem; /* Espace au-dessus */
+    padding-bottom: 2rem; /* Espace sous le divider */
+}
+.page-title-icon { /* Optionnel si vous voulez remettre l'icône */
+    font-size: 2.5rem;
+    color: var(--custom-primary);
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
+}
+.page-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--custom-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+.page-main-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    color: var(--custom-primary);
+    margin-bottom: 1rem;
+}
+hr.title-divider {
+    width: 80px;
+    margin: 0 auto 0 auto;
+    border-top: 3px solid var(--custom-primary);
+    opacity: 1;
+}
+
+/* --- Texte Introductif --- */
+.intro-text {
+    text-align: center;
+    margin: 2.5rem auto;
+    max-width: 700px;
+    color: var(--custom-secondary);
+    font-family: var(--custom-font-roboto);
+}
+
+/* --- Section Choix Inscription --- */
+.signup-cards-container {
+    margin-top: 2rem; /* Espace après l'intro */
+}
+
+.signup-card {
+    background-color: var(--custom-white);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Pour hauteur égale via d-flex Bootstrap */
+}
+.signup-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 86, 179, 0.15);
+}
+.signup-card-img {
+    max-width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    background-color: #eee; /* Placeholder */
+}
+.signup-card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--custom-primary);
+    margin-bottom: 0.25rem;
+}
+.signup-card-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--custom-secondary);
+    margin-bottom: 1rem;
+}
+.signup-card hr {
+    width: 50px;
+    margin: 0.5rem auto 1rem auto;
+    border-top: 2px solid var(--custom-primary);
+    opacity: 1;
+}
+.signup-card-text {
+    font-family: var(--custom-font-roboto);
+    color: #444;
+    font-size: 0.95rem;
+    flex-grow: 1; /* Prend l'espace vertical */
+    margin-bottom: 1.5rem;
+}
+.signup-card .btn { /* Style du bouton */
+    background-color: var(--custom-primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: auto; /* Pousse vers le bas */
+    text-decoration: none;
+    display: inline-block;
+}
+.signup-card .btn:hover {
+    background-color: #003d80;
+    transform: scale(1.03);
+}
+
+.signup-card-img-container { /* NOUVEAU CONTENEUR */
+    width: 100%;           /* Prend toute la largeur */
+    height: 180px;          /* Hauteur fixe */
+    overflow: hidden;       /* Cache ce qui dépasse */
+    border-radius: 8px;     /* Arrondir le conteneur */
+    margin-bottom: 1.5rem;
+    background-color: #eee; /* Placeholder */
+}
+
+.signup-card-img-container img { /* L'IMAGE ELLE-MEME */
+    width: 100%;            /* Prend la largeur du conteneur */
+    height: 100%;           /* Prend la hauteur du conteneur */
+    object-fit: cover;      /* Recadrer pour remplir */
+    display: block;         /* Comportement bloc */
+}
+
+/* --- Responsive --- */
+@media (max-width: 991px) {
+     .page-main-title { font-size: 2.4rem; }
+     .signup-card-title { font-size: 1.4rem; }
+}
+@media (max-width: 767px) {
+    .page-title-section { padding: 3rem 1rem; }
+    .page-main-title { font-size: 2rem; }
+    .container.mt-5 { margin-top: 1.5rem !important; }
+    .intro-text { margin: 1.5rem auto; padding: 0 1rem; }
+    .signup-card { padding: 1.5rem 1rem; }
+    .signup-card-img { height: 150px; }
+}
+
+/* Ajoutez d'autres styles si nécessaire */

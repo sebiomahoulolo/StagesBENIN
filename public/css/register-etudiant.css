@@ -1,0 +1,219 @@
+/* Styles spécifiques pour resources/views/auth/register-etudiant.blade.php */
+
+/* Réutilisation des variables (supposées définies globalement ou dans layout.css) */
+:root {
+    --custom-primary: #0056b3;
+    --custom-secondary: #555555;
+    --custom-accent: #0056b3; /* Peut être la même que primary */
+    --custom-white: #FFFFFF;
+    --custom-light-gray: #f8f9fa;
+}
+
+/* --- Styles Globaux pour Body --- */
+body {
+    position: relative; /* Nécessaire pour le positionnement absolu du pseudo-élément */
+    /* Remplacez '/path/to/your/background-image.jpg' par le chemin réel de votre image */
+    background-image: url('../assets/images/morskie-oko-tatry-copie-compressed.jpg');
+    background-size: cover; /* Couvre toute la surface */
+    background-position: center; /* Centre l'image */
+    background-attachment: fixed; /* L'image reste fixe au défilement */
+    min-height: 100vh; /* Assure que le body prend au moins toute la hauteur de la vue */
+    /* Important: Assurez-vous que le contenu principal a un z-index supérieur ou un contexte d'empilement qui le place au-dessus de l'overlay */
+}
+
+body::before {
+    content: "";
+    position: absolute; /* Couvre le body */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Overlay blanc semi-transparent (ajustez l'opacité 0.8 si besoin) */
+    z-index: -1; /* Place l'overlay derrière le contenu du body, mais au-dessus du background-image du body */
+}
+
+/* --- Section Formulaire Inscription Étudiant --- */
+.candidate-signup-section {
+     padding: 4rem 0; /* Ajustez selon le besoin avec le header/footer */
+     /* min-height: calc(100vh - 150px); Ajustez ou supprimez si layout gère la hauteur */
+     display: flex;
+     align-items: center;
+     /* L'image de fond est gérée par le layout ou le body global si besoin */
+}
+
+/* Wrapper global pour centrer le formulaire */
+.signup-wrapper {
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center;    /* Centre verticalement si candidate-signup-section a une hauteur suffisante */
+    width: 100%;
+}
+
+
+.signup-form-container {
+    background-color: rgba(255, 255, 255, 0.97);
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 86, 179, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    max-width: 550px; /* Limite la largeur du formulaire */
+    width: 100%; /* Prend la largeur disponible jusqu'au max-width */
+    margin: auto; /* Assure le centrage si la colonne est plus large */
+}
+
+.signup-form-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--custom-primary);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.7rem;
+}
+
+.signup-form-subtitle {
+    text-align: center;
+    color: var(--custom-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.signup-form .form-label {
+    font-weight: 600;
+    color: var(--custom-secondary);
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.signup-form .form-control,
+.signup-form .form-select { /* Ajout pour les selects potentiels */
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 0.6rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out, background-color .15s ease-in-out;
+}
+
+.signup-form .form-control:focus,
+.signup-form .form-select:focus {
+    border-color: var(--custom-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+    background-color: white;
+}
+
+.signup-form .form-control.is-invalid,
+.signup-form .form-select.is-invalid {
+    border-color: #dc3545;
+    background-image: none; /* Supprime l'icône bootstrap par défaut si elle gêne */
+}
+.signup-form .invalid-feedback {
+    display: block; /* Assure l'affichage même si Bootstrap le cache parfois */
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+
+/* Spécifique pour l'icône de mot de passe */
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px; /* Ajusté pour l'intérieur du champ */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    z-index: 5; /* Au-dessus de l'input */
+    padding-top: 0.6rem; /* Alignement vertical avec le padding de l'input */
+}
+
+.toggle-password:hover i {
+    color: var(--custom-secondary);
+}
+
+/* Bouton Soumettre */
+.signup-form .btn-submit {
+    background-color: var(--custom-primary);
+    border-color: var(--custom-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100%;
+    margin-top: 1.5rem; /* Espace avant le bouton */
+    margin-bottom: 1rem; /* Espace après le bouton */
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+}
+
+.signup-form .btn-submit:hover {
+    background-color: #003d80;
+    border-color: #003d80;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 86, 179, 0.4);
+}
+
+/* Liens en bas */
+.bottom-links-wrapper {
+    display: flex;
+    justify-content: space-between; /* Alignés sur les bords */
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.bottom-links-wrapper .login-link a,
+.bottom-links-wrapper .switch-register-link a {
+    color: var(--custom-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.bottom-links-wrapper .login-link a:hover,
+.bottom-links-wrapper .switch-register-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Responsive --- */
+@media (max-width: 991px) { /* Tablette */
+    .signup-form-container {
+        padding: 2rem;
+        max-width: 500px;
+    }
+    .candidate-signup-section {
+        padding: 3rem 1rem;
+    }
+}
+
+@media (max-width: 767px) { /* Mobile */
+    .candidate-signup-section {
+        padding: 2rem 0.5rem; /* Moins de padding sur mobile */
+        align-items: flex-start; /* Le formulaire commence plus haut */
+    }
+    .signup-form-container {
+        padding: 1.5rem;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        margin: 0; /* Prend toute la largeur */
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); /* Ombre plus légère */
+    }
+    .signup-form-title {
+        font-size: 1.5rem;
+    }
+    .bottom-links-wrapper {
+        flex-direction: column; /* Liens l'un sous l'autre */
+        align-items: center;
+        gap: 0.5rem; /* Espace entre les liens */
+    }
+     .signup-form .btn-submit {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.9rem;
+    }
+} 
