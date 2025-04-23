@@ -1,5 +1,5 @@
-<div class="card-body py-0">
-    <div class="position-relative h-100 min-vh-50 min-vh-lg-auto">
+<div class="card-body py-0 d-flex flex-column">
+    <div class="position-relative h-100 min-vh-50 min-vh-lg-auto d-flex flex-column">
         @if($conversation)
         <div class="card-header border-0">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-end">
@@ -85,8 +85,8 @@
                 </div>
             </div>
         </div>
-        <div class="overflow-auto position-absolute w-100 h-100 pe-3 scroll-shadow" id="messageContainer" 
-             wire:poll.10s="loadMessages">
+        <div class="overflow-auto flex-grow-1 pe-3 scroll-shadow" id="messageContainer" 
+             wire:poll.10s="loadMessages" style="max-height: calc(100vh - 250px);">
             @if(count($messages) > 0)
                 @php
                     $previousMessageDate = null;

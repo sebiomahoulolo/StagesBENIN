@@ -1,6 +1,6 @@
-<div class="card-footer bg-white shadow-sm position-relative" style="opacity: 1; z-index: 10;">
+<div class="card-footer bg-white shadow-sm" style="position: sticky; bottom: 0; z-index: 10;">
     @if($conversationId)
-        <form wire:submit.prevent="sendMessage" class="position-relative">
+        <form wire:submit.prevent="sendMessage">
             <div class="row gx-3">
                 <div class="col">
                     <div class="input-group input-group-merge">
@@ -83,7 +83,7 @@
                 <div class="w-100 d-block d-md-none"></div>
                 <div class="col col-md-auto ps-lg-7 mt-2 mt-md-0">
                     <!-- Button -->
-                    <button type="submit" class="btn btn-lg btn-primary w-100 position-relative" style="z-index: 15;" @if($isSending) disabled @endif>
+                    <button type="submit" class="btn btn-lg btn-primary w-100" @if($isSending) disabled @endif>
                         <span wire:loading.class="d-inline-block" wire:loading.class.remove="d-none" wire:target="sendMessage" class="spinner-border spinner-border-sm me-2 d-none" role="status">
                             <span class="visually-hidden">Envoi en cours...</span>
                         </span>
