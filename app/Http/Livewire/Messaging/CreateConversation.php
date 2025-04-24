@@ -66,18 +66,20 @@ class CreateConversation extends Component
         $participantIds = array_merge($this->selectedUsers, [Auth::id()]);
         
         foreach ($participantIds as $userId) {
-            $conversation->participants()->create([
-                'user_id' => $userId
+            $conversation->participants()->attach($userId, [
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
         }
 
         // Ajouter le premier message
         $message = new Message([
             'user_id' => Auth::id(),
-            'body' => $this->firstMessage
+            'body' => $this->firstMessage,
+            'conversation_id' => $conversation->id
         ]);
         
-        $conversation->messages()->save($message);
+        $message->save();
         
         // Mettre à jour l'horodatage de la conversation
         $conversation->touch();

@@ -536,7 +536,7 @@
             @endif
             
             {{-- Offres --}}
-            <a href="#" class="main-function-item"> {{-- TODO: Mettre la route correcte --}}
+            <a href="{{ route('etudiants.offres.index') }}" class="main-function-item">
                 <div class="main-function-icon color-orange">
                     <i class="fas fa-briefcase"></i>
                 </div>

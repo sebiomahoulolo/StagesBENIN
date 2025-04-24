@@ -176,6 +176,15 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiant
 
     // Routes pour les plaintes et suggestions côté étudiant
     Route::resource('complaints', EtudiantComplaintController::class)->except(['edit', 'update']);
+
+    // Routes pour les offres d'emploi
+    Route::prefix('offres')->name('offres.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'show'])->name('show');
+        Route::get('/{id}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'postuler'])->name('postuler');
+        Route::post('/{id}/soumettre-candidature', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'soumettreCandidature'])->name('soumettre-candidature');
+        Route::get('/mes-candidatures', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'mesCandidatures'])->name('mes-candidatures');
+    });
 }); // Fin du groupe étudiant
 
 

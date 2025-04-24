@@ -25,9 +25,8 @@ Broadcast::channel('new-message', function () {
 
 // Canal privé pour chaque conversation
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    return \App\Models\Conversation::where('id', $conversationId)
-        ->whereHas('participants', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
+    return \App\Models\Conversation::find($conversationId)
+        ->participants()
+        ->where('user_id', $user->id)
         ->exists();
 });

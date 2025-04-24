@@ -19,7 +19,7 @@ class ConversationMessages extends Component
         'selectedConversation' => 'setConversation',
         'messageSent' => 'loadMessages',
         'refresh' => '$refresh',
-        'echo:new-message,MessageSent' => 'handleNewMessage'
+        'echo-private:conversation.{conversationId},MessageSent' => 'handleNewMessage'
     ];
 
     public function mount($conversationId = null)
@@ -91,8 +91,16 @@ class ConversationMessages extends Component
         
         // Vérifier si le message appartient à la conversation actuelle
         if ($messageData['conversation_id'] == $this->conversationId) {
-            $this->loadMessages();
+            // Ajouter le nouveau message à la liste existante
+            $newMessage = new Message($messageData);
+            $newMessage->user = new User($messageData['user']);
+            $this->messages->push($newMessage);
+            
+            // Marquer comme lu si c'est la conversation active
             $this->markAsRead();
+            
+            // Déclencher l'événement pour le scroll automatique
+            $this->dispatchBrowserEvent('messageSent');
         } else {
             // Notifier qu'un nouveau message est arrivé dans une autre conversation
             $this->emit('refreshConversations');

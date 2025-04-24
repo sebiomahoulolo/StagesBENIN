@@ -47,8 +47,8 @@
         </div>
 
         {{-- Section Opportunités --}}
-        <div x-data="{ open: {{ request()->routeIs('opportunites.*') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('opportunites.*') ? 'active' : '' }}">
+        <div x-data="{ open: {{ request()->routeIs('opportunites.*') || request()->routeIs('etudiants.offres.*') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
+            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('opportunites.*') || request()->routeIs('etudiants.offres.*') ? 'active' : '' }}">
                 <i class="fas fa-briefcase fa-fw"></i>
                 <span>Opportunités</span>
                  <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
@@ -58,10 +58,14 @@
                     <i class="fas fa-newspaper fa-fw"></i>
                     <span>Actualités</span>
                 </a>
-                <a href="#" class="menu-item"> {{-- Route Offres --}}
+                <a href="{{ route('etudiants.offres.index') }}" class="menu-item {{ request()->routeIs('etudiants.offres.*') ? 'active' : '' }}"> {{-- Route Offres --}}
                     <i class="fas fa-briefcase fa-fw"></i>
                     <span>Offres disponibles</span>
                      {{-- <span class="notifications-badge">5</span> --}}
+                </a>
+                <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="menu-item {{ request()->routeIs('etudiants.offres.mes-candidatures') ? 'active' : '' }}"> {{-- Route Mes candidatures --}}
+                    <i class="fas fa-file-alt fa-fw"></i>
+                    <span>Mes candidatures</span>
                 </a>
                 <a href="#" class="menu-item"> {{-- Route Entreprises suivies --}}
                      <i class="fas fa-building fa-fw"></i>
