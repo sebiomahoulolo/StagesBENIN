@@ -203,6 +203,9 @@
                 <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal">
                     S'inscrire
                 </button>
+                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal">
+                   Acheter un ticket
+                </button>
             </div>
         </div>
     </div>

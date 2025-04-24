@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Avis;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Catalogue;
@@ -17,11 +17,48 @@ class CatalogueController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     
+public function show($id)
+{
+    $avis = Avis::orderBy('created_at', 'desc')->get();
+    $catalogue = Catalogue::findOrFail($id);
+    return view('pages.catalogueplus2', compact('catalogue','avis'));
+}
+
+
+
+
+    public function showParSecteur($secteur_activite)
+    {
+        $secteur_activite = urldecode($secteur_activite);
+    
+        // Test pour vérifier ce que contient exactement activite_principale
+        $catalogue = Catalogue::where('secteur_activite', 'LIKE', "%{$secteur_activite}%")->get();
+        $secteur_activite = urldecode($secteur_activite);
+        if ($catalogue->isEmpty()) {
+            logger("Aucun catalogue trouvé pour le secteur : $secteur_activite");
+            // Tu peux même logger les valeurs disponibles
+            $toutesActivites = Catalogue::pluck('secteur_activite')->unique();
+            logger($toutesActivites);
+        }
+        
+    
+        return view('pages.catalogueplus', compact('catalogue', 'secteur_activite'));
+    }
+   
+
+public function getLastAvis()
+{
+    $avis = Avis::orderBy('created_at', 'desc')->take(4)->get();
+    return view('pages.catalogueplus', compact('avis'));
+}
+
+    
     public function store(Request $request)
     {
         // Validation des données
         $validator = Validator::make($request->all(), [
             'titre' => 'required|string|max:255',
+              'secteur_activite'=> 'required|max:255',
             'description' => 'required|string',
             'localisation' => 'nullable|string|max:255',
             'nb_activites' => 'nullable|integer',
@@ -68,6 +105,7 @@ class CatalogueController extends Controller
         // Création du catalogue
         $catalogue = Catalogue::create([
             'titre' => $request->input('titre'),
+            'secteur_activite'=> $request->input('secteur_activite'),
             'description' => $request->input('description'),
             'localisation' => $request->input('localisation'),
             'nb_activites' => $request->input('nb_activites'),

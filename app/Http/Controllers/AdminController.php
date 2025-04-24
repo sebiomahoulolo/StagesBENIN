@@ -14,21 +14,23 @@ class AdminController extends Controller
 
     public function index()
     {
-        // Récupération des données avec pagination
+   
         $etudiants = Etudiant::paginate(10);
         $actualites = Actualite::paginate(10);
         $events = Event::paginate(10);
         $catalogues = Catalogue::paginate(10);
+    $catalogueItems = Catalogue::all(); 
 
-        // Statistiques globales
+
+      
         $totalEtudiants = Etudiant::count();
-        $progression = "N/A"; // À remplacer par une vraie logique si disponible
+        $progression = "N/A"; 
 
         return view('admin.dashboard', compact(
             'etudiants',
             'actualites',
             'events',
-            'catalogues',
+            'catalogueItems',
             'totalEtudiants',
             'progression'
         ));

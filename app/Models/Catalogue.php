@@ -11,6 +11,7 @@ class Catalogue extends Model
 
     protected $fillable = [
         'titre',
+        'secteur_activite',
         'description',
         'logo',
         'localisation',
