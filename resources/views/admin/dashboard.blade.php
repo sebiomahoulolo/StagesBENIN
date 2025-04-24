@@ -1,9 +1,9 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Tableau de Bord - Admin') {{-- Optional: Set a specific title --}}
+@section('title', 'StagesBENIN - Admin') {{-- Optional: Set a specific title --}}
 
 @section('content')
-    <h1 class="dashboard-title">Tableau de bord</h1>
+    <h1 class="dashboard-title">StagesBENIN</h1>
 
     <!-- Stats Section -->
     <div class="stats-container">
@@ -239,7 +239,7 @@
                                 <th>Catégorie</th>
                                 <th>Auteur</th>
                                 <th>Date</th>
-                                <th>Statut</th>
+                               
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -250,14 +250,14 @@
                                 <td>{{ $actualite->categorie ?? '-' }}</td>
                                 <td>{{ $actualite->auteur ?? '-'}}</td>
                                 <td>{{ $actualite->date_publication ? \Carbon\Carbon::parse($actualite->date_publication)->isoFormat('DD MMM YYYY') : '-' }}</td>
-                                <td>
-                                    {{-- Status - Assuming an 'is_published' field --}}
+                                 {{--<td>
+                                    Status - Assuming an 'is_published' field 
                                     @if($actualite->is_published)
                                         <span class="badge bg-success">Publiée</span>
                                     @else
                                         <span class="badge bg-secondary">Brouillon</span>
                                     @endif
-                                </td>
+                                </td>--}}
                                 <td>
                                     <div class="d-flex gap-1">
                                         {{-- Ensure routes exist --}}
@@ -357,16 +357,33 @@
                     </button>
                 </div>
             </div>
-             <div class="content-area table-responsive">
-                <h4>Catalogue de Formations</h4>
-                {{-- Placeholder for Catalog table - ensure $catalogueItems is passed from controller --}}
-                 @if(isset($catalogueItems) && !$catalogueItems->isEmpty())
-                     <p>Contenu du catalogue ici.</p>
-                     {{-- Populate table similar to others --}}
-                 @else
-                     <div class="alert alert-info">Aucun élément trouvé dans le catalogue pour le moment.</div>
-                 @endif
-             </div>
+            <div class="content-area table-responsive">
+    <h4> Liste des Catalogues</h4>
+    @if(isset($catalogueItems) && !$catalogueItems->isEmpty())
+        <table class="table table-bordered table-striped">
+            <thead class="table">
+                <tr>
+           <th>Nom de l'Établissement</th>
+                    <th>Localisation</th>
+                    <th>Activités principale</th>
+       <!--th>Actions</th>
+                </tr-->
+            </thead>
+            <tbody>
+                @foreach($catalogueItems as $index => $item)
+                    <tr>
+                  <td>{{ $item->titre }}</td>
+                        <td>{{ $item->localisation }}</td>
+                        <td>{{ $item-> activite_principale}}</td>
+                      
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <div class="alert alert-info">Aucun élément trouvé dans le catalogue pour le moment.</div>
+    @endif
+</div>
         </div>
     </div>
 @endsection

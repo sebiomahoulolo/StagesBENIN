@@ -45,11 +45,20 @@ Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->nam
 Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name('pages.contact'); // URL conservée
 Route::get('/les-actualites', [PageController::class, 'actualites'])->name('pages.actualites'); // Liste publique des actualités
 Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue'); 
-Route::get('/catalogues-des-entreprises/{id}', [PageController::class, 'catalogueplus'])->name('pages.catalogueplus');
-Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogueplus'])->name('pages.catalogueplus');
-Route::get('/catalogue/{id}', [PageController::class, 'show'])->name('catalogueplus');
+//Route::get('/secteur/{secteur}', [CatalogueController::class, 'showParSecteur'])->name('secteur.show');
+Route::post('/avis', [App\Http\Controllers\PageController::class, 'store'])->name('avis.store');
+//Route::get('/catalogues-des-entreprises/{id}', [PageController::class, 'catalogueplus2'])->name('pages.catalogueplus');
+//Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogueplus2'])->name('pages.catalogueplus');
+//Route::get('/catalogue/{id}', [PageController::class, 'show'])->name('catalogueplus');
+Route::get('/catalogueplus2/{id}', [CatalogueController::class, 'showParSecteur'])->name('catalogueplus2');
+Route::get('/catalogue/{id}', [CatalogueController::class, 'show'])->name('catalogueplus2');
+Route::get('/catalogueplus', [CatalogueController::class, 'getLastAvis'])->name('catalogueplus');
+
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
 Route::put('/catalogue/{id}', [CatalogueController::class, 'update'])->name('catalogue.update');
+//Route::get('/catalogue/{id}', [AdminController::class, 'show'])->name('catalogue.show');
+Route::get('/catalogueplus/{secteur_activite}', [PageController::class, 'showParSecteur'])->name('catalogueplus.secteur');
+Route::get('/catalogueplus/{secteur_activite}', [CatalogueController::class, 'showParSecteur']);
 
 Route::get('/nos-evenements', [PageController::class, 'evenements'])->name('pages.evenements'); // Liste publique des événements
 Route::get('/nos-programmes', [PageController::class, 'programmes'])->name('pages.programmes');

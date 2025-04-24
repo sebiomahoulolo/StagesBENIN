@@ -848,55 +848,112 @@
            </div>
             <form id="catalogueForm" action="{{ route('catalogue.store') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
              @csrf
-             <div class="modal-body">
-                 <div class="mb-3">
-                   <label for="catalogue_titre" class="form-label">Titre de la formation*</label>
-                   <input type="text" class="form-control" id="catalogue_titre" name="titre" required>
-                   <div class="invalid-feedback">Veuillez saisir un titre.</div>
-                 </div>
-                 <div class="mb-3">
-                   <label for="catalogue_description" class="form-label">Description*</label>
-                   <textarea class="form-control" id="catalogue_description" name="description" rows="3" required></textarea>
-                   <div class="invalid-feedback">Veuillez saisir une description.</div>
-                 </div>
-                 <div class="row">
-                   <div class="col-md-4 mb-3">
-                     <label for="catalogue_duree" class="form-label">Durée</label>
-                     <input type="text" class="form-control" id="catalogue_duree" name="duree" placeholder="Ex: 3 jours, 35 heures...">
-                   </div>
-                   <div class="col-md-4 mb-3">
-                     <label for="catalogue_type" class="form-label">Type</label>
-                     <select class="form-select" id="catalogue_type" name="type">
-                       <option value="">Sélectionner un type</option>
-                       <option value="Présentiel">Présentiel</option>
-                       <option value="Distanciel">Distanciel</option>
-                       <option value="Hybride">Hybride</option>
-                     </select>
-                   </div>
-                   <div class="col-md-4 mb-3">
-                     <label for="catalogue_niveau" class="form-label">Niveau</label>
-                     <select class="form-select" id="catalogue_niveau" name="niveau">
-                       <option value="">Sélectionner un niveau</option>
-                       <option value="Débutant">Débutant</option>
-                       <option value="Intermédiaire">Intermédiaire</option>
-                       <option value="Avancé">Avancé</option>
-                       <option value="Expert">Expert</option>
-                     </select>
-                   </div>
-                 </div>
-                 <div class="mb-3">
-                   <label for="catalogue_prerequis" class="form-label">Pré-requis</label>
-                   <textarea class="form-control" id="catalogue_prerequis" name="pre_requis" rows="2"></textarea>
-                 </div>
-                 <div class="mb-3">
-                   <label for="catalogue_contenu" class="form-label">Contenu de la formation</label>
-                   <textarea class="form-control" id="catalogue_contenu" name="contenu" rows="4"></textarea>
-                 </div>
-                 <div class="mb-3">
-                   <label for="catalogue_image" class="form-label">Image</label>
-                   <input type="file" class="form-control" id="catalogue_image" name="image" accept="image/*">
-                 </div>
-             </div>
+  <div class="modal-body">
+
+  <!-- Titre -->
+  <div class="mb-3">
+    <label for="catalogue_titre" class="form-label">Nom Officiel de l'Établissement*</label>
+    <input type="text" class="form-control" id="catalogue_titre" name="titre" required>
+    <div class="invalid-feedback">Veuillez saisir un titre.</div>
+  </div>
+
+<!-- Sélection du secteur d'activité -->
+<div class="mb-3">
+  <label for="secteur_activite" class="form-label">Secteur d'activité*</label>
+  <select class="form-select" id="secteur_activite" name="secteur_activite" required>
+    <option value="">Sélectionnez un secteur</option>
+    <option value="Agriculture et agroalimentaire (production, transformation, distribution)">Agriculture et agroalimentaire (production, transformation, distribution)</option>
+    <option value="Industrie (manufacture, textile, automobile, chimie)">Industrie (manufacture, textile, automobile, chimie)</option>
+    <option value="Commerce et distribution (boutiques, supermarchés, import-export)">Commerce et distribution (boutiques, supermarchés, import-export)</option>
+    <option value="Transport et logistique (fret, livraison, aérien, maritime)">Transport et logistique (fret, livraison, aérien, maritime)</option>
+    <option value="BTP et immobilier (construction, architecture, ingénierie, agences immobilières)">BTP et immobilier (construction, architecture, ingénierie, agences immobilières)</option>
+    <option value="Énergie et environnement (énergies renouvelables, pétrole, gestion des déchets)">Énergie et environnement (énergies renouvelables, pétrole, gestion des déchets)</option>
+    <option value="Technologie et numérique (informatique, télécommunications, intelligence artificielle)">Technologie et numérique (informatique, télécommunications, intelligence artificielle)</option>
+    <option value="Finance et assurance (banques, microfinance, assurances)">Finance et assurance (banques, microfinance, assurances)</option>
+    <option value="Santé et bien-être (hôpitaux, pharmacies, cosmétiques)">Santé et bien-être (hôpitaux, pharmacies, cosmétiques)</option>
+    <option value="Éducation et formation (écoles, universités, formations professionnelles)">Éducation et formation (écoles, universités, formations professionnelles)</option>
+    <option value="Tourisme et loisirs (hôtellerie, restauration, évènementiel)">Tourisme et loisirs (hôtellerie, restauration, évènementiel)</option>
+    <option value="Arts, culture et médias (cinéma, musique, presse, publicité)">Arts, culture et médias (cinéma, musique, presse, publicité)</option>
+    <option value="Services aux entreprises (consulting, marketing, sécurité)">Services aux entreprises (consulting, marketing, sécurité)</option>
+  </select>
+  <div class="invalid-feedback">Veuillez sélectionner un secteur.</div>
+</div>
+  <!-- Description -->
+  <div class="mb-3">
+    <label for="catalogue_description" class="form-label">Courte Description de votre Ets*</label>
+    <textarea class="form-control" id="catalogue_description" name="description" rows="3" required></textarea>
+    <div class="invalid-feedback">Veuillez saisir une description.</div>
+  </div>
+
+  <!-- Logo -->
+  <div class="mb-3">
+    <label for="catalogue_logo" class="form-label">Logo</label>
+    <input type="file" class="form-control" id="catalogue_logo" name="logo" accept="image/*">
+  </div>
+
+  <!-- Localisation -->
+  <div class="mb-3">
+    <label for="catalogue_localisation" class="form-label">Localisation</label>
+    <input type="text" class="form-control" id="catalogue_localisation" name="localisation">
+  </div>
+
+  <!-- Nombre d'activités -->
+  <div class="mb-3">
+    <label for="catalogue_nb_activites" class="form-label">Nombre d'activités</label>
+    <select class="form-select" id="catalogue_nb_activites" name="nb_activites" onchange="afficherActivites()">
+      <option value="">Sélectionner...</option>
+      <option value="1">1 activité</option>
+      <option value="2">2 activités</option>
+      <option value="3">3 activités</option>
+      <option value="4">4 activités</option>
+    </select>
+  </div>
+
+  <!-- Activités dynamiques -->
+  <div id="activites_container">
+    <!-- Les champs seront ajoutés ici par le JavaScript -->
+  </div>
+
+  <!-- Autres infos -->
+  <div class="mb-3">
+    <label for="catalogue_autres" class="form-label">Autres informations</label>
+    <textarea class="form-control" id="catalogue_autres" name="autres" rows="2"></textarea>
+  </div>
+
+  <!-- Image -->
+  <div class="mb-3">
+    <label for="catalogue_image" class="form-label">Image en arrière-plan</label>
+    <input type="file" class="form-control" id="catalogue_image" name="image" accept="image/*">
+  </div>
+
+</div>
+
+<script>
+  function afficherActivites() {
+    const container = document.getElementById("activites_container");
+    const nombre = parseInt(document.getElementById("catalogue_nb_activites").value);
+    container.innerHTML = "";
+
+    const labels = ["principale", "secondaire", "tertiaire", "quaternaire"];
+
+    for (let i = 0; i < nombre; i++) {
+      const type = labels[i] || `activite_${i + 1}`;
+      const activiteHTML = `
+        <div class="mb-3">
+          <label for="catalogue_activite_${type}" class="form-label">Activité ${type}</label>
+          <input type="text" class="form-control" id="catalogue_activite_${type}" name="activite_${type}">
+        </div>
+        <div class="mb-3">
+          <label for="catalogue_desc_activite_${type}" class="form-label">Description de l'activité ${type}</label>
+          <textarea class="form-control" id="catalogue_desc_activite_${type}" name="desc_activite_${type}" rows="3"></textarea>
+        </div>
+      `;
+      container.innerHTML += activiteHTML;
+    }
+  }
+</script>
+
+
              <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                <button type="submit" class="btn btn-primary submit-btn" id="submitCatalogue">Enregistrer</button>
