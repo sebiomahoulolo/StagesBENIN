@@ -81,7 +81,7 @@ class CvCentresInteretForm extends Component
         $this->resetForms();
     }
 
-    private function rules()
+    protected function rules()
     {
         return [
             'newInteret.nom' => ['required', 'string', 'max:50'],

@@ -34,11 +34,9 @@
                  <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
             </button>
             <div x-show="open" class="menu-section-content">
-                @if(Auth::user()->etudiant?->cvProfile?->id)
-                    @php $cvProfileId = Auth::user()->etudiant->cvProfile->id; @endphp
-                    <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-file-alt fa-fw"></i><span>Éditeur CV</span> </a>
-                    <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
-                @endif
+                @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id ?? 0; @endphp
+                <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-file-alt fa-fw"></i><span>Éditeur CV</span> </a>
+                <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
                  <a href="#" class="menu-item"> {{-- Remplacez # par la route pour CV-thèque --}}
                     <i class="fas fa-database fa-fw"></i>
                     <span>CV-thèque</span>
