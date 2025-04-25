@@ -1,1 +1,2 @@
-php artisan make:livewire Messaging/MainComponent
+cd /home/fadel/Workspaces/StagesBENIN && php artisan migrate:status | grep message_comments
+^C

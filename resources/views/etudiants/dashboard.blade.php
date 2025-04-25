@@ -562,7 +562,7 @@
             @endif
             
             {{-- Événements --}}
-            <a href="{{ route('pages.evenements') }}" class="main-function-item">
+            <a href="{{ route('etudiants.evenements.upcoming') }}" class="main-function-item">
                 <div class="main-function-icon color-pink">
                     <i class="fas fa-calendar-day"></i>
                 </div>
@@ -637,7 +637,7 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-calendar color-pink"></i> Événements à venir</h2>
-                    <a href="{{ route('pages.evenements') }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('etudiants.evenements.upcoming') }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="event-list">
                     {{-- TODO: Remplacer par une boucle sur les données réelles ($upcomingEvents par exemple) --}}
