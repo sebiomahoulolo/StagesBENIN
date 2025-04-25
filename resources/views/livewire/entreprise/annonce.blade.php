@@ -1,5 +1,10 @@
 <div>
+    @if(session()->has('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <form action="" class="form" wire:submit.prevent="storeAnnonce()">
+        <input wire:model="entreprise_id" class="form-control" type="hidden" value="{{ Auth::user()->id }}" id="" />
         <label for="html5-text-input" class="col-md-2 col-form-label">Nom du poste <b style="color: red;">*</b> </label>
         <div class="mb-3 row">
             <div class="col-md-10">
@@ -9,11 +14,11 @@
             <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
-        <label for="html5-search-input" class="col-md-2 col-form-label">Type de poste <b style="color: red;">*</b></label>
+        <label for=" html5-search-input" class="col-md-2 col-form-label">Type de poste <b style="color: red;">*</b></label>
         <div class="mb-3 row">
             <div class="col-md-10">
                 <select wire:model="type_de_poste" name="" id="" class="form-select">
-                    <option value="Satage">Stage</option>
+                    <option value="Stage">Stage</option>
                     <option value="Emploi">Emploi</option>
                 </select>
             </div>

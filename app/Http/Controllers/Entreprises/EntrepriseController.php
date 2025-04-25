@@ -188,4 +188,17 @@ class EntrepriseController extends Controller
     {
         return view('entreprises.annonce');
     }
+
+    // Envoi d'un messages
+
+    public function messagerie()
+    {
+        return view('entreprises.messagerie');
+    }
+    // Création d'un évènement
+
+    public function create_event()
+    {
+        return view('entreprises.event');
+    }
 }

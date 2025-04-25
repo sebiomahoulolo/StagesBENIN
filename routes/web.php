@@ -105,6 +105,8 @@ Route::middleware('guest')->group(function () {
 // ===============================================
 Route::get('/entreprises/dashboard', [EntrepriseController::class, 'dashboard'])->name('recruteur.dashboard');
 Route::get('/entreprises/créer-une -annonce', [EntrepriseController::class, 'create_annonce'])->name('recruteur.annonce');
+Route::get('/entreprises/envoyer-un-message', [EntrepriseController::class, 'messagerie'])->name('recruteur.messagerie');
+Route::get('/entreprises/créer-un-évènement', [EntrepriseController::class, 'create_event'])->name('recruteur.event');
 
 // Dashboard générique (Redirige immédiatement selon le rôle)
 Route::get('/dashboard', function () {

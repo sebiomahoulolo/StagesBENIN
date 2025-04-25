@@ -21,7 +21,7 @@
                 <i class="fas fa-user"></i>
             </div>
             <div class="profile-info">
-                <div class="profile-name">Tech Solutions</div>
+                <div class="profile-name">{{ Auth::user()->name }}</div>
                 <div class="profile-role">Administrateur</div>
             </div>
         </div>

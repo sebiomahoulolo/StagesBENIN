@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <nav class="sidebar-menu">
-        <a href="#" class="menu-item active">
+        <a href="{{ route('recruteur.dashboard') }}" class="menu-item active">
             <i class="fas fa-tachometer-alt"></i>
             <span>Tableau de bord</span>
         </a>

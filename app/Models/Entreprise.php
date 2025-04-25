@@ -44,4 +44,9 @@ class Entreprise extends Model
     {
         return $this->hasMany(Annonce::class);
     }
+    // Relation vers les messageries
+    public function messagerie()
+    {
+        return $this->hasMany(Messagerie::class);
+    }
 }
