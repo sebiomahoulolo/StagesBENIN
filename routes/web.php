@@ -164,6 +164,11 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiant
     // ... Route pour le dashboard étudiant ...
     Route::get('/dashboard', [EtudiantController::class, 'index'])->name('dashboard');
 
+    // Routes pour les événements
+    Route::get('/evenements', [EventController::class, 'upcomingForStudent'])->name('evenements.upcoming');
+    Route::get('/evenements/{id}', [EventController::class, 'showForStudent'])->name('evenements.show');
+    Route::post('/evenements/{id}/register', [EventController::class, 'registerStudent'])->name('evenements.register');
+
     Route::get('/profil', [EtudiantProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profil', [EtudiantProfileController::class, 'updateEtudiantInfo'])->name('profile.updateEtudiantInfo'); // Pour infos spécifiques étudiant
     Route::post('/profil/photo', [EtudiantProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');      // Pour la photo
@@ -300,4 +305,52 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/conversations/{conversationId}/messages', [App\Http\Controllers\MessageController::class, 'getMessages'])->name('messages.get');
         });
     });
+});
+
+// Routes pour la nouvelle messagerie
+Route::prefix('nouvelle-messagerie')->name('nouvelle-messagerie.')->middleware(['auth'])->group(function () {
+    Route::get('/', [App\Http\Controllers\NouvelleMessagerieController::class, 'index'])->name('index');
+    Route::get('/{conversation}', [App\Http\Controllers\NouvelleMessagerieController::class, 'show'])->name('show');
+    Route::get('/create', [App\Http\Controllers\NouvelleMessagerieController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\NouvelleMessagerieController::class, 'store'])->name('store');
+    Route::post('/{conversation}/send-message', [App\Http\Controllers\NouvelleMessagerieController::class, 'sendMessage'])->name('send-message');
+    Route::get('/contacts', [App\Http\Controllers\NouvelleMessagerieController::class, 'getContacts'])->name('contacts');
+    Route::post('/messages/{message}/share', [App\Http\Controllers\NouvelleMessagerieController::class, 'shareMessage'])->name('share-message');
+    Route::post('/messages/{message}/comment', [App\Http\Controllers\NouvelleMessagerieController::class, 'commentMessage'])->name('comment-message');
+});
+
+// Routes pour la messagerie sociale
+Route::middleware(['auth'])->group(function () {
+    Route::get('/canal-messagerie', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'index'])
+        ->name('messagerie-sociale.index');
+    
+    Route::get('/canal-messagerie/posts/create', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'createPost'])
+        ->name('messagerie-sociale.create-post');
+    
+    Route::post('/canal-messagerie/posts', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'storePost'])
+        ->name('messagerie-sociale.store-post');
+    
+    Route::get('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showPost'])
+        ->name('messagerie-sociale.show-post');
+    
+    Route::get('/canal-messagerie/posts/{post}/edit', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'editPost'])
+        ->name('messagerie-sociale.edit-post');
+    
+    Route::put('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'updatePost'])
+        ->name('messagerie-sociale.update-post');
+    
+    Route::delete('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'destroyPost'])
+        ->name('messagerie-sociale.destroy-post');
+    
+    Route::post('/canal-messagerie/posts/{post}/comments', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'storeComment'])
+        ->name('messagerie-sociale.store-comment');
+    
+    Route::delete('/canal-messagerie/comments/{comment}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'destroyComment'])
+        ->name('messagerie-sociale.destroy-comment');
+    
+    Route::post('/canal-messagerie/posts/{post}/share', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'sharePost'])
+        ->name('messagerie-sociale.share-post');
+    
+    Route::get('/canal-messagerie/shared/{token}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showSharedPost'])
+        ->name('messagerie-sociale.shared-post');
 });

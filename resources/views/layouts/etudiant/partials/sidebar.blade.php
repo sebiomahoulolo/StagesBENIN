@@ -69,7 +69,7 @@
                      <i class="fas fa-building fa-fw"></i>
                      <span>Entreprises suivies</span>
                 </a>
-                 <a href="{{ route('pages.evenements') }}" class="menu-item"> {{-- Route Événements --}}
+                 <a href="{{ route('etudiants.evenements.upcoming') }}" class="menu-item {{ request()->routeIs('etudiants.evenements.upcoming') ? 'active' : '' }}"> {{-- Route Événements --}}
                      <i class="fas fa-calendar-day fa-fw"></i>
                      <span>Événements</span>
                  </a>
@@ -77,14 +77,19 @@
         </div>
 
          {{-- Section Communication & Suivi --}}
-         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') ? 'true' : 'false' }} }"> {{-- Ajoutez messaging.* --}}
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') ? 'active' : '' }}">
+         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') || request()->routeIs('messagerie-sociale.*') ? 'true' : 'false' }} }"> {{-- Ajoutez messaging.* --}}
+            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') || request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
                  <i class="fas fa-comments fa-fw"></i>
                  <span>Communication</span>
                   <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
              </button>
              <div x-show="open" class="menu-section-content">
-                 <a href="{{ route('messaging.index') }}" class="menu-item {{ request()->routeIs('messaging.*') ? 'active' : '' }}">
+                 <a href="{{ route('messagerie-sociale.index') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
+                     <i class="fas fa-bullhorn fa-fw"></i>
+                     <span>Canal d'annonces</span>
+                 </a>
+                 {{-- Commenté l'ancienne messagerie --}}
+                 {{-- <a href="{{ route('messaging.index') }}" class="menu-item {{ request()->routeIs('messaging.*') ? 'active' : '' }}">
                      <i class="fas fa-envelope fa-fw"></i>
                      <span>Messagerie</span>
                      @auth
@@ -92,7 +97,7 @@
                              <span class="notifications-badge">{{ Auth::user()->unreadMessagesCount() }}</span>
                          @endif
                      @endauth
-                 </a>
+                 </a> --}}
                  @if(Auth::user()->etudiant)
                     <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}"> <i class="fas fa-comments fa-fw"></i><span>Entretiens</span> </a>
                  @endif
