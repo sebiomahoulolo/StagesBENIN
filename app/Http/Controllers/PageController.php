@@ -78,6 +78,28 @@ class PageController extends Controller
     public function pee()
     {
         return view('pages.pee'); 
+    } public function paps()
+    {
+        return view('pages.paps');
+    
+    }
+
+    public function paps1()
+    {
+        return view('pages.desc_paas1');
+        
+    }
+
+    public function paps2()
+    {
+        return view('pages.desc_paas2');
+        
+    }
+
+    public function paps3()
+    {
+        return view('pages.desc_paas3');
+        
     }
     public function catalogueplus($id)
 {
@@ -94,11 +116,23 @@ public function catalogueplus2($id)
 
 public function show($id)
 {
-    $catalogue = Catalogue::findOrFail($id);
     $avis = Avis::orderBy('created_at', 'desc')->get();
-    
-    return view('pages.catalogueplus2', compact('catalogue','avis'));
+
+    // Récupérer le catalogue en fonction de son ID
+    $catalogue = Catalogue::findOrFail($id);
+
+    // Vérifier le statut et rediriger vers la vue correspondante
+    if ($catalogue->status == 0) {
+        return view('pages.catalogueplus2', compact('catalogue', 'avis'));
+    } elseif ($catalogue->status == 1) {
+        return view('pages.catalogueplus3', compact('catalogue', 'avis'));
+    } else {
+        // Optionnel : Gestion d'un statut inconnu
+        abort(404, 'Statut inconnu pour cet événement');
+    }
 }
+
+
 
 
 

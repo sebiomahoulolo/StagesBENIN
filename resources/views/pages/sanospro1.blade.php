@@ -10,7 +10,9 @@
         header {
             background: #0000ff !important;
         }
-
+   body {
+        font-family: 'Times New Roman', Times, serif;
+    }
         .navbar {
             background-color: white;
         }

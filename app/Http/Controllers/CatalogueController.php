@@ -17,12 +17,24 @@ class CatalogueController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     
-public function show($id)
-{
-    $avis = Avis::orderBy('created_at', 'desc')->get();
-    $catalogue = Catalogue::findOrFail($id);
-    return view('pages.catalogueplus2', compact('catalogue','avis'));
-}
+     public function show($id)
+     {
+         $avis = Avis::orderBy('created_at', 'desc')->get();
+     
+         // Récupérer le catalogue en fonction de son ID
+         $catalogue = Catalogue::findOrFail($id);
+     
+         // Vérifier le statut et rediriger vers la vue correspondante
+         if ($catalogue->status == 0) {
+             return view('pages.catalogueplus2', compact('catalogue', 'avis'));
+         } elseif ($catalogue->status == 1) {
+             return view('pages.catalogueplus3', compact('catalogue', 'avis'));
+         } else {
+             // Optionnel : Gestion d'un statut inconnu
+             abort(404, 'Statut inconnu pour cet événement');
+         }
+     }
+     
 
 
 

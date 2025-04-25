@@ -11,7 +11,7 @@
     <p id="animatedText" style="font-size: 35px; font-weight: bold; color:rgb(14, 40, 145); display: inline;"></p>
 </div>
 <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-    <p style="font-size: 25px; font-weight: bold; color:black; max-width: 800px; line-height: 1.5;">
+    <p style="font-size: 25px; font-weight: bold; color:rgb(14, 40, 145); line-height: 1.5;">
         Trouvez votre chemin vers une carrière épanouissante grâce à notre plateforme de recrutement et d’insertion professionnelle, 
         où les opportunités s’ouvrent à vous et les talents sont valorisés.
     </p>
@@ -81,7 +81,7 @@ typeWriterEffect();
                     </ul>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{{ route('pages.publication') }}
+                    <a href="
 " class="btn btn-outline-primary">Consulter</a>
                 </div>
             </div>
@@ -445,7 +445,9 @@ document.addEventListener("DOMContentLoaded", function() {
   object-fit: cover; /* Keeps images proportional */
 }
 
-
+   body {
+        font-family: 'Times New Roman', Times, serif;
+    }
 .btn-primary {
   font-weight: bold;
   padding: 10px 15px;

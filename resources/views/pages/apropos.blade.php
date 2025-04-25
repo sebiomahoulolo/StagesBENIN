@@ -386,7 +386,9 @@ StagesBENIN propose un service de référencement web des entreprises afin de le
             padding: 0 20px;
         }
         
-       
+       body {
+        font-family: 'Times New Roman', Times, serif;
+    }
         
         h1 {
             font-size: 2.5rem;

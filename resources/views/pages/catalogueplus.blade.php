@@ -28,7 +28,9 @@
     .catalog-item:hover {
         transform: translateY(-5px);
     }
-
+body {
+        font-family: 'Times New Roman', Times, serif;
+    }
     .catalog-image {
         width: 100%;
         height: 150px;
@@ -107,7 +109,10 @@
                         <span class="catalog-date">
                             {{ \Carbon\Carbon::parse($catalogue->created_at)->locale('fr')->translatedFormat('d F Y') }}
                         </span>
-                        <a href="{{ route('catalogueplus2', ['id' => $catalogue->id]) }}" class="btn-consult">CONSULTER »</a>
+                        <a href="{{ route('catalogue.show', ['id' => $catalogue->id]) }}" class="btn btn-primary">
+    CONSULTER »
+</a>
+
                     </div>
                 </div>
             </div>

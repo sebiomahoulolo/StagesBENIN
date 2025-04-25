@@ -17,7 +17,8 @@
 </button>
 
 <!-- Footer principal -->
-<footer class="bg-dark text-light py-5 mt-5 site-footer">
+<footer class=" text-light py-5 mt-5 site-footer"    style="background-color:rgb(9, 58, 107)"
+            >
     <div class="container">
         <div class="row">
 

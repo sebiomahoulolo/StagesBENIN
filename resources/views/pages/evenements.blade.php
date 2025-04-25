@@ -41,12 +41,20 @@
 
     <div class="events-section events-upcoming">
         <h2><i class="fas fa-calendar-alt text-primary"></i> Événements à venir ({{ $upcomingEvents->count() }})</h2>
-        
         @if($upcomingEvents->count() > 0)
             <div class="events-list">
                 @foreach ($upcomingEvents as $event)
                     <div class="event-card">
+                    
+               {{-- Affichage de l'image --}}
+@if(!empty($event->image) && file_exists(public_path('images/events/' . $event->image)))
+    <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->titre }}" class="catalog-image" style="width: 300px; height: 90px;">
+@else
+    <img src="{{ asset('images/events/NOS-EVENEMENTS-A-VENIR.png') }}" alt="Image non disponible" class="catalog-image" style="width: 300px; height: 90px;">
+@endif
+
                         <div class="event-title">{{ $event->title }}</div>
+                        <div class="event-type"> Types : {{ $event->type }}</div>
                         <div class="event-date">
                             <i class="fas fa-clock"></i> {{ $formatDate($event->start_date) }}
                         <div class="event-categorie">{{ $event->categorie }}</div>
@@ -100,7 +108,13 @@
             <div class="events-list highlight">
                 @foreach ($ongoingEvents as $event)
                     <div class="event-card active">
+                    @if(!empty($event->image) && file_exists(public_path('images/events/' . $event->image)))
+    <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->titre }}" class="catalog-image" style="width: 300px; height: 90px;">
+@else
+    <img src="{{ asset('images/events/NOS-EVENEMENTS-A-VENIR.png') }}" alt="Image non disponible" class="catalog-image" style="width: 300px; height: 90px;">
+@endif
                         <div class="event-title">{{ $event->title }}</div>
+                        <div class="event-type"> Types :{{ $event->type }}</div>
                         <div class="event-period">
                             <i class="fas fa-hourglass-half"></i> Du {{ $formatDate($event->start_date) }} au {{ $formatDate($event->end_date) }}
                         </div>
@@ -138,7 +152,13 @@
         <div class="events-list faded">
             @foreach ($pastEvents as $event)
                 <div class="event-card past">
+                @if(!empty($event->image) && file_exists(public_path('imagesE/events/' . $event->image)))
+    <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->titre }}" class="catalog-image" style="width: 300px; height: 90px;">
+@else
+    <img src="{{ asset('images/events/NOS-EVENEMENTS-A-VENIR.png') }}" alt="Image non disponible" class="catalog-image" style="width: 300px; height: 90px;">
+@endif
                     <div class="event-title">{{ $event->title }}</div>
+                      
                     <div class="event-date">
                         <i class="fas fa-calendar-check"></i> Terminé le {{ $formatDate($event->end_date) }}
                     </div>
@@ -194,6 +214,12 @@
             </div>
             <div class="modal-body">
                 <h4 id="eventTitle"></h4>
+                <div class="event-type"> Types :{{ $event->type }}</div>
+                @if(!empty($event->image) && file_exists(public_path('imagesE/events/' . $event->image)))
+    <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->titre }}" class="catalog-image" style="width: 300px; height: 90px;">
+@else
+    <img src="{{ asset('images/events/NOS-EVENEMENTS-A-VENIR.png') }}" alt="Image non disponible" class="catalog-image" style="width: 300px; height: 90px;">
+@endif
                 <p><strong>Date :</strong> <span id="eventDate"></span></p>
                 <p><strong>Lieu :</strong> <span id="eventLocation"></span></p>
                 <p><strong>Description :</strong></p>
@@ -203,9 +229,11 @@
                 <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal">
                     S'inscrire
                 </button>
-                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal">
-                   Acheter un ticket
-                </button>
+                <button type="button" class="btn btn-primary mt-2" 
+        onclick="window.location.href='{{ route('generate.pdf', ['id' => $event->id]) }}'">
+    Acheter un ticket
+</button>
+
             </div>
         </div>
     </div>
@@ -315,7 +343,9 @@ document.addEventListener("DOMContentLoaded", function () {
         margin: 0 auto;
         padding: 20px;
     }
-    
+       body {
+        font-family: 'Times New Roman', Times, serif;
+    }
     .current-date {
         text-align: right;
         color: #666;

@@ -291,7 +291,9 @@
              height: 3px;
              background-color: var(--custom-primary);
          }
-
+   body {
+        font-family: 'Times New Roman', Times, serif;
+    }
         .speaker-card {
             background-color: var(--custom-white);
             border-radius: 10px;

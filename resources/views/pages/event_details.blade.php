@@ -281,6 +281,9 @@
     .countdown i {
         color: #ff9800;
     }
+       body {
+        font-family: 'Times New Roman', Times, serif;
+    }
     
     .event-description {
         margin-bottom: 30px;
