@@ -38,7 +38,14 @@
                         <option value="résolu" {{ request('statut') == 'résolu' ? 'selected' : '' }}>Résolu</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    <label for="has_photo" class="form-label">Preuve photo</label>
+                    <select name="has_photo" id="has_photo" class="form-select">
+                        <option value="">Tous</option>
+                        <option value="1" {{ request('has_photo') == '1' ? 'selected' : '' }}>Avec photo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <label for="recherche" class="form-label">Recherche par mots-clés</label>
                     <input type="text" name="recherche" id="recherche" class="form-control" placeholder="Rechercher dans le sujet ou le contenu..." value="{{ request('recherche') }}">
                 </div>
@@ -128,6 +135,11 @@
                                         <span class="badge bg-danger text-white">Plainte</span>
                                     @else
                                         <span class="badge bg-info text-white">Suggestion</span>
+                                    @endif
+                                    @if($item->photo_path)
+                                        <span class="badge bg-secondary" title="Preuve photo jointe">
+                                            <i class="fas fa-camera"></i>
+                                        </span>
                                     @endif
                                 </td>
                                 <td>{{ $item->sujet }}</td>

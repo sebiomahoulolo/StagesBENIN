@@ -94,6 +94,7 @@
     .form-section:nth-child(2) { animation-delay: 0.2s; }
     .form-section:nth-child(3) { animation-delay: 0.3s; }
     .form-section:nth-child(4) { animation-delay: 0.4s; }
+    .form-section:nth-child(5) { animation-delay: 0.5s; }
     
     .section-label {
         font-size: 1.1rem;
@@ -331,6 +332,93 @@
         border-right: 1px solid #e5e7eb;
     }
     
+    /* Photo upload */
+    .photo-upload-container {
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        background-color: #f9fafb;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .photo-upload-container:hover {
+        border-color: #3b82f6;
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    .photo-upload-container input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .photo-upload-icon {
+        font-size: 2.5rem;
+        color: #6b7280;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .photo-upload-container:hover .photo-upload-icon {
+        color: #3b82f6;
+        transform: translateY(-3px);
+    }
+    
+    .photo-upload-text {
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 5px;
+    }
+    
+    .photo-upload-hint {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .photo-preview {
+        margin-top: 15px;
+        border-radius: 6px;
+        overflow: hidden;
+        display: none;
+        position: relative;
+    }
+    
+    .photo-preview img {
+        width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        background-color: #f3f4f6;
+    }
+    
+    .photo-remove {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(239, 68, 68, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .photo-remove:hover {
+        background-color: #dc2626;
+        transform: scale(1.1);
+    }
+    
     /* Animations */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
@@ -396,7 +484,7 @@
             </div>
             @endif
 
-            <form action="{{ route('etudiants.complaints.store') }}" method="POST" id="complaint-form">
+            <form action="{{ route('etudiants.complaints.store') }}" method="POST" id="complaint-form" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="form-section">
@@ -453,6 +541,33 @@
                     </div>
                 </div>
                 
+                <div class="form-section" id="photo-upload-section" style="display: none;">
+                    <div class="section-label">
+                        <i class="fas fa-camera"></i> Preuve photo
+                    </div>
+                    
+                    <div class="photo-upload-container" id="photo-upload-container">
+                        <input type="file" name="photo" id="photo-input" accept="image/*" class="@error('photo') is-invalid @enderror">
+                        <div class="photo-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="photo-upload-text">Cliquez ou déposez une image ici</div>
+                        <div class="photo-upload-hint">JPEG, PNG, GIF - Max 2MB</div>
+                        
+                        <div class="photo-preview" id="photo-preview">
+                            <img id="preview-image" src="#" alt="Aperçu de l'image">
+                            <button type="button" class="photo-remove" id="remove-photo">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    @error('photo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text mt-2">Ajouter une photo comme preuve peut aider à mieux comprendre votre plainte.</div>
+                </div>
+                
                 <div class="form-section">
                     <div class="section-label">
                         <i class="fas fa-user-shield"></i> Visibilité
@@ -491,6 +606,7 @@
         const typeSelect = document.getElementById('type');
         const formHeader = document.getElementById('form-header');
         const formCard = document.getElementById('complaint-form-card');
+        const photoSection = document.getElementById('photo-upload-section');
         
         function updateTypeStyles() {
             const selectedValue = typeSelect.value;
@@ -509,14 +625,44 @@
             if (selectedValue === 'plainte') {
                 iconContainer.className = 'fas fa-exclamation-circle';
                 headerTitle.textContent = 'Nouvelle plainte';
+                photoSection.style.display = 'block'; // Afficher la section de téléchargement de photo
             } else if (selectedValue === 'suggestion') {
                 iconContainer.className = 'fas fa-lightbulb';
                 headerTitle.textContent = 'Nouvelle suggestion';
+                photoSection.style.display = 'none'; // Masquer la section de téléchargement de photo
             } else {
                 iconContainer.className = 'fas fa-comment-alt';
                 headerTitle.textContent = 'Nouvelle soumission';
+                photoSection.style.display = 'none'; // Masquer la section de téléchargement de photo
             }
         }
+        
+        // Gestion de l'upload de photo
+        const photoInput = document.getElementById('photo-input');
+        const photoPreview = document.getElementById('photo-preview');
+        const previewImage = document.getElementById('preview-image');
+        const removePhotoButton = document.getElementById('remove-photo');
+        
+        photoInput.addEventListener('change', function(event) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    photoPreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        removePhotoButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            photoInput.value = '';
+            photoPreview.style.display = 'none';
+            previewImage.src = '#';
+        });
         
         // Initialiser les styles basés sur la valeur actuelle
         updateTypeStyles();

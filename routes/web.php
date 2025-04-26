@@ -152,11 +152,16 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
 });
 
 
-Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->name('etudiants.')->group(function () {
+Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudiants.')->group(function () {
 
     // ... Route pour le dashboard étudiant ...
     Route::get('/dashboard', [EtudiantController::class, 'index'])->name('dashboard');
 
+    // Route pour le boostage
+    Route::get('/boostage', function() {
+        return view('etudiants.boostage');
+    })->name('boostage');
+    
     // Routes pour les événements
     Route::get('/evenements', [EventController::class, 'upcomingForStudent'])->name('evenements.upcoming');
     Route::get('/evenements/{id}', [EventController::class, 'showForStudent'])->name('evenements.show');
