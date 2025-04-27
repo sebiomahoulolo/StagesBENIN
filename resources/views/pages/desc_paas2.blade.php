@@ -130,40 +130,6 @@
         <section class="section">
             <h2>Préinscription</h2>
             <div class="form-section mt-4">
-                <form>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input type="text" class="form-control" id="nom" placeholder="Votre nom" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="prenoms" class="form-label">Prénoms</label>
-                            <input type="text" class="form-control" id="prenoms" placeholder="Vos prénoms" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="contact" class="form-label">Contact WhatsApp</label>
-                        <input type="tel" class="form-control" id="contact" placeholder="+22997979797" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="filiere" class="form-label">Filière</label>
-                        <input type="text" class="form-control" id="filiere" placeholder="Votre filière" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="email@example.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Êtes-vous à la recherche d’un stage ?</label><br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="stage" id="oui" value="OUI" required>
-                            <label class="form-check-label" for="oui">OUI</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="stage" id="non" value="NON">
-                            <label class="form-check-label" for="non">NON</label>
-                        </div>
-                    </div>
                     <button type="submit" class="btn btn-primary mt-3">Soumettre la préinscription</button>
                 </form>
             </div>
