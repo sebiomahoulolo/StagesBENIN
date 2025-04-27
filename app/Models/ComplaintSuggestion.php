@@ -27,6 +27,7 @@ class ComplaintSuggestion extends Model
         'contenu',
         'etudiant_id',
         'is_anonymous',
+        'photo_path',
         'statut',
         'reponse'
     ];
@@ -66,5 +67,15 @@ class ComplaintSuggestion extends Model
     public function isResolved()
     {
         return $this->statut === 'résolu';
+    }
+
+    /**
+     * Déterminer si la plainte/suggestion possède une photo de preuve.
+     *
+     * @return bool
+     */
+    public function hasPhoto()
+    {
+        return !is_null($this->photo_path);
     }
 }

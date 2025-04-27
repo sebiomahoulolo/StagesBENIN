@@ -7,6 +7,7 @@ use App\Models\ComplaintSuggestion;
 use App\Models\Etudiant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ComplaintSuggestionController extends Controller
@@ -81,6 +82,7 @@ class ComplaintSuggestionController extends Controller
             'sujet' => 'required|string|max:255',
             'contenu' => 'required|string',
             'is_anonymous' => 'boolean',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -96,6 +98,12 @@ class ComplaintSuggestionController extends Controller
         $complainSuggestion->sujet = $request->sujet;
         $complainSuggestion->contenu = $request->contenu;
         $complainSuggestion->is_anonymous = $request->has('is_anonymous');
+        
+        // Gestion de l'upload de la photo de preuve
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $photoPath = $request->file('photo')->store('complaints', 'public');
+            $complainSuggestion->photo_path = $photoPath;
+        }
         
         // Si non anonyme, associer à l'étudiant
         if (!$complainSuggestion->is_anonymous) {
@@ -150,6 +158,11 @@ class ComplaintSuggestionController extends Controller
         if ($complaintSuggestion->statut !== 'nouveau') {
             return redirect()->route('etudiants.complaints.index')
                 ->with('error', 'Vous ne pouvez pas supprimer une plainte ou suggestion qui est déjà en cours de traitement.');
+        }
+        
+        // Supprimer la photo s'il y en a une
+        if ($complaintSuggestion->photo_path) {
+            Storage::disk('public')->delete($complaintSuggestion->photo_path);
         }
         
         $complaintSuggestion->delete();

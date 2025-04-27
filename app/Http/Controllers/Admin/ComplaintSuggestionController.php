@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ComplaintSuggestion;
 use App\Models\Etudiant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ComplaintSuggestionController extends Controller
@@ -90,6 +91,12 @@ class ComplaintSuggestionController extends Controller
     public function destroy($id)
     {
         $complaintSuggestion = ComplaintSuggestion::findOrFail($id);
+        
+        // Supprimer la photo s'il y en a une
+        if ($complaintSuggestion->photo_path) {
+            Storage::disk('public')->delete($complaintSuggestion->photo_path);
+        }
+        
         $complaintSuggestion->delete();
         
         return redirect()->route('admin.complaints.index')
@@ -134,6 +141,11 @@ class ComplaintSuggestionController extends Controller
                 $q->where('sujet', 'like', $recherche)
                   ->orWhere('contenu', 'like', $recherche);
             });
+        }
+        
+        // Filtrer par présence de photo
+        if ($request->filled('has_photo') && $request->has_photo === '1') {
+            $query->whereNotNull('photo_path');
         }
         
         // Pagination avec préservation des paramètres de filtrage

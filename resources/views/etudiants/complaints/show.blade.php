@@ -303,6 +303,97 @@
         text-align: right;
     }
     
+    /* Photo evidence styles */
+    .photo-evidence {
+        margin-bottom: 30px;
+    }
+    
+    .photo-container {
+        background-color: #f9fafb;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .photo-wrapper {
+        max-height: 400px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .photo-wrapper img {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+    
+    .photo-fullscreen {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .photo-fullscreen:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+        transform: scale(1.1);
+    }
+    
+    .photo-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+    
+    .photo-overlay img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+    }
+    
+    .photo-overlay-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: rgba(239, 68, 68, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .photo-overlay-close:hover {
+        background-color: #dc2626;
+        transform: scale(1.1);
+    }
+    
     /* Animations */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
@@ -448,8 +539,31 @@
                 </div>
             </div>
             
+            @if($complaintSuggestion->photo_path)
+            <div class="complaint-section photo-evidence" style="--section-index: 3;">
+                <h5 class="section-title">
+                    <i class="fas fa-camera"></i> Preuve photo
+                </h5>
+                <div class="photo-container">
+                    <div class="photo-wrapper">
+                        <img src="{{ asset('storage/' . $complaintSuggestion->photo_path) }}" alt="Preuve photo">
+                    </div>
+                    <button type="button" class="photo-fullscreen" id="fullscreen-button">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="photo-overlay" id="photo-overlay">
+                <img src="{{ asset('storage/' . $complaintSuggestion->photo_path) }}" alt="Preuve photo (plein écran)">
+                <button type="button" class="photo-overlay-close" id="photo-overlay-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            @endif
+            
             @if($complaintSuggestion->reponse)
-            <div class="complaint-section response-section" style="--section-index: 3;">
+            <div class="complaint-section response-section" style="--section-index: {{ $complaintSuggestion->photo_path ? '4' : '3' }};">
                 <div class="response-header">
                     <i class="fas fa-comment-dots"></i>
                     <h5 class="response-title">Réponse de l'administration</h5>
@@ -476,4 +590,37 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestion de l'affichage en plein écran de la photo
+        const fullscreenButton = document.getElementById('fullscreen-button');
+        const photoOverlay = document.getElementById('photo-overlay');
+        const photoOverlayClose = document.getElementById('photo-overlay-close');
+        
+        if (fullscreenButton) {
+            fullscreenButton.addEventListener('click', function() {
+                photoOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        
+        if (photoOverlayClose) {
+            photoOverlayClose.addEventListener('click', function() {
+                photoOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Fermer l'overlay en cliquant n'importe où
+            photoOverlay.addEventListener('click', function(e) {
+                if (e.target === photoOverlay) {
+                    photoOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+    });
+</script>
+@endpush
 @endsection 

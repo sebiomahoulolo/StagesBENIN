@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('contenu');
             $table->unsignedBigInteger('etudiant_id')->nullable(); // nullable pour permettre l'anonymat
             $table->boolean('is_anonymous')->default(false);
+            $table->string('photo_path')->nullable(); // Chemin vers la photo de preuve
             $table->string('statut')->default('nouveau'); // 'nouveau', 'en_cours', 'résolu'
             $table->text('reponse')->nullable(); // réponse de l'administrateur
             $table->timestamps();
