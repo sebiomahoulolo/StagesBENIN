@@ -127,6 +127,9 @@
         transition: all 0.3s ease;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08) !important;
     }
+    body {
+        font-family: 'Times New Roman', Times, serif;
+    }
     
     .hover-card:hover {
         transform: translateY(-5px);

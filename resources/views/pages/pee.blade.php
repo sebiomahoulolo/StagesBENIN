@@ -74,7 +74,9 @@
              color: #e0e0e0; /* Légère variation au survol */
          }
 
-
+   body {
+        font-family: 'Times New Roman', Times, serif;
+    }
         /* --- Navigation Principale (Adapté de .elementor-element-41cb1f2, -3159a9b, -5585609) --- */
         .simple-navbar {
             background-color: var(--custom-white);

@@ -18,7 +18,7 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
+         
             margin: 0;
             padding: 0;
             background: var(--bg-color);
@@ -62,12 +62,16 @@
             color: var(--text-color);
             text-align: center;
         }
-
+   body {
+        font-family: 'Times New Roman', Times, serif;
+    }
         /* Event Cards */
         .event-card {
-            border-radius: 8px;
+            border-radius: 12%;
+            border-color: #3498db;
+         
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 9rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
@@ -135,7 +139,7 @@
                 </div>
             </div>
             
-            <!-- Event Card 2 -->
+            <!-- Event Card 2 
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
                     <img src="https://stagesbenin.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-01-a-14.00.27_b95bc24c-300x175.jpg" class="card-img-top" alt="PEE">
@@ -145,9 +149,9 @@
                         <a href="{{ route('pages.pee') }}" class="btn btn-primary">Voir »</a>
                     </div>
                 </div>
-            </div>
+            </div>-->
             
-            <!-- Event Card 3 -->
+            <!-- Event Card 3
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
                     <img src="https://stagesbenin.com/wp-content/uploads/2024/09/IMG-20240904-WA0030-300x200.jpg" class="card-img-top" alt="JRSP">
@@ -157,7 +161,7 @@
                         <a href="#" class="btn btn-primary">Voir »</a>
                     </div>
                 </div>
-            </div>
+            </div> -->
             
             <!-- Event Card 4 -->
             <div class="col-md-6 col-lg-4">
@@ -166,7 +170,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">PAPS</h5>
                         <p class="card-text">Programme d'Accompagnement Professionnel des Stagiaires</p>
-                        <a href="#" class="btn btn-primary">Voir »</a>
+                        <a href="{{ route('pages.paps') }}" class="btn btn-primary">Voir »</a>
                     </div>
                 </div>
             </div>

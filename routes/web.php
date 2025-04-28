@@ -41,6 +41,7 @@ use App\Http\Middleware\EnsureUserHasRole; // Middleware de rôle
 
 Route::get('/', function () { return view('index'); })->name('home'); // Accueil
 Route::post('/subscribe', [SubscriberController::class, 'subscribe'])->name('subscribe');
+Route::get('/generate-pdf/{id}', [EventController::class, 'generatePDF'])->name('generate.pdf');
 
 // Routes Publiques des Pages statiques/info via PageController
 Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->name('pages.apropos'); // URL conservée
@@ -52,8 +53,11 @@ Route::post('/avis', [App\Http\Controllers\PageController::class, 'store'])->nam
 //Route::get('/catalogues-des-entreprises/{id}', [PageController::class, 'catalogueplus2'])->name('pages.catalogueplus');
 //Route::get('/catalogues-des-entreprises', [PageController::class, 'catalogueplus2'])->name('pages.catalogueplus');
 //Route::get('/catalogue/{id}', [PageController::class, 'show'])->name('catalogueplus');
+Route::get('/catalogue/{id}', [CatalogueController::class, 'show'])->name('catalogue.show');
+
 Route::get('/catalogueplus2/{id}', [CatalogueController::class, 'showParSecteur'])->name('catalogueplus2');
-Route::get('/catalogue/{id}', [CatalogueController::class, 'show'])->name('catalogueplus2');
+Route::get('/catalogueplus3/{id}', [CatalogueController::class, 'showParSecteur'])->name('catalogueplus3');
+
 Route::get('/catalogueplus', [CatalogueController::class, 'getLastAvis'])->name('catalogueplus');
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
@@ -70,7 +74,10 @@ Route::get('/nos-services', [PageController::class, 'services'])->name('pages.se
 Route::get('/sanospro', [PageController::class, 'sanospro'])->name('pages.sanospro');
 Route::get('/sanospro1', [PageController::class, 'sanospro1'])->name('pages.sanospro1');
 Route::get('/pee', [PageController::class, 'pee'])->name('pages.pee');
-
+Route::get('/paps', [PageController::class, 'paps'])->name('pages.paps');
+Route::get('/paps1', [PageController::class, 'paps1'])->name('pages.desc_paas1');
+Route::get('/paps2', [PageController::class, 'paps2'])->name('pages.desc_paas2');
+Route::get('/paps3', [PageController::class, 'paps3'])->name('pages.desc_paas3');
 // Routes Publiques pour les Événements
 Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
 Route::get('/events', [EventController::class, 'index'])->name('events.index'); // Conserve events.index public

@@ -14,6 +14,9 @@
         font-family: 'Roboto', sans-serif;
         line-height: 1.6;
         color: #333;
+           
+        font-family: 'Times New Roman', Times, serif;
+    
     }
 
     .container {

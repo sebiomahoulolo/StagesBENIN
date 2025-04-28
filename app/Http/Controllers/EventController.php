@@ -6,9 +6,19 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class EventController extends Controller
 {
+
+   
+public function generatePDF($id)
+{
+    $event = Event::findOrFail($id); // Récupère l'événement par ID
+
+    $pdf = Pdf::loadView('evenements.event-details', compact('event')); // Vue pour le design PDF
+    return $pdf->download('ticket-' . $event->title . '.pdf'); // Téléchargement du PDF
+}
+
     /**
      * Stocker un nouvel événement dans la base de données.
      *

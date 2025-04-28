@@ -3,6 +3,11 @@
 @section('title', 'StagesBENIN')
 
 @section('content')
+<style>
+body {
+        font-family: 'Times New Roman', Times, serif;
+    }
+    </style>
 <section class="contact-section py-5">
     <div class="container">
         <h1 class="text-center mb-4 text-primary">CONTACTEZ-NOUS</h1>
