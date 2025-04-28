@@ -1,16 +1,19 @@
 @extends('layouts.layout')
-
+ 
 @section('title', 'StagesBENIN ')
 
 @section('content')
 
 <style>
-  .sector-card {
+ .sector-card {
     transition: transform 0.2s ease-in-out;
-     border-radius: 12%;
-     box-shadow: #777;
-            border-color: #3498db;
-  }
+    border-radius: 12%;
+    box-shadow: 0 4px 6px #777; /* Ajoutez une ombre si nécessaire */
+    border-color: #3498db;
+    border-width: 5px; /* Augmentez la valeur ici pour des bordures plus larges */
+    border-style: solid; /* Assurez-vous d'ajouter un style de bordure si ce n'est pas déjà fait */
+}
+
   body {
         font-family: 'Times New Roman', Times, serif;
     }

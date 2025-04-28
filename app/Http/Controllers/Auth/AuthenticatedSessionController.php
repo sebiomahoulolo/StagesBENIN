@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('etudiants.dashboard', [], false)); // Route nommée du dashboard étudiant
         } elseif ($user->isRecruteur()) {
              // Rediriger vers le dashboard Recruteur
-             return redirect()->intended(route('recruteur.dashboard', [], false)); // Route nommée du dashboard recruteur
+             return redirect()->intended(route('entreprises.dashboard', [], false)); // Route nommée du dashboard recruteur
         } else {
             // Redirection par défaut si aucun rôle connu (ou fallback)
             // return redirect()->intended(RouteServiceProvider::HOME);
