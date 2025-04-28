@@ -19,6 +19,8 @@ class AdminController extends Controller
         $actualites = Actualite::paginate(10);
         $events = Event::paginate(10);
         $catalogues = Catalogue::paginate(10);
+    $catalogueItems = Catalogue::all(); 
+
 
       
         $totalEtudiants = Etudiant::count();
@@ -28,7 +30,7 @@ class AdminController extends Controller
             'etudiants',
             'actualites',
             'events',
-            'catalogues',
+            'catalogueItems',
             'totalEtudiants',
             'progression'
         ));

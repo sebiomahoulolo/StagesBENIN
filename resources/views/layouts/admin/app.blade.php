@@ -857,6 +857,27 @@
     <div class="invalid-feedback">Veuillez saisir un titre.</div>
   </div>
 
+<!-- Sélection du secteur d'activité -->
+<div class="mb-3">
+  <label for="secteur_activite" class="form-label">Secteur d'activité*</label>
+  <select class="form-select" id="secteur_activite" name="secteur_activite" required>
+    <option value="">Sélectionnez un secteur</option>
+    <option value="Agriculture et agroalimentaire (production, transformation, distribution)">Agriculture et agroalimentaire (production, transformation, distribution)</option>
+    <option value="Industrie (manufacture, textile, automobile, chimie)">Industrie (manufacture, textile, automobile, chimie)</option>
+    <option value="Commerce et distribution (boutiques, supermarchés, import-export)">Commerce et distribution (boutiques, supermarchés, import-export)</option>
+    <option value="Transport et logistique (fret, livraison, aérien, maritime)">Transport et logistique (fret, livraison, aérien, maritime)</option>
+    <option value="BTP et immobilier (construction, architecture, ingénierie, agences immobilières)">BTP et immobilier (construction, architecture, ingénierie, agences immobilières)</option>
+    <option value="Énergie et environnement (énergies renouvelables, pétrole, gestion des déchets)">Énergie et environnement (énergies renouvelables, pétrole, gestion des déchets)</option>
+    <option value="Technologie et numérique (informatique, télécommunications, intelligence artificielle)">Technologie et numérique (informatique, télécommunications, intelligence artificielle)</option>
+    <option value="Finance et assurance (banques, microfinance, assurances)">Finance et assurance (banques, microfinance, assurances)</option>
+    <option value="Santé et bien-être (hôpitaux, pharmacies, cosmétiques)">Santé et bien-être (hôpitaux, pharmacies, cosmétiques)</option>
+    <option value="Éducation et formation (écoles, universités, formations professionnelles)">Éducation et formation (écoles, universités, formations professionnelles)</option>
+    <option value="Tourisme et loisirs (hôtellerie, restauration, évènementiel)">Tourisme et loisirs (hôtellerie, restauration, évènementiel)</option>
+    <option value="Arts, culture et médias (cinéma, musique, presse, publicité)">Arts, culture et médias (cinéma, musique, presse, publicité)</option>
+    <option value="Services aux entreprises (consulting, marketing, sécurité)">Services aux entreprises (consulting, marketing, sécurité)</option>
+  </select>
+  <div class="invalid-feedback">Veuillez sélectionner un secteur.</div>
+</div>
   <!-- Description -->
   <div class="mb-3">
     <label for="catalogue_description" class="form-label">Courte Description de votre Ets*</label>

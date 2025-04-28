@@ -1,9 +1,9 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Tableau de Bord - Admin') {{-- Optional: Set a specific title --}}
+@section('title', 'StagesBENIN - Admin') {{-- Optional: Set a specific title --}}
 
 @section('content')
-    <h1 class="dashboard-title">Tableau de bord</h1>
+    <h1 class="dashboard-title">StagesBENIN</h1>
 
     <!-- Stats Section -->
     <div class="stats-container">
@@ -239,7 +239,7 @@
                                 <th>Catégorie</th>
                                 <th>Auteur</th>
                                 <th>Date</th>
-                                <th>Statut</th>
+                               
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -250,14 +250,14 @@
                                 <td>{{ $actualite->categorie ?? '-' }}</td>
                                 <td>{{ $actualite->auteur ?? '-'}}</td>
                                 <td>{{ $actualite->date_publication ? \Carbon\Carbon::parse($actualite->date_publication)->isoFormat('DD MMM YYYY') : '-' }}</td>
-                                <td>
-                                    {{-- Status - Assuming an 'is_published' field --}}
+                                 {{--<td>
+                                    Status - Assuming an 'is_published' field 
                                     @if($actualite->is_published)
                                         <span class="badge bg-success">Publiée</span>
                                     @else
                                         <span class="badge bg-secondary">Brouillon</span>
                                     @endif
-                                </td>
+                                </td>--}}
                                 <td>
                                     <div class="d-flex gap-1">
                                         {{-- Ensure routes exist --}}
@@ -358,46 +358,24 @@
                 </div>
             </div>
             <div class="content-area table-responsive">
-    <h4>Catalogue</h4>
-
+    <h4> Liste des Catalogues</h4>
     @if(isset($catalogueItems) && !$catalogueItems->isEmpty())
         <table class="table table-bordered table-striped">
-            <thead class="table-dark">
+            <thead class="table">
                 <tr>
-                    <th>#</th>
-                    <th>Nom de l'Établissement</th>
+           <th>Nom de l'Établissement</th>
                     <th>Localisation</th>
-                    <th>Nb Activités</th>
-                    <th>Logo</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
+                    <th>Activités principale</th>
+       <!--th>Actions</th>
+                </tr-->
             </thead>
             <tbody>
                 @foreach($catalogueItems as $index => $item)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $item->titre }}</td>
+                  <td>{{ $item->titre }}</td>
                         <td>{{ $item->localisation }}</td>
-                        <td>{{ $item->nb_activites }}</td>
-                        <td>
-                            @if($item->logo)
-                                <img src="{{ asset('storage/' . $item->logo) }}" alt="Logo" width="50">
-                            @else
-                                Aucun logo
-                            @endif
-                        </td>
-                        <td>
-                            @if($item->image)
-                                <img src="{{ asset('storage/' . $item->image) }}" alt="Image" width="50">
-                            @else
-                                Aucune image
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('catalogue.show', $item->id) }}" class="btn btn-sm btn-info">Voir</a>
-                            <a href="{{ route('catalogue.edit', $item->id) }}" class="btn btn-sm btn-warning">Modifier</a>
-                        </td>
+                        <td>{{ $item-> activite_principale}}</td>
+                      
                     </tr>
                 @endforeach
             </tbody>
@@ -406,7 +384,6 @@
         <div class="alert alert-info">Aucun élément trouvé dans le catalogue pour le moment.</div>
     @endif
 </div>
-
         </div>
     </div>
 @endsection

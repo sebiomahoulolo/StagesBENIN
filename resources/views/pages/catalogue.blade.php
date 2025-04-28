@@ -1,118 +1,87 @@
 @extends('layouts.layout')
 
-@section('title', 'StagesBENIN')
+@section('title', 'StagesBENIN ')
 
 @section('content')
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .catalog-container {
-        margin: 30px 0;
-    }
-    
-    .catalog-title {
-        text-align: center;
-        font-weight: bold;
-        margin-bottom: 30px;
-        color: #0056b3;
-    }
-    
-    .catalog-item {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 20px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
-    }
-    
-    .catalog-item:hover {
-        transform: translateY(-5px);
-    }
-    
-    .catalog-image {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-    }
-    
-    .catalog-content {
-        padding: 15px;
-    }
-    
-    .catalog-title {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-    
-    .catalog-desc {
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 15px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    .catalog-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        background-color: #f8f9fa;
-        border-top: 1px solid #eee;
-    }
-    
-    .catalog-date {
-        color: #777;
-        font-size: 13px;
-    }
-    
-    .btn-consult {
-        background-color: #0056b3;
+  .sector-card {
+    transition: transform 0.2s ease-in-out;
+  }
+  .sector-card:hover {
+    transform: scale(1.02);
+   background-color: #0056b3;
         color: white;
-        padding: 6px 15px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: background-color 0.2s;
-    }
-    
-    .btn-consult:hover {
-        background-color: #003d80;
-        text-decoration: none;
-        color: white;
-    }
+  }
 </style>
 
-<div class="container catalog-container">
+<div class="container py-5">
+  <h1 class="text-center mb-4">Liste par secteurs d'activités</h1>
 
-    
-    <div class="row">
-        @foreach($catalogues as $catalogue)
-            <div class="col-md-4">
-                <div class="catalog-item">
-                    @if($catalogue->image)
-                        <img src="{{ asset('assets/images/formations/' . $catalogue->image) }}" alt="{{ $catalogue->titre }}" class="catalog-image">
-                    @endif
-                    
-                    <div class="catalog-content">
-                        <h4 class="catalog-title">{{ $catalogue->titre }}</h4>
-                        <p class="catalog-desc">{{ $catalogue->description }}</p>
-                    </div>
-                    
-                    <div class="catalog-footer">
-                        <span class="catalog-date">
-                            {{ \Carbon\Carbon::parse($catalogue->created_at)->locale('fr')->format('d F Y') }}
-                        </span>
-                       <a href="{{ route('catalogueplus', ['id' => $catalogue->id]) }}" class="btn-consult">CONSULTER »</a>
-
-                    </div>
-                </div>
-            </div>
-        @endforeach
+  <!-- Barre de recherche -->
+  <div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+      <input type="text" class="form-control" id="searchInput" placeholder="Rechercher un secteur...">
     </div>
+  </div>
+
+  <!-- Cartes des secteurs -->
+  <div class="row" id="sectorContainer">
+    <!-- Cartes dynamiques injectées ici -->
+  </div>
 </div>
+
+<script>
+  const sectors = [
+    "Agriculture et agroalimentaire (production, transformation, distribution)",
+    "Industrie (manufacture, textile, automobile, chimie)",
+    "Commerce et distribution (boutiques, supermarchés, import-export)",
+    "Transport et logistique (fret, livraison, aérien, maritime)",
+    "BTP et immobilier (construction, architecture, ingénierie, agences immobilières)",
+    "Énergie et environnement (énergies renouvelables, pétrole, gestion des déchets)",
+    "Technologie et numérique (informatique, télécommunications, intelligence artificielle)",
+    "Finance et assurance (banques, microfinance, assurances)",
+    "Santé et bien-être (hôpitaux, pharmacies, cosmétiques)",
+    "Éducation et formation (écoles, universités, formations professionnelles)",
+    "Tourisme et loisirs (hôtellerie, restauration, évènementiel)",
+    "Arts, culture et médias (cinéma, musique, presse, publicité)",
+    "Services aux entreprises (consulting, marketing, sécurité)"
+  ];
+
+  const sectorContainer = document.getElementById('sectorContainer');
+
+  function displaySectors(filter = '') {
+    sectorContainer.innerHTML = '';
+    sectors
+      .filter(sector => sector.toLowerCase().includes(filter.toLowerCase()))
+      .forEach(sector => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 mb-4';
+
+        const secteur_activiteURL = encodeURIComponent(sector);
+
+        col.innerHTML = `
+          <a href="/catalogueplus/${secteur_activiteURL}" class="text-decoration-none text-dark">
+            <div class="card sector-card shadow-sm h-100">
+              <div class="card-body">
+                <h5 class="card-title">${sector}</h5>
+              </div>
+            </div>
+          </a>
+        `;
+        sectorContainer.appendChild(col);
+      });
+  }
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    displaySectors(e.target.value);
+  });
+
+  // Affichage initial
+  displaySectors();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 @endsection

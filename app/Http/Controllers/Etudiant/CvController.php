@@ -119,6 +119,7 @@ class CvController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
+<<<<<<< HEAD
       public function exportPdf()
       {
            $cvProfile = null; // Initialise pour le bloc catch
@@ -153,6 +154,56 @@ class CvController extends Controller
                           ->with('error', 'Erreur lors de la génération du PDF : ' . $e->getMessage());
            }
       }
+=======
+    // Décommenté pour réactiver l'export PDF serveur avec dompdf
+    public function exportPdf()
+    {
+        $cvProfile = null; // Initialise pour le bloc catch
+        Log::info("Tentative d'export PDF (serveur dompdf) pour CvProfile ID: " . Auth::user()->etudiant?->cvProfile?->id);
+        try {
+            if (!class_exists(Pdf::class)) {
+                Log::error("Le package 'barryvdh/laravel-dompdf' n'est pas installé ou configuré correctement.");
+                throw new \Exception("La génération PDF n'est pas disponible sur le serveur.");
+            }
+
+            $cvProfile = $this->getCurrentCvProfile(); // Récupère le profil avec relations
+
+            // Log pour vérifier les données avant de générer le PDF
+            Log::debug("Données pour PDF:", $cvProfile->toArray());
+
+            // Génération du PDF en utilisant le template PDF optimisé
+            $pdf = Pdf::loadView('etudiants.cv.templates.pdf', compact('cvProfile'))
+                       ->setPaper('a4', 'portrait'); // Définit explicitement le format
+            
+            // Force dompdf à ne pas utiliser de margin (important)
+            $pdf->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'DejaVu Sans',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'margin_top' => 0,
+                'margin_right' => 0,
+                'margin_bottom' => 0,
+                'margin_left' => 0
+            ]);
+
+            // Nom de fichier dynamique et "slugifié"
+             $filename = 'cv-' . Str::slug($cvProfile->nom_complet ?: 'etudiant-' . $cvProfile->etudiant_id) . '.pdf';
+
+            Log::info("Export PDF serveur (dompdf) réussi pour {$filename}");
+
+            // Retourne le PDF pour téléchargement
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'export PDF serveur (dompdf): " . $e->getMessage(), ['exception' => $e]);
+            // Redirige vers la page de visualisation avec un message d'erreur
+            return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
+                      ->with('error', 'Erreur lors de la génération du PDF : ' . $e->getMessage()); // Message d'erreur plus générique
+        }
+    }
+    // Fin de exportPdf
+>>>>>>> 30361087d1d71da93b0a772220c8131e2d9fe2cd
 
      /**
       * Exporte le CV au format PNG en utilisant Browsershot.

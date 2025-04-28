@@ -10,6 +10,15 @@
             <i class="fas fa-home fa-fw"></i><span>Tableau de bord</span>
         </a>
 
+        <a href="{{ route('etudiants.boostage') }}" class="menu-item1 {{ request()->routeIs('etudiants.boostage') ? 'active' : '' }}">
+             <i class="fas fa-rocket fa-fw"></i>
+             <span>Boostage</span>
+        </a>
+
+        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+            <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
+        </a>
+         
         {{-- Section CV --}}
         <div x-data="{ open: {{ request()->routeIs('etudiants.cv.*') || request()->routeIs('cvtheque.route') ? 'true' : 'false' }} }">
             <!-- <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('etudiants.cv.*') || request()->routeIs('cvtheque.route') ? 'active' : '' }}">
@@ -24,21 +33,16 @@
                  <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
             </button>
             <div x-show="open" class="menu-section-content">
-                @if(Auth::user()->etudiant?->cvProfile?->id)
-                    @php $cvProfileId = Auth::user()->etudiant->cvProfile->id; @endphp
-                    <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-file-alt fa-fw"></i><span>Éditeur CV</span> </a>
-                    <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
-                @endif
-                 <a href="#" class="menu-item"> {{-- Remplacez # par la route pour CV-thèque --}}
-                    <i class="fas fa-database fa-fw"></i>
-                    <span>CV-thèque</span>
-                </a>
+                @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id ?? 0; @endphp
+                <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-file-alt fa-fw"></i><span>Éditeur CV</span> </a>
+                <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
+                 
             </div>
         </div>
 
         {{-- Section Opportunités --}}
-        <div x-data="{ open: {{ request()->routeIs('opportunites.*') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('opportunites.*') ? 'active' : '' }}">
+        <div x-data="{ open: {{ request()->routeIs('opportunites.*') || request()->routeIs('etudiants.offres.*') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
+            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('opportunites.*') || request()->routeIs('etudiants.offres.*') ? 'active' : '' }}">
                 <i class="fas fa-briefcase fa-fw"></i>
                 <span>Opportunités</span>
                  <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
@@ -48,16 +52,20 @@
                     <i class="fas fa-newspaper fa-fw"></i>
                     <span>Actualités</span>
                 </a>
-                <a href="#" class="menu-item"> {{-- Route Offres --}}
+                <a href="{{ route('etudiants.offres.index') }}" class="menu-item {{ request()->routeIs('etudiants.offres.*') ? 'active' : '' }}"> {{-- Route Offres --}}
                     <i class="fas fa-briefcase fa-fw"></i>
                     <span>Offres disponibles</span>
                      {{-- <span class="notifications-badge">5</span> --}}
+                </a>
+                <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="menu-item {{ request()->routeIs('etudiants.offres.mes-candidatures') ? 'active' : '' }}"> {{-- Route Mes candidatures --}}
+                    <i class="fas fa-file-alt fa-fw"></i>
+                    <span>Mes candidatures</span>
                 </a>
                 <a href="#" class="menu-item"> {{-- Route Entreprises suivies --}}
                      <i class="fas fa-building fa-fw"></i>
                      <span>Entreprises suivies</span>
                 </a>
-                 <a href="#" class="menu-item"> {{-- Route Événements --}}
+                 <a href="{{ route('etudiants.evenements.upcoming') }}" class="menu-item {{ request()->routeIs('etudiants.evenements.upcoming') ? 'active' : '' }}"> {{-- Route Événements --}}
                      <i class="fas fa-calendar-day fa-fw"></i>
                      <span>Événements</span>
                  </a>
@@ -65,22 +73,31 @@
         </div>
 
          {{-- Section Communication & Suivi --}}
-         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') ? 'true' : 'false' }} }"> {{-- Ajustez les routes ici --}}
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') ? 'active' : '' }}">
+         <div x-data="{ open: {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') || request()->routeIs('messagerie-sociale.*') ? 'true' : 'false' }} }"> {{-- Ajoutez messaging.* --}}
+            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('communication.*') || request()->routeIs('etudiants.examen') || request()->routeIs('messaging.*') || request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
                  <i class="fas fa-comments fa-fw"></i>
                  <span>Communication</span>
                   <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
              </button>
              <div x-show="open" class="menu-section-content">
-                 <a href="#" class="menu-item"> {{-- Route Messagerie --}}
+                 <a href="{{ route('messagerie-sociale.index') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
+                     <i class="fas fa-bullhorn fa-fw"></i>
+                     <span>Canal d'annonces</span>
+                 </a>
+                 {{-- Commenté l'ancienne messagerie --}}
+                 {{-- <a href="{{ route('messaging.index') }}" class="menu-item {{ request()->routeIs('messaging.*') ? 'active' : '' }}">
                      <i class="fas fa-envelope fa-fw"></i>
                      <span>Messagerie</span>
-                      {{-- <span class="notifications-badge">2</span> --}}
-                 </a>
+                     @auth
+                         @if(Auth::user()->unreadMessagesCount() > 0)
+                             <span class="notifications-badge">{{ Auth::user()->unreadMessagesCount() }}</span>
+                         @endif
+                     @endauth
+                 </a> --}}
                  @if(Auth::user()->etudiant)
                     <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}"> <i class="fas fa-comments fa-fw"></i><span>Entretiens</span> </a>
                  @endif
-                 <a href="#" class="menu-item"> {{-- Route Suggestions/Plaintes --}}
+                 <a href="{{ route('etudiants.complaints.index') }}" class="menu-item {{ request()->routeIs('etudiants.complaints.*') ? 'active' : '' }}">
                      <i class="fas fa-comment-alt fa-fw"></i>
                      <span>Suggestions/Plaintes</span>
                  </a>
@@ -99,7 +116,7 @@
                   <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
              </button>
              <div x-show="open" class="menu-section-content">
-                 <a href="#" class="menu-item"> {{-- Route Cours en ligne --}}
+                 <a href="https://fhcschoolbenin.com/" target="_blank" class="menu-item"> {{-- Route Cours en ligne --}}
                      <i class="fas fa-graduation-cap fa-fw"></i>
                      <span>Cours en ligne</span>
                  </a>
@@ -114,15 +131,10 @@
 
              </div>
          </div>
+         
 
         {{-- Section Compte (éléments restants toujours visibles ou groupés différemment si nécessaire) --}}
-        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-            <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
-        </a>
-         <a href="#" class="menu-item1"> {{-- Route Boostage --}}
-             <i class="fas fa-rocket fa-fw"></i>
-             <span>Boostage</span>
-         </a>
+       
         <a href="{{ route('logout') }}" class="menu-item1" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="fas fa-sign-out-alt fa-fw"></i><span>Déconnexion</span>
         </a>

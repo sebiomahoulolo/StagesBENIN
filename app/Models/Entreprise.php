@@ -9,7 +9,7 @@ class Entreprise extends Model
 {
     use HasFactory;
 
-    // Ajoutez 'user_id' aux fillable
+     // Ajoutez 'user_id' aux fillable
     protected $fillable = [
         'user_id', // Clé étrangère
         'nom',
@@ -50,3 +50,9 @@ class Entreprise extends Model
         return $this->hasMany(Messagerie::class);
     }
 }
+    //  public function recrutements()
+    //  {
+    //      // Assurez-vous que le modèle Recrutement existe et a la relation belongsTo Entreprise
+    //      // return $this->hasMany(Recrutement::class);
+    //  }
+// }

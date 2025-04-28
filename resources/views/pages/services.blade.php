@@ -977,7 +977,7 @@
         <div class="content">
             <div class="pack">
                 <h1>Pack 2</h1>
-          
+                         <span class="badge badge-custom bg-info text-white">Populaire</span>
  <p class="price"><span class="old-price">100 000F</span> 60 000F / ANNÉE</p>
                 <ul class="features">
                     <li>&#10004; La CVthèque</li>
@@ -1013,6 +1013,7 @@
         <div class="content">
             <div class="pack">
                 <h1>Pack 3</h1>
+                  <span class="badge badge-custom bg-warning text-dark">Recommandé</span>
                 <p class="price"><span class="old-price">180 000F</span> 120 000F / ANNÉE</p>
                 <ul class="features">
                     <li>&#10004; La CVthèque</li>
@@ -1052,6 +1053,7 @@
           <div class="content">
             <div class="pack">
                 <h1>Pack 4</h1>
+                 <span class="badge badge-custom bg-danger text-white">Recommandé</span>
                 <p class="price"> <span style="color:red">Prix sur mesure</span> / ANNÉE</p>
                 
                 <ul class="features">

@@ -58,6 +58,13 @@ class CvCentresInteretForm extends Component
          if (!$this->showAddForm && $this->editingIndex !== null) {
              $this->cancelEdit();
          }
+        
+        // Vérifier si le nombre maximal de centres d'intérêt est atteint
+        if ($this->centresInteret->count() >= 4 && !$this->showAddForm) {
+            session()->flash('interet_error', 'Vous avez atteint la limite maximale de 4 centres d\'intérêt.');
+            return;
+        }
+        
         $this->showAddForm = !$this->showAddForm;
     }
 
@@ -76,24 +83,30 @@ class CvCentresInteretForm extends Component
 
     protected function rules()
     {
-        $rulesBase = ['nom' => 'required|string|max:100'];
-
-        if ($this->editingIndex !== null) {
-            return collect($rulesBase)->mapWithKeys(fn($rule, $key) => ["editingInteret.{$key}" => $rule])->toArray();
-        } else {
-            return collect($rulesBase)->mapWithKeys(fn($rule, $key) => ["newInteret.{$key}" => $rule])->toArray();
-        }
+        return [
+            'newInteret.nom' => ['required', 'string', 'max:50'],
+            'newInteret.order' => ['sometimes', 'integer'],
+            'editInteret.nom' => ['required', 'string', 'max:50'],
+            'editInteret.order' => ['sometimes', 'integer'],
+        ];
     }
 
-    protected function messages() {
-        $prefix = ($this->editingIndex !== null) ? 'editingInteret.' : 'newInteret.';
-        return [$prefix.'nom.required' => 'Le nom de l\'intérêt est requis.'];
+    protected function messages()
+    {
+        return [
+            'newInteret.nom.required' => 'Le nom est requis.',
+            'newInteret.nom.max' => 'Le nom ne doit pas dépasser 50 caractères.',
+            'editInteret.nom.required' => 'Le nom est requis.',
+            'editInteret.nom.max' => 'Le nom ne doit pas dépasser 50 caractères.',
+        ];
     }
 
     public function updateInteret()
     {
         if ($this->editingIndex === null) return;
-        $validatedData = $this->validate($this->rules())['editingInteret'];
+        $validatedData = $this->validate([
+            'editingInteret.nom' => ['required', 'string', 'max:50'],
+        ])['editingInteret'];
         $interetId = $this->centresInteret[$this->editingIndex]['id'] ?? null;
 
         if ($interetId) {
@@ -109,6 +122,12 @@ class CvCentresInteretForm extends Component
 
     public function addInteret()
     {
+        // Vérifier si le nombre maximal de centres d'intérêt est atteint
+        if ($this->centresInteret->count() >= 4) {
+            session()->flash('interet_error', 'Vous avez atteint la limite maximale de 4 centres d\'intérêt.');
+            return;
+        }
+        
         $validatedData = $this->validate($this->rules())['newInteret'];
         CvCentreInteret::create(['cv_profile_id' => $this->cvProfileId, ...$validatedData]);
         $this->loadCentresInteret();

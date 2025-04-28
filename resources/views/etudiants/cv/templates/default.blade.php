@@ -33,165 +33,506 @@
 
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DejaVu Sans', Arial, sans-serif; }
-        body { background-color: white; color: #333333; line-height: 1.4; font-size: 10pt; -webkit-font-smoothing: antialiased; }
+        body {
+            background-color: white;
+            color: #333333;
+            line-height: 1.4;
+            font-size: 10pt;
+            -webkit-font-smoothing: antialiased;
+            margin: 0; /* Assurer aucune marge body */
+            padding: 0; /* Assurer aucun padding body */
+        }
         h1, h2, h3, h4, h5, h6 { font-weight: 600; color: #2c3e50; }
         p { margin-bottom: 0.6em; }
         a { color: #005a9e; text-decoration: none; }
-        ul { list-style-position: outside; }
+        ul { list-style-position: inside; padding-left: 5px; } /* Ajustement pour listes */
 
-        /* --- Conteneur Principal --- */
-        .cv-container { width: 100%; max-width: 800px; margin: 0 auto; background-color: white; border: 1px solid #eeeeee; }
-
-        /* --- En-tête (couleur unie) --- */
-        .cv-header {
-            background-color: #1a4a8b; /* Couleur unie */
-            color: white;
-            padding: 25px 35px;
-            border-bottom: 4px solid #005a9e;
-            display: block; /* Ou table */
+        /* --- Conteneur Principal et Table Principale --- */
+        .cv-container {
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-collapse: collapse; /* Important pour dompdf */
         }
-        .header-table { display: table; width: 100%; border-spacing: 0; }
-        .header-table-row { display: table-row; }
-        .header-photo-cell { display: table-cell; width: 130px; vertical-align: top; padding-right: 30px; }
-        .header-content-cell { display: table-cell; vertical-align: middle; }
 
-        .photo-container { width: 110px; height: 110px; overflow: hidden; border-radius: 50%; border: 3px solid white; background-color: #e0e0e0; }
-        .photo-container img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        /* --- Styles pour cellule d'en-tête --- */
+        .header-cell {
+            background-color: #1a4a8b;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 4px solid #005a9e;
+        }
 
-        .header-content h1 { font-size: 22pt; font-weight: 700; margin-bottom: 5px; color: white; }
-        .header-content h2 { font-size: 13pt; font-weight: 400; margin-bottom: 15px; color: white; opacity: 0.95; }
-        .contact-info { margin-top: 15px; }
-        .contact-item { margin-right: 15px; margin-bottom: 5px; display: inline-block; font-size: 9pt; color: white; white-space: nowrap; }
-        /* Icônes gérées par ::before plus bas */
-        .contact-item a { color: white; text-decoration: none; }
+        /* Layout interne de l'en-tête */
+        .header-inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        
+        .header-photo-cell {
+            width: 120px;
+            vertical-align: middle;
+            padding-right: 20px;
+        }
+        
+        .header-content-cell {
+            vertical-align: middle;
+        }
 
-        /* --- Corps du CV - Layout Deux Colonnes --- */
-        .cv-body { padding: 0; font-size: 0; /* Hack inline-block */ }
-        .left-column, .right-column { display: inline-block; vertical-align: top; width: 100%; padding: 25px; font-size: 10pt; }
-        .left-column { width: 65%; padding-right: 30px; border-right: 1px solid #eaeaea; }
-        .right-column { width: 35%; padding-left: 20px; background-color: #f8f9fa; }
+        .photo-container {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 3px solid white;
+            background-color: #e0e0e0;
+        }
+        
+        .photo-container img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .header-content h1 {
+            font-size: 20pt;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: white;
+        }
+        
+        .header-content h2 {
+            font-size: 12pt;
+            font-weight: 400;
+            margin-bottom: 10px;
+            color: white;
+            opacity: 0.95;
+        }
+        
+        .contact-info {
+            margin-top: 8px;
+        }
+        
+        .contact-item {
+            margin-right: 12px;
+            margin-bottom: 4px;
+            display: inline-block;
+            font-size: 9pt;
+            color: white;
+            white-space: nowrap;
+        }
+        
+        .contact-item a {
+            color: white;
+        }
+
+        /* --- Cellules des colonnes de contenu --- */
+        .no-space-row {
+            height: 0;
+            line-height: 0;
+        }
+        
+        .content-row {
+            page-break-inside: auto;
+            page-break-after: auto;
+        }
+        
+        .left-column-cell {
+            width: 63%;
+            padding: 15px;
+            padding-right: 12px;
+            vertical-align: top;
+            border-right: 1px solid #eaeaea;
+        }
+        
+        .right-column-cell {
+            width: 37%;
+            padding: 15px;
+            padding-left: 12px;
+            vertical-align: top;
+            background-color: #f8f9fa;
+        }
 
         /* --- Sections --- */
-        .section { margin-bottom: 25px; page-break-inside: avoid; }
-        .section:last-child { margin-bottom: 0; }
-        .section-title { font-size: 14pt; color: #1a4a8b; padding-bottom: 8px; margin-bottom: 15px; font-weight: 600; border-bottom: 2px solid #0078d4; }
+        .section {
+            margin-bottom: 18px;
+            page-break-inside: auto;
+        }
+        
+        .section:first-child {
+            margin-top: 0;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 13pt;
+            color: #1a4a8b;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #0078d4;
+            page-break-after: avoid;
+        }
 
-        /* --- Styles Contenu Spécifique --- */
-        .profile-text { font-size: 10pt; line-height: 1.5; color: #444444; text-align: justify; }
+        /* --- Styles Contenu --- */
+        .profile-text {
+            font-size: 9.5pt;
+            line-height: 1.45;
+            color: #444444;
+            text-align: justify;
+        }
 
         /* Items Expérience, Formation etc. */
         .experience-item, .education-item, .certification-item, .project-item {
-            margin-bottom: 20px; position: relative; padding-left: 18px; page-break-inside: avoid;
+            margin-bottom: 18px;
+            position: relative;
+            padding-left: 15px;
+            page-break-inside: auto;
         }
-        .experience-item:last-child, .education-item:last-child, .certification-item:last-child, .project-item:last-child { margin-bottom: 0; }
-        /* Puce personnalisée */
+        
+        .experience-item:last-child, .education-item:last-child, .certification-item:last-child, .project-item:last-child {
+            margin-bottom: 0;
+        }
+        
         .experience-item::before, .education-item::before, .certification-item::before, .project-item::before {
-            content: "•"; position: absolute; left: 0; top: 1px; font-size: 14pt; color: #0078d4; line-height: 1;
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 14pt;
+            color: #0078d4;
+            line-height: 1;
         }
 
-        .job-title, .degree, .certification-name, .project-name { font-size: 11pt; font-weight: bold; color: #2c3e50; margin-bottom: 2px; }
-        .company, .school, .organization, .project-url { font-size: 10pt; font-weight: 500; color: #005a9e; margin-bottom: 2px; }
-        .project-url a { color: #005a9e; text-decoration: none; word-break: break-all; }
-        .period, .year { font-size: 9pt; color: #555555; margin-bottom: 6px; font-style: italic; }
-        /* Icône calendrier gérée par ::before plus bas */
+        .job-title, .degree, .certification-name, .project-name {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 1px;
+            page-break-after: avoid;
+        }
+        
+        .company, .school, .organization, .project-url {
+            font-size: 9.5pt;
+            font-weight: 500;
+            color: #005a9e;
+            margin-bottom: 1px;
+        }
+        
+        .project-url a {
+            word-break: break-all;
+        }
+        
+        .period, .year {
+            font-size: 8.5pt;
+            color: #555555;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
 
-        .item-description, .job-description, .project-description { font-size: 10pt; color: #444444; margin-bottom: 8px; line-height: 1.4; text-align: justify; white-space: pre-wrap; }
-        .technologies { font-size: 9pt; color: #0078d4; margin-top: 5px; font-style: italic; }
+        .item-description, .job-description, .project-description {
+            font-size: 9.5pt;
+            color: #444444;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            text-align: justify;
+            white-space: pre-wrap;
+        }
+        
+        .technologies {
+            font-size: 8.5pt;
+            color: #0078d4;
+            margin-top: 4px;
+            font-style: italic;
+        }
 
         /* Liste à puces pour Réalisations (Tâches) */
-        .achievements-title { font-size: 10pt; font-weight: 600; color: #333333; margin-top: 8px; margin-bottom: 4px; }
-        ul.achievements { padding-left: 15px; margin-left: 5px; margin-top: 0; list-style-type: disc; list-style-position: outside; }
-        ul.achievements li { margin-bottom: 4px; color: #444444; font-size: 9.5pt; line-height: 1.4; text-align: left; page-break-inside: avoid; }
+        .achievements-title {
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #333333;
+            margin-top: 6px;
+            margin-bottom: 3px;
+        }
+        
+        ul.achievements {
+            padding-left: 15px;
+            margin-left: 0px;
+            margin-top: 0;
+            list-style-type: disc;
+        }
+        
+        ul.achievements li {
+            margin-bottom: 3px;
+            color: #444444;
+            font-size: 9pt;
+            line-height: 1.35;
+        }
 
         /* Compétences */
-        .skill-category { margin-bottom: 15px; page-break-inside: avoid;}
-        .skill-title { font-weight: 600; margin-bottom: 8px; color: #1a4a8b; font-size: 10.5pt; }
-        .skill-item { margin-bottom: 8px; }
-        .skill-bar { height: 7px; background-color: #e9ecef; border-radius: 3px; overflow: hidden; margin-top: 3px; }
-        .skill-fill { height: 100%; background-color: #0078d4; border-radius: 3px; }
-        .skill-percent { display: block; margin-bottom: 2px; }
-        .skill-name { font-weight: 500; font-size: 10pt; display:inline-block; margin-right: 5px;}
-        .skill-level-text { font-size: 8.5pt; color: #555555; display: inline-block; }
+        .skill-category {
+            margin-bottom: 12px;
+        }
+        
+        .skill-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1a4a8b;
+            font-size: 10pt;
+        }
+        
+        .skill-item {
+            margin-bottom: 6px;
+        }
+        
+        .skill-bar {
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+        
+        .skill-fill {
+            height: 100%;
+            background-color: #0078d4;
+            border-radius: 3px;
+        }
+        
+        .skill-percent {
+            display: block;
+            margin-bottom: 1px;
+        }
+        
+        .skill-name {
+            font-weight: 500;
+            font-size: 9.5pt;
+            display: inline-block;
+            margin-right: 4px;
+        }
+        
+        .skill-level-text {
+            font-size: 8pt;
+            color: #555555;
+            display: inline-block;
+        }
 
         /* Langues */
-        .language-item { margin-bottom: 10px; }
-        .language-name { font-weight: 500; display: block; font-size: 10pt; margin-bottom: 2px; }
-        .language-level-text { font-size: 9pt; color: #555555; font-style: italic; display: block; }
-        .language-level-dots { margin-top: 3px; line-height: 1; }
-        .level-dot { width: 9px; height: 9px; background-color: #e0e0e0; border-radius: 50%; margin-right: 4px; display: inline-block; }
-        .level-dot.active { background-color: #0078d4; }
+        .language-item {
+            margin-bottom: 8px;
+        }
+        
+        .language-name {
+            font-weight: 500;
+            display: block;
+            font-size: 9.5pt;
+            margin-bottom: 1px;
+        }
+        
+        .language-level-text {
+            font-size: 8.5pt;
+            color: #555555;
+            font-style: italic;
+            display: block;
+        }
+        
+        .language-level-dots {
+            margin-top: 2px;
+            line-height: 1;
+        }
+        
+        .level-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            margin-right: 3px;
+            display: inline-block;
+        }
+        
+        .level-dot.active {
+            background-color: #0078d4;
+        }
 
         /* Centres d'intérêt */
-        .interests { line-height: 1.8; }
-        .interest-item { display: inline; font-size: 9pt; color: #005a9e; padding: 0 5px; border-right: 1px solid #cccccc; }
-         .interest-item:first-child { padding-left: 0; }
-         .interest-item:last-child { border-right: none; padding-right: 0; }
+        .interests {
+            line-height: 1.6;
+        }
+        
+        .interest-item {
+            display: inline;
+            font-size: 9pt;
+            color: #005a9e;
+            padding: 0 4px;
+            border-right: 1px solid #cccccc;
+            margin-right: 4px;
+        }
+        
+        .interest-item:first-child {
+            padding-left: 0;
+        }
+        
+        .interest-item:last-child {
+            border-right: none;
+            padding-right: 0;
+            margin-right: 0;
+        }
 
         /* Informations Personnelles */
-        .personal-info-section .info-item { margin-bottom: 8px; font-size: 10pt; page-break-inside: avoid; }
-        .personal-info-section .info-label { font-weight: 600; color: #1a4a8b; display: inline-block; width: 80px; }
-        .personal-info-section .info-value { color: #444444; }
+        .personal-info-section .info-item {
+            margin-bottom: 6px;
+            font-size: 9.5pt;
+        }
+        
+        .personal-info-section .info-label {
+            font-weight: 600;
+            color: #1a4a8b;
+            display: inline-block;
+            width: 75px;
+        }
+        
+        .personal-info-section .info-value {
+            color: #444444;
+        }
 
         /* Références */
-        .references-section .reference-item { margin-bottom: 15px; font-size: 10pt; page-break-inside: avoid; border-left: 3px solid #e9ecef; padding-left: 10px; }
-        .references-section .reference-name { font-weight: 600; color: #2c3e50; margin-bottom: 2px; }
-        .references-section .reference-position { font-size: 9.5pt; color: #005a9e; margin-bottom: 2px; }
-        .references-section .reference-relation { font-size: 9pt; color: #555555; font-style: italic; margin-bottom: 4px; display: inline-block; margin-left: 5px; }
-        .references-section .reference-contact { font-size: 9pt; color: #444444; }
+        .references-section .reference-item {
+            margin-bottom: 12px;
+            font-size: 9.5pt;
+            border-left: 3px solid #e9ecef;
+            padding-left: 8px;
+        }
+        
+        .references-section .reference-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1px;
+        }
+        
+        .references-section .reference-position {
+            font-size: 9pt;
+            color: #005a9e;
+            margin-bottom: 1px;
+        }
+        
+        .references-section .reference-relation {
+            font-size: 8.5pt;
+            color: #555555;
+            font-style: italic;
+            margin-bottom: 3px;
+            display: inline-block;
+            margin-left: 4px;
+        }
+        
+        .references-section .reference-contact {
+            font-size: 8.5pt;
+            color: #444444;
+        }
 
-         /* Correction icônes PDF (via ::before) */
-        /* Assurez-vous que la police FontAwesome est bien chargée si vous utilisez ses glyphes Unicode */
-        /* Utilisation de DejaVu Sans pour des symboles basiques peut être plus fiable */
-        .contact-item i::before, .period i::before, .project-url i::before, .certification-item .period i::before /* Cibler aussi icone lien certification */ {
+        /* Icônes PDF */
+        .contact-item i::before, .period i::before, .project-url i::before, .certification-item .period i::before {
             display: inline-block;
             font-style: normal;
             font-variant: normal;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
-            font-family: 'DejaVu Sans'; /* Priorité à DejaVu */
-            font-weight: normal; /* Normal pour DejaVu */
-            width: 15px;
-            text-align: center;
-            margin-right: 8px;
+            font-family: 'DejaVu Sans';
+            font-weight: normal;
+            width: 1.2em;
+            text-align: left;
+            margin-right: 5px;
+            line-height: 1;
         }
-        /* Mapping des icônes vers les caractères DejaVu Sans ou Unicode standard si possible */
-        .contact-item i.fa-phone::before { content: '\260E'; } /* Symbole téléphone standard */
-        .contact-item i.fa-envelope::before { content: '\2709'; } /* Symbole enveloppe standard */
-        .contact-item i.fa-map-marker-alt::before { content: '\1F4CD'; } /* Punaise ronde */
-        .contact-item i.fa-link::before { content: '\1F517'; } /* Chaînon */
-        .contact-item i.fab.fa-linkedin::before { content: 'L'; font-weight: bold; } /* Fallback texte */
-        .period i.fa-calendar-alt::before { content: '\1F4C5'; } /* Calendrier */
-        .project-url i.fa-link::before { content: '\1F517'; } /* Chaînon */
-        .certification-item .period i.fa-link::before { content: '\1F517'; } /* Chaînon */
-
+        
+        .contact-item i.fa-phone::before { content: '\260E'; }
+        .contact-item i.fa-envelope::before { content: '\2709'; }
+        .contact-item i.fa-map-marker-alt::before { content: '\1F4CD'; }
+        .contact-item i.fa-link::before { content: '\1F517'; }
+        .contact-item i.fab.fa-linkedin::before { content: 'L'; font-weight: bold; font-family: sans-serif; }
+        .period i.fa-calendar-alt::before { content: '\1F4C5'; }
+        .project-url i.fa-link::before { content: '\1F517'; }
+        .certification-item .period i.fa-link::before { content: '\1F517'; }
+        
+        /* Gestion des sauts de page pour l'impression */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .cv-container {
+                width: 100%;
+                height: auto;
+            }
+            
+            /* Pour éviter les sauts de page indésirables */
+            tr.content-row {
+                page-break-inside: auto;
+            }
+            
+            /* Titres des sections restent avec leur contenu */
+            .section-title {
+                page-break-after: avoid;
+            }
+            
+            /* Éléments qui ne doivent pas être coupés */
+            .job-title, .degree, .certification-name, .project-name {
+                page-break-after: avoid;
+            }
+            
+            /* L'en-tête reste sur la première page uniquement */
+            .header-cell {
+                display: table-cell;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="cv-container" id="cv-preview-content">
-        {{-- En-tête (Header) --}}
-        <div class="cv-header">
-            <div class="header-table">
-                <div class="header-table-row">
-                    {{-- Cellule Photo --}}
-                    <div class="header-photo-cell">
-                        @if($cvProfile->photo_cv_path) {{-- Utiliser photo_cv_path --}}
+    <!-- Table principale qui contient tout le CV (en-tête + colonnes) -->
+    <table class="cv-container" id="cv-preview-content" cellpadding="0" cellspacing="0" border="0">
+        <!-- Ligne d'en-tête -->
+        <tr>
+            <td class="header-cell" colspan="2">
+                <!-- Table interne pour l'en-tête -->
+                <table class="header-inner-table" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <!-- Cellule Photo -->
+                        <td class="header-photo-cell">
+                            @if($cvProfile->photo_cv_path)
                         <div class="photo-container">
                              @php
                                 $photoPath = null; $imageData = null;
-                                try { if (Storage::disk('public')->exists($cvProfile->photo_cv_path)) { $photoPath = Storage::disk('public')->path($cvProfile->photo_cv_path); $imageData = base64_encode(file_get_contents($photoPath)); } } catch (\Exception $e) { \Log::error("Erreur chargement image CV PDF: ".$e->getMessage()); }
+                                    try { 
+                                        if (Storage::disk('public')->exists($cvProfile->photo_cv_path)) { 
+                                            $photoPath = Storage::disk('public')->path($cvProfile->photo_cv_path); 
+                                            $imageData = base64_encode(file_get_contents($photoPath)); 
+                                        } 
+                                    } catch (\Exception $e) { 
+                                        \Log::error("Erreur chargement image CV PDF: ".$e->getMessage()); 
+                                    }
                              @endphp
                              @if($imageData)
                                  <img src="data:image/{{ pathinfo($photoPath ?? $cvProfile->photo_cv_path, PATHINFO_EXTENSION) }};base64,{{ $imageData }}" alt="Photo {{ $cvProfile->nom_complet }}" />
                              @else
-                                 {{-- Fallback si erreur lecture --}}
                                  <div style="width: 100%; height: 100%; background-color: #ccc;"></div>
                              @endif
                         </div>
                         @endif
-                    </div>
-                    {{-- Cellule Contenu --}}
-                    <div class="header-content-cell">
+                        </td>
+                        <!-- Cellule Contenu -->
+                        <td class="header-content-cell">
                         <div class="header-content">
                             <h1>{{ $cvProfile->nom_complet ?? 'Nom Prénom' }}</h1>
                             @if($cvProfile->titre_profil)<h2>{{ $cvProfile->titre_profil }}</h2>@endif
@@ -203,15 +544,16 @@
                                 @if($cvProfile->portfolio_url)<div class="contact-item"><i class="fas fa-link"></i> <a href="{{ $cvProfile->portfolio_url }}" target="_blank">{{ Str::limit(str_replace(['https://', 'http://', 'www.'], '', rtrim($cvProfile->portfolio_url,'/')), 30) }}</a></div>@endif
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Corps du CV (Colonnes) --}}
-        <div class="cv-body">
-            {{-- COLONNE GAUCHE --}}
-            <div class="left-column">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
+        <!-- Ligne principale de contenu -->
+        <tr class="content-row">
+            <!-- CELLULE GAUCHE -->
+            <td class="left-column-cell">
                 @if($cvProfile->resume_profil)
                 <div class="section profile-section">
                     <h3 class="section-title">PROFIL</h3>
@@ -260,18 +602,18 @@
                      @foreach($cvProfile->projets as $proj)
                      <div class="project-item">
                          <div class="project-name">{{ $proj->nom }}</div>
-                         @if($proj->url_projet)<div class="project-url"><i class="fas fa-link"></i> <a href="{{ $proj->url_projet }}" target="_blank">{{ Str::limit(str_replace(['https://', 'http://'], '', $proj->url_projet), 40) }}</a></div>@endif
+                        @if($proj->url_projet)<div class="project-url"><i class="fas fa-link"></i>&nbsp;<a href="{{ $proj->url_projet }}" target="_blank">{{ Str::limit(str_replace(['https://', 'http://'], '', $proj->url_projet), 40) }}</a></div>@endif
                          @if($proj->description)<p class="project-description">{!! nl2br(e($proj->description)) !!}</p>@endif
                          @if($proj->technologies)<p class="technologies">Technologies: {{ $proj->technologies }}</p>@endif
                      </div>
                      @endforeach
                  </div>
                  @endif
-            </div>
+            </td>
 
-            {{-- COLONNE DROITE --}}
-            <div class="right-column">
-                 {{-- Ajout de la section Informations Personnelles --}}
+            <!-- CELLULE DROITE -->
+            <td class="right-column-cell">
+                <!-- Section Informations Personnelles -->
                  <div class="section personal-info-section">
                      <h3 class="section-title">INFORMATIONS</h3>
                      <div class="info-item">
@@ -288,10 +630,9 @@
                      <div class="info-item">
                          <span class="info-label">Situation:</span>
                          <span class="info-value">{{ e($cvProfile->situation_matrimoniale) }}</span>
-                     </div>
-                     @endif
                  </div>
-                 {{-- Fin section Informations Personnelles --}}
+                 @endif
+            </div>
 
                  @if($cvProfile->competences->isNotEmpty())
                 <div class="section skills-section">
@@ -349,13 +690,12 @@
                     <h3 class="section-title">CENTRES D'INTÉRÊT</h3>
                     <p class="interests">
                          @foreach($cvProfile->centresInteret as $index => $interet)
-                            <span class="interest-item">{{ $interet->nom }}</span>{{ !$loop->last ? '' : '' }} {{-- Séparateur optionnel si affichage en ligne --}}
+                            <span class="interest-item">{{ $interet->nom }}</span>{{ !$loop->last ? '' : '' }}
                          @endforeach
                     </p>
                 </div>
                 @endif
 
-                {{-- Ajout Section Références --}}
                 @if($cvProfile->references->isNotEmpty())
                 <div class="section references-section">
                     <h3 class="section-title">RÉFÉRENCES</h3>
@@ -365,14 +705,12 @@
                         @if($ref->poste)<div class="reference-position">{{ $ref->poste }}</div>@endif
                         @if($ref->relation)<div class="reference-relation">({{ $ref->relation }})</div>@endif
                         <div class="reference-contact">Contact: {{ $ref->contact }}</div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-                {{-- Fin Section Références --}}
-
             </div>
+                    @endforeach
         </div>
-    </div>
+                @endif
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

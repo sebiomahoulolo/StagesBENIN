@@ -11,6 +11,10 @@
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-tachometer-alt"></i></span>
             <span class="menu-text">Tableau de bord</span>
         </a>
+        <a href="{{ route('messagerie-sociale.index') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
+            <span class="menu-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+            <span class="menu-text">Canal d'annonces</span>
+        </a>
         <a href="#" class="menu-item {{ request()->routeIs('admin.actualites.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-newspaper"></i></span>
             <span class="menu-text">Actualités</span>
@@ -43,12 +47,18 @@
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-book"></i></span>
             <span class="menu-text">Catalogue</span>
         </a>
-        <a href="#" class="menu-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        {{-- Commenté l'ancienne messagerie --}}
+        {{-- <a href="#" class="menu-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}"> 
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
             <span class="menu-text">Messages</span>
-             {{-- Example dynamic badge --}}
-            {{-- @if(isset($unreadAdminMessages) && $unreadAdminMessages > 0)
-                <span class="menu-badge absolute-badge">{{ $unreadAdminMessages }}</span>
+        </a> --}}
+        
+        <a href="{{ route('admin.complaints.index') }}" class="menu-item {{ request()->routeIs('admin.complaints.*') ? 'active' : '' }}">
+            <span class="menu-icon" aria-hidden="true"><i class="fas fa-comment-alt"></i></span>
+            <span class="menu-text">Plaintes & Suggestions</span>
+            {{-- Si vous souhaitez un badge pour les nouvelles plaintes, décommentez et configurez ci-dessous --}}
+            {{-- @if(isset($newComplaints) && $newComplaints > 0)
+                <span class="menu-badge absolute-badge">{{ $newComplaints }}</span>
             @endif --}}
         </a>
 

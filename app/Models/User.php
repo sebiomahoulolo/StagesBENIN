@@ -10,8 +10,9 @@ use Laravel\Sanctum\HasApiTokens; // Si vous utilisez Sanctum
 
 // Importer les modèles liés
 use App\Models\Etudiant;
-
 use App\Models\Entreprise;
+use App\Models\Conversation;
+use App\Models\Message;
 
 // Remplacer implements MustVerifyEmail si vous ne l'utilisez pas
 class User extends Authenticatable // implements MustVerifyEmail
@@ -64,6 +65,27 @@ class User extends Authenticatable // implements MustVerifyEmail
         return $this->hasOne(Entreprise::class);
     }
 
+    // ----- RELATIONS DE MESSAGERIE -----
+
+    /**
+     * Les conversations auxquelles l'utilisateur participe
+     */
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants')
+            ->withPivot('last_read')
+            ->withTimestamps()
+            ->orderBy('updated_at', 'desc');
+    }
+
+    /**
+     * Les messages envoyés par l'utilisateur
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     // ----- HELPERS DE RÔLE -----
 
     public function isAdmin(): bool
@@ -90,5 +112,31 @@ class User extends Authenticatable // implements MustVerifyEmail
             return $this->entreprise;
         }
         return null; // Pour admin ou autre
+    }
+
+    /**
+     * Récupère les conversations non lues pour l'utilisateur
+     */
+    public function unreadConversations()
+    {
+        return $this->conversations()
+            ->whereExists(function ($query) {
+                $query->from('messages')
+                    ->whereColumn('messages.conversation_id', 'conversations.id')
+                    ->where('messages.is_read', false)
+                    ->where('messages.user_id', '!=', $this->id);
+            });
+    }
+
+    /**
+     * Récupère le nombre total de messages non lus
+     */
+    public function unreadMessagesCount()
+    {
+        $count = 0;
+        foreach ($this->conversations as $conversation) {
+            $count += $conversation->unreadMessagesCount($this->id);
+        }
+        return $count;
     }
 }
