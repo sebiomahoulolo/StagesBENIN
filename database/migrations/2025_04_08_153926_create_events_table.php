@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->dateTime('start_date')->nullable();

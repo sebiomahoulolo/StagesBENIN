@@ -10,14 +10,12 @@ class Candidature extends Model
     use HasFactory;
 
     protected $fillable = [
+        'annonce_id',
         'etudiant_id',
-        'recrutement_id',
         'lettre_motivation',
         'cv_path',
         'statut',
-        'date_candidature',
-        'date_reponse',
-        'commentaire'
+        'motif_rejet'
     ];
 
     protected $casts = [
@@ -25,10 +23,34 @@ class Candidature extends Model
         'date_reponse' => 'datetime',
     ];
 
-    // Relation avec l'étudiant
+    public function annonce()
+    {
+        return $this->belongsTo(Annonce::class);
+    }
+
     public function etudiant()
     {
         return $this->belongsTo(Etudiant::class);
+    }
+
+    public function scopeEnAttente($query)
+    {
+        return $query->where('statut', 'en_attente');
+    }
+
+    public function scopeEnCours($query)
+    {
+        return $query->where('statut', 'en_cours');
+    }
+
+    public function scopeAccepte($query)
+    {
+        return $query->where('statut', 'accepte');
+    }
+
+    public function scopeRejete($query)
+    {
+        return $query->where('statut', 'rejete');
     }
 
     // Relation avec l'offre d'emploi

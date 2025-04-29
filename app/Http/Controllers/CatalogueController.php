@@ -70,7 +70,7 @@ public function getLastAvis()
         // Validation des données
         $validator = Validator::make($request->all(), [
             'titre' => 'required|string|max:255',
-              'secteur_activite'=> 'required|max:255',
+            'secteur_activite'=> 'required|max:255',
             'description' => 'required|string',
             'localisation' => 'nullable|string|max:255',
             'nb_activites' => 'nullable|integer',

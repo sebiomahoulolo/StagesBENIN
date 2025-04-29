@@ -98,7 +98,7 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
-            border: none;
+            border: 1px solid #0d6efd;
         }
         
         .card:hover {
@@ -231,14 +231,32 @@
         /* Nouveaux styles pour la réorganisation du dashboard */
         .main-functions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 1rem;
             margin-bottom: 1.5rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        @media (max-width: 640px) {
+        @media (max-width: 1200px) {
             .main-functions-grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                grid-template-columns: repeat(4, 1fr);
+                max-width: 900px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-functions-grid {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 700px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-functions-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 500px;
                 gap: 0.75rem;
             }
         }
@@ -250,11 +268,16 @@
             text-align: center;
             background-color: #fff;
             border-radius: 12px;
-            padding: 1.25rem 0.75rem;
+            border: 6px solid #0d6efd;
+            padding: 1rem 0.5rem;
             transition: all 0.3s ease;
             text-decoration: none;
             color: #374151;
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            justify-content: center;
         }
         
         .main-function-item:hover {
@@ -263,8 +286,8 @@
         }
         
         .main-function-icon {
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -288,8 +311,15 @@
         
         .main-function-title {
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.2s ease;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         @media (max-width: 640px) {
@@ -457,62 +487,10 @@
     </style>
 @endpush
 
-    {{-- En-tête du contenu principal : Message de bienvenue et statuts rapides --}}
-    <div class="dashboard-header animate-fadeInUp">
-        <div class="welcome-message">
-            {{-- Affichage dynamique du prénom de l'étudiant connecté --}}
-            <h1><i class="fas fa-user-graduate me-2 color-blue"></i>Bienvenue, {{ Auth::user()->etudiant->prenom ?? Auth::user()->name }} !</h1>
-            <p>Voici un aperçu de votre activité récente et des opportunités à venir.</p>
-        </div>
-        
-        {{-- Nouveaux indicateurs rapides --}}
-        <div class="stats-summary mt-4">
-            <div class="stat-card animate-fadeInUp delay-100">
-                <div class="stat-icon color-purple">
-                    <i class="fas fa-eye"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>Vues du profil</h3>
-                    <p>27</p>
-                </div>
-            </div>
-            
-            <div class="stat-card animate-fadeInUp delay-200">
-                <div class="stat-icon color-orange">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>Candidatures</h3>
-                    <p>12</p>
-                </div>
-            </div>
-            
-            <div class="stat-card animate-fadeInUp delay-300">
-                <div class="stat-icon color-green">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>Entretiens à venir</h3>
-                    <p>@isset($entretiens) {{ $entretiens->count() }} @else 0 @endisset</p>
-                </div>
-            </div>
-            
-            <div class="stat-card animate-fadeInUp delay-400">
-                <div class="stat-icon color-blue">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>Profil complété</h3>
-                    <p>85%</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Section des fonctions principales (tirées de la sidebar) --}}
     <div class="section-container animate-fadeInUp delay-100">
         <div class="section-header">
-            <h2 class="section-title"><i class="fas fa-star color-orange"></i> Fonctions principales</h2>
+            <h2 class="section-title">Fonctions principales</h2>
         </div>
         
         <div class="main-functions-grid">
@@ -523,17 +501,22 @@
                 </div>
                 <span class="main-function-title">Tableau de bord</span>
             </a>
+
+            {{-- Boostage --}}
+            <a href="{{ route('etudiants.boostage') }}" class="main-function-item">
+                <div class="main-function-icon color-orange">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <span class="main-function-title">Boostage</span>
+            </a>
             
-            {{-- CV --}}
-            @if(Auth::user()->etudiant?->cvProfile?->id)
-                @php $cvProfileId = Auth::user()->etudiant->cvProfile->id; @endphp
-                <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="main-function-item">
-                    <div class="main-function-icon color-teal">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <span class="main-function-title">Mon CV</span>
-                </a>
-            @endif
+            {{-- Éditeur CV --}}
+            <a href="{{ Auth::user()->etudiant?->cvProfile?->id ? route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant->cvProfile->id]) : route('etudiants.cv.edit', ['cvProfile' => 'new']) }}" class="main-function-item">
+                <div class="main-function-icon color-teal">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <span class="main-function-title">Éditeur CV</span>
+            </a>
             
             {{-- Offres --}}
             <a href="{{ route('etudiants.offres.index') }}" class="main-function-item">
@@ -541,6 +524,22 @@
                     <i class="fas fa-briefcase"></i>
                 </div>
                 <span class="main-function-title">Offres</span>
+            </a>
+
+            {{-- Mes candidatures --}}
+            <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="main-function-item">
+                <div class="main-function-icon color-purple">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <span class="main-function-title">Mes candidatures</span>
+            </a>
+
+            {{-- Entreprises suivies --}}
+            <a href="#" class="main-function-item">
+                <div class="main-function-icon color-indigo">
+                    <i class="fas fa-building"></i>
+                </div>
+                <span class="main-function-title">Entreprises suivies</span>
             </a>
             
             {{-- Messagerie --}}
@@ -570,12 +569,55 @@
             </a>
             
             {{-- Agenda --}}
-            <a href="#" class="main-function-item"> {{-- TODO: Mettre la route correcte --}}
+            <a href="#" class="main-function-item">
                 <div class="main-function-icon color-indigo">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
                 <span class="main-function-title">Agenda</span>
             </a>
+
+            {{-- Canal d'annonces --}}
+            <a href="{{ route('messagerie-sociale.index') }}" class="main-function-item">
+                <div class="main-function-icon color-blue">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <span class="main-function-title">Canal d'annonces</span>
+            </a>
+
+            {{-- Cours en ligne --}}
+            <a href="https://fhcschoolbenin.com/" target="_blank" class="main-function-item">
+                <div class="main-function-icon color-teal">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="main-function-title">Cours en ligne</span>
+            </a>
+
+            {{-- Blog --}}
+            <a href="#" class="main-function-item">
+                <div class="main-function-icon color-orange">
+                    <i class="fas fa-blog"></i>
+                </div>
+                <span class="main-function-title">Blog</span>
+            </a>
+
+            {{-- Objectifs --}}
+            <a href="#" class="main-function-item">
+                <div class="main-function-icon color-green">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <span class="main-function-title">Objectifs</span>
+            </a>
+
+           
+
+            {{-- Déconnexion --}}
+            <a href="{{ route('logout') }}" class="main-function-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <div class="main-function-icon color-red">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span class="main-function-title">Déconnexion</span>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
             
             {{-- Profil --}}
             <a href="{{ route('etudiants.profile.edit') }}" class="main-function-item">
@@ -601,7 +643,7 @@
         <div class="col-lg-6 mb-4 mb-lg-0"> {{-- Prend la moitié de la largeur sur les grands écrans, pleine largeur en dessous --}}
             <div class="section-container">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-history color-indigo"></i> Activité récente</h2>
+                    <h2 class="section-title">Activité récente</h2>
                     <a href="#" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a> {{-- TODO: Mettre la route vers la page d'activité complète --}}
                 </div>
                 <div class="activity-list">
@@ -636,7 +678,7 @@
         <div class="col-lg-6">
             <div class="section-container">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-calendar color-pink"></i> Événements à venir</h2>
+                    <h2 class="section-title">Événements à venir</h2>
                     <a href="{{ route('etudiants.evenements.upcoming') }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="event-list">
@@ -669,7 +711,7 @@
             <div class="upcoming-interviews animate-fadeInUp delay-300">
                 <div class="section-container">
                     <div class="section-header">
-                        <h2 class="section-title"><i class="fas fa-calendar-check color-green"></i> Entretiens programmés</h2>
+                        <h2 class="section-title">Entretiens programmés</h2>
                         @if(Auth::user()->etudiant)
                             <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
                         @endif

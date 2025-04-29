@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\MessagePost;
 use App\Models\MessageComment;
+use App\Models\Annonce;
+use App\Policies\AnnoncePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Annonce::class => AnnoncePolicy::class,
     ];
 
     /**

@@ -26,7 +26,7 @@ class Entreprise extends Model
     // Relation inverse vers User
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function entretiens()
@@ -34,9 +34,25 @@ class Entreprise extends Model
         return $this->hasMany(Entretien::class);
     }
     // Relation vers les offres de recrutement (si pertinent)
-     public function recrutements()
-     {
-         // Assurez-vous que le modèle Recrutement existe et a la relation belongsTo Entreprise
-         // return $this->hasMany(Recrutement::class);
-     }
+    public function recrutements()
+    {
+        // Assurez-vous que le modèle Recrutement existe et a la relation belongsTo Entreprise
+        // return $this->hasMany(Recrutement::class);
+    }
+    // Relation vers les annonces
+    public function annonces()
+    {
+        return $this->hasMany(Annonce::class, 'entreprise_id');
+    }
+    // Relation vers les messageries
+    public function messagerie()
+    {
+        return $this->hasMany(Messagerie::class);
+    }
 }
+    //  public function recrutements()
+    //  {
+    //      // Assurez-vous que le modèle Recrutement existe et a la relation belongsTo Entreprise
+    //      // return $this->hasMany(Recrutement::class);
+    //  }
+// }
