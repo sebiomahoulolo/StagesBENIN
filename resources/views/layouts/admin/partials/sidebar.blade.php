@@ -11,27 +11,33 @@
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-tachometer-alt"></i></span>
             <span class="menu-text">Tableau de bord</span>
         </a>
+
+            <a href="{{ route('admin.cvtheque.cvtheque') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
+            <span class="menu-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+            <span class="menu-text">CV THEQUE</span>
+        </a>
+
         <a href="{{ route('messagerie-sociale.index') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
             <span class="menu-text">Canal d'annonces</span>
         </a>
-        <a href="#" class="menu-item {{ request()->routeIs('admin.actualites.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        <a href="{{ route('admin.actualites') }}" class="menu-item {{ request()->routeIs('admin.actualites.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-newspaper"></i></span>
             <span class="menu-text">Actualités</span>
             {{-- Add dynamic badge count if needed --}}
             {{-- <span class="menu-badge">5</span> --}}
         </a>
-         <a href="#" class="menu-item {{ request()->routeIs('admin.recrutements.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+         <a href="{{ route('admin.recrutements') }}" class="menu-item {{ request()->routeIs('admin.recrutements.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
             <span class="menu-text">Recrutements</span>
          </a>
-        <a href="{{ route('pages.evenements') }}" class="menu-item {{ request()->routeIs('pages.evenements') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        <a href="{{ route('admin.evenements') }}" class="menu-item {{ request()->routeIs('admin.evenements') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-calendar-alt"></i></span>
             <span class="menu-text">Événements</span>
         </a>
 
         <div class="menu-category">Gestion</div>
-        <a href="#" class="menu-item {{ request()->routeIs('admin.etudiants.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        <a href="{{ route('admin.etudiants.etudiants') }}" class="menu-item {{ request()->routeIs('admin.etudiants.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-users"></i></span>
             <span class="menu-text">Étudiants</span>
             {{-- Example dynamic badge --}}
@@ -39,11 +45,11 @@
                 <span class="menu-badge absolute-badge">{{ $unreadStudentMessages }}</span>
             @endif --}}
         </a>
-        <a href="#" class="menu-item {{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        <a href="{{ route('admin.entreprises') }}" class="menu-item {{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-building"></i></span>
             <span class="menu-text">Entreprises</span>
         </a>
-        <a href="#" class="menu-item {{ request()->routeIs('admin.catalogue.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+        <a href="{{ route('admin.catalogues') }}" class="menu-item {{ request()->routeIs('admin.catalogue.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-book"></i></span>
             <span class="menu-text">Catalogue</span>
         </a>

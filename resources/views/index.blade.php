@@ -184,6 +184,26 @@ typeWriterEffect();
     </div>
   </div>
 </section>
+<div class="job-offers-section">
+    <h2>Offres d'emplois disponibles</h2>
+    <div class="job-offers-list">
+        <!-- Exemple d'offre d'emploi 2 -->
+        <div class="job-offer-item">
+            <h3>Responsable Marketing</h3>
+            <p>Entreprise : MarketPro</p>
+            <p>Lieu : Abomey-Calavi</p>
+            <button class="apply-btn">Voir Détails</button>
+        </div>
+
+        <!-- Exemple d'offre d'emploi 3 -->
+        <div class="job-offer-item">
+            <h3>Technicien Réseau</h3>
+            <p>Entreprise : NetSecure</p>
+            <p>Lieu : Porto-Novo</p>
+            <button class="apply-btn">Voir Détails</button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -288,6 +308,9 @@ typeWriterEffect();
       </section>
     </div>
 
+
+
+
     <!-- Ils Nous Font Confiance Section -->
     <div class="col-md-6">
       <section class="temoignages-section py-5 text-center">
@@ -391,7 +414,32 @@ typeWriterEffect();
   </div>
 </div>
 
+<div class="software-card">
+    <h2>Logiciels à vendre       <button class="sell-btn">Vendre mes logiciels </button></h2>   
+    <div class="software-list">
+        <!-- Exemple de logiciel 1 -->
+        <div class="software-item">
+            <img src="software1.jpg" alt="Logiciel 1" class="software-image">
+            <div class="software-info">
+                <h3>Logiciel 1</h3>
+                <p>Description rapide du logiciel.</p>
+                <p class="price">Prix : $50</p>
+                <button class="sell-btn">Acheter</button>
+            </div>
+        </div>
 
+        <!-- Exemple de logiciel 2 -->
+        <div class="software-item">
+            <img src="software2.jpg" alt="Logiciel 2" class="software-image">
+            <div class="software-info">
+                <h3>Logiciel 2</h3>
+                <p>Description rapide du logiciel.</p>
+                <p class="price">Prix : $75</p>
+                <button class="sell-btn">Acheter</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -439,6 +487,139 @@ document.addEventListener("DOMContentLoaded", function() {
   color: #007bff; /* Adjust title color */
   margin-bottom: 20px;
 }
+
+.software-card {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #3498db;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.software-card h2 {
+    text-align: center;
+    color: #3498db;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;
+}
+
+.software-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.job-offers-section {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.job-offers-section h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.job-offers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.job-offer-item {
+    width: 280px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 15px;
+}
+
+.job-offer-item h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.job-offer-item p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.salary {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.apply-btn {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apply-btn:hover {
+    background-color: #2980b9;
+}
+
+.software-item {
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 10px;
+}
+
+.software-image {
+    max-width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.software-info h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.software-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.sell-btn {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sell-btn:hover {
+    background-color: #2980b9;
+}
+
 
 .card-img-top {
   max-height: 200px;

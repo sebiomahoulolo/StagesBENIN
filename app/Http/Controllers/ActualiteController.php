@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ActualiteController extends Controller
 {
+    public function index() {
+        $actualites = Actualite::paginate(10); // Pagination recommandée
+        return view('admin.actualites', compact('actualites'));
+    }
     /**
      * Stocker une nouvelle actualité dans la base de données.
      *

@@ -711,22 +711,42 @@
                      <input type="text" class="form-control" id="recrutement_titre" name="titre" required>
                      <div class="invalid-feedback">Veuillez saisir un titre.</div>
                  </div>
-                 <div class="mb-3">
-                     <label for="recrutement_entreprise_id" class="form-label">Entreprise*</label>
-                     <select class="form-select" id="recrutement_entreprise_id" name="entreprise_id" required>
-                       <option value="">Sélectionner une entreprise</option>
-                       {{-- Populate with entreprises dynamically if available globally --}}
-                       {{-- Example: Check if a variable like $globalEntreprises exists --}}
-                       @if(isset($globalEntreprises))
-                           @foreach($globalEntreprises as $entreprise)
-                             <option value="{{ $entreprise->id }}">{{ $entreprise->nom }}</option>
-                           @endforeach
-                       @else
-                           {{-- Fallback or fetch via JS if needed --}}
-                       @endif
-                     </select>
-                     <div class="invalid-feedback">Veuillez sélectionner une entreprise.</div>
-                 </div>
+                <div class="mb-3">
+    <label for="recrutement_entreprise_id" class="form-label">Entreprise*</label>
+    <select class="form-select" id="recrutement_entreprise_id" name="entreprise_id" required>
+        <option value="">Sélectionner une entreprise</option>
+        @if(isset($globalEntreprises))
+            @foreach($globalEntreprises as $entreprise)
+                <option value="{{ $entreprise->id }}">{{ $entreprise->nom }}</option>
+            @endforeach
+        @endif
+        <option value="autre">Autre</option> <!-- Option Autre -->
+    </select>
+    <div class="invalid-feedback">Veuillez sélectionner une entreprise.</div>
+</div>
+
+<!-- Champ caché par défaut -->
+<div class="mb-3" id="autre_entreprise_div" style="display: none;">
+    <label for="autre_entreprise" class="form-label">Nom de l'entreprise*</label>
+    <input type="text" class="form-control" id="autre_entreprise" name="autre_entreprise" placeholder="Entrez le nom de votre entreprise">
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const entrepriseSelect = document.getElementById('recrutement_entreprise_id');
+        const autreEntrepriseDiv = document.getElementById('autre_entreprise_div');
+
+        entrepriseSelect.addEventListener('change', function() {
+            if (this.value === 'autre') {
+                autreEntrepriseDiv.style.display = 'block';
+                document.getElementById('autre_entreprise').required = true;
+            } else {
+                autreEntrepriseDiv.style.display = 'none';
+                document.getElementById('autre_entreprise').required = false;
+            }
+        });
+    });
+</script>
+
                  <div class="row">
                      <div class="col-md-6 mb-3">
                        <label for="recrutement_type_contrat" class="form-label">Type de contrat*</label>

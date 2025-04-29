@@ -122,4 +122,50 @@ body {
     </div>
 </div>
 
+
+<hr>
+<hr>
+
+    <div class="container my-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-primary text-center py-4">
+            <h3 class="mb-0">Découvrez nos offres exclusives</h3>
+        </div>
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">✔ Accès à la CVthèque</li>
+                        <li class="list-group-item">✔ Page de services</li>
+                        <li class="list-group-item">✔ Page d'événements</li>
+                        <li class="list-group-item">✔ Visibilité dès l’inscription</li>
+                        <li class="list-group-item">✔ Messagerie instantanée</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">✔ Campagnes SMS</li>
+                        <li class="list-group-item">✔ Campagnes Email</li>
+                        <li class="list-group-item">✔ Campagnes d’affichage</li>
+                        <li class="list-group-item">✔ Assistance de 6 mois</li>
+                        <li class="list-group-item">✔ Marché public/privé</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">✔ Conception de sites web</li>
+                        <li class="list-group-item">✔ Développement d'applications</li>
+                        <li class="list-group-item">✔ Développement de logiciels</li>
+                        <li class="list-group-item">✔ Gestion de sites web</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center py-4">
+            <a href="{{ route('pages.services') }}" class="btn btn-lg btn-primary px-5">
+                💼 Souscrire maintenant
+            </a>
+        </div>
+    </div>
+</div>
 @endsection

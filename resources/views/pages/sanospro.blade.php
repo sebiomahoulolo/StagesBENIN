@@ -34,7 +34,7 @@
 
   <!-- Section Héro -->
   <header class="mb-4 text-center">
-  <h1 class="fw-bold">Les Ecoles de SaNOSPro</h1>
+  <h1 class="fw-bold" style="color: #0056b3">Les Ecoles de SaNOSPro</h1>
   <p class="lead">StagesBENIN lance Les Écoles de SaNOSPRO, un programme de formation pratique pour renforcer l’employabilité des jeunes durant les congés et vacances scolaires.</p>
   <a href="#details" class="btn btn-custom mt-3">Voir tous les Détails</a>
 </header>

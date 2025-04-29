@@ -243,7 +243,6 @@ Route::resource('actualites', ActualiteController::class);
 Route::get('/les-actualites', [ActualiteController::class, 'actualites'])->name('pages.actualites');
 
 Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
-Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
 Route::get('/entreprises/create', [EntrepriseController::class, 'create'])->name('entreprises.create');
 Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store');
 Route::get('/entreprises/{id}', [EntrepriseController::class, 'show'])->name('entreprises.show');
@@ -253,6 +252,23 @@ Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->na
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
 
+Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
+Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
+Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
+Route::get('/admin/evenements', [AdminController::class, 'evenements'])->name('admin.evenements');
+Route::get('/admin/entreprises', [AdminController::class, 'entreprises'])->name('admin.entreprises');
+Route::get('/admin/catalogues', [AdminController::class, 'catalogues'])->name('admin.catalogues');
+Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('admin.etudiants.etudiants');
+Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
+Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
+Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
+Route::get('/admin/cvtheque', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
+Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
+Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
+// Route pour changer le statut de l'étudiant (bloquer/débloquer)
+Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
+Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
+
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
 Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
@@ -261,6 +277,8 @@ Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name(
 //evenements
 Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
 Route::get('/evenements/{id}', [EventController::class, 'show'])->name('evenements.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+
 Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');
 Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenements.update');
 Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');

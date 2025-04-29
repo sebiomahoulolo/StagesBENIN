@@ -1,9 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de l'événement</title>
+@extends('layouts.admin.app')
+
+@section('title', 'StagesBENIN')
+
+@push('styles')
+    @section('content')
+
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,8 +27,7 @@
             color: #007BFF;
         }
     </style>
-</head>
-<body>
+
     <div class="event-header">
         <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->title }}">
         <h1>{{ $event->title }}</h1>
@@ -37,5 +38,8 @@
         <p><strong>Localisation :</strong> {{ $event->location }}</p>
         <p>{{ $event->description }}</p>
     </div>
-</body>
-</html>
+
+      @endsection
+    @push('scripts')
+        {{-- Scripts spécifiques si besoin --}}
+    @endpush

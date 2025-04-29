@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 class EventController extends Controller
 {
 
@@ -33,12 +35,35 @@ public function generatePDF($id)
 
         return view('evenements.index', compact('events'));
     }
-
+    public function events() {
+        $events = Event::paginate(10); // Utiliser la pagination pour de meilleures performances
+        return view('admin.evenements', compact('events'));
+    }
+    
     /**
      * Affiche les événements à venir dans le tableau de bord étudiant.
      *
      * @return \Illuminate\Http\Response
      */
+    public function register()
+    {
+        Schema::create('registrations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade'); // Clé étrangère vers la table events
+            $table->string('name'); // Nom du participant
+            $table->string('email')->unique(); // Email du participant
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::dropIfExists('registrations');
+    }
+
     public function upcomingForStudent()
     {
         // Récupérer uniquement les événements publiés et à venir

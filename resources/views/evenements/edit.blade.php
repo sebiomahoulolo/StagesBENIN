@@ -1,6 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
-@section('content')
+@section('title', 'StagesBENIN')
+
+@push('styles')
+    @section('content')
+
 <style>
     .container {
         max-width: 850px;
@@ -117,4 +121,8 @@
         </div>
     </form>
 </div>
-@endsection
+
+      @endsection
+    @push('scripts')
+        {{-- Scripts spécifiques si besoin --}}
+    @endpush

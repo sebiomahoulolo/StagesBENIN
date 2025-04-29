@@ -6,386 +6,193 @@
     <h1 class="dashboard-title">StagesBENIN</h1>
 
     <!-- Stats Section -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-title">Étudiants inscrits</div>
-                <div class="stat-icon bg-primary"><i class="fas fa-user-graduate"></i></div>
-            </div>
-            <div class="stat-value">{{ $totalEtudiants ?? 0 }}</div> <!-- Default to 0 if variable not set -->
-            <div class="stat-progress up">
-                <i class="fas fa-arrow-up"></i> {{ $progression ?? 'N/A' }} <!-- Default if variable not set -->
-            </div>
-        </div>
-         <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-title">Entreprises partenaires</div>
-                <div class="stat-icon bg-success"><i class="fas fa-building"></i></div>
-            </div>
-            {{-- Replace with dynamic data from controller --}}
-            <div class="stat-value">{{ $totalEntreprises ?? 86 }}</div>
-            <div class="stat-progress up">
-                <i class="fas fa-arrow-up"></i> 5% {{-- Make dynamic --}}
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-title">Offres actives</div>
-                <div class="stat-icon bg-warning"><i class="fas fa-briefcase"></i></div>
-            </div>
-             {{-- Replace with dynamic data from controller --}}
-            <div class="stat-value">{{ $offresActives ?? 124 }}</div>
-            <div class="stat-progress down">
-                <i class="fas fa-arrow-down"></i> 3% {{-- Make dynamic --}}
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-title">Entretiens programmés</div>
-                <div class="stat-icon bg-danger"><i class="fas fa-calendar-check"></i></div>
-            </div>
-             {{-- Replace with dynamic data from controller --}}
-            <div class="stat-value">{{ $entretiensProgrammes ?? 37 }}</div>
-            <div class="stat-progress up">
-                <i class="fas fa-arrow-up"></i> 8% {{-- Make dynamic --}}
-            </div>
-        </div>
-    </div>
+   <!-- Assurez-vous d'avoir inclus Font Awesome dans votre projet pour que les icônes s'affichent -->
+<!-- Exemple : <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
 
-    <!-- Tabs Section -->
-    <div class="tabs-container">
-        <div class="tabs-header" role="tablist">
-            {{-- data-tab values should be unique and match aria-controls/id of content panels --}}
-            <button class="tab active" data-tab="etudiants" role="tab" aria-selected="true" aria-controls="etudiants-content">Étudiants</button>
-            <button class="tab" data-tab="entreprises" role="tab" aria-selected="false" aria-controls="entreprises-content">Entreprises</button>
-            <button class="tab" data-tab="recrutements" role="tab" aria-selected="false" aria-controls="recrutements-content">Recrutements</button>
-            <button class="tab" data-tab="actualites" role="tab" aria-selected="false" aria-controls="actualites-content">Actualités</button>
-            <button class="tab" data-tab="evenements" role="tab" aria-selected="false" aria-controls="evenements-content">Événements</button>
-            <button class="tab" data-tab="catalogue" role="tab" aria-selected="false" aria-controls="catalogue-content">Catalogue</button>
-        </div>
 
-        <!-- Tab Content Panels -->
-        <div class="tab-content active" id="etudiants-content" role="tabpanel" aria-labelledby="etudiants-tab">
-            <div class="action-bar">
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantModal">
-                        <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
-                    </button>
-                </div>
-                <!-- Add Filters/Search for Students here -->
-            </div>
-            <div class="content-area table-responsive"> <!-- Make table responsive -->
-                {{-- Student Table --}}
-                {{-- Ensure $etudiants is passed from the controller --}}
-                @if(isset($etudiants) && !$etudiants->isEmpty())
-                    <table class="student-table">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Téléphone</th>
-                                <th>Niveau</th>
-                                <th>Formation</th>
-                                <th>Profil</th>
-                                <th>Actions</th>
-                                <th>Décision</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($etudiants as $etudiant)
-                            <tr>
-                                <td>{{ $etudiant->nom }}</td>
-                                <td>{{ $etudiant->prenom }}</td>
-                                <td>{{ $etudiant->telephone ?? '-'}}</td>
-                                <td>{{ $etudiant->niveau ?? '-'}}</td>
-                                <td>{{ $etudiant->formation ?? '-'}}</td>
-                                <td>
-                                    {{-- Lien vers la nouvelle page de détails --}}
-                                    <a href="{{ route('admin.etudiants.show', $etudiant->id) }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir détails">Voir</a>
-                                </td>
-                               <td>
-                                    <div class="d-flex gap-1">
-                                        {{-- Ensure routes exist --}}
-                                        {{-- CV Download (Needs backend implementation)
-                                        <a href="{{ route('etudiants.cv.download', $etudiant->id) }}" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" title="Télécharger CV"><i class="fas fa-file-download"></i></a>
-                                        --}}
-                                        <a href="{{ route('etudiants.entretiens', ['etudiant_id' => $etudiant->id]) }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Planifier entretien">Entretien</a>
-                                        <a href="{{ route('etudiants.envoyer.examen', $etudiant->id) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Envoyer examen">Examen</a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-1">
-                                        {{-- Ensure routes exist --}}
-                                        <form action="{{ route('candidatures.accepter', $etudiant->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer l\'acceptation de cette candidature ?');">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Accepter">Accepter</button>
-                                        </form>
-                                        <form action="{{ route('candidatures.rejeter', $etudiant->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer le rejet de cette candidature ?');">
-                                            @csrf
-                                            <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Rejeter">Rejeter</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                     {{-- Add Pagination if needed: $etudiants->links() --}}
-                @else
-                    <div class="alert alert-info mt-3">Aucun étudiant trouvé pour le moment.</div>
-                @endif
-            </div>
-        </div>
 
-        <div class="tab-content" id="entreprises-content" role="tabpanel" aria-labelledby="entreprises-tab">
-            <div class="action-bar">
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entrepriseModal">
-                        <i class="fas fa-plus-circle me-1"></i> Ajouter Entreprise
-                    </button>
-                </div>
-            </div>
-             <div class="content-area table-responsive">
-                <h4>Liste des Entreprises</h4>
-                @if(isset($entreprises) && !$entreprises->isEmpty())
-                    <table class="table table-hover table-bordered align-middle">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Secteur</th>
-                                <th>Email</th>
-                                <th>Téléphone</th>
-                                <th>Logo</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($entreprises as $entreprise)
-                            <tr>
-                                <td>{{ $entreprise->id }}</td>
-                                <td>{{ $entreprise->nom }}</td>
-                                <td>{{ $entreprise->secteur ?? '-' }}</td>
-                                <td>{{ $entreprise->email }}</td>
-                                <td>{{ $entreprise->telephone ?? '-' }}</td>
-                                <td>
-                                    @if($entreprise->logo_path && Storage::exists($entreprise->logo_path))
-                                        <img src="{{ Storage::url($entreprise->logo_path) }}" alt="Logo {{ $entreprise->nom }}" style="width:40px;height:40px; object-fit:contain;">
-                                    @else
-                                        <span class="text-muted small">N/A</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-1 flex-wrap">
-                                        {{-- Ensure routes exist --}}
-                                        <a href="{{ route('entreprises.show', $entreprise->id) }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir"><i class="fas fa-eye"></i></a>
-                                        <a href="{{ route('entreprises.contact', $entreprise->id) }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Contacter"><i class="fas fa-envelope"></i></a>
-                                        <a href="{{ route('entreprises.follow', $entreprise->id) }}" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Suivre"><i class="fas fa-star"></i></a> {{-- Assuming 'follow' means something like favorite/track --}}
-                                        <a href="{{ route('entreprises.edit', $entreprise->id) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
-                                        <form action="{{ route('entreprises.destroy', $entreprise->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise?');" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $entreprises->links() }} {{-- Render pagination links --}}
-                @else
-                    <div class="alert alert-info">Aucune entreprise trouvée pour le moment.</div>
-                @endif
-             </div>
-        </div>
+<div class="link-container">
 
-        <div class="tab-content" id="recrutements-content" role="tabpanel" aria-labelledby="recrutements-tab">
-             <div class="action-bar">
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recrutementModal">
-                        <i class="fas fa-plus-circle me-1"></i> Ajouter Recrutement
-                    </button>
-                </div>
-            </div>
-             <div class="content-area table-responsive">
-                <h4>Liste des Recrutements</h4>
-                {{-- Placeholder for Recruitment table - ensure $recrutements is passed from controller --}}
-                 @if(isset($recrutements) && !$recrutements->isEmpty())
-                     <p>Tableau des recrutements ici.</p>
-                     {{-- Populate table similar to others --}}
-                 @else
-                     <div class="alert alert-info">Aucun recrutement trouvé pour le moment.</div>
-                 @endif
-             </div>
-        </div>
+    <a href="{{ route('admin.etudiants.etudiants') }}" class="styled-link-box">
 
-        <div class="tab-content" id="actualites-content" role="tabpanel" aria-labelledby="actualites-tab">
-            <div class="action-bar">
-               <div class="action-buttons">
-                   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#actualiteModal">
-                       <i class="fas fa-plus-circle me-1"></i> Ajouter Actualité
-                   </button>
-               </div>
-           </div>
-            <div class="content-area table-responsive">
-               <h4>Liste des Actualités</h4>
-               {{-- Ensure $actualites is passed from the controller --}}
-               @if(isset($actualites) && !$actualites->isEmpty())
-                    <table class="table table-hover table-bordered align-middle">
-                        <thead>
-                            <tr>
-                                <th>Titre</th>
-                                <th>Catégorie</th>
-                                <th>Auteur</th>
-                                <th>Date</th>
-                               
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($actualites as $actualite)
-                            <tr>
-                                <td>{{ $actualite->titre }}</td>
-                                <td>{{ $actualite->categorie ?? '-' }}</td>
-                                <td>{{ $actualite->auteur ?? '-'}}</td>
-                                <td>{{ $actualite->date_publication ? \Carbon\Carbon::parse($actualite->date_publication)->isoFormat('DD MMM YYYY') : '-' }}</td>
-                                 {{--<td>
-                                    Status - Assuming an 'is_published' field 
-                                    @if($actualite->is_published)
-                                        <span class="badge bg-success">Publiée</span>
-                                    @else
-                                        <span class="badge bg-secondary">Brouillon</span>
-                                    @endif
-                                </td>--}}
-                                <td>
-                                    <div class="d-flex gap-1">
-                                        {{-- Ensure routes exist --}}
-                                        {{-- <a href="{{ route('actualites.show', $actualite->id) }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir"><i class="fas fa-eye"></i></a> --}}
-                                        <a href="{{ route('actualites.edit', $actualite->id) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
-                                        <form action="{{ route('actualites.destroy', $actualite->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Confirmer la suppression de cette actualité ?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $actualites->links() }} {{-- Render pagination links --}}
-                @else
-                    <div class="alert alert-info">Aucune actualité trouvée pour le moment.</div>
-                @endif
-            </div>
-        </div>
+        <i class="fas fa-user-graduate icon-primary" ></i>
+       
+       <span>Étudiants</span>
+    </a>
 
-        <div class="tab-content" id="evenements-content" role="tabpanel" aria-labelledby="evenements-tab">
-            <div class="action-bar">
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal">
-                        <i class="fas fa-plus-circle me-1"></i> Ajouter Événement
-                    </button>
-                </div>
-            </div>
-            <div class="content-area table-responsive">
-                <h4>Liste des Événements</h4>
-                 {{-- Ensure $events is passed from the controller --}}
-                @if(isset($events) && !$events->isEmpty())
-                    <table class="table table-hover table-bordered align-middle">
-                        <thead>
-                            <tr>
-                                <th>Titre</th>
-                                <th>Début</th>
-                                <th>Fin</th>
-                                <th>Lieu</th>
-                                <th>Type</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($events as $event)
-                            <tr>
-                                <td>{{ $event->title }}</td>
-                                <td>{{ $event->start_date ? \Carbon\Carbon::parse($event->start_date)->isoFormat('DD MMM YYYY HH:mm') : '-' }}</td>
-                                <td>{{ $event->end_date ? \Carbon\Carbon::parse($event->end_date)->isoFormat('DD MMM YYYY HH:mm') : '-' }}</td>
-                                <td>{{ $event->location ?? '-' }}</td>
-                                <td>{{ $event->type ?? '-' }}</td>
-                                <td>
-                                    {{-- Status Toggle Form - Ensure route exists --}}
-                                    <form action="{{ route('evenements.toggleStatus', $event->id) }}" method="POST" style="display: inline-block;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-sm {{ $event->is_published ? 'btn-success' : 'btn-secondary' }} status" data-bs-toggle="tooltip" title="{{ $event->is_published ? 'Passer en privé' : 'Publier' }}">
-                                            {{ $event->is_published ? 'Publié' : 'Privé' }}
-                                        </button>
-                                    </form>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-1">
-                                         {{-- Ensure routes exist --}}
-                                         <a href="{{ route('evenements.show', $event->id) }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir"><i class="fas fa-eye"></i></a>
-                                         <a href="{{ route('evenements.edit', $event->id) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
-                                         {{-- Delete Form - Ensure route exists --}}
-                                         <form action="{{ route('evenements.destroy', $event->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression de cet événement ?')">
-                                             @csrf
-                                             @method('DELETE')
-                                             <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer"><i class="fas fa-trash"></i></button>
-                                         </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $events->links() }} {{-- Render pagination links --}}
-                @else
-                    <div class="alert alert-info">Aucun événement trouvé pour le moment.</div>
-                @endif
-            </div>
-        </div>
+    <a href="{{ route('admin.entreprises_partenaires') }}" class="styled-link-box">
+        <i class="fas fa-building icon-success"></i>
+        <span>Entreprises partenaires</span>
+    </a>
 
-        <div class="tab-content" id="catalogue-content" role="tabpanel" aria-labelledby="catalogue-tab">
-             <div class="action-bar">
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#catalogueModal">
-                        <i class="fas fa-plus-circle me-1"></i> Ajouter au Catalogue
-                    </button>
-                </div>
-            </div>
-            <div class="content-area table-responsive">
-    <h4> Liste des Catalogues</h4>
-    @if(isset($catalogueItems) && !$catalogueItems->isEmpty())
-        <table class="table table-bordered table-striped">
-            <thead class="table">
-                <tr>
-           <th>Nom de l'Établissement</th>
-                    <th>Localisation</th>
-                    <th>Activités principale</th>
-       <!--th>Actions</th>
-                </tr-->
-            </thead>
-            <tbody>
-                @foreach($catalogueItems as $index => $item)
-                    <tr>
-                  <td>{{ $item->titre }}</td>
-                        <td>{{ $item->localisation }}</td>
-                        <td>{{ $item-> activite_principale}}</td>
-                      
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <div class="alert alert-info">Aucun élément trouvé dans le catalogue pour le moment.</div>
-    @endif
+    <a href="" class="styled-link-box">
+        <i class="fas fa-briefcase icon-warning"></i>
+        <span >Offres actives</span>
+    </a>
+
+    <a href="{{ route('admin.actualites') }}" class="styled-link-box">
+        <i class="fas fa-newspaper icon-info"></i>
+          <span>Actualités</span>
+    </a>
+ 
+    <a href="{{ route('admin.entretiens') }}" class="styled-link-box">
+        <i class="fas fa-calendar-check icon-danger"></i>
+        <span>Entretiens programmés</span>
+    </a>
+
+    <a href="{{ route('admin.catalogues') }}" class="styled-link-box">
+        <i class="fas fa-book-open icon-teal"></i>
+        <span>Catalogues
+        </span>
+    </a>
+<a href="" class="styled-link-box">
+    <i class="fas fa-laptop icon-primary"></i>
+    <span>Les logiciels</span>
+</a>
+
+<a href="" class="styled-link-box">
+    <i class="fas fa-sort-numeric-up icon-success"></i>
+    <span>Le nombre d'insertion</span>
+</a>
+
+<a href="" class="styled-link-box">
+    <i class="fas fa-cogs icon-warning"></i>
+    <span>Programmes</span>
+</a>
+
+<a href="" class="styled-link-box">
+    <i class="fas fa-file-alt icon-info"></i>
+    <span>Publications</span>
+</a>
+
+    <a href="{{ route('messagerie-sociale.index') }}" class="styled-link-box">
+        <i class="fas fa-bullhorn icon-orange"></i>
+       <span>Canal d'annonces</span>
+    </a>
+ <a href="{{ route('admin.entreprises') }}" class="styled-link-box">
+        <i class="fas fa-building icon-success"></i>
+       <span>Entreprises
+        </span>
+    </a>
+
+    <!-- NOUVEAU : Recrutements -->
+     <a href="{{ route('admin.recrutements') }}" class="styled-link-box">
+        <i class="fas fa-user-tie icon-purple"></i>
+        <span> Recrutements</span>
+    </a>
+
+     <!-- NOUVEAU : Événements -->
+    <a href="{{ route('admin.evenements') }}" class="styled-link-box">
+        <i class="fas fa-calendar-alt icon-danger"></i>
+
+        <span>   Événements</span>
+    </a>
+
+     <!-- NOUVEAU : Plaintes et suggestions -->
+     <a href="{{ route('admin.complaints.index') }}" class="styled-link-box">
+        <i class="fas fa-comment-dots icon-info"></i>
+        <span>Plaintes et suggestions</span>
+    </a>
+
+
+
+
+     <a href="#" class="styled-link-box">
+        <i class="fas fa-cog icon-secondary"></i>
+        <span>Paramètres</span>
+    </a>
+
 </div>
-        </div>
-    </div>
+<style>
+/* Styles de base pour assurer une meilleure compatibilité */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif; /* Choisissez une police appropriée */
+    padding: 20px; /* Ajoute un peu d'espace autour du conteneur */
+    background-color: #f4f7f6; /* Un fond léger pour contraster */
+}
+
+/* Conteneur des liens - Utilisation de CSS Grid pour la responsivité */
+.link-container {
+    display: grid;
+    /* Crée des colonnes qui s'adaptent automatiquement.
+       Chaque colonne aura une largeur minimale de 200px
+       et s'étendra pour remplir l'espace disponible (1fr). */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px; /* Espace entre les boîtes */
+}
+
+/* Style de base pour chaque boîte de lien */
+.styled-link-box {
+    display: flex; /* Pour aligner icône et texte */
+    align-items: center; /* Centrage vertical */
+    padding: 15px 20px; /* Padding intérieur (plus grand) */
+    border: 1px solid blue; /* Bordure bleue */
+    border-radius: 8px; /* Coins légèrement plus arrondis */
+    box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.15); /* Ombre portée */
+    text-decoration: none; /* Enlève le soulignement du lien */
+    color: #333; /* Couleur du texte */
+    background-color: #ffffff; /* Fond blanc */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Animation douce au survol */
+    overflow: hidden; /* Empêche le contenu de déborder si le texte est trop long */
+    word-break: break-word; /* Coupe les mots longs si nécessaire */
+}
+
+/* Style pour les icônes */
+.styled-link-box i {
+    margin-right: 12px; /* Espace entre l'icône et le texte */
+    font-size: 1.2em; /* Taille de l'icône légèrement augmentée */
+    width: 25px; /* Donne une largeur fixe pour un meilleur alignement */
+    text-align: center;
+}
+
+/* Couleurs spécifiques pour les icônes (utilisant des classes) */
+.icon-primary { color: #007bff; }   /* Bleu (Étudiants) */
+.icon-success { color: #28a745; }   /* Vert (Entreprises) */
+.icon-warning { color: #ffc107; }   /* Jaune (Offres) */
+.icon-info { color: #17a2b8; }      /* Cyan (Actualités) */
+.icon-danger { color: #dc3545; }    /* Rouge (Entretiens) */
+.icon-teal { color: #20c997; }      /* Teal (Catalogue) */
+.icon-orange { color: #fd7e14; }    /* Orange (Annonces) */
+.icon-secondary { color: #6c757d; } /* Gris (Paramètres) */
+
+
+/* Effet au survol */
+.styled-link-box:hover {
+    transform: translateY(-3px); /* Léger déplacement vers le haut */
+    box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée */
+    border-color: darkblue; /* Assombrir un peu la bordure bleue */
+}
+
+/* Optionnel: S'assurer que le texte ne prend pas trop de place */
+.styled-link-box span {
+   flex-grow: 1; /* Permet au texte de prendre l'espace restant */
+}
+
+
+/* Styles pour écrans très petits (si la grille ne suffit pas) */
+@media (max-width: 500px) {
+    .link-container {
+        /* Sur très petit écran, on pourrait forcer une seule colonne
+           si auto-fit ne donne pas le résultat voulu */
+         /* grid-template-columns: 1fr; */
+         gap: 15px; /* Réduire l'espacement */
+    }
+     .styled-link-box {
+        padding: 12px 15px; /* Réduire légèrement le padding */
+    }
+    .styled-link-box i {
+         margin-right: 10px;
+         font-size: 1.1em;
+    }
+}
+</style>
+
 @endsection
 
 @push('styles')

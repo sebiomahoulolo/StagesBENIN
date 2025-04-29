@@ -1,6 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
-@section('content')
+@section('title', 'StagesBENIN')
+
+@push('styles')
+    @section('content')
+
+
+
+
+    
 <style>
     .event-container {
         max-width: 900px;
@@ -80,4 +88,9 @@
     <img src="{{ asset($actualite->image_path) }}" alt="Image de l'actualité" class="img-fluid rounded shadow">
     <a href="" class="btn btn-secondary mt-3">Retour</a>
 </div>
-@endsection
+
+
+      @endsection
+    @push('scripts')
+        {{-- Scripts spécifiques si besoin --}}
+    @endpush

@@ -162,13 +162,26 @@ public function update(Request $request, $id)
 }
 // app/Http/Controllers/EventController.php
 
-public function destroy($id)
+ function destroy($id)
 {
     $etudiant = Etudiant::findOrFail($id);
     $etudiant->delete();
 
-    return redirect()->route('etudiants.index')->with('success', 'Étudiant supprimé avec succès.');
+    return redirect()->route('admin.etudiants.etudiants')
+        ->with('success', 'Étudiant supprimé avec succès.');
 }
+public function toggleStatus($id)
+{
+    $etudiant = Etudiant::findOrFail($id);
+
+    // Alterne le statut entre 1 (actif) et 0 (bloqué)
+    $etudiant->statut = $etudiant->statut == 1 ? 0 : 1;
+    $etudiant->save();
+
+    return redirect()->route('admin.etudiants.etudiants')
+        ->with('success', 'Statut de l\'étudiant mis à jour avec succès.');
+}
+
 
 public function downloadCV($id)
 {

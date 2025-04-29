@@ -61,6 +61,43 @@ class CvController extends Controller
         return $cvProfile;
     }
 
+    public function view($id)
+{
+    try {
+        // Récupérer le profil CV en fonction de l'ID
+        $cvProfile = CvProfile::findOrFail($id);
+
+        // Retourner la vue correspondante avec les données du CV
+        return view('admin.cvtheque.view', compact('cvProfile'));
+    } catch (\Exception $e) {
+        // Gérer les erreurs, par exemple, si le CV n'est pas trouvé
+        return redirect()->route('admin.cvtheque.cvtheque')
+            ->with('error', 'Le CV demandé est introuvable.');
+    }
+}
+public function download($id)
+{
+    try {
+        // Récupère le profil du CV
+        $cvProfile = CvProfile::findOrFail($id);
+
+        // Vérifie que le fichier existe dans le système
+        $filePath = storage_path('app/cv/' . $cvProfile->file_name);
+        if (!file_exists($filePath)) {
+            return redirect()->route('admin.cvtheque.cvtheque')
+                ->with('error', 'Le fichier du CV est introuvable.');
+        }
+
+        // Télécharge le fichier
+        return response()->download($filePath, $cvProfile->titre . '.pdf');
+    } catch (\Exception $e) {
+        // Gestion des erreurs
+        return redirect()->route('admin.cvtheque.cvtheque')
+            ->with('error', 'Une erreur est survenue lors du téléchargement du CV : ' . $e->getMessage());
+    }
+}
+
+
     /**
      * Affiche la page d'édition du CV (qui contient les composants Livewire).
      *

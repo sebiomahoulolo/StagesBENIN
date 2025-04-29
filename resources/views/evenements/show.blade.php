@@ -1,6 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
-@section('content')
+@section('title', 'StagesBENIN')
+
+@push('styles')
+    @section('content')
+
+
 <style>
     .event-container {
         max-width: 900px;
@@ -115,4 +120,9 @@
         </div>
     </div>
 </div>
-@endsection
+
+
+      @endsection
+    @push('scripts')
+        {{-- Scripts spécifiques si besoin --}}
+    @endpush

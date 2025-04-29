@@ -139,7 +139,7 @@
                 </div>
             </div>
             
-            <!-- Event Card 2 
+            
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
                     <img src="https://stagesbenin.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-01-a-14.00.27_b95bc24c-300x175.jpg" class="card-img-top" alt="PEE">
@@ -149,9 +149,9 @@
                         <a href="{{ route('pages.pee') }}" class="btn btn-primary">Voir »</a>
                     </div>
                 </div>
-            </div>-->
+            </div>
             
-            <!-- Event Card 3
+          
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
                     <img src="https://stagesbenin.com/wp-content/uploads/2024/09/IMG-20240904-WA0030-300x200.jpg" class="card-img-top" alt="JRSP">
@@ -161,7 +161,7 @@
                         <a href="#" class="btn btn-primary">Voir »</a>
                     </div>
                 </div>
-            </div> -->
+            </div> 
             
             <!-- Event Card 4 -->
             <div class="col-md-6 col-lg-4">
@@ -185,6 +185,11 @@
                     </div>
                 </div>
             </div>
+
+
+          
+            
+
         </div>
     </div>
 
