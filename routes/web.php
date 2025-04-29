@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; // Importez Auth
+use App\Http\Controllers\BoostController;
 
 // --- Contrôleurs Publics / Communs ---
 use App\Http\Controllers\PageController;
@@ -12,7 +13,9 @@ use App\Http\Controllers\EventController;
 // --- Contrôleurs Spécifiques (seront utilisés dans les groupes protégés) ---
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EtudiantController;
-use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\Entreprises\EntrepriseController;
+use App\Http\Controllers\Entreprises\AnnonceController;
+// use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\RecrutementController;
 use App\Http\Controllers\ActualiteController;
 use App\Http\Controllers\CatalogueController;
@@ -119,7 +122,6 @@ Route::middleware('guest')->group(function () {
 // ===============================================
 // ROUTES PROTÉGÉES (Nécessitent Connexion)
 // ===============================================
-Route::get('/entreprises/dashboard', [EntrepriseController::class, 'dashboard'])->name('entreprises.dashboard');
 
 // Dashboard générique (Redirige immédiatement selon le rôle)
 Route::get('/dashboard', function () {
@@ -204,40 +206,30 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     Route::resource('complaints', EtudiantComplaintController::class)->except(['edit', 'update']);
 
     // Routes pour les offres d'emploi
-    Route::prefix('offres')->name('offres.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'index'])->name('index');
-        Route::get('/{id}', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'show'])->name('show');
-        Route::get('/{id}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'postuler'])->name('postuler');
-        Route::post('/{id}/soumettre-candidature', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'soumettreCandidature'])->name('soumettre-candidature');
-        Route::get('/mes-candidatures', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'mesCandidatures'])->name('mes-candidatures');
-    });
+    Route::get('/offres', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'index'])->name('offres.index');
+    Route::get('/offres/{annonce}', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'show'])->name('offres.show');
+    Route::get('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'postuler'])->name('offres.postuler');
+    Route::post('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'soumettreCandidature'])->name('offres.soumettre-candidature');
+    Route::get('/mes-candidatures', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'mesCandidatures'])->name('offres.mes-candidatures');
 }); // Fin du groupe étudiant
 
 
 // --- Groupe Recruteur (Entreprise) ---
-// Utilisation du préfixe et nommage existant 'entreprises'
-Route::middleware(['auth', EnsureUserHasRole::class.':recruteur'])->prefix('entreprises')->name('entreprises.')->group(function () {
-    // Route pour le dashboard recruteur/entreprise
-    Route::get('/dasboard', [EntrepriseController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /entreprises -> entreprises.dashboard
-
-    // Route pour le formulaire de création d'offre
-    Route::get('/post-job', [EntrepriseController::class, 'postJobOffer'])->name('post_job_offer'); // Conserve entreprises.post_job_offer (pointe vers le form)
-
-    // CRUD pour les Recrutements (Offres) gérées par le recruteur connecté
-    // Le contrôleur RecrutementController doit gérer la liaison avec l'entreprise de l'utilisateur Auth::user()->entreprise->id
-    Route::get('/recrutements', [RecrutementController::class, 'index'])->name('recrutements.index'); // Liste des offres de l'entreprise
-    Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Enregistrement de l'offre postée via /post-job
-    Route::get('/recrutements/{recrutement}/edit', [RecrutementController::class, 'edit'])->name('recrutements.edit'); // Editer une offre
-    Route::put('/recrutements/{recrutement}', [RecrutementController::class, 'update'])->name('recrutements.update'); // MAJ offre
-    Route::delete('/recrutements/{recrutement}', [RecrutementController::class, 'destroy'])->name('recrutements.destroy'); // Supprimer offre
-
-    // Routes pour gérer le profil de l'entreprise elle-même (si différent du profil user)
-     Route::get('/profil/edit', [EntrepriseController::class, 'edit'])->name('profil.edit'); // Formulaire édition profil entreprise
-     Route::put('/profil', [EntrepriseController::class, 'update'])->name('profil.update'); // Sauvegarde profil entreprise
-
-    // Ajoutez ici d'autres routes recruteur
-    // Ex: Voir les candidats pour une offre, etc.
+Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entreprises.')->group(function () {
+    Route::get('/dashboard', [EntrepriseController::class, 'dashboard'])->name('dashboard');
+    
+    // Routes pour les annonces
+    Route::prefix('annonces')->name('annonces.')->group(function () {
+        Route::get('/', [AnnonceController::class, 'index'])->name('index');
+        Route::get('/create', [AnnonceController::class, 'create'])->name('create');
+        Route::post('/', [AnnonceController::class, 'store'])->name('store');
+        Route::get('/{annonce}', [AnnonceController::class, 'show'])->name('show');
+        Route::get('/{annonce}/edit', [AnnonceController::class, 'edit'])->name('edit');
+        Route::put('/{annonce}', [AnnonceController::class, 'update'])->name('update');
+        Route::delete('/{annonce}', [AnnonceController::class, 'destroy'])->name('destroy');
+    });
 });
+
 //actulites
 Route::resource('actualites', ActualiteController::class);
 Route::get('/les-actualites', [ActualiteController::class, 'actualites'])->name('pages.actualites');
@@ -358,4 +350,22 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/canal-messagerie/shared/{token}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showSharedPost'])
         ->name('messagerie-sociale.shared-post');
+});
+
+// Routes pour le boostage
+Route::middleware(['auth', 'role:etudiant'])->group(function () {
+    Route::get('/etudiants/boost/status', [BoostController::class, 'status'])->name('etudiants.boostage.status');
+    Route::get('/etudiants/boost/renew', [BoostController::class, 'renew'])->name('etudiants.boostage.renew');
+    Route::post('/etudiants/boost/renew', [BoostController::class, 'processRenewal'])->name('etudiants.boostage.process-renewal');
+    Route::get('/etudiants/boost/upgrade', [BoostController::class, 'upgrade'])->name('etudiants.boostage.upgrade');
+    Route::post('/etudiants/boost/upgrade', [BoostController::class, 'processUpgrade'])->name('etudiants.boostage.process-upgrade');
+});
+
+// Routes pour l'administration
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Routes pour la gestion des annonces
+    Route::get('/annonces', [Admin\AnnonceController::class, 'index'])->name('annonces.index');
+    Route::get('/annonces/{annonce}', [Admin\AnnonceController::class, 'show'])->name('annonces.show');
+    Route::post('/annonces/{annonce}/approuver', [Admin\AnnonceController::class, 'approuver'])->name('annonces.approuver');
+    Route::post('/annonces/{annonce}/rejeter', [Admin\AnnonceController::class, 'rejeter'])->name('annonces.rejeter');
 });

@@ -1,2 +1,1 @@
-cd /home/fadel/Workspaces/StagesBENIN && php artisan migrate:status | grep message_comments
-^C
+php artisan migrate:fresh

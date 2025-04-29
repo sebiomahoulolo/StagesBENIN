@@ -15,19 +15,15 @@ return new class extends Migration
     {
         Schema::create('candidatures', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('annonce_id');
+            $table->foreign('annonce_id')->references('id')->on('annonces')->onDelete('cascade');
             $table->unsignedBigInteger('etudiant_id');
-            $table->unsignedBigInteger('recrutement_id');
-            $table->text('lettre_motivation');
+            $table->foreign('etudiant_id')->references('user_id')->on('etudiants')->onDelete('cascade');
+            $table->text('lettre_motivation')->nullable();
             $table->string('cv_path')->nullable();
-            $table->enum('statut', ['en_attente', 'acceptee', 'refusee', 'en_cours', 'annulee'])->default('en_attente');
-            $table->timestamp('date_candidature')->useCurrent();
-            $table->timestamp('date_reponse')->nullable();
-            $table->text('commentaire')->nullable();
+            $table->enum('statut', ['en_attente', 'en_cours', 'accepte', 'rejete'])->default('en_attente');
+            $table->text('motif_rejet')->nullable();
             $table->timestamps();
-
-            // Clés étrangères
-            $table->foreign('etudiant_id')->references('id')->on('etudiants')->onDelete('cascade');
-            $table->foreign('recrutement_id')->references('id')->on('recrutements')->onDelete('cascade');
         });
     }
 

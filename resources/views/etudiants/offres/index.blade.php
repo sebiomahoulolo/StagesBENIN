@@ -9,256 +9,409 @@
     <!-- Animation CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
     <style>
-        /* Personnalisation des cartes d'offres */
-        .offre-card {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: none;
+        /* Styles généraux de la page */
+        .filter-section {
+            background: #fff;
             border-radius: 10px;
-            overflow: hidden;
-            height: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
         }
-        
-        .offre-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .offre-header {
-            background: linear-gradient(to right, #f8f9fa, #e9ecef);
-            padding: 15px 20px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .offre-title {
-            font-weight: 700;
-            margin-bottom: 5px;
+
+        .filter-section h5 {
             color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f5;
         }
-        
-        .offre-subtitle {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        
-        .offre-body {
-            padding: 20px;
-        }
-        
-        .offre-description {
-            color: #495057;
-            line-height: 1.6;
-        }
-        
-        .offre-footer {
-            background-color: #f8f9fa;
-            padding: 12px 20px;
-            border-top: 1px solid #edf2f7;
-        }
-        
-        /* Styles pour les badges */
-        .badge-container .badge {
-            font-size: 0.8rem;
-            padding: 6px 10px;
-            border-radius: 50px;
-            margin-right: 8px;
-            margin-bottom: 8px;
+
+        .form-label {
             font-weight: 500;
-        }
-        
-        .badge-contrat {
-            background-color: #4361ee !important;
-        }
-        
-        .badge-lieu {
-            background-color: #3f8cff !important;
-        }
-        
-        /* Style pour le formulaire de filtre */
-        .filter-form {
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-        }
-        
-        /* Styles améliorés pour le champ de recherche */
-        .filter-form .input-group {
-            border-radius: 8px;
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            align-items: stretch;
-        }
-        
-        .filter-form .input-group-text {
-            background-color: #fff;
-            border-right: none;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-        }
-        
-        .filter-form .form-control,
-        .filter-form .form-select,
-        .filter-form .btn {
-            border-radius: 8px;
-            padding: 12px 15px;
-            height: 46px; /* Hauteur fixe pour tous les éléments */
-            display: flex;
-            align-items: center;
+            color: #34495e;
+            margin-bottom: 8px;
         }
 
-        /* Alignement spécifique pour Select2 */
-        .select2-container--bootstrap-5 .select2-selection {
-            height: 46px !important;
-            border-radius: 8px !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            line-height: 46px !important;
-            padding-left: 15px !important;
-        }
-        
-        .filter-form .form-control:focus,
-        .filter-form .form-select:focus {
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-        }
-        
-        .filter-form .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px 15px;
             transition: all 0.3s ease;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        
-        .filter-form .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0a58ca;
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .filter-btn {
+            background: #3498db;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .filter-btn:hover {
+            background: #2980b9;
             transform: translateY(-2px);
         }
-        
-        /* Animation pour les cartes */
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease forwards;
+
+        .filter-group {
+            margin-bottom: 20px;
         }
-        
-        /* Personnalisation pagination */
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon input {
+            padding-left: 40px;
+        }
+
+        /* Styles des cartes d'offres */
+        .offre-card-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .offre-card-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            border-color: #3498db;
+        }
+
+        .offre-card-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .offre-card-title a {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .offre-card-title a:hover {
+            color: #3498db;
+        }
+
+        .offre-card-entreprise {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .offre-card-body {
+            padding: 20px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-type-poste {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .badge-secteur {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .badge-specialite {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .badge-niveau-etude {
+            background-color: #f1c40f;
+            color: white;
+        }
+
+        .badge-lieu {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .badge-salaire {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .offre-card-footer {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #f0f2f5;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-cloture {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .date-cloture i {
+            margin-right: 5px;
+        }
+
+        .btn-voir-offre {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: white;
+            font-weight: 500;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-voir-offre:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .list-card-header {
+            background: #fff;
+            border-bottom: 1px solid #f0f2f5;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .list-card-body {
+            background: #f9fbfd;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+
         .pagination {
-            justify-content: center;
+            margin-top: 30px;
         }
-        
+
         .page-link {
-            border-radius: 4px;
-            margin: 0 2px;
-            color: #3f8cff;
+            border-radius: 6px;
+            margin: 0 3px;
+            color: #3498db;
+            border: 1px solid #e0e0e0;
         }
-        
+
         .page-item.active .page-link {
-            background-color: #3f8cff;
-            border-color: #3f8cff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        /* Animation */
+        .animate__fadeInUp {
+            animation-duration: 0.6s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+            
+            .row {
+                margin: 0;
+            }
+            
+            .col-md-3, .col-md-9 {
+                padding: 0;
+            }
+            
+            .filter-section {
+                position: relative;
+                top: 0;
+                margin: 0 0 20px 0;
+                border-radius: 0;
+            }
+            
+            .list-card-header, .list-card-body {
+                border-radius: 0;
+            }
+            
+            .offre-card-item {
+                margin: 10px;
+            }
         }
     </style>
 @endpush
 
 @section('content')
-<div class="container-fluid py-4 animate__animated animate__fadeIn">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-briefcase me-2"></i>Offres d'emploi</h5>
-                        <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                            <i class="fas fa-list me-1"></i> Mes candidatures
-                        </a>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="filter-section">
+                <h5><i class="fas fa-filter me-2"></i>Filtres de recherche</h5>
+                <form action="{{ route('etudiants.offres.index') }}" method="GET">
+                    <div class="filter-group">
+                        <label for="search" class="form-label">Recherche par mots-clés</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ request('search') }}" placeholder="Poste, compétence...">
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <!-- Filtres et recherche -->
-                    <form action="{{ route('etudiants.offres.index') }}" method="GET" class="filter-form mb-4">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-4">
-                                <div class="input-group h-100">
-                                    <span class="input-group-text bg-white border border-end-0"><i class="fas fa-search text-primary"></i></span>
-                                    <input type="text" name="search" class="form-control border-start-0" placeholder="Rechercher..." value="{{ request('search') }}">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <select name="lieu" class="form-select select2" data-placeholder="Tous les lieux">
-                                    <option value="">Tous les lieux</option>
-                                    @foreach($lieux as $lieu)
-                                        <option value="{{ $lieu }}" {{ request('lieu') == $lieu ? 'selected' : '' }}>{{ $lieu }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select name="type_contrat" class="form-select select2" data-placeholder="Tous les types de contrat">
-                                    <option value="">Tous les types de contrat</option>
-                                    @foreach($typesContrat as $type)
-                                        <option value="{{ $type }}" {{ request('type_contrat') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-filter me-2"></i> Filtrer
-                                </button>
-                            </div>
-                        </div>
-                    </form>
 
-                    <!-- Liste des offres -->
-                    @if($offres->count() > 0)
-                        <div class="row">
-                            @foreach($offres as $key => $offre)
-                                <div class="col-md-6 col-lg-4 mb-4">
-                                    <div class="offre-card fade-in-up" style="animation-delay: {{ $key * 0.1 }}s">
-                                        <div class="offre-header">
-                                            <h5 class="offre-title">{{ $offre->titre }}</h5>
-                                            <h6 class="offre-subtitle">{{ $offre->entreprise->nom ?? 'Entreprise non spécifiée' }}</h6>
-                                        </div>
-                                        <div class="offre-body">
-                                            <div class="badge-container mb-3">
-                                                <span class="badge badge-contrat">{{ $offre->type_contrat }}</span>
-                                                @if($offre->lieu)
-                                                    <span class="badge badge-lieu"><i class="fas fa-map-marker-alt me-1"></i>{{ $offre->lieu }}</span>
-                                                @endif
-                                            </div>
-                                            
-                                            <p class="offre-description">{{ Str::limit($offre->description, 150) }}</p>
-                                        </div>
-                                        <div class="offre-footer d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">
-                                                <i class="far fa-calendar-alt me-1"></i>
-                                                Publiée le {{ $offre->created_at->format('d/m/Y') }}
-                                            </small>
-                                            <a href="{{ route('etudiants.offres.show', $offre->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                                <i class="fas fa-eye me-1"></i> Voir détails
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="filter-group">
+                        <label for="secteur_id" class="form-label">Secteur d'activité</label>
+                        <select class="form-select select2" id="secteur_id" name="secteur_id">
+                            <option value="">Tous les secteurs</option>
+                            @foreach($secteurs as $secteur)
+                                <option value="{{ $secteur->id }}" {{ request('secteur_id') == $secteur->id ? 'selected' : '' }}>
+                                    {{ $secteur->nom }}
+                                </option>
                             @endforeach
-                        </div>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $offres->links() }}
-                        </div>
-                    @else
-                        <div class="alert alert-info text-center py-4">
-                            <i class="fas fa-info-circle fa-2x mb-3"></i>
-                            <p class="mb-0">Aucune offre d'emploi ne correspond à vos critères de recherche.</p>
-                        </div>
-                    @endif
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="specialite_id" class="form-label">Spécialité</label>
+                        <select class="form-select select2" id="specialite_id" name="specialite_id">
+                            <option value="">Toutes les spécialités</option>
+                            @if(request('secteur_id'))
+                                @foreach($specialites as $specialite)
+                                    <option value="{{ $specialite->id }}" {{ request('specialite_id') == $specialite->id ? 'selected' : '' }}>
+                                        {{ $specialite->nom }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="type_de_poste" class="form-label">Type de poste</label>
+                        <select class="form-select" id="type_de_poste" name="type_de_poste">
+                            <option value="">Tous les types</option>
+                            <option value="Stage" {{ request('type_de_poste') == 'Stage' ? 'selected' : '' }}>Stage</option>
+                            <option value="Emploi" {{ request('type_de_poste') == 'Emploi' ? 'selected' : '' }}>Emploi</option>
+                            <option value="Alternance" {{ request('type_de_poste') == 'Alternance' ? 'selected' : '' }}>Alternance</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="niveau_detude" class="form-label">Niveau d'étude requis</label>
+                        <select class="form-select" id="niveau_detude" name="niveau_detude">
+                            <option value="">Tous les niveaux</option>
+                            <option value="BEPC" {{ request('niveau_detude') == 'BEPC' ? 'selected' : '' }}>BEPC</option>
+                            <option value="CAP" {{ request('niveau_detude') == 'CAP' ? 'selected' : '' }}>CAP</option>
+                            <option value="BAC" {{ request('niveau_detude') == 'BAC' ? 'selected' : '' }}>BAC</option>
+                            <option value="BAC+1" {{ request('niveau_detude') == 'BAC+1' ? 'selected' : '' }}>BAC+1</option>
+                            <option value="BAC+2" {{ request('niveau_detude') == 'BAC+2' ? 'selected' : '' }}>BAC+2</option>
+                            <option value="BAC+3" {{ request('niveau_detude') == 'BAC+3' ? 'selected' : '' }}>BAC+3</option>
+                            <option value="BAC+4" {{ request('niveau_detude') == 'BAC+4' ? 'selected' : '' }}>BAC+4</option>
+                            <option value="BAC+5" {{ request('niveau_detude') == 'BAC+5' ? 'selected' : '' }}>BAC+5</option>
+                            <option value="Doctorat" {{ request('niveau_detude') == 'Doctorat' ? 'selected' : '' }}>Doctorat</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="lieu" class="form-label">Localisation</label>
+                        <input type="text" class="form-control" id="lieu" name="lieu" 
+                               value="{{ request('lieu') }}" placeholder="Ex: Cotonou, Porto-Novo...">
+                    </div>
+
+                    <button type="submit" class="filter-btn">
+                        <i class="fas fa-search me-2"></i>Appliquer les filtres
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="list-card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Offres d'emploi</h5>
+                    <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-alt me-1"></i> Mes candidatures
+                    </a>
                 </div>
+            </div>
+            <div class="list-card-body">
+                @if($annonces->isEmpty())
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5>Aucune offre ne correspond à vos critères</h5>
+                        <p class="text-muted">Essayez de modifier vos filtres de recherche</p>
+                    </div>
+                @else
+                    @foreach($annonces as $annonce)
+                        <div class="offre-card-item animate__animated animate__fadeInUp" style="animation-delay: {{ $loop->index * 0.05 }}s">
+                            <div class="offre-card-header">
+                                <h5 class="offre-card-title mb-1">
+                                    <a href="{{ route('etudiants.offres.show', $annonce) }}">
+                                        {{ $annonce->nom_du_poste }}
+                                    </a>
+                                </h5>
+                                <p class="offre-card-entreprise">{{ $annonce->entreprise?->nom ?? 'Entreprise non spécifiée' }}</p>
+                            </div>
+                            <div class="offre-card-body">
+                                <div class="badge-container">
+                                    <span class="badge badge-type-poste">{{ $annonce->type_de_poste }}</span>
+                                    <span class="badge badge-secteur">{{ $annonce->secteur?->nom ?? 'Secteur non spécifié' }}</span>
+                                    <span class="badge badge-specialite">{{ $annonce->specialite?->nom ?? 'Spécialité non spécifiée' }}</span>
+                                    <span class="badge badge-niveau-etude">{{ $annonce->niveau_detude }}</span>
+                                    <span class="badge badge-lieu">{{ $annonce->lieu }}</span>
+                                </div>
+                            </div>
+                            <div class="offre-card-footer">
+                                <span class="date-cloture">
+                                    <i class="fas fa-clock"></i>
+                                    Clôture le {{ $annonce->date_cloture?->format('d/m/Y') ?? 'Non spécifiée' }}
+                                </span>
+                                <a href="{{ route('etudiants.offres.show', $annonce) }}" class="btn btn-voir-offre">
+                                    Voir l'offre <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                    
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $annonces->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -272,33 +425,49 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialisation de Select2
-        $(document).ready(function() {
-            $('.select2').select2({
-                theme: "bootstrap-5",
-                width: '100%',
-                dropdownParent: $('.filter-form'),
-                language: {
-                    noResults: function() {
-                        return "Aucun résultat trouvé";
-                    }
+        $('.select2').select2({
+            theme: "bootstrap-5",
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return "Aucun résultat trouvé";
                 }
-            });
+            }
+        });
+
+        // Gestion dynamique des spécialités
+        $('#secteur_id').on('change', function() {
+            const secteurId = $(this).val();
+            const specialiteSelect = $('#specialite_id');
             
-            // Animation au défilement
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate__fadeInUp');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
+            specialiteSelect.empty().append('<option value="">Toutes les spécialités</option>');
             
-            document.querySelectorAll('.offre-card').forEach(card => {
-                observer.observe(card);
-            });
+            if (secteurId) {
+                fetch(`/api/specialites/${secteurId}`)
+                    .then(response => response.json())
+                    .then(specialites => {
+                        specialites.forEach(specialite => {
+                            specialiteSelect.append(
+                                $('<option></option>')
+                                    .val(specialite.id)
+                                    .text(specialite.nom)
+                            );
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des spécialités:', error);
+                    });
+            }
+        });
+
+        // Si un secteur est déjà sélectionné (en cas d'erreur de validation)
+        if ($('#secteur_id').val()) {
+            $('#secteur_id').trigger('change');
+        }
+
+        // Soumission automatique du formulaire lors du changement de filtre
+        $('.form-select, .form-control').on('change', function() {
+            $(this).closest('form').submit();
         });
     });
 </script>

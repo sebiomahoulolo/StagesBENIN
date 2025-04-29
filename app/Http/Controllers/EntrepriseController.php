@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Entreprise;
+use App\Models\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,9 +23,9 @@ class EntrepriseController extends Controller
          return view('entreprises.dashboard', compact('entreprises'));
      }
      public function dashboard()
-{
-    return view('entreprises.dashboard');
-}
+     {
+         return view('entreprises.dashboard');
+     }
 
      /**
       * Affiche une entreprise spécifique
