@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Offres d\'emploi')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <!-- Select2 CSS -->

@@ -652,7 +652,7 @@
                       <input type="text" class="form-control" id="entreprise_secteur" name="secteur">
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="entreprise_contact" class="form-label">Contact principal</label>
+                      <label for="entreprise_contact" class="form-label">Nom complet du PDG</label>
                       <input type="text" class="form-control" id="entreprise_contact" name="contact_principal">
                     </div>
                   </div>

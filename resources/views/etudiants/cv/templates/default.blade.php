@@ -3,7 +3,7 @@
 <html lang="fr">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>CV - {{ $cvProfile->nom_complet ?? 'Mon CV' }}</title>
+    <title>StagesBENIN - {{ $cvProfile->nom_complet ?? 'Mon CV' }}</title>
     <style>
         /* =========================================== */
         /* === STYLES INTÉGRÉS POUR PDF (SIMPLIFIÉS) === */

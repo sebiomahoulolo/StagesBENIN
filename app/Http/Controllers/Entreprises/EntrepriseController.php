@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\Annonce;
+use App\Models\Catalogue;
+use App\Models\Event;
 use App\Models\Entretien;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,6 +26,7 @@ class EntrepriseController extends Controller
     public function index()
     {
         $entreprises = Entreprise::paginate(10);
+        
         return view('entreprises.dashboard', compact('entreprises'));
     }
     public function dashboard()
@@ -68,8 +71,19 @@ class EntrepriseController extends Controller
     public function show($id)
     {
         $entreprise = Entreprise::findOrFail($id);
-        return view('entreprises.show', compact('entreprise'));
+    
+        // Vérifier le nombre d'annonces
+        $nombre_annonces = Annonce::where('entreprise_id', $entreprise->id)->count();
+    
+        // Vérifier si l'entreprise est dans le catalogue
+        $catalogue_existe = Catalogue::where('titre', $entreprise->nom)->exists() ? 'OUI' : 'NON';
+    
+        // Vérifier le nombre d'événements
+        $nombre_evenements = Event::where('user_id', $entreprise->user_id)->count();
+    
+        return view('entreprises.show', compact('entreprise', 'nombre_annonces', 'catalogue_existe', 'nombre_evenements'));
     }
+    
 
     /**
      * Affiche le formulaire de contact pour une entreprise

@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Annonce - ' . Str::limit($post->content, 30))
+@section('title', 'StagesBENIN')
 
 @push('styles')
 <style>

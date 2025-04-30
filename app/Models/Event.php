@@ -18,13 +18,20 @@ class Event extends Model
         'location',
         'type',
         'max_participants',
-        'image'
+        'image',
+        'is_published'
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    /**
+     * Relation avec l'utilisateur qui a créé l'événement
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
-
-

@@ -35,9 +35,31 @@ class CatalogueController extends Controller
          }
      }
      
-
-
-
+     public function block($id)
+     {
+         try {
+             // Récupérer l'élément du catalogue
+             $catalogue = Catalogue::findOrFail($id);
+     
+             // Définir le statut bloqué (1) ou actif (0)
+             $catalogue->is_blocked = $catalogue->is_blocked ? 0 : 1;
+             $catalogue->updated_at = now(); // Mise à jour de la date
+     
+             $catalogue->save();
+     
+             // Définir le message de retour
+             $message = $catalogue->is_blocked
+                 ? 'Catalogue bloqué avec succès.'
+                 : 'Catalogue débloqué avec succès.';
+     
+             return redirect()->back()->with('success', $message);
+         } catch (\Exception $e) {
+             return redirect()->back()->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+         }
+     }
+     
+     
+     
 
     public function showParSecteur($secteur_activite)
     {
@@ -144,7 +166,7 @@ public function destroy($id)
     $catalogue = Catalogue::findOrFail($id);
     $catalogue->delete();
 
-    return redirect()->route('admin.dashboard')->with('success', 'Catalogue supprimé avec succès.');
+    return redirect()->route('admin.catalogues')->with('success', 'Catalogue supprimé avec succès.');
 }
 
 public function edit($id)

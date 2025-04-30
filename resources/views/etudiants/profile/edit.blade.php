@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', 'Mon Profil')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/profile-edit.css') }}">

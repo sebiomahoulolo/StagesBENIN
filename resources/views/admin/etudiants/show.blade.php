@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Profil Étudiant - ' . ($etudiant->nom_complet ?? 'Inconnu'))
+@section('title', 'StagesBENIN')
 
 @push('styles')
 {{-- Font Awesome est supposé être chargé dans layouts.admin.app --}}

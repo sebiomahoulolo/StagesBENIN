@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Mes plaintes et suggestions')
+@section('title', 'StagesBENIN')
 
 @push('styles')
 <style>

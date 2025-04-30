@@ -1,7 +1,7 @@
 {{-- resources/views/entreprises/index.blade.php --}}
 @extends('layouts.layout') {{-- Assurez-vous que c'est le bon layout --}}
 
-@section('title', 'Tableau de Bord Entreprise')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

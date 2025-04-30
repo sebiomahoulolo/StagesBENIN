@@ -4,7 +4,7 @@
 @extends('layouts.etudiant.app')
 
 {{-- Définit le titre spécifique pour cette page (sera affiché dans la balise <title>) --}}
-@section('title', 'Tableau de Bord Étudiant')
+@section('title', 'StagesBENIN')
 
 {{-- Début de la section de contenu qui sera injectée dans le @yield('content') du layout --}}
 @section('content')

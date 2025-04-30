@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', 'Visualisation CV - ' . ($cvProfile->nom_complet ?? 'Mon CV'))
+@section('title', 'StagesBENIN')
 
 {{-- Inclut le CSS spécifique et ajoute la classe au body --}}
 @push('styles')
@@ -28,9 +28,10 @@
             <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfile->id]) }}" class="btn-edit">
                 <i class="fas fa-edit"></i> Modifier
             </a>
-            <a href="{{ route('etudiants.cv.export.pdf', ['cvProfile' => $cvProfile->id]) }}" class="btn-pdf" target="_blank">
-                <i class="fas fa-file-pdf"></i> Télécharger PDF
-            </a>
+            <a href="javascript:void(0);" class="btn-pdf" onclick="generatePdf()">
+    <i class="fas fa-file-pdf"></i> Télécharger PDF
+</a>
+
             <a href="{{ route('etudiants.cv.export.png', ['cvProfile' => $cvProfile->id]) }}" class="btn-png" target="_blank">
                 <i class="fas fa-file-image"></i> Télécharger PNG
             </a>
@@ -38,12 +39,27 @@
     </div>
 
     {{-- Conteneur de l'aperçu du CV --}}
+    <div id="cv-content">
     <div class="cv-preview-wrapper">
         {{-- Inclusion du template CV --}}
         @include('etudiants.cv.templates.default', ['cvProfile' => $cvProfile])
     </div>
-
+</div>
 @endsection
+<script>
+    function generatePdf() {
+        const element = document.getElementById('cv-content');
+        const opt = {
+            margin:       0.5,
+            filename:     'CV_de_{{ $cvProfile->etudiant->nom ?? "Non_specifie" }}.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 @push('scripts')
 {{-- Suppression du script html2pdf.js --}}

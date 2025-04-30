@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', 'Statut du Boost')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <style>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Annonce - ' . Str::limit($post->content, 30))
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container py-4">

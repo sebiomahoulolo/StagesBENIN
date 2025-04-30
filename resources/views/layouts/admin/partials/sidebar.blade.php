@@ -11,11 +11,11 @@
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-tachometer-alt"></i></span>
             <span class="menu-text">Tableau de bord</span>
         </a>
+           <a href="{{ route('admin.cvtheque.cvtheque') }}" class="menu-item {{ request()->routeIs('admin.cvtheque.cvtheque') ? 'active' : '' }} ? 'active' : '' }}">
+    <span class="menu-icon" aria-hidden="true"><i class="fas fa-folder-open"></i></span>
+    <span class="menu-text">CV THEQUE</span>
+</a>
 
-            <a href="{{ route('admin.cvtheque.cvtheque') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
-            <span class="menu-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
-            <span class="menu-text">CV THEQUE</span>
-        </a>
 
         <a href="{{ route('messagerie-sociale.index') }}" class="menu-item {{ request()->routeIs('messagerie-sociale.*') ? 'active' : '' }}">
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>

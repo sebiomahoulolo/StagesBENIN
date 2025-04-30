@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', $annonce->nom_du_poste)
+@section('title', 'StagesBENIN')
 
 @push('styles')
 <style>
