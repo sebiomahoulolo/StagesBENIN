@@ -30,7 +30,7 @@ class Candidature extends Model
 
     public function etudiant()
     {
-        return $this->belongsTo(Etudiant::class);
+        return $this->belongsTo(Etudiant::class, 'etudiant_id', 'user_id');
     }
 
     public function scopeEnAttente($query)

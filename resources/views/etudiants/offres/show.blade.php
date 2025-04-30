@@ -154,29 +154,119 @@
 
     .action-buttons {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        justify-content: center;
         margin-top: 30px;
         padding-top: 20px;
         border-top: 1px solid #dee2e6;
     }
 
+    .social-share-section {
+        margin-top: 25px;
+        text-align: center;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .social-title {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+
     .share-buttons {
         display: flex;
         gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .btn-share {
-        padding: 8px 15px;
+        padding: 10px 15px;
         border-radius: 6px;
         font-weight: 500;
         display: flex;
         align-items: center;
         gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+        color: white;
     }
 
     .btn-share i {
         font-size: 1.1rem;
+    }
+    
+    .btn-facebook {
+        background-color: #1877F2;
+    }
+    
+    .btn-facebook:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    .btn-whatsapp {
+        background-color: #25D366;
+    }
+    
+    .btn-whatsapp:hover {
+        background-color: #1fb655;
+        color: white;
+    }
+    
+    .btn-linkedin {
+        background-color: #0A66C2;
+    }
+    
+    .btn-linkedin:hover {
+        background-color: #084c93;
+        color: white;
+    }
+    
+    .btn-postuler {
+        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-postuler:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(67, 97, 238, 0.3);
+        background: linear-gradient(135deg, #3a56d4 0%, #2c46c2 100%);
+    }
+    
+    .btn-postuler:active {
+        transform: translateY(0);
+    }
+    
+    .btn-postuler-disabled {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);
+        cursor: not-allowed;
+    }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .share-buttons {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 @endpush
@@ -228,29 +318,32 @@
                     <div class="action-buttons">
                         @if(Auth::check() && Auth::user()->etudiant)
                             @if($aPostule)
-                                <button class="btn btn-secondary" disabled>
+                                <button class="btn btn-postuler-disabled" disabled>
                                     <i class="fas fa-check-circle me-2"></i>Vous avez déjà postulé
                                 </button>
                             @else
-                                <a href="{{ route('etudiants.offres.postuler', $annonce) }}" class="btn btn-primary">
+                                <a href="{{ route('etudiants.offres.postuler', $annonce) }}" class="btn btn-postuler">
                                     <i class="fas fa-paper-plane me-2"></i>Postuler
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-primary">
+                            <a href="{{ route('login') }}" class="btn btn-postuler">
                                 <i class="fas fa-sign-in-alt me-2"></i>Connectez-vous pour postuler
                             </a>
                         @endif
+                    </div>
 
+                    <div class="social-share-section">
+                        <h5 class="social-title">Partager cette offre</h5>
                         <div class="share-buttons">
-                            <button class="btn btn-outline-primary btn-share" onclick="shareOnFacebook()">
-                                <i class="fab fa-facebook"></i> Facebook
+                            <button class="btn btn-share btn-facebook" onclick="shareOnFacebook()">
+                                <i class="fab fa-facebook-f"></i> Facebook
                             </button>
-                            <button class="btn btn-outline-success btn-share" onclick="shareOnWhatsApp()">
+                            <button class="btn btn-share btn-whatsapp" onclick="shareOnWhatsApp()">
                                 <i class="fab fa-whatsapp"></i> WhatsApp
                             </button>
-                            <button class="btn btn-outline-info btn-share" onclick="shareOnLinkedIn()">
-                                <i class="fab fa-linkedin"></i> LinkedIn
+                            <button class="btn btn-share btn-linkedin" onclick="shareOnLinkedIn()">
+                                <i class="fab fa-linkedin-in"></i> LinkedIn
                             </button>
                         </div>
                     </div>
@@ -332,4 +425,4 @@
     }
 </script>
 @endpush
-@endsection 
+@endsection

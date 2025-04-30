@@ -527,7 +527,7 @@
             </a>
 
             {{-- Mes candidatures --}}
-            <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="main-function-item">
+            <a href="{{ route('etudiants.candidatures.index') }}" class="main-function-item">
                 <div class="main-function-icon color-purple">
                     <i class="fas fa-file-alt"></i>
                 </div>

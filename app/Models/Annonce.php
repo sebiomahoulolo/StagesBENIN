@@ -40,7 +40,7 @@ class Annonce extends Model
     // Relation inverse vers L'Entreprise
     public function entreprise()
     {
-        return $this->belongsTo(Entreprise::class);
+        return $this->belongsTo(Entreprise::class, 'entreprise_id', 'user_id');
     }
 
     public function candidatures()

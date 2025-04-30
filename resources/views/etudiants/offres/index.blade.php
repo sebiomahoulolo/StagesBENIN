@@ -364,7 +364,7 @@
             <div class="list-card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Offres d'emploi</h5>
-                    <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('etudiants.candidatures.index') }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-alt me-1"></i> Mes candidatures
                     </a>
                 </div>

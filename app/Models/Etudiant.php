@@ -21,6 +21,7 @@ class Etudiant extends Model
         'date_naissance',
         'cv_path',
         'photo_path',
+        'specialite_id', // Ajout de specialite_id dans les fillable
     ];
 
     /**
@@ -59,6 +60,22 @@ public function entreprise()
 public function complaintsSuggestions()
 {
     return $this->hasMany(ComplaintSuggestion::class);
+}
+
+/**
+ * Obtenir les candidatures soumises par l'étudiant.
+ */
+public function candidatures()
+{
+    return $this->hasMany(Candidature::class);
+}
+
+/**
+ * Relation avec la spécialité de l'étudiant
+ */
+public function specialite()
+{
+    return $this->belongsTo(Specialite::class);
 }
 
 }

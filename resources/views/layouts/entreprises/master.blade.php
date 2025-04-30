@@ -103,6 +103,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            position: relative;
         }
 
         .profile-image {
@@ -130,6 +131,69 @@
         .profile-role {
             font-size: 0.8rem;
             opacity: 0.8;
+        }
+
+        /* Styles pour le dropdown du profil */
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-user-info {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .dropdown-separator {
+            height: 1px;
+            background-color: var(--light-gray);
+            margin: 0.3rem 0;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-gray);
+        }
+        
+        /* Animation et utilitaires */
+        .transition {
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        }
+        
+        .duration-150 {
+            transition-duration: 150ms;
+        }
+        
+        .duration-200 {
+            transition-duration: 200ms;
+        }
+        
+        .ease-in {
+            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+        }
+        
+        .ease-out {
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+        
+        [x-cloak] {
+            display: none !important;
         }
 
         .container {
@@ -521,7 +585,36 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Styles supplémentaires pour le dropdown */
+        .profile-dropdown {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem 0;
+            width: 250px;
+            z-index: 9999;
+        }
+        
+        /* Assurer que les transitions d'Alpine.js fonctionnent */
+        .opacity-0 {
+            opacity: 0;
+        }
+        
+        .opacity-100 {
+            opacity: 1;
+        }
+        
+        .scale-95 {
+            transform: scale(0.95);
+        }
+        
+        .scale-100 {
+            transform: scale(1);
+        }
     </style>
+    {{-- Alpine.js (déplacé en haut pour être chargé en premier) --}}
+    <script src="//unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     @livewireStyles()
@@ -537,7 +630,14 @@
 
         </main>
     </div>
+    
+    {{-- Formulaire de déconnexion --}}
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
     @stack('script')
     @livewireScripts()
 </body>
+</html>

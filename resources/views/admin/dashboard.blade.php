@@ -34,6 +34,11 @@
         <i class="fas fa-newspaper icon-info"></i>
           <span>Actualités</span>
     </a>
+
+    <!-- <a href="{{ route('admin.annonces.index') }}" class="styled-link-box">
+        <i class="fas fa-bullhorn icon-purple"></i>
+        <span>Offres d'emploi</span>
+    </a> -->
  
     <a href="{{ route('admin.entretiens') }}" class="styled-link-box">
         <i class="fas fa-calendar-check icon-danger"></i>
@@ -76,7 +81,7 @@
     </a>
 
     <!-- NOUVEAU : Recrutements -->
-     <a href="{{ route('admin.recrutements') }}" class="styled-link-box">
+     <a href="{{ route('admin.annonces.index') }}" class="styled-link-box">
         <i class="fas fa-user-tie icon-purple"></i>
         <span> Recrutements</span>
     </a>

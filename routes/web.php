@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\Entreprises\EntrepriseController;
 use App\Http\Controllers\Entreprises\AnnonceController;
+use App\Http\Controllers\Admin\AnnonceController as AdminAnnonceController;
 // use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\RecrutementController;
 use App\Http\Controllers\ActualiteController;
@@ -158,6 +159,18 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     // IMPORTANT: La route de filtre doit être définie AVANT la route resource pour éviter les conflits
     Route::get('complaints/filter', [AdminComplaintController::class, 'filter'])->name('complaints.filter');
     Route::resource('complaints', AdminComplaintController::class)->except(['create', 'store']);
+
+    // Routes pour la gestion des annonces
+    Route::get('/annonces', [AdminAnnonceController::class, 'index'])->name('annonces.index');
+    Route::get('/annonces/create', [AdminAnnonceController::class, 'create'])->name('annonces.create');
+    Route::post('/annonces', [AdminAnnonceController::class, 'store'])->name('annonces.store');
+    Route::get('/annonces/{annonce}', [AdminAnnonceController::class, 'show'])->name('annonces.show');
+    Route::post('/annonces/{annonce}/approuver', [AdminAnnonceController::class, 'approuver'])->name('annonces.approuver');
+    Route::post('/annonces/{annonce}/rejeter', [AdminAnnonceController::class, 'rejeter'])->name('annonces.rejeter');
+
+    // Routes pour les candidatures
+    Route::put('/candidatures/{candidature}/statut', [App\Http\Controllers\Admin\CandidatureController::class, 'updateStatut'])->name('candidatures.updateStatut');
+    Route::get('/candidatures/{candidature}', [App\Http\Controllers\Admin\CandidatureController::class, 'show'])->name('candidatures.show');
 });
 
 
@@ -206,11 +219,12 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     Route::resource('complaints', EtudiantComplaintController::class)->except(['edit', 'update']);
 
     // Routes pour les offres d'emploi
-    Route::get('/offres', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'index'])->name('offres.index');
-    Route::get('/offres/{annonce}', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'show'])->name('offres.show');
-    Route::get('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'postuler'])->name('offres.postuler');
-    Route::post('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'soumettreCandidature'])->name('offres.soumettre-candidature');
-    Route::get('/mes-candidatures', [App\Http\Controllers\Etudiant\OffreEmploiController::class, 'mesCandidatures'])->name('offres.mes-candidatures');
+    Route::get('/offres', [App\Http\Controllers\Etudiants\OffreController::class, 'index'])->name('offres.index');
+    Route::get('/offres/{annonce}', [App\Http\Controllers\Etudiants\OffreController::class, 'show'])->name('offres.show');
+    Route::get('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiants\OffreController::class, 'postuler'])->name('offres.postuler');
+    Route::post('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiants\OffreController::class, 'postulerSubmit'])->name('offres.postuler.submit');
+    Route::get('/mes-candidatures', [App\Http\Controllers\Etudiants\OffreController::class, 'mesCandidatures'])->name('candidatures.index');
+    Route::get('/candidatures/{id}', [App\Http\Controllers\Etudiants\OffreController::class, 'showCandidature'])->name('candidatures.show');
 }); // Fin du groupe étudiant
 
 
@@ -377,13 +391,4 @@ Route::middleware(['auth', 'role:etudiant'])->group(function () {
     Route::post('/etudiants/boost/renew', [BoostController::class, 'processRenewal'])->name('etudiants.boostage.process-renewal');
     Route::get('/etudiants/boost/upgrade', [BoostController::class, 'upgrade'])->name('etudiants.boostage.upgrade');
     Route::post('/etudiants/boost/upgrade', [BoostController::class, 'processUpgrade'])->name('etudiants.boostage.process-upgrade');
-});
-
-// Routes pour l'administration
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Routes pour la gestion des annonces
-    Route::get('/annonces', [Admin\AnnonceController::class, 'index'])->name('annonces.index');
-    Route::get('/annonces/{annonce}', [Admin\AnnonceController::class, 'show'])->name('annonces.show');
-    Route::post('/annonces/{annonce}/approuver', [Admin\AnnonceController::class, 'approuver'])->name('annonces.approuver');
-    Route::post('/annonces/{annonce}/rejeter', [Admin\AnnonceController::class, 'rejeter'])->name('annonces.rejeter');
 });

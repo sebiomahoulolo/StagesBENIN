@@ -168,7 +168,7 @@
                     </div>
 
                     <!-- Candidatures -->
-                    <div class="mt-4">
+                    <!-- <div class="mt-4">
                         <div class="card">
                             <div class="card-header bg-light">
                                 <h5 class="mb-0">Candidatures reçues</h5>
@@ -227,7 +227,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

@@ -57,7 +57,7 @@
                     <span>Offres disponibles</span>
                      {{-- <span class="notifications-badge">5</span> --}}
                 </a>
-                <a href="{{ route('etudiants.offres.mes-candidatures') }}" class="menu-item {{ request()->routeIs('etudiants.offres.mes-candidatures') ? 'active' : '' }}"> {{-- Route Mes candidatures --}}
+                <a href="{{ route('etudiants.candidatures.index') }}" class="menu-item {{ request()->routeIs('etudiants.offres.mes-candidatures') ? 'active' : '' }}"> {{-- Route Mes candidatures --}}
                     <i class="fas fa-file-alt fa-fw"></i>
                     <span>Mes candidatures</span>
                 </a>

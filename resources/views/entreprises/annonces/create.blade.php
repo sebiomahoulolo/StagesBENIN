@@ -126,7 +126,7 @@
                                             </label>
                                             <input type="number" class="form-control @error('pretension_salariale') is-invalid @enderror" 
                                                 id="pretension_salariale" name="pretension_salariale" 
-                                                value="{{ old('pretension_salariale') }}" min="0" step="1000">
+                                                value="{{ old('pretension_salariale') }}" min="0">
                                             @error('pretension_salariale')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

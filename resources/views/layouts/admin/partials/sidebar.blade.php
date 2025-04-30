@@ -27,7 +27,7 @@
             {{-- Add dynamic badge count if needed --}}
             {{-- <span class="menu-badge">5</span> --}}
         </a>
-         <a href="{{ route('admin.recrutements') }}" class="menu-item {{ request()->routeIs('admin.recrutements.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
+         <a href="{{ route('admin.annonces.index') }}" class="menu-item {{ request()->routeIs('admin.recrutements.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
             <span class="menu-text">Recrutements</span>
          </a>
@@ -40,11 +40,11 @@
         <a href="{{ route('admin.etudiants.etudiants') }}" class="menu-item {{ request()->routeIs('admin.etudiants.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-users"></i></span>
             <span class="menu-text">Étudiants</span>
-            {{-- Example dynamic badge --}}
-            {{-- @if(isset($unreadStudentMessages) && $unreadStudentMessages > 0)
-                <span class="menu-badge absolute-badge">{{ $unreadStudentMessages }}</span>
-            @endif --}}
         </a>
+        <!-- <a href="{{ route('admin.annonces.index') }}" class="menu-item {{ request()->routeIs('admin.annonces.*') ? 'active' : '' }}">
+            <span class="menu-icon" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
+            <span class="menu-text">Offres d'emploi</span>
+        </a> -->
         <a href="{{ route('admin.entreprises') }}" class="menu-item {{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-building"></i></span>
             <span class="menu-text">Entreprises</span>
