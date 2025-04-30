@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', ($complaintSuggestion->type == 'plainte' ? 'Plainte' : 'Suggestion') . ' #' . $complaintSuggestion->id)
+@section('title', 'StagesBENIN')
 
 @push('styles')
 <style>

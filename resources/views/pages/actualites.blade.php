@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'StagesBENIN - Actualités')
+@section('title', 'StagesBENIN')
 @section('content')
 <div class="container py-5">
     <div class="row mb-5">

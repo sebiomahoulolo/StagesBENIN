@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Entretiens Étudiants')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="content-area table-responsive">

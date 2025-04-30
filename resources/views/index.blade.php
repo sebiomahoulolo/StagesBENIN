@@ -187,20 +187,8 @@ typeWriterEffect();
 <div class="job-offers-section">
     <h2>Offres d'emplois disponibles</h2>
     <div class="job-offers-list">
-        <!-- Exemple d'offre d'emploi 2 -->
-        <div class="job-offer-item">
-            <h3>Responsable Marketing</h3>
-            <p>Entreprise : MarketPro</p>
-            <p>Lieu : Abomey-Calavi</p>
-            <button class="apply-btn">Voir Détails</button>
-        </div>
-
-        <!-- Exemple d'offre d'emploi 3 -->
-        <div class="job-offer-item">
-            <h3>Technicien Réseau</h3>
-            <p>Entreprise : NetSecure</p>
-            <p>Lieu : Porto-Novo</p>
-            <button class="apply-btn">Voir Détails</button>
+        <div class="no-job-offers text-center">
+            <p>Aucune offre d'emploi n'est disponible pour le moment.</p>
         </div>
     </div>
 </div>
@@ -415,28 +403,10 @@ typeWriterEffect();
 </div>
 
 <div class="software-card">
-    <h2>Logiciels à vendre       <button class="sell-btn">Vendre mes logiciels </button></h2>   
+    <h2>Logiciels à vendre <button class="sell-btn">Vendre mes logiciels</button></h2>   
     <div class="software-list">
-        <!-- Exemple de logiciel 1 -->
-        <div class="software-item">
-            <img src="software1.jpg" alt="Logiciel 1" class="software-image">
-            <div class="software-info">
-                <h3>Logiciel 1</h3>
-                <p>Description rapide du logiciel.</p>
-                <p class="price">Prix : $50</p>
-                <button class="sell-btn">Acheter</button>
-            </div>
-        </div>
-
-        <!-- Exemple de logiciel 2 -->
-        <div class="software-item">
-            <img src="software2.jpg" alt="Logiciel 2" class="software-image">
-            <div class="software-info">
-                <h3>Logiciel 2</h3>
-                <p>Description rapide du logiciel.</p>
-                <p class="price">Prix : $75</p>
-                <button class="sell-btn">Acheter</button>
-            </div>
+        <div class="no-software">
+            <p>Aucun logiciel n'est disponible pour le moment.</p>
         </div>
     </div>
 </div>

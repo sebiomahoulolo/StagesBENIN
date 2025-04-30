@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'StagesBENIN - Détails Partenaire')
+@section('title', 'StagesBENIN')
 
 @section('content')
 

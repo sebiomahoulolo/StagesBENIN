@@ -23,4 +23,8 @@ class Catalogue extends Model
         'autres',
         'image',
     ];
+    protected $casts = [
+        'is_blocked' => 'boolean',
+    ];
+    
 }

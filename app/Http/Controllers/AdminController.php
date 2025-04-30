@@ -52,7 +52,6 @@ class AdminController extends Controller
     
             if ($cvProfiles->isEmpty()) {
                 Log::warning("Aucun CV trouvé dans la base de données.");
-                return redirect()->back()->with('warning', 'Aucun CV disponible actuellement.');
             }
     
             Log::info("Affichage de tous les CV pour l'admin : " . $cvProfiles->count() . " CV(s) récupéré(s).");
@@ -63,7 +62,7 @@ class AdminController extends Controller
                 abort(500, "Erreur de configuration de l'affichage de la CVthèque.");
             }
     
-            // Retourne la vue avec les profils CV
+            // Retourne la vue avec les profils CV, même s'il est vide
             return view('admin.cvtheque.cvtheque', compact('cvProfiles'));
     
         } catch (\Exception $e) {
@@ -71,10 +70,10 @@ class AdminController extends Controller
                 'exception' => $e,
             ]);
     
-            // Redirige l'administrateur avec un message d'erreur
-            return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'affichage des CV : ' . $e->getMessage());
+            return view('admin.cvtheque.cvtheque')->with('error', 'Une erreur est survenue lors de l\'affichage des CV.');
         }
     }
+    
     
     public function etudiants()
     {

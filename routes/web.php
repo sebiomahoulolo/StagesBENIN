@@ -264,7 +264,7 @@ Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
 Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
-
+Route::post('/admin/catalogues/{id}/block', [CatalogueController::class, 'block'])->name('catalogues.block');
 
 //evenements
 Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');

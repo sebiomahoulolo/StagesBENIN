@@ -100,21 +100,27 @@ public function generatePDF($id)
             'max_participants' => 'nullable|integer|min:1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+    
+        // Vérification de l'utilisateur connecté
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié.'], 401);
+        }
+    
         // Traitement de l'image si elle existe
         $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/events'), $imageName);
-            $imagePath =  $imageName;
+            $imagePath = $imageName;
         }
-
-        // Création de l'événement
+    
+        // Création de l'événement avec l'utilisateur lié
         $event = Event::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -124,15 +130,17 @@ public function generatePDF($id)
             'type' => $request->type,
             'max_participants' => $request->max_participants,
             'image' => $imagePath,
-            'is_published' => 0
+            'is_published' => 0,
+            'user_id' => $user->id // Ajout de l'utilisateur ayant créé l'événement
         ]);
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Événement créé avec succès',
             'event' => $event
         ], 201);
     }
+    
 
     public function show($id)
     {

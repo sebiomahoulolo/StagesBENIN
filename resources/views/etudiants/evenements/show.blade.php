@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', $event->title)
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <style>

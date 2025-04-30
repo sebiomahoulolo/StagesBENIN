@@ -1,6 +1,6 @@
 @extends('layouts.recruteur.app')
 
-@section('title', 'Canal d\'annonces')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container py-4">

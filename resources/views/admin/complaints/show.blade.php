@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', ($complaintSuggestion->type == 'plainte' ? 'Plainte' : 'Suggestion') . ' #' . $complaintSuggestion->id)
+@section('title','StagesBENIN')
 
 @section('content')
 <div class="container-fluid py-4">

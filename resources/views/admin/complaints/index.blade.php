@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Gestion des plaintes et suggestions')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container-fluid py-4">

@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Postuler à ' . $offre->titre)
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container-fluid py-4">

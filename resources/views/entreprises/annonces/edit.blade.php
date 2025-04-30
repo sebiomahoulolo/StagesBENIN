@@ -1,6 +1,6 @@
 @extends('layouts.entreprises.master')
 
-@section('title', 'Modifier l\'annonce')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container-fluid py-4">

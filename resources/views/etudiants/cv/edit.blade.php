@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', 'Éditeur de CV')
+@section('title', 'StagesBENIN')
 
 {{-- Inclut le fichier CSS spécifique à l'éditeur --}}
 @push('styles')

@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'StagesBENIN - Admin') {{-- Optional: Set a specific title --}}
+@section('title', 'StagesBENIN') {{-- Optional: Set a specific title --}}
 
 @section('content')
     <h1 class="dashboard-title">StagesBENIN</h1>

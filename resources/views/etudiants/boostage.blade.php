@@ -4,7 +4,7 @@
 @extends('layouts.etudiant.app')
 
 {{-- Définit le titre spécifique pour cette page --}}
-@section('title', 'Options de Boostage')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <style>
