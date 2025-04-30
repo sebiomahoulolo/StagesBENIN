@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Détails Entreprise')
+@section('title', 'StagesBENIN')
 
 @section('content')
  {{-- Boutons d'action --}}
