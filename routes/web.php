@@ -242,6 +242,16 @@ Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entr
         Route::put('/{annonce}', [AnnonceController::class, 'update'])->name('update');
         Route::delete('/{annonce}', [AnnonceController::class, 'destroy'])->name('destroy');
     });
+    
+    // Routes pour la CV-thèque
+    Route::get('/cvtheque', [App\Http\Controllers\Entreprise\CvthequeController::class, 'index'])->name('cvtheque.index');
+    Route::get('/cvtheque/{id}', [App\Http\Controllers\Entreprise\CvthequeController::class, 'view'])->name('cvtheque.view');
+});
+
+// Routes pour la CV-thèque des entreprises
+Route::middleware(['auth', 'role:recruteur'])->group(function () {
+    Route::get('/entreprises/cvtheque', [App\Http\Controllers\Entreprise\CvthequeController::class, 'index'])->name('entreprises.cvtheque.index');
+    Route::get('/entreprises/cvtheque/{id}', [App\Http\Controllers\Entreprise\CvthequeController::class, 'view'])->name('entreprises.cvtheque.view');
 });
 
 //actulites

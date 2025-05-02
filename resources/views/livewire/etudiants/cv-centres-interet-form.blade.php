@@ -10,6 +10,10 @@
     @if(session()->has('interet_message'))
         <div class="alert alert-success">{{ session('interet_message') }}</div>
     @endif
+    
+    @if(session()->has('interet_error'))
+        <div class="alert alert-danger">{{ session('interet_error') }}</div>
+    @endif
 
     {{-- === FORMULAIRE D'AJOUT (Conditionnel) === --}}
     @if($showAddForm)
@@ -17,9 +21,9 @@
             <h5 style="margin-bottom: 1rem; color: var(--primary-color);">Ajouter un nouveau centre d'intérêt</h5>
             <form wire:submit.prevent="addInteret">
                  <div class="form-group mb-0">
-                       <label for="new_interet_nom" class="form-label sr-only">Intérêt <span style="color:red">*</span></label>
-                       <input type="text" id="new_interet_nom" wire:model.lazy="newInteret.nom" class="form-control @error('newInteret.nom') is-invalid @enderror" placeholder="Nom de l'intérêt..." required>
-                       @error('newInteret.nom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                       <label for="new_interet_nom" class="form-label">Intérêt <span style="color:red">*</span></label>
+                       <input type="text" id="new_interet_nom" wire:model.defer="newInteret.nom" class="form-control @error('newInteret.nom') is-invalid @enderror" placeholder="Nom de l'intérêt..." required>
+                       @error('newInteret.nom') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                  </div>
                 <div class="mt-3 text-end">
                     <button type="submit" class="btn btn-primary btn-sm">
@@ -41,9 +45,9 @@
                         <h6 style="color: var(--primary-color); margin-bottom: 1rem;">Modifier l'intérêt</h6>
                         <form wire:submit.prevent="updateInteret">
                             <div class="form-group mb-0">
-                                <label for="edit_interet_nom_{{ $index }}" class="form-label sr-only">Intérêt</label>
-                                <input type="text" id="edit_interet_nom_{{ $index }}" wire:model.lazy="editingInteret.nom" class="form-control @error('editingInteret.nom') is-invalid @enderror" required>
-                                @error('editingInteret.nom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                <label for="edit_interet_nom_{{ $index }}" class="form-label">Intérêt <span style="color:red">*</span></label>
+                                <input type="text" id="edit_interet_nom_{{ $index }}" wire:model.defer="editingInteret.nom" class="form-control @error('editingInteret.nom') is-invalid @enderror" required>
+                                @error('editingInteret.nom') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                             </div>
                            {{-- Modification du conteneur et des boutons Annuler/Enregistrer --}}
                            <div class="d-flex justify-content-end gap-2 mt-3"> {{-- Utilisation de flex et gap --}}

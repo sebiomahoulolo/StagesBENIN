@@ -13,6 +13,22 @@
             border-radius: 12px;
             margin-bottom: 2rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            margin-top: 2rem;
+        }
+        
+        /* Téléphones et petites tablettes */
+        @media (max-width: 768px) {
+            .event-header {
+                height: 250px;
+                margin-top: 4rem;
+            }
+        }
+        
+        /* Tablettes en mode portrait */
+        @media (min-width: 769px) and (max-width: 992px) {
+            .event-header {
+                margin-top: 3rem;
+            }
         }
         
         .event-header-image {
@@ -42,6 +58,8 @@
             font-weight: 500;
             margin-bottom: 0.75rem;
             text-transform: uppercase;
+            position: relative;
+            z-index: 10;
         }
         
         .event-title {

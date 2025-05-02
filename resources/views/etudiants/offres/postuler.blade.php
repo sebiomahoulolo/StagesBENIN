@@ -115,6 +115,112 @@
     .form-group {
         margin-bottom: 2.5rem;
     }
+    
+    /* Ajout de styles responsifs pour les appareils mobiles */
+    @media (max-width: 767.98px) {
+        .container {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        .candidature-card .card-header {
+            padding: 1rem;
+        }
+        
+        .candidature-card .card-header h4 {
+            font-size: 1.25rem;
+        }
+        
+        .card-body {
+            padding: 1.25rem !important;
+        }
+        
+        .form-section {
+            padding: 1.25rem;
+        }
+        
+        .cv-upload-zone {
+            padding: 1.5rem 1rem;
+        }
+        
+        .cv-upload-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .cv-upload-zone h5 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cv-upload-text {
+            font-size: 0.9rem;
+        }
+        
+        .form-label {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .input-group {
+            flex-direction: column;
+        }
+        
+        .input-group > :not(:first-child) {
+            margin-left: 0;
+            margin-top: 0.5rem;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .input-group > :not(:last-child) {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .input-group .form-control {
+            width: 100%;
+        }
+        
+        .input-group .input-group-text {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+        }
+        
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .d-flex.justify-content-between a {
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 575.98px) {
+        .py-5 {
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
+        }
+        
+        .form-section {
+            padding: 1rem;
+        }
+        
+        .form-label {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .char-counter {
+            font-size: 0.85rem;
+        }
+    }
 </style>
 @endpush
 

@@ -108,7 +108,8 @@ main.main-content {
 .cv-editor-container {
     max-width: 1100px;
     margin: 2rem auto; /* Augmenter marge verticale */
-    padding: 0 1.5rem; /* Augmenter padding horizontal */
+    padding: 0 1rem; /* Réduire le padding horizontal pour les appareils mobiles */
+    width: 100%; /* S'assurer que le conteneur prend 100% de la largeur disponible */
 }
 
 .cv-form-section {
@@ -278,18 +279,21 @@ textarea.form-control {
     background-color: var(--bs-primary-dark, #0a58ca); /* Assombrir au survol */
 }
 
-/* Conteneur principal des formulaires Livewire */
-.cv-editor-container {
-    /* Pas besoin de style spécifique ici pour la responsivité,
-       car chaque composant gère sa propre mise en page.
-       On peut ajouter un max-width si on veut limiter la largeur sur très grands écrans */
-    /* max-width: 1200px; */
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-}
-
 /* Adaptation pour les écrans plus petits */
 @media (max-width: 767.98px) {
+    main.main-content {
+        padding: 1.5rem 1rem; /* Réduire le padding sur mobile */
+    }
+    
+    .cv-editor-container {
+        padding: 0 0.5rem; /* Réduire encore plus le padding sur mobile */
+        margin: 1rem auto; /* Réduire les marges */
+    }
+    
+    .cv-form-section {
+        padding: 1.5rem; /* Réduire le padding interne sur mobile */
+    }
+    
     .content-header {
         flex-direction: column; /* Empiler les éléments */
         align-items: flex-start; /* Aligner à gauche */
@@ -307,15 +311,50 @@ textarea.form-control {
          width: 100%; /* Bouton pleine largeur */
          justify-content: center; /* Centrer contenu bouton */
      }
+     
+     /* S'assurer que les groupes de champs s'empilent correctement */
+     .form-group {
+         width: 100%; /* Forcer la pleine largeur */
+     }
+     
+     /* Ajuster les marges pour les lignes de formulaire */
+     .row [class*="col-"] {
+         margin-bottom: 1rem; /* Ajouter espace entre champs empilés */
+     }
+     
+     /* Ajuster les colonnes des formulaires sur mobile */
+     .row > [class*="col-"] {
+         flex: 0 0 100%; /* Forcer les colonnes à prendre 100% de largeur */
+         max-width: 100%;
+     }
 }
 
 @media (max-width: 575.98px) {
+    main.main-content {
+        padding: 1rem 0.5rem; /* Réduire davantage le padding */
+    }
+    
+    .cv-form-section {
+        padding: 1rem; /* Réduire davantage le padding interne */
+    }
+    
     .welcome-message p {
         font-size: 0.9rem; /* Réduire taille texte */
     }
     .quick-actions .action-button {
         padding: 0.4rem 0.8rem; /* Réduire padding bouton */
         font-size: 0.9rem;
+    }
+    
+    /* Ajuster les contrôles de formulaire pour une meilleure lisibilité */
+    .form-control, .form-select {
+        padding: 0.5rem; /* Réduire légèrement le padding */
+    }
+    
+    /* Boutons plus compacts */
+    .btn-sm {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8rem;
     }
 }
 

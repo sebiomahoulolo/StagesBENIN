@@ -86,8 +86,8 @@ class CvCentresInteretForm extends Component
         return [
             'newInteret.nom' => ['required', 'string', 'max:50'],
             'newInteret.order' => ['sometimes', 'integer'],
-            'editInteret.nom' => ['required', 'string', 'max:50'],
-            'editInteret.order' => ['sometimes', 'integer'],
+            'editingInteret.nom' => ['required', 'string', 'max:50'],
+            'editingInteret.order' => ['sometimes', 'integer'],
         ];
     }
 
@@ -96,28 +96,42 @@ class CvCentresInteretForm extends Component
         return [
             'newInteret.nom.required' => 'Le nom est requis.',
             'newInteret.nom.max' => 'Le nom ne doit pas dépasser 50 caractères.',
-            'editInteret.nom.required' => 'Le nom est requis.',
-            'editInteret.nom.max' => 'Le nom ne doit pas dépasser 50 caractères.',
+            'editingInteret.nom.required' => 'Le nom est requis.',
+            'editingInteret.nom.max' => 'Le nom ne doit pas dépasser 50 caractères.',
         ];
     }
 
     public function updateInteret()
     {
         if ($this->editingIndex === null) return;
-        $validatedData = $this->validate([
-            'editingInteret.nom' => ['required', 'string', 'max:50'],
-        ])['editingInteret'];
-        $interetId = $this->centresInteret[$this->editingIndex]['id'] ?? null;
-
-        if ($interetId) {
-            $interet = CvCentreInteret::where('cv_profile_id', $this->cvProfileId)->find($interetId);
-            if ($interet) {
-                 $interet->update($validatedData);
-                 $this->loadCentresInteret();
-                 $this->resetForms();
-                 session()->flash('interet_message', 'Centre d\'intérêt mis à jour.');
-            } else { session()->flash('interet_error', 'Erreur: Centre d\'intérêt non trouvé.'); }
-        } else { session()->flash('interet_error', 'Erreur: ID de centre d\'intérêt manquant.'); }
+        
+        try {
+            // Valider uniquement le champ requis
+            $validated = $this->validate([
+                'editingInteret.nom' => ['required', 'string', 'max:50'],
+            ]);
+            
+            $interetId = $this->centresInteret[$this->editingIndex]['id'] ?? null;
+    
+            if ($interetId) {
+                $interet = CvCentreInteret::where('cv_profile_id', $this->cvProfileId)->find($interetId);
+                if ($interet) {
+                    $interet->update([
+                        'nom' => $validated['editingInteret']['nom']
+                    ]);
+                    $this->loadCentresInteret();
+                    $this->resetForms();
+                    session()->flash('interet_message', 'Centre d\'intérêt mis à jour avec succès.');
+                } else { 
+                    session()->flash('interet_error', 'Erreur: Centre d\'intérêt non trouvé.'); 
+                }
+            } else { 
+                session()->flash('interet_error', 'Erreur: ID de centre d\'intérêt manquant.'); 
+            }
+        } catch (\Exception $e) {
+            // Capturer et afficher l'erreur pour déboguer
+            session()->flash('interet_error', 'Erreur lors de la mise à jour: ' . $e->getMessage());
+        }
     }
 
     public function addInteret()
@@ -128,11 +142,30 @@ class CvCentresInteretForm extends Component
             return;
         }
         
-        $validatedData = $this->validate($this->rules())['newInteret'];
-        CvCentreInteret::create(['cv_profile_id' => $this->cvProfileId, ...$validatedData]);
-        $this->loadCentresInteret();
-        $this->resetForms();
-        session()->flash('interet_message', 'Centre d\'intérêt ajouté.');
+        try {
+            // Valider uniquement le champ nécessaire sans passer par rules() qui contient trop de règles
+            $validated = $this->validate([
+                'newInteret.nom' => ['required', 'string', 'max:50'],
+            ]);
+            
+            // Créer le centre d'intérêt avec des données explicites
+            CvCentreInteret::create([
+                'cv_profile_id' => $this->cvProfileId,
+                'nom' => $validated['newInteret']['nom'],
+                'order' => $this->centresInteret->count() + 1 // Attribuer un ordre basé sur le nombre actuel
+            ]);
+            
+            // Recharger les données
+            $this->loadCentresInteret();
+            $this->resetForms();
+            
+            // Message de succès
+            session()->flash('interet_message', 'Centre d\'intérêt ajouté avec succès.');
+            
+        } catch (\Exception $e) {
+            // Capturer et afficher l'erreur pour déboguer
+            session()->flash('interet_error', 'Erreur: ' . $e->getMessage());
+        }
     }
 
     public function removeInteret($index)
