@@ -3,10 +3,10 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <div class="logo">
+    <!-- <div class="logo">
         <i class="fas fa-building"></i>
-        <span>RecrutPro</span>
-    </div>
+        <span>{{ Auth::user()->name ?? 'Entreprise' }}</span>
+    </div> -->
 
     <div class="search-bar">
         <i class="fas fa-search search-icon"></i>
