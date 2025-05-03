@@ -14,13 +14,22 @@ return new class extends Migration
     public function up()
     {
         Schema::create('registrations', function (Blueprint $table) {
-            $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
-            $table->foreignId('event_id') // FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE
+            $table->id();
+            $table->foreignId('event_id')
                   ->constrained('events')
                   ->onDelete('cascade');
             $table->string('name');
-            $table->string('email')->unique(); // UNIQUE KEY `registrations_email_unique` (`email`)
-            $table->timestamps(); // created_at et updated_at (nullable)
+
+            // Définir la colonne email SANS la contrainte unique directe
+            $table->string('email');
+
+            $table->timestamps();
+
+            // Définir la contrainte unique sur la PAIRE (event_id, email)
+            $table->unique(['event_id', 'email'], 'event_email_unique'); // 'event_email_unique' est un nom optionnel pour la contrainte
+
+            // Vous pouvez garder l'index simple sur email si vous faites souvent des recherches par email seul
+            // $table->index('email');
         });
     }
 
