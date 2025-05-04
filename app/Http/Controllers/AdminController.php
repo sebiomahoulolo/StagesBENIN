@@ -8,6 +8,7 @@ use App\Models\CvProfile;
 use App\Models\Catalogue;
 use App\Models\Recrutement;
 use App\Models\Entreprise;
+use App\Models\Tier;
 use App\Models\Entretien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +18,49 @@ use App\Models\Cvtheque;
 class AdminController extends Controller
 {
    
+    public function validateSubmittedTier(Request $request) // <-- Prend Request, pas Tier $tier
+    {
+        // 1. Récupérer l'ID du Tier depuis le formulaire (champ caché)
+        $tierId = $request->input('tier_id');
 
+        // 2. Valider que l'ID est présent
+        if (!$tierId) {
+            return redirect()->route('admin.boost') // Redirige vers la liste
+                             ->with('error', "Erreur : ID du Boost manquant dans la requête.");
+        }
 
+        // 3. Essayer de trouver le Tier dans la base de données
+        $tier = Tier::find($tierId);
+
+        // 4. Vérifier si le Tier a été trouvé
+        if (!$tier) {
+            return redirect()->route('admin.boost')
+                             ->with('error', "Erreur : Boost avec l'ID {$tierId} non trouvé.");
+        }
+
+        // 5. Vérifier si le tier n'est pas déjà payé (logique existante)
+        if ($tier->payment_status === 'paid') {
+            return redirect()->route('admin.boost')
+                             ->with('warning', "Le Boost (ID: {$tier->id}) est déjà marqué comme payé.");
+        }
+
+        // 6. Essayer de mettre à jour et sauvegarder (logique existante)
+        try {
+            $tier->payment_status = 'paid';
+            $tier->payment_date = now();
+            $tier->save();
+
+            Log::info("Boost (Tier ID: {$tier->id}) validé par l'administrateur (via validateSubmittedTier).");
+
+            return redirect()->route('admin.boost')
+                             ->with('success', "Le Boost (ID: {$tier->id}) a été marqué comme Payé avec succès.");
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la validation du Boost (Tier ID: {$tier->id}) (via validateSubmittedTier): " . $e->getMessage());
+            return redirect()->route('admin.boost')
+                             ->with('error', "Une erreur est survenue lors de la validation du Boost (ID: {$tier->id}).");
+        }
+    }
     public function index()
     {
    
@@ -99,6 +141,14 @@ class AdminController extends Controller
 
         // Retourner la vue avec les étudiants
         return view('admin.entretiens', compact('entretiens'));
+    }
+    public function boost()
+    {
+        // Récupérer les étudiants depuis la base de données
+        $tiers = Tier::paginate(10);
+
+        // Retourner la vue avec les étudiants
+        return view('admin.boost', compact('tiers'));
     }
     public function entreprises_partenaires()
     {

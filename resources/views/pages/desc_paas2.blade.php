@@ -130,8 +130,9 @@
         <section class="section">
             <h2>Préinscription</h2>
             <div class="form-section mt-4">
+            <a href="https://stagesbenin.com/register/etudiant" target="_blank">
                     <button type="submit" class="btn btn-primary mt-3">Soumettre la préinscription</button>
-                </form>
+                </a></form>
             </div>
         </section>
     </div>

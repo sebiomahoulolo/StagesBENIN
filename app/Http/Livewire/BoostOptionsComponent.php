@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-
+use App\Models\Tier;
 class BoostOptionsComponent extends Component
 {
     /**
@@ -167,12 +167,77 @@ class BoostOptionsComponent extends Component
      * @param int $tierId
      * @return void
      */
-    public function initiatePayment($tierId)
-    {
-        // À implémenter - Logique pour initier le paiement
-        $selectedTier = $this->findTier($tierId);
-        session()->flash('message', "Paiement initié pour le palier {$selectedTier['title']} à {$selectedTier['price']} FCFA");
-    }
+
+
+
+
+     public function initiatePayment($tierId)
+     {
+         // Vérifier si un utilisateur est connecté
+         $userId = auth()->id();
+         if (!$userId) {
+             session()->flash('error', 'Vous devez être connecté pour effectuer un paiement.');
+             return redirect()->route('login');
+         }
+         
+         // Récupérer le tier statique depuis le tableau
+         $tierData = collect($this->tiers)->firstWhere('id', $tierId);
+         if (!$tierData) {
+             session()->flash('error', 'Le palier sélectionné n\'existe pas.');
+             return redirect()->to('https://me.fedapay.com/error-page');
+         }
+     
+         // Générer un ID de transaction unique
+      $transactionId = 'txn_' . uniqid();
+ // Pas d'appel à une propriété sur une string
+
+         // Enregistrer le paiement dans la table "tiers"
+         $tier = new Tier();
+         $tier->title = $tierData['title'];
+         $tier->price = $tierData['price'];
+         $tier->user_id = $userId;
+         $tier->transaction_id = $transactionId;
+         
+         $tier->payment_status = 'pending';
+         $tier->payment_date = now();
+         $tier->description = $tierData['description'];
+         $tier->duration = (int) filter_var($tierData['details']['duree'], FILTER_SANITIZE_NUMBER_INT);
+         $tier->visibility_level = $tierData['details']['secteurs'];
+         $tier->extra_features = json_encode($tierData['avantages']);
+     
+         if (!$tier->save()) {
+             session()->flash('error', 'Échec de l’enregistrement du paiement. Veuillez réessayer.');
+             return redirect()->back();
+         }
+     
+         // Redirection vers FedaPay selon le prix
+         switch ($tier->price) {
+             case 2000:
+                 $redirectUrl = 'https://me.fedapay.com/boost-profil-1';
+                 break;
+             case 4000:
+                 $redirectUrl = 'https://me.fedapay.com/boost-profil-2';
+                 break;
+             case 5000:
+                 $redirectUrl = 'https://me.fedapay.com/boost-profil-3';
+                 break;
+             case 8000:
+                 $redirectUrl = 'https://me.fedapay.com/boost-populaire';
+                 break;
+             case 10000:
+                 $redirectUrl = 'https://me.fedapay.com/boost-premium';
+                 break;
+             default:
+                 $redirectUrl = 'https://me.fedapay.com/error-page';
+         }
+     
+         session()->flash('message', "Paiement initié pour le palier {$tier->title} à {$tier->price} FCFA");
+     
+         return redirect()->away($redirectUrl);
+     }
+     
+    
+    
 
     /**
      * Annule la sélection d'un palier

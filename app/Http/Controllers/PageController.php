@@ -2,14 +2,36 @@
 
 namespace App\Http\Controllers;
 use App\Models\Catalogue;
-
+use App\Models\Actualite;
 use App\Models\Avis;
 use App\Models\Event;
+use App\Models\Annonce;
 use Illuminate\Http\Request;
 class PageController extends Controller
 {
     
+  
 
+    
+
+    public function index()
+    {
+        $actualites = Actualite::all();
+        $nombre_actualites = $actualites->count();
+    
+        $evenements = Event::where('is_published', 1)->get();
+        $nombre_events = $evenements->count();
+    
+        
+        $annonces = Annonce::where('statut', 'approuve')->get();// Récupère toutes les offres
+        $nombre_offres = $annonces->count(); // Nombre total d'offres
+    
+        return view('index', compact('actualites', 'nombre_actualites', 'evenements', 'nombre_events', 'annonces', 'nombre_offres'));
+    }
+    
+    
+    
+    
     public function showParSecteur($secteur_activite)
     {
         $secteur_activite = urldecode($secteur_activite);
@@ -37,7 +59,10 @@ class PageController extends Controller
     {
         return view('pages.contact'); 
     }
-  
+    public function offres()
+    {
+        return view('etudiants.offres.index'); 
+    }
 
     public function evenements()
     {

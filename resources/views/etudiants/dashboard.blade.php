@@ -509,7 +509,13 @@
                 </div>
                 <span class="main-function-title">Boostage</span>
             </a>
-            
+            <a href="{{ route('etudiants.boost-status') }}" class="main-function-item">
+    <div class="main-function-icon color-orange">
+        <i class="fas fa-star"></i> <!-- Changement de l'icône ici -->
+    </div>
+    <span class="main-function-title">Status de boostage</span>
+</a>
+
             {{-- Éditeur CV --}}
             <a href="{{ Auth::user()->etudiant?->cvProfile?->id ? route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant->cvProfile->id]) : route('etudiants.cv.edit', ['cvProfile' => 'new']) }}" class="main-function-item">
                 <div class="main-function-icon color-teal">

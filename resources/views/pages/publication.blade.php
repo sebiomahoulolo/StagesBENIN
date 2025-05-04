@@ -1,1 +1,1 @@
-<h1>Page de publications</h1>
+<h1>Les offfres disponibles</h1>

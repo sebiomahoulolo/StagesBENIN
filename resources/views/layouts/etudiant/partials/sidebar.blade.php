@@ -14,6 +14,11 @@
              <i class="fas fa-rocket fa-fw"></i>
              <span>Boostage</span>
         </a>
+        
+        <a href="{{ route('etudiants.boost-status') }}" class="menu-item1 {{ request()->routeIs('etudiants.boostage') ? 'active' : '' }}">
+             <i class="fas fa-star"></i>
+             <span>Status de boostage</span>
+        </a>
 
         <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
             <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>

@@ -65,9 +65,9 @@
     <span>Programmes</span>
 </a>
 
-<a href="" class="styled-link-box">
+<a href="{{ route('admin.boost') }}" class="styled-link-box">
     <i class="fas fa-file-alt icon-info"></i>
-    <span>Publications</span>
+    <span>Listes des boost</span>
 </a>
 
     <a href="{{ route('messagerie-sociale.index') }}" class="styled-link-box">

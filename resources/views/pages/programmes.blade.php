@@ -131,7 +131,7 @@
             <!-- Event Card 1 -->
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
-                    <img src="https://stagesbenin.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-02-a-12.38.23_6e2317e6-300x171.jpg" class="card-img-top" alt="Les Ecoles de SaNOSPro">
+                    <img src="{{ asset('assets/images/IMG-20240904-WA0028.jpg') }}" class="card-img-top" alt="Les Ecoles de SaNOSPro">
                     <div class="card-body text-center">
                         <h5 class="card-title">Les Ecoles de SaNOSPro</h5>
                         <a href="{{ route('pages.sanospro') }}" class="btn btn-primary">Voir »</a>
@@ -142,7 +142,7 @@
             
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
-                    <img src="https://stagesbenin.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-01-a-14.00.27_b95bc24c-300x175.jpg" class="card-img-top" alt="PEE">
+                    <img src="{{ asset('assets/images/WhatsApp-Image-2025-04-01-a-11.53.25_2c78898f.jpg') }}" class="card-img-top" alt="PEE">
                     <div class="card-body text-center">
                         <h5 class="card-title">PEE</h5>
                         <p class="card-text">Prix de l'Étudiant Entrepreneur</p>
@@ -154,7 +154,7 @@
           
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
-                    <img src="https://stagesbenin.com/wp-content/uploads/2024/09/IMG-20240904-WA0030-300x200.jpg" class="card-img-top" alt="JRSP">
+                    <img src="{{ asset('assets/images/image.png') }}" class="card-img-top" alt="JRSP">
                     <div class="card-body text-center">
                         <h5 class="card-title">JRSP</h5>
                         <p class="card-text">Journée de Réflexion sur les Stages Professionnels</p>
@@ -166,7 +166,8 @@
             <!-- Event Card 4 -->
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
-                    <img src="https://stagesbenin.com/wp-content/uploads/2025/04/WhatsApp-Image-2025-04-01-a-11.53.25_2c78898f-300x200.jpg" class="card-img-top" alt="PAPS">
+                    <img src="
+                    {{ asset('assets/images/WhatsApp Image 2025-04-25 à 10.30.53_381488ae.jpg') }}" class="card-img-top" alt="PAPS">
                     <div class="card-body text-center">
                         <h5 class="card-title">PAPS</h5>
                         <p class="card-text">Programme d'Accompagnement Professionnel des Stagiaires</p>
@@ -178,7 +179,7 @@
             <!-- Event Card 5 -->
             <div class="col-md-6 col-lg-4">
                 <div class="card event-card">
-                    <img src="https://stagesbenin.com/wp-content/uploads/2024/02/logo-sdanos-300x169.webp" class="card-img-top" alt="SaNosPro">
+                    <img src="{{ asset('assets/images/IMG-20240904-WA0019.jpg') }}" class="card-img-top" alt="SaNosPro">
                     <div class="card-body text-center">
                         <h5 class="card-title">SaNosPro</h5>
                         <a href="" class="btn btn-primary">Voir »</a>

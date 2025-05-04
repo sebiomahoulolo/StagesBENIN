@@ -79,7 +79,7 @@ public function destroy($id)
 {
     $actualite = Actualite::findOrFail($id); // Récupérer l'actualité par son ID
     $actualite->delete(); // Supprimer l'actualité
-    return redirect()->route('admin.dashboard')->with('success', 'Actualité supprimée avec succès.');
+    return redirect()->route('admin.actualites')->with('success', 'Actualité supprimée avec succès.');
 }
 
 

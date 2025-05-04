@@ -184,7 +184,8 @@ public function generatePDF($id)
         $isRegistered = false;
         
         if (auth()->user()->etudiant) {
-            $isRegistered = DB::table('event_registrations')
+            $isRegistered = DB::table('registrations')
+
                 ->where('event_id', $event->id)
                 ->where('etudiant_id', auth()->user()->etudiant->id)
                 ->exists();
@@ -212,7 +213,7 @@ public function generatePDF($id)
         if (auth()->user()->etudiant) {
             $etudiantId = auth()->user()->etudiant->id;
             
-            $alreadyRegistered = DB::table('event_registrations')
+            $alreadyRegistered = DB::table('registrations')
                 ->where('event_id', $event->id)
                 ->where('etudiant_id', $etudiantId)
                 ->exists();
@@ -223,7 +224,7 @@ public function generatePDF($id)
             
             // Vérifier si le nombre maximum de participants est atteint
             if ($event->max_participants) {
-                $currentParticipants = DB::table('event_registrations')
+                $currentParticipants = DB::table('registrations')
                     ->where('event_id', $event->id)
                     ->count();
                 
@@ -233,7 +234,7 @@ public function generatePDF($id)
             }
             
             // Inscrire l'étudiant à l'événement
-            DB::table('event_registrations')->insert([
+            DB::table('registrations')->insert([
                 'event_id' => $event->id,
                 'etudiant_id' => $etudiantId,
                 'registered_at' => now(),
