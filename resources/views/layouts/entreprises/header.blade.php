@@ -221,7 +221,6 @@
         margin-right: 10px;
         font-size: 0.9rem;
         overflow: hidden;
-        border: 2px solid var(--border-color, #e5e7eb);
     }
 
     .profile-logo {

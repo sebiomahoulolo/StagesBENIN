@@ -18,14 +18,16 @@ class ProfileController extends Controller
     {
         // Récupère l'utilisateur authentifié ET son profil étudiant associé
         $user = $request->user();
-        $etudiant = $user->etudiant()->first(); // Ou firstOrFail() si obligatoire
+        $etudiant = $user->etudiant()->first(); 
 
         // Si l'étudiant n'a pas de profil étudiant (ce qui ne devrait pas arriver ici)
         if (!$etudiant) {
-             // Rediriger ou afficher une erreur
-             // Exemple: Créer un profil étudiant vide s'il n'existe pas
-             $etudiant = Etudiant::create(['user_id' => $user->id]);
-             // Ou rediriger : return redirect()->route('etudiants.dashboard')->with('error', 'Profil étudiant introuvable.');
+            $etudiant = Etudiant::create(['user_id' => $user->id]);
+        }
+
+        // Formater la date de naissance au format Y-m-d pour l'input date
+        if ($etudiant->date_naissance) {
+            $etudiant->date_naissance = $etudiant->date_naissance->format('Y-m-d');
         }
 
         return view('etudiants.profile.edit', [
@@ -47,16 +49,27 @@ class ProfileController extends Controller
             'formation' => ['nullable', 'string', 'max:255'],
             'niveau' => ['nullable', 'string', 'max:100'],
             'date_naissance' => ['nullable', 'date'],
-            // Ajoutez d'autres champs spécifiques à Etudiant ici
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'specialite_id' => ['nullable', 'exists:specialites,id'],
+            'cv' => ['nullable', 'file', 'mimes:pdf', 'max:5120'], // 5MB max pour le CV
         ]);
 
-        // Nettoyer les valeurs nulles si nécessaire (optionnel)
+        if ($request->hasFile('cv')) {
+            // Supprimer l'ancien CV s'il existe
+            if ($etudiant->cv_path && Storage::disk('public')->exists($etudiant->cv_path)) {
+                Storage::disk('public')->delete($etudiant->cv_path);
+            }
+            // Stocker le nouveau CV
+            $validated['cv_path'] = $request->file('cv')->store('cv_documents/user_' . $user->id, 'public');
+        }
+
+        // Nettoyer les valeurs nulles si nécessaire
         $updateData = array_filter($validated, fn($value) => !is_null($value));
 
         if (!empty($updateData)) {
              $etudiant->update($updateData);
         }
-
 
         return redirect()->route('etudiants.profile.edit')->with('status', 'student-info-updated');
     }

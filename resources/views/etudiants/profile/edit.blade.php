@@ -2,172 +2,245 @@
 
 @extends('layouts.etudiant.app')
 
-@section('title', 'Édition du profil - StagesBENIN')
+@section('title', 'StagesBENIN')
 
 @push('styles')
-<style>
-    .profile-section {
-        background-color: #fff;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-bottom: 2rem;
-    }
-    .photo-preview-container {
-        width: 150px;
-        height: 150px;
-        margin-bottom: 1rem;
-        position: relative;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 3px solid #0d6efd;
-        margin: 0 auto 1rem auto;
-    }
-    .photo-preview {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    .photo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #e9ecef;
-        color: #6c757d;
-        font-size: 3rem;
-    }
-    .photo-upload-zone {
-        border: 2px dashed #ced4da;
-        padding: 2rem;
-        text-align: center;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-        margin-bottom: 1.5rem;
-        cursor: pointer;
-    }
-    .photo-upload-zone:hover {
-        border-color: #0d6efd;
-        background-color: rgba(13, 110, 253, 0.05);
-    }
-</style>
+    <link rel="stylesheet" href="{{ asset('css/profile-edit.css') }}">
+    <style>
+        .photo-preview-container img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
+        .photo-preview-container .placeholder { width: 80px; height: 80px; border-radius: 50%; background-color: var(--light-gray); display:flex; align-items:center; justify-content:center; border: 2px solid var(--border-color); }
+        .photo-preview-container .placeholder i { font-size: 2rem; color: var(--gray); }
+    </style>
 @endpush
 
 @section('content')
-<div class="container py-4">
-    <h1 class="mb-4">Édition du profil</h1>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="profile-section">
-                <h3 class="mb-4">Photo de profil</h3>
-                
-                <div class="photo-preview-container" id="photoPreviewContainer">
-                    @if($etudiant->photo_path)
-                        <img src="{{ Storage::url($etudiant->photo_path) }}" alt="Photo de profil" class="photo-preview" id="photoPreview">
-                    @else
-                        <div class="photo-placeholder">
-                            <i class="fas fa-user"></i>
-                        </div>
-                    @endif
-                </div>
-
-                <form action="{{ route('etudiants.profile.photo') }}" method="POST" enctype="multipart/form-data" id="photoForm">
-                    @csrf
-                    <div class="photo-upload-zone" onclick="document.getElementById('photo').click()">
-                        <i class="fas fa-camera mb-2" style="font-size: 2rem; color: #0d6efd"></i>
-                        <p class="mb-0">Cliquez ou glissez une photo ici</p>
-                        <input type="file" name="photo" id="photo" accept="image/*" style="display: none">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100" id="uploadButton" disabled>
-                        <i class="fas fa-upload me-2"></i>Télécharger la photo
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-md-8">
-            <div class="profile-section">
-                <h3 class="mb-4">Informations personnelles</h3>
-                <form action="{{ route('etudiants.profile.update-info') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="telephone" class="form-label">Téléphone</label>
-                        <input type="tel" class="form-control @error('telephone') is-invalid @enderror" 
-                               id="telephone" name="telephone" value="{{ old('telephone', $etudiant->telephone) }}">
-                        @error('telephone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="formation" class="form-label">Formation</label>
-                        <input type="text" class="form-control @error('formation') is-invalid @enderror" 
-                               id="formation" name="formation" value="{{ old('formation', $etudiant->formation) }}">
-                        @error('formation')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="niveau" class="form-label">Niveau</label>
-                        <input type="text" class="form-control @error('niveau') is-invalid @enderror" 
-                               id="niveau" name="niveau" value="{{ old('niveau', $etudiant->niveau) }}">
-                        @error('niveau')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="date_naissance" class="form-label">Date de naissance</label>
-                        <input type="date" class="form-control @error('date_naissance') is-invalid @enderror" 
-                               id="date_naissance" name="date_naissance" 
-                               value="{{ old('date_naissance', $etudiant->date_naissance ? $etudiant->date_naissance->format('Y-m-d') : '') }}">
-                        @error('date_naissance')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Enregistrer les modifications
-                    </button>
-                </form>
-            </div>
+    <div class="content-header">
+        <div class="welcome-message">
+            <h1>Mon Profil</h1>
+            <p>Gérez les informations de votre compte et de votre profil étudiant.</p>
         </div>
     </div>
-</div>
+
+    <div class="profile-page-container">
+
+        {{-- Messages Flash --}}
+        @if (session('status'))
+            <div class="alert alert-success mb-4" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)">
+                @switch(session('status'))
+                    @case('profile-updated') Informations du compte mises à jour. @break
+                    @case('student-info-updated') Informations étudiant mises à jour. @break
+                    @case('profile-photo-updated') Photo de profil mise à jour. @break
+                    @case('password-updated') Mot de passe mis à jour. @break
+                    @default Opération réussie.
+                @endswitch
+            </div>
+        @endif
+         @if ($errors->any() && !$errors->hasBag('updatePassword') && !$errors->hasBag('updateProfileInformation'))
+            <div class="alert alert-danger mb-4">
+                 Une ou plusieurs erreurs sont survenues. Veuillez vérifier les formulaires.
+            </div>
+         @endif
+
+        {{-- 1. Section: Informations Générales du Compte --}}
+        <div class="form-section">
+            <header>
+                <h2 class="section-title">Informations du Compte</h2>
+                <p class="section-description">Mettez à jour le nom et l'adresse e-mail de votre compte.</p>
+            </header>
+
+            <form method="post" action="{{ route('etudiants.profile.updateGeneral') }}" class="mt-4 space-y-6">
+                @csrf @method('patch')
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="name" class="form-label">{{ __('Name') }} <span class="text-danger">*</span></label>
+                        <input id="name" name="name" type="text" class="form-control @error('name', 'updateProfileInformation') is-invalid @enderror" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name" />
+                        @error('name', 'updateProfileInformation') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="email" class="form-label">{{ __('Email') }} <span class="text-danger">*</span></label>
+                        <input id="email" name="email" type="email" class="form-control @error('email', 'updateProfileInformation') is-invalid @enderror" value="{{ old('email', $user->email) }}" required autocomplete="username" />
+                        @error('email', 'updateProfileInformation') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        {{-- Vérification Email ... --}}
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 mt-4">
+                    {{-- CORRECTION: Suppression de la classe 'save-btn' --}}
+                    <button type="submit" class="action-button">Enregistrer</button>
+                    @if (session('status') === 'profile-updated')
+                        <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2500)" class="text-sm text-success font-medium">Enregistré.</p>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        {{-- 2. Section: Informations Spécifiques Étudiant --}}
+        <div class="form-section">
+            <header>
+                <h2 class="section-title">Informations Étudiant</h2>
+                <p class="section-description">Complétez ou modifiez vos informations complémentaires.</p>
+            </header>
+            <form method="post" action="{{ route('etudiants.profile.updateEtudiantInfo') }}" class="mt-4 space-y-6" enctype="multipart/form-data">
+                @csrf @method('patch')
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+                        <input id="etudiant_prenom" name="prenom" type="text" class="form-control @error('prenom') is-invalid @enderror" value="{{ old('prenom', $etudiant->prenom) }}" required>
+                        @error('prenom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_nom" class="form-label">Nom <span class="text-danger">*</span></label>
+                        <input id="etudiant_nom" name="nom" type="text" class="form-control @error('nom') is-invalid @enderror" value="{{ old('nom', $etudiant->nom) }}" required>
+                        @error('nom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_telephone" class="form-label">Téléphone</label>
+                        <input id="etudiant_telephone" name="telephone" type="tel" class="form-control @error('telephone') is-invalid @enderror" value="{{ old('telephone', $etudiant->telephone) }}" autocomplete="tel">
+                        @error('telephone') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_date_naissance" class="form-label">Date de Naissance</label>
+                        <input id="etudiant_date_naissance" 
+                               name="date_naissance" 
+                               type="date" 
+                               class="form-control @error('date_naissance') is-invalid @enderror" 
+                               value="{{ old('date_naissance', $etudiant->date_naissance ?? '') }}"
+                               max="{{ date('Y-m-d') }}">
+                        @error('date_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_formation" class="form-label">Formation Actuelle</label>
+                        <input id="etudiant_formation" name="formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->formation) }}">
+                        @error('formation') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_niveau" class="form-label">Niveau d'Études</label>
+                        <select id="etudiant_niveau" name="niveau" class="form-control @error('niveau') is-invalid @enderror">
+                            <option value="">Sélectionnez un niveau</option>
+                            <option value="Licence 1" {{ old('niveau', $etudiant->niveau) == 'Licence 1' ? 'selected' : '' }}>Licence 1</option>
+                            <option value="Licence 2" {{ old('niveau', $etudiant->niveau) == 'Licence 2' ? 'selected' : '' }}>Licence 2</option>
+                            <option value="Licence 3" {{ old('niveau', $etudiant->niveau) == 'Licence 3' ? 'selected' : '' }}>Licence 3</option>
+                            <option value="Master 1" {{ old('niveau', $etudiant->niveau) == 'Master 1' ? 'selected' : '' }}>Master 1</option>
+                            <option value="Master 2" {{ old('niveau', $etudiant->niveau) == 'Master 2' ? 'selected' : '' }}>Master 2</option>
+                        </select>
+                        @error('niveau') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_specialite" class="form-label">Spécialité</label>
+                        <select id="etudiant_specialite" name="specialite_id" class="form-control @error('specialite_id') is-invalid @enderror">
+                            <option value="">Sélectionnez une spécialité</option>
+                            @foreach(\App\Models\Specialite::all() as $specialite)
+                                <option value="{{ $specialite->id }}" {{ old('specialite_id', $etudiant->specialite_id) == $specialite->id ? 'selected' : '' }}>
+                                    {{ $specialite->nom }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('specialite_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_cv" class="form-label">CV (PDF uniquement, max 5MB)</label>
+                        <input id="etudiant_cv" name="cv" type="file" class="form-control @error('cv') is-invalid @enderror" accept=".pdf">
+                        @error('cv') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        @if($etudiant->cv_path)
+                            <div class="mt-2">
+                                <a href="{{ Storage::url($etudiant->cv_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-file-pdf"></i> Voir le CV actuel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 mt-4">
+                    <button type="submit" class="action-button">Enregistrer Infos Étudiant</button>
+                    @if (session('status') === 'student-info-updated')
+                        <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2500)" class="text-sm text-success font-medium">Enregistré.</p>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        {{-- 3. Section: Photo de Profil --}}
+        <div class="form-section profile-photo-section">
+            <header>
+                <h2 class="section-title">Photo de Profil</h2>
+                <p class="section-description">Ajoutez ou modifiez votre photo.</p>
+            </header>
+            <form method="post" action="{{ route('etudiants.profile.updatePhoto') }}" enctype="multipart/form-data" class="mt-4 space-y-6">
+                @csrf
+                <div class="row">
+                    <div class="col-md-7 form-group upload-area" x-data="{ photoPreview: null }">
+                        <label for="photo" class="form-label">Choisir une nouvelle photo (Max 2Mo)</label>
+                        <input id="photo" name="photo" type="file" class="form-control @error('photo') is-invalid @enderror"
+                               accept="image/png, image/jpeg, image/jpg, image/gif"
+                               @change="const reader = new FileReader(); reader.onload = (e) => { photoPreview = e.target.result; }; reader.readAsDataURL($event.target.files[0]);">
+                        @error('photo') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                        {{-- Preview --}}
+                        <div class="mt-3 photo-preview-container">
+                            <span class="form-label d-block mb-2">Aperçu :</span>
+                            <template x-if="photoPreview"><img :src="photoPreview" alt="Aperçu nouvelle photo"></template>
+                            <template x-if="!photoPreview">
+                                @if ($etudiant->photo_path) <img src="{{ Storage::url($etudiant->photo_path) }}" alt="Photo actuelle">
+                                @else <div class="placeholder"><i class="fas fa-user"></i></div>
+                                @endif
+                            </template>
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex align-items-end">
+                        <div class="flex items-center gap-4 w-100">
+                            {{-- CORRECTION: Suppression de la classe 'save-btn' --}}
+                            <button type="submit" class="action-button">Mettre à jour Photo</button>
+                            @if (session('status') === 'profile-photo-updated')
+                                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2500)" class="text-sm text-success font-medium">Photo MAJ.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {{-- 4. Section: Mise à jour du Mot de Passe --}}
+        <div class="form-section">
+            <header>
+                <h2 class="section-title">{{ __('Update Password') }}</h2>
+                <p class="section-description">{{ __('Ensure your account is using a long, random password to stay secure.') }}</p>
+            </header>
+            <form method="post" action="{{ route('password.update') }}" class="mt-4 space-y-6">
+                @csrf @method('put')
+                <div class="form-group">
+                    <label for="update_password_current_password" class="form-label">{{ __('Current Password') }}</label>
+                    <input id="update_password_current_password" name="current_password" type="password" class="form-control @error('current_password', 'updatePassword') is-invalid @enderror" autocomplete="current-password" />
+                    @error('current_password', 'updatePassword') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+                <div class="form-group">
+                    <label for="update_password_password" class="form-label">{{ __('New Password') }}</label>
+                    <input id="update_password_password" name="password" type="password" class="form-control @error('password', 'updatePassword') is-invalid @enderror" autocomplete="new-password" />
+                    @error('password', 'updatePassword') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+                <div class="form-group">
+                    <label for="update_password_password_confirmation" class="form-label">{{ __('Confirm Password') }}</label>
+                    <input id="update_password_password_confirmation" name="password_confirmation" type="password" class="form-control @error('password_confirmation', 'updatePassword') is-invalid @enderror" autocomplete="new-password" />
+                    @error('password_confirmation', 'updatePassword') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+                <div class="flex items-center gap-4 mt-4">
+                    {{-- CORRECTION: Suppression de la classe 'save-btn' --}}
+                    <button type="submit" class="action-button">Enregistrer Nouveau Mot de Passe</button>
+                    @if (session('status') === 'password-updated')
+                         <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2500)" class="text-sm text-success font-medium">Mot de passe MAJ.</p>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        {{-- 5. Optionnel: Section Suppression Compte --}}
+        {{-- ... --}}
+
+    </div>
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const photoInput = document.getElementById('photo');
-    const photoPreviewContainer = document.getElementById('photoPreviewContainer');
-    const uploadButton = document.getElementById('uploadButton');
-    
-    photoInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.classList.add('photo-preview');
-                img.id = 'photoPreview';
-                
-                // Remplacer le contenu actuel par la nouvelle image
-                photoPreviewContainer.innerHTML = '';
-                photoPreviewContainer.appendChild(img);
-                
-                // Activer le bouton d'upload
-                uploadButton.disabled = false;
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-});
-</script>
 @endpush
