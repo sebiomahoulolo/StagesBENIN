@@ -122,7 +122,7 @@ typeWriterEffect();
 <div class="col-md-4">
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white text-center">
-            📰 Actualités (<h5 style="color: white; display: inline;">{{ $nombre_actualites }}</h5>)
+            📰 Marché public/privé (<h5 style="color: white; display: inline;">{{ $nombre_actualites }}</h5>)
         </div>
      <div class="card-body text-center">
     @if(isset($nombre_actualites) && $nombre_actualites > 0)
@@ -132,7 +132,7 @@ typeWriterEffect();
             @endforeach
         </ul>
     @else
-        <p class="text">Aucune actualité n'est disponible pour le moment.</p> <!-- Message en rouge -->
+        <p class="text">Aucun marché public/privé n'est disponible pour le moment.</p> <!-- Message en rouge -->
     @endif
 </div>
 

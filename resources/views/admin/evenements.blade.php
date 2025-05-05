@@ -41,7 +41,10 @@
                             <td class="searchable">{{ $event->location ?? 'Pas définir' }}</td>
                             <td class="searchable">{{ $event->type ?? 'Pas définir' }}</td>
                             <td class="searchable">{{ $event->user->name ?? 'Pas définir' }}</td>
-                            <td class="searchable">{{ $event->user->email ?? 'Pas définir' }}</td>
+                            <td class="searchable">
+    {{ $event->user_id ? optional($event->user)->email : $event->email ?? 'Pas défini' }}
+</td>
+
                             <td>
                                 <form action="{{ route('evenements.toggleStatus', $event->id) }}" method="POST" style="display: inline-block;">
                                     @csrf

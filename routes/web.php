@@ -88,6 +88,8 @@ Route::get('/events/calendar', [EventController::class, 'calendar'])->name('even
 Route::get('/events', [EventController::class, 'index'])->name('events.index'); // Conserve events.index public
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show'); // Conserve events.show public
 Route::post('/events/register', [EventController::class, 'register'])->name('events.register'); // Inscription publique à un event
+Route::get('/nos-evenements', [PageController::class, 'evenements'])->name('pages.evenements'); // Ou le nom/controller correct
+Route::post('/events/register', [EventController::class, 'register'])->name('events.register.store');
 
 // Route pour envoyer le formulaire de contact
 Route::post('/contactez-stageesbenin', [ContactController::class, 'sendContactForm'])->name('contact.send');

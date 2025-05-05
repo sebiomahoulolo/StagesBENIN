@@ -183,7 +183,7 @@ class AdminController extends Controller
         $event = Event::findOrFail($id);
         $event->delete();
 
-        return redirect()->route('evenements.index')->with('success', 'Événement supprimé avec succès.');
+        return redirect()->route('admin.evenements')->with('success', 'Événement supprimé avec succès.');
     }
 public function evenements()
 {

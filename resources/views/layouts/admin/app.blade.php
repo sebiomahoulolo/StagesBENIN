@@ -1080,10 +1080,7 @@
                 if(targetContent) {
                     targetContent.classList.add('active');
                 }
-                // Optional: Update URL hash or use localStorage for persistence
-                // window.location.hash = tab.getAttribute('data-tab');
-                 // localStorage.setItem('activeDashboardTab', tab.getAttribute('data-tab'));
-            });
+     });
         });
 
         // Optional: Restore active tab based on URL hash or localStorage
@@ -1108,11 +1105,7 @@
                 if (firstTab) firstTab.click();
             }
         };
-        // activateTabFromStorageOrHash(); // Uncomment to enable persistence
-
-
-        // --- Modal Form Handling (AJAX Submission) ---
-        const successToastElement = document.getElementById('successToast');
+ const successToastElement = document.getElementById('successToast');
         const errorToastElement = document.getElementById('errorToast');
         const successToastMessageEl = document.getElementById('successToastMessage');
         const errorToastMessageEl = document.getElementById('errorToastMessage');
@@ -1243,12 +1236,7 @@
                     successToast.show();
                 }
 
-                // Optional: Smartly update the UI without full reload
-                // This depends heavily on your specific needs and the server response
-                // Example: If adding an event, maybe append a row to the event table?
-                // Example: Reload only the relevant tab content?
-                // For simplicity now, consider a full reload or manual refresh indication
-                console.log("Success Data:", data);
+              console.log("Success Data:", data);
                  // Trigger a custom event that specific pages can listen for to update content
                  document.dispatchEvent(new CustomEvent('form-success', { detail: { formId: form.id, data: data } }));
 

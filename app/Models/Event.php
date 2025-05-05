@@ -19,7 +19,11 @@ class Event extends Model
         'type',
         'max_participants',
         'image',
-        'is_published'
+        'is_published',
+        'first_name',  // Nouveau champ : Prénom
+        'last_name',   // Nouveau champ : Nom
+        'phone_number', // Nouveau champ : Numéro de téléphone
+        'email'       // Nouveau champ : Email
     ];
 
     protected $casts = [
