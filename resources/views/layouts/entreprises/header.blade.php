@@ -46,7 +46,11 @@
         <div class="dropdown">
             <div class="user-profile" id="userProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profil utilisateur">
                 <div class="profile-image">
-                    {{ strtoupper(substr(Auth::user()->name ?? 'Entreprise', 0, 1)) }}
+                    @if(Auth::user()->entreprise && Auth::user()->entreprise->logo_path)
+                        <img src="{{ asset(Auth::user()->entreprise->logo_path) }}" alt="Logo entreprise" class="profile-logo">
+                    @else
+                        {{ strtoupper(substr(Auth::user()->name ?? 'Entreprise', 0, 1)) }}
+                    @endif
                 </div>
                 <div class="profile-info">
                     <span class="profile-name">{{ Auth::user()->name ?? 'Entreprise' }}</span>
@@ -55,7 +59,7 @@
                 <i class="fas fa-chevron-down ms-2 small text-muted"></i>
             </div>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userProfileDropdown">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i> Mon Profil</a></li>
+              <li><a class="dropdown-item" href="{{ route('entreprises.profile.edit') }}"><i class="fas fa-user-circle me-2"></i> Mon Profil</a></li>
               <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Paramètres</a></li>
               <li><hr class="dropdown-divider"></li>
               <li>
@@ -217,6 +221,14 @@
         margin-right: 10px;
         font-size: 0.9rem;
         overflow: hidden;
+        border: 2px solid var(--border-color, #e5e7eb);
+    }
+
+    .profile-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
     }
 
     .profile-info { 

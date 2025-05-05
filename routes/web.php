@@ -30,6 +30,7 @@ use App\Http\Controllers\Auth\RegisteredUserController; // Votre contrôleur d'i
 use App\Http\Controllers\Etudiant\ProfileController as EtudiantProfileController;
 use App\Http\Controllers\ProfileController; // Breeze Profile Controller
 use App\Http\Controllers\Auth\PasswordController; // Import PasswordController
+use App\Http\Controllers\ProfileSetupController; // Import ProfileSetupController
 
 // --- Middleware ---
 use App\Http\Middleware\EnsureUserHasRole; // Middleware de rôle
@@ -266,6 +267,14 @@ Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entr
     Route::get('/cvtheque/{id}', [App\Http\Controllers\Entreprise\CvthequeController::class, 'view'])->name('cvtheque.view');
 });
 
+// Routes du profil entreprise
+Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises/profile')->name('entreprises.profile.')->group(function () {
+    Route::get('/edit', [App\Http\Controllers\Entreprises\ProfileController::class, 'edit'])->name('edit');
+    Route::patch('/update-general', [App\Http\Controllers\Entreprises\ProfileController::class, 'updateGeneral'])->name('updateGeneral');
+    Route::patch('/update-entreprise', [App\Http\Controllers\Entreprises\ProfileController::class, 'updateEntrepriseInfo'])->name('updateEntrepriseInfo');
+    Route::post('/update-logo', [App\Http\Controllers\Entreprises\ProfileController::class, 'updateLogo'])->name('updateLogo');
+});
+
 // Routes pour la CV-thèque des entreprises
 Route::middleware(['auth', 'role:recruteur'])->group(function () {
     Route::get('/entreprises/cvtheque', [App\Http\Controllers\Entreprise\CvthequeController::class, 'index'])->name('entreprises.cvtheque.index');
@@ -423,4 +432,13 @@ Route::middleware(['auth', 'role:etudiant'])->group(function () {
     Route::post('/etudiants/boost/renew', [BoostController::class, 'processRenewal'])->name('etudiants.boostage.process-renewal');
     Route::get('/etudiants/boost/upgrade', [BoostController::class, 'upgrade'])->name('etudiants.boostage.upgrade');
     Route::post('/etudiants/boost/upgrade', [BoostController::class, 'processUpgrade'])->name('etudiants.boostage.process-upgrade');
+});
+
+// Routes pour la configuration initiale du profil
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/setup/etudiant', [ProfileSetupController::class, 'showEtudiantSetup'])->name('profile.setup.etudiant');
+    Route::post('/profile/setup/etudiant', [ProfileSetupController::class, 'saveEtudiantProfile'])->name('profile.setup.etudiant.save');
+    Route::get('/profile/setup/recruteur', [ProfileSetupController::class, 'showRecruteurSetup'])->name('profile.setup.recruteur');
+    Route::post('/profile/setup/recruteur', [ProfileSetupController::class, 'saveRecruteurProfile'])->name('profile.setup.recruteur.save');
+    Route::get('/specialites/{secteur}', [ProfileSetupController::class, 'getSpecialites'])->name('specialites.get');
 });

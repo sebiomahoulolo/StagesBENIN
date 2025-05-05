@@ -11,6 +11,11 @@
             <span class="menu-text">Tableau de bord</span>
         </a>
         
+        <a href="{{ route('entreprises.profile.edit') }}" class="menu-item {{ request()->routeIs('entreprises.profile.edit') ? 'active' : '' }}">
+            <span class="menu-icon"><i class="fas fa-user-circle"></i></span>
+            <span class="menu-text">Mon Profil</span>
+        </a>
+        
         <a href="#" class="menu-item">
             <span class="menu-icon"><i class="fas fa-newspaper"></i></span>
             <span class="menu-text">Actualités</span>

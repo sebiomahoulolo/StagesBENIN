@@ -64,6 +64,21 @@
                                 @enderror
                             </div>
 
+                            <!-- Téléphone -->
+                            <div class="mb-3">
+                                <label for="telephone" class="form-label">{{ __('Téléphone') }}</label>
+                                <input type="tel"
+                                       id="telephone"
+                                       name="telephone"
+                                       class="form-control @error('telephone') is-invalid @enderror"
+                                       value="{{ old('telephone') }}"
+                                       required
+                                       autocomplete="tel">
+                                @error('telephone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Password -->
                             <div class="mb-3 password-wrapper">
                                 <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
