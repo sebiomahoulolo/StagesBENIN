@@ -47,6 +47,12 @@
             <div class="events-list">
                 @foreach ($upcomingEvents as $event)
                     <div class="event-card">
+<img src="{{ asset('images/events/' . $event->image) }}" 
+     alt="Illustration Catalogue"
+     onerror="this.src='{{ asset('images/events/NOS-EVENEMENTS-A-VENIR.png') }}'"
+     style="width: 340px; height: 200px; object-fit: cover;">
+
+
                         <div class="event-title">{{ $event->title }}</div>
                         <div class="event-date">
                             <i class="fas fa-clock"></i> {{ $formatDate($event->start_date) }}
@@ -57,6 +63,27 @@
                                 <i class="fas fa-map-marker-alt"></i> {{ $event->location }}
                             </div>
                         @endif
+ @php
+    $icons = [
+        'conférence' => 'fas fa-microphone',
+        'workshop' => 'fas fa-tools',
+        'salon' => 'fas fa-building',
+        'formation' => 'fas fa-graduation-cap',
+        'networking' => 'fas fa-users',
+        'autre' => 'fas fa-calendar-alt',
+    ];
+
+    $eventIcon = array_key_exists($event->type, $icons) ? $icons[$event->type] : 'fas fa-calendar-alt';
+@endphp
+
+@if($event->type)
+    <div class="event-type">
+       <i class="{{ $eventIcon }}"></i> {{ ucfirst($event->type) }}
+    </div>
+@endif
+
+
+                         
                         <div class="event-countdown">
                             @php
                                 $daysUntil = now()->diffInDays(\Carbon\Carbon::parse($event->start_date), false);
@@ -71,7 +98,8 @@
 
                             <button type="button" class="btn btn-info mt-2" data-bs-toggle="modal" data-bs-target="#detailsModal" 
     data-event-id="{{ $event->id }}" 
-    data-title="{{ $event->title }}" 
+    data-title="{{ $event->title }}"
+     
     data-date="{{ $formatDate($event->start_date) }}" 
     data-location="{{ $event->location }}"
     data-description="{{ $event->description }}">
