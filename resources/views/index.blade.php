@@ -5,13 +5,13 @@
 @section('content')
 <div style=" background-image: url('{{ asset('assets/images/Outils-de-recrutements.png') }}'); background-size: cover; background-attachment: fixed;">
 <div style="text-align: center; padding: 20px;">
-    <p style="font-size: 35px; font-weight: bold; color: rgb(14, 40, 145); display: inline;">
+    <p style="font-size: 17px; font-weight: bold; color: rgb(14, 40, 145); display: inline;">
         Le moyen le plus simple d'obtenir
     </p>
-    <p id="animatedText" style="font-size: 35px; font-weight: bold; color:rgb(14, 40, 145); display: inline;"></p>
+    <p id="animatedText" style="font-size: 17px; font-weight: bold; color:rgb(14, 40, 145); display: inline;"></p>
 </div>
 <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-    <p style="font-size: 25px; font-weight: bold; color:rgb(14, 40, 145); line-height: 1.5;">
+    <p style="font-size: 16px; color:rgb(14, 40, 145); line-height: 1.5;">
         Trouvez votre chemin vers une carrière épanouissante grâce à notre plateforme de recrutement et d’insertion professionnelle, 
         où les opportunités s’ouvrent à vous et les talents sont valorisés.
     </p>
@@ -67,59 +67,75 @@ typeWriterEffect();
 </script>
 
     <div class="row">
-        <!-- Dernières Publications -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    📢 Dernières Publications
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li> Nouvelle offre de stage</li>
-                        <li> Offre de stage en marketing digital</li>
-                        <li> Recherche de stagiaire en gestion</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="
-" class="btn btn-outline-primary">Consulter</a>
-                </div>
-            </div>
+   <!-- Dernières Publications -->
+<div class="col-md-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            💼Dernières offres disponibles (<h5 style="color: white; display: inline;">{{ $nombre_offres ?? 0 }}</h5>)
         </div>
-
-        <!-- Événements -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    📅 Événements à venir
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li> Forum de l'emploi </li>
-                        <li> Conférence sur le numérique </li>
-                        <li> Hackathon pour étudiants </li>
-                    </ul>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('pages.evenements') }}
-" class="btn btn-outline-primary">Voir plus</a>
-                </div>
-            </div>
+        <div class="card-body text-start"> <!-- Alignement à gauche -->
+            @if(isset($annonces) && $annonces->count() > 0)
+                <ul class="list-unstyled">
+                    @foreach($annonces as $annonce)
+                        <li class="text-primary fw-bold">
+                            {{ $annonce->nom_du_poste }} ({{ $annonce->type_de_poste }})
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text">Aucune offre n'est disponible pour le moment.</p>
+            @endif
         </div>
+        <div class="card-footer text-center">
+            <a href=" {{ route('etudiants.offres.index') }}" class="btn btn-outline-primary">Consulter</a>
+        </div>
+    </div>
+</div>
 
-        <!-- Actualités -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    📰 Actualités
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li> Nouvelle réglementation sur les stages</li>
-                        <li> Augmentation du nombre d’offres </li>
-                        <li> Statistiques des stages au Bénin</li>
-                    </ul>
-                </div>
+<!-- Section des Événements -->
+<div class="col-md-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            📅 Événements à venir (<h5 style="color: white; display: inline;">{{ $nombre_events ?? 0 }}</h5>)
+        </div>
+        <div class="card-body text-start"> <!-- Alignement à gauche -->
+            @if(isset($evenements) && $evenements->count() > 0)
+    <ul class="list-unstyled">
+      
+        @foreach($evenements as $evenement)
+            <li class="text-primary fw-bold">{{ $evenement->title }}</li>
+        @endforeach
+    </ul>
+@else
+    <p class="text">Aucun événement n'est disponible pour le moment.</p>
+@endif
+
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ route('pages.evenements') }}" class="btn btn-outline-primary">Voir plus</a>
+        </div>
+    </div>
+</div>
+
+
+  <!-- Section des Actualités -->
+<div class="col-md-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            📰 Actualités (<h5 style="color: white; display: inline;">{{ $nombre_actualites }}</h5>)
+        </div>
+     <div class="card-body text-center">
+    @if(isset($nombre_actualites) && $nombre_actualites > 0)
+        <ul class="list-unstyled text-start"> <!-- Alignement à gauche -->
+            @foreach($actualites as $actualite)
+                <li class="text-primary fw-bold">{{ $actualite->titre }}</li> <!-- Titres en bleu et en gras -->
+            @endforeach
+        </ul>
+    @else
+        <p class="text">Aucune actualité n'est disponible pour le moment.</p> <!-- Message en rouge -->
+    @endif
+</div>
+
                 <div class="card-footer text-center">
                     <a href="{{ route('pages.actualites') }}
 " class="btn btn-outline-primary">Voir plus</a>
@@ -131,7 +147,7 @@ typeWriterEffect();
 <br>
 <section class="catalogue-section py-5" style="background-color:rgb(226, 226, 229);; background-size: cover; background-position: center; background-repeat: no-repeat;">
   <div class="container">
-    <h2 class="catalogue-title text-center fw-bold mb-4 ">Catalogue des Entreprises</h2>
+    <h5 class="catalogue-title text-center fw-bold mb-4 ">Catalogue des Entreprises</h5>
     <div class="row align-items-center">
       <!-- Texte à gauche -->
       <div class="col-md-6">
@@ -171,10 +187,8 @@ typeWriterEffect();
       <!-- Texte à droite -->
       <div class="col-md-6">
         <p class="fs-5">
-          StagesBENIN est une start-up spécialisée dans l’insertion professionnelle et la visibilité digitale des entreprises. 
-          Nous accompagnons les jeunes en transition vers le monde professionnel grâce à un coaching personnalisé, et soutenons 
-          nos entreprises partenaires avec des campagnes efficaces et des solutions innovantes pour leur croissance.
-        </p>
+          StagesBENIN est une entreprise spécialisée dans l’insertion professionnelle et la visibilité digitale des entreprises. 
+      </p>
         <p class="fs-5 mb-4">
           Nos packs, adaptés aux besoins des entreprises et des candidats, incluent des services tels que la CV thèque, 
           campagnes digitales, études de marché, création d'entreprise, et bien plus encore.
@@ -184,15 +198,15 @@ typeWriterEffect();
     </div>
   </div>
 </section>
-<div class="job-offers-section">
-    <h2>Offres d'emplois disponibles</h2>
-    <div class="job-offers-list">
-        <div class="no-job-offers text-center">
-            <p>Aucune offre d'emploi n'est disponible pour le moment.</p>
+
+<div class="software-card">
+    <h2>Logiciels à vendre <button class="sell-btn">Vendre mes logiciels</button></h2>   
+    <div class="software-list">
+        <div class="no-software">
+            <p>Aucun logiciel n'est disponible pour le moment.</p>
         </div>
     </div>
 </div>
-
 
 
 
@@ -402,14 +416,7 @@ typeWriterEffect();
   </div>
 </div>
 
-<div class="software-card">
-    <h2>Logiciels à vendre <button class="sell-btn">Vendre mes logiciels</button></h2>   
-    <div class="software-list">
-        <div class="no-software">
-            <p>Aucun logiciel n'est disponible pour le moment.</p>
-        </div>
-    </div>
-</div>
+
 
 
 <script>
@@ -436,8 +443,8 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
  <style>
  .testimonial {
-  background-color: #f9f9f9; /* Soft background color */
-  border: 1px solid #ddd; /* Border for testimonials */
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
   padding: 20px; /* Space inside */
   border-radius: 10px; /* Rounded corners */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
@@ -447,6 +454,52 @@ document.addEventListener("DOMContentLoaded", function() {
 .testimonial:hover {
   transform: scale(1.05); /* Slight zoom effect on hover */
 }
+p {
+    font-size: 1vw; /* La taille du texte s'ajuste à la largeur de l'écran */
+  
+    
+}
+
+#animatedText {
+    font-size: 9vw; /* Texte légèrement plus grand */
+}
+
+@media screen and (max-width: 768px) {
+    p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    p {
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    p {
+        font-size: 22px;
+    }
+}
+#animatedText {
+    font-size: 8vw; /* Ajuste en fonction de la largeur de l'écran */
+    color: rgb(14, 40, 145);
+    font-weight: bold;
+    white-space: nowrap; /* Empêche le retour à la ligne */
+}
+
+@media screen and (max-width: 768px) {
+    #animatedText {
+        font-size: 16px; /* Taille fixe sur mobile */
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #animatedText {
+        font-size: 9vw; /* Augmente sur grand écran */
+    }
+}
+
 
 .stars {
   font-size: 18px; /* Adjust star size */
@@ -520,6 +573,7 @@ document.addEventListener("DOMContentLoaded", function() {
     font-size: 18px;
     color: #333;
 }
+
 
 .job-offer-item p {
     font-size: 16px;

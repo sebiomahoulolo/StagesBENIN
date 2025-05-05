@@ -101,6 +101,15 @@
             </ul>
             <p>📞 Contact WhatsApp : <strong>+229 01 41733175</strong></p>
         </section>
+        <!-- Préinscription -->
+        <section class="section">
+            <h2>Inscription</h2>
+            <div class="form-section mt-4">
+            <a href="https://stagesbenin.com/register/recruteur" target="_blank">
+                    <button type="submit" class="btn btn-primary mt-3">S'inscrire </button>
+                </a></form>
+            </div>
+        </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

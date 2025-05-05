@@ -4,11 +4,11 @@
 @section('content')
 <section class="qui-sommes-nous py-5" style="background-color: rgb(244, 244, 245);">
     <div class="container">
-        <h1 class="text-center mb-4 text-primary" style="font-size: 3em;">Qui sommes-nous ?</h1>
+        <h1 class="text-center mb-4 text-primary" style="font-size: 5vw; white-space: nowrap;">Qui sommes-nous ?</h1>
         <div class="row align-items-center">
             <div class="col-md-6">
                 <p style="font-size: 1.1em; text-align: justify; line-height: 1.6;">
-                    Nous sommes StagesBENIN, une start-up initiée par des jeunes visionnaires, entrepreneurs et investisseurs,
+                    Nous sommes StagesBENIN, une entreprise initiée par des jeunes visionnaires, entrepreneurs et investisseurs,
                     qui se positionne comme un catalyseur de l’insertion professionnelle au Bénin. Notre plateforme offre une
                     référence web exhaustive des entreprises à travers neuf (09) services pour la croissance du chiffre
                     d’affaires, facilitant la mise en stage des étudiants et diplômés. Nous croyons en l’acquisition
@@ -45,9 +45,8 @@
        </main> 
 </section>
 
-<section class="qui-sommes-nous py-5">
-    <div class="container">
-        <h1 class="text-center mb-4 text-primary" style="font-size: 3em;">Pourquoi cette plateforme ?</h1>
+
+        <h1 class="text-center mb-4 text-primary" style="font-size: 5vw; white-space: nowrap;">Pourquoi cette plateforme ?</h1>
         <div class="row align-items-center">
             <div class="col-md-6">
                 <img src="{{ asset('assets/images/WhatsApp-Image-2025-04-01-a-11.53.25_2c78898f.jpg') }}" alt="Image" class="img-fluid rounded shadow">
@@ -64,46 +63,61 @@
             </div>
         </div><br>
         <main class="container"> 
-        <section id="objectifs" class="section">
-            <h2> <i class="fas fa-bullseye text-primary me-2"></i>Nos Objectifs</h2>
-            <ul class="objectives-list">
-                <li>
-                    <strong>Renforcer la qualité des offres de stage</strong>
-                    <p>Travailler en étroite collaboration avec les entreprises partenaires pour améliorer la qualité des descriptions d'offres de stage, en mettant l'accent sur les responsabilités, les compétences requises et les avantages offerts aux stagiaires.</p>
-                    <p>Veiller à ce que les offres de stage proposées sur notre plateforme soient conformes aux normes professionnelles et offrent de réelles opportunités de développement aux candidats.</p>
-                </li>
-                <li>
-                    <strong>Promouvoir l'employabilité des candidats</strong>
-                    <p>Fournir des ressources et des conseils approfondis sur la rédaction de CV, la préparation aux entretiens et le développement des compétences clés recherchées par les employeurs.</p>
-                    <p>Organiser des webinaires et des ateliers virtuels pour aider les candidats à améliorer leur employabilité et à se démarquer sur le marché du travail.</p>
-                </li>
-                <li>
-                    <strong>Établir une communauté d'échange et de partage</strong>
-                    <p>Créer un espace interactif où les candidats et les entreprises peuvent interagir, échanger des conseils, des expériences et des opportunités professionnelles.</p>
-                    <p>Encourager les utilisateurs à partager leurs réussites, leurs témoignages et à créer des liens qui favorisent le réseautage et la collaboration.</p>
-                </li>
-                <li>
-                    <strong>Établir une réputation de référence dans le domaine des stages</strong>
-                    <p>Travailler à la reconnaissance de notre plateforme en tant que source fiable et de confiance pour les stages professionnels.</p>
-                    <p>Collaborer avec des institutions éducatives, des organisations professionnelles et des acteurs clés du secteur pour renforcer notre crédibilité et notre visibilité.</p>
-                </li>
-            </ul>
-        </section>
-        
-        <section id="visions" class="section">
-            <h2><i class="fas fa-eye text-primary me-2"></i>Notre Vision</h2>
-            <p>Chez StagesBENIN, nous aspirons à créer un écosystème dynamique où les talents béninois peuvent s'épanouir professionnellement. Notre vision s'articule autour de plusieurs axes fondamentaux :</p>
-            <ul class="vision-list">
-                <li>Devenir la plateforme de référence pour les stages au Bénin, reconnue pour la qualité de nos offres et l'efficacité de notre mise en relation</li>
-                <li>Contribuer activement à la réduction du chômage des jeunes diplômés en facilitant leur insertion professionnelle</li>
-                <li>Développer un réseau solide d'entreprises partenaires engagées dans la formation de la prochaine génération de professionnels</li>
-                <li>Promouvoir une culture de l'excellence et de l'apprentissage continu chez les jeunes professionnels</li>
-                <li>Soutenir l'innovation et l'entrepreneuriat en mettant en relation les jeunes talents avec des entreprises visionnaires</li>
-            </ul>
-        </section>
-
+<section id="objectifs" class="section">
+    <h2><i class="fas fa-bullseye text-primary me-2"></i>Nos Objectifs</h2>
+    <div class="info-cards">
+        <div class="card">
+            <h3><i class="fas fa-tasks text-primary me-2"></i>Qualité des offres de stage</h3>
+            <p>Collaborer avec les entreprises partenaires pour améliorer la clarté et la pertinence des offres de stage.</p>
+            <p>Garantir des descriptions précises qui mettent en valeur les compétences recherchées et les avantages pour les stagiaires.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-user-graduate text-primary me-2"></i>Employabilité des candidats</h3>
+            <p>Offrir des ressources pour la rédaction de CV, la préparation aux entretiens et le développement de compétences professionnelles.</p>
+            <p>Organiser des ateliers et webinaires pour aider les candidats à se démarquer sur le marché du travail.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-users text-primary me-2"></i>Communauté et échanges</h3>
+            <p>Créer un espace interactif où candidats et entreprises peuvent échanger des conseils et partager leurs expériences.</p>
+            <p>Encourager le réseautage et la collaboration pour favoriser des opportunités professionnelles.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-award text-primary me-2"></i>Réputation et reconnaissance</h3>
+            <p>Positionner la plateforme comme une référence fiable pour les stages professionnels.</p>
+            <p>Collaborer avec institutions éducatives et partenaires du secteur pour renforcer notre visibilité.</p>
+        </div>
     </div>
 </section>
+
+        
+        <section id="visions" class="section">
+    <h2><i class="fas fa-eye text-primary me-2"></i>Notre Vision</h2>
+    <div class="info-cards">
+        <div class="card">
+            <h3><i class="fas fa-globe text-primary me-2"></i>Plateforme de référence</h3>
+            <p>Devenir la plateforme de référence pour les stages au Bénin, reconnue pour la qualité de nos offres et l'efficacité de notre mise en relation.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-briefcase text-primary me-2"></i>Insertion professionnelle</h3>
+            <p>Contribuer activement à la réduction du chômage des jeunes diplômés en facilitant leur insertion professionnelle.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-handshake text-primary me-2"></i>Partenariats solides</h3>
+            <p>Développer un réseau solide d'entreprises partenaires engagées dans la formation de la prochaine génération de professionnels.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-graduation-cap text-primary me-2"></i>Culture de l'excellence</h3>
+            <p>Promouvoir une culture de l'excellence et de l'apprentissage continu chez les jeunes professionnels.</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-lightbulb text-primary me-2"></i>Innovation et entrepreneuriat</h3>
+            <p>Soutenir l'innovation et l'entrepreneuriat en mettant en relation les jeunes talents avec des entreprises visionnaires.</p>
+        </div>
+    </div>
+</section>
+
+
+ 
 
         <section id="valeurs" class="section">
             <h2> <i class="fas fa-hand-holding-heart text-primary me-2"></i>Nos Valeurs</h2>
@@ -129,7 +143,7 @@
      </main>
 <section class="py-5">
     <div class="container">
-        <h1 class="text-center mb-4 text-primary" style="font-size: 3em;">Galerie de nos événements</h1>
+        <h1 class="text-center mb-4 text-primary" style="font-size: 5vw; white-space: nowrap;">Galerie de nos événements</h1>
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="card shadow">
@@ -420,6 +434,23 @@ StagesBENIN propose un service de référencement web des entreprises afin de le
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--accent-color);
         }
+        h1 {
+    font-size: 5vw; /* Taille relative à l'écran */
+    white-space: nowrap; /* Empêche le retour à la ligne */
+}
+
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 6vw; /* Augmente légèrement sur mobile */
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    h1 {
+        font-size: 4vw; /* Réduit légèrement sur grand écran */
+    }
+}
+
         
         .info-cards {
             display: grid;

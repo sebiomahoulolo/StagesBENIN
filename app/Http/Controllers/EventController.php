@@ -275,6 +275,13 @@ class EventController extends Controller
             $isRegistered = Registration::where('event_id', $event->id)
                                         ->where('email', $user->email) // Vérifie par email
                                         ->exists();
+        
+        // if (auth()->user()->etudiant) {
+        //     $isRegistered = DB::table('registrations')
+
+        //         ->where('event_id', $event->id)
+        //         ->where('etudiant_id', auth()->user()->etudiant->id)
+        //         ->exists();
         }
 
         $currentParticipants = Registration::where('event_id', $event->id)->count();

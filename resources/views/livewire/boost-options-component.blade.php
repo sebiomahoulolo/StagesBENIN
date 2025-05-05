@@ -89,7 +89,7 @@
                     <div class="section-container mt-6">
                         <h4 class="section-title">
                             <i class="fas fa-exclamation-circle text-red-500"></i>
-                            Inconvénients
+                            Limités
                         </h4>
                         <ul class="features-list">
                             @foreach($selectedTier['inconvenients'] as $inconvenient)

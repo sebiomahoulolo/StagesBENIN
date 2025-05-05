@@ -217,7 +217,8 @@
                 <!-- Bloc 2 -->
                 <div class="col-md-4">
                     <div class="info-box">
-                        <h4 class="info-title">Sélection des entreprises capables de recevoir des étudiants en stage</h4>
+                     <h4 class="info-title">Sélection de 1500 étudiants en formation ou diplômés</h4>
+
                         <p>
                             Dans le cadre de son programme de formation, notre établissement met en place des stages académiques professionnels, de découverte et d'immersion afin de permettre aux étudiants d'acquérir une première expérience concrète en entreprise. Ce stage vise à renforcer les compétences techniques, l'esprit d'équipe et la culture professionnelle des stagiaires.
                         </p>
@@ -228,7 +229,7 @@
                 <!-- Bloc 3 -->
                 <div class="col-md-4">
                     <div class="info-box">
-                        <h4 class="info-title">Sélection de 1500 étudiants en formation ou diplômés</h4>
+                        <h4 class="info-title">Sélection des entreprises capables de recevoir des étudiants en stage</h4>                       
                         <p>
                             StagesBENIN ambitionne de placer 1 500 diplômés en stages, accompagnés d'un suivi personnalisé incluant orientation et intégration professionnelle à travers le Programme d'Accompagnement Professionnel et de Stage (PAPS) qui s'inscrit dans une démarche visant à améliorer l'employabilité des jeunes diplômés.
                         </p>

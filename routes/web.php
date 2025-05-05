@@ -23,6 +23,7 @@ use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\Etudiant\CvController; // Contrôleur CV Étudiant
 use App\Http\Controllers\Etudiant\ComplaintSuggestionController as EtudiantComplaintController; // Contrôleur plaintes/suggestions étudiant
 use App\Http\Controllers\Admin\ComplaintSuggestionController as AdminComplaintController; // Contrôleur plaintes/suggestions admin
+use App\Http\Controllers\FedaPayWebhookController;
 
 // --- Contrôleurs d'Authentification (Breeze & Modifiés) ---
 use App\Http\Controllers\Auth\RegisteredUserController; // Votre contrôleur d'inscription modifié
@@ -119,7 +120,24 @@ Route::middleware('guest')->group(function () {
     })->name('register');
 });
 
+Route::get('/etudiants/boost-status', [BoostController::class, 'status'])->name('etudiants.boost-status');
 
+Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants/boostage')->name('etudiants.boostage.')->group(function () {
+    Route::get('/status', [BoostController::class, 'status'])->name('status');
+    Route::get('/select', [BoostController::class, 'selectTier'])->name('select'); 
+    Route::get('/renew/{tier}', [BoostController::class, 'renew'])->name('renew');
+    Route::get('/upgrade/{tier}', [BoostController::class, 'upgrade'])->name('upgrade');
+    Route::post('/renew/{tier}', [BoostController::class, 'processRenewal'])->name('processRenewal');
+    Route::post('/upgrade/{tier}', [BoostController::class, 'processUpgrade'])->name('processUpgrade');
+});
+
+
+Route::get('/', [PageController::class, 'index'])->name('home');
+
+
+
+
+// ... autres routes ...
 // ===============================================
 // ROUTES PROTÉGÉES (Nécessitent Connexion)
 // ===============================================
@@ -267,7 +285,10 @@ Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('
 Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
+Route::get('/boost', [AdminController::class, 'listBoosts']) ->name('admin.boost.index'); 
+Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost');
 
+Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
 Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
 Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
 Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
@@ -300,6 +321,7 @@ Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenem
 Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');
 Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
+Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
 
 // Géré par register.etudiant.store
 Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');
