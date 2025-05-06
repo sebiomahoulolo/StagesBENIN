@@ -1,643 +1,313 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StagesBENIN</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Espace Entreprise - StagesBENIN')</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <style>
+        /* Variables globales */
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #1abc9c;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --light-gray: #f5f7fa;
-            --gray: #95a5a6;
-            --dark-gray: #7f8c8d;
-            --blue: #3498db;
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+            --header-height: 60px;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+            --box-shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --box-shadow-lg: 0 5px 15px rgba(0,0,0,0.15);
+            --border-color: #e5e7eb;
         }
 
+        /* Base Styles */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f8f9fa;
+            background-color: #f3f4f6;
+            overflow-x: hidden;
+            color: var(--dark);
         }
 
-        header {
-            background: linear-gradient(135deg, var(--primary-color), #34495e);
-            color: white;
-            padding: 1rem 2rem;
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Dashboard Layout */
+        .dashboard {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            margin-right: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .search-box {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: none;
-            font-size: 0.9rem;
-            padding-left: 40px;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-
-        .notifications,
-        .messages {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-color);
-            color: white;
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-menu {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
+            min-height: 100vh;
             position: relative;
         }
 
-        .profile-image {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            color: white;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-name {
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .profile-role {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        /* Styles pour le dropdown du profil */
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            width: 250px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-        }
-        
-        .dropdown-user-info {
-            padding: 1rem;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .dropdown-separator {
-            height: 1px;
-            background-color: var(--light-gray);
-            margin: 0.3rem 0;
-        }
-        
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 0.7rem 1rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-        
-        .dropdown-item:hover {
-            background-color: var(--light-gray);
-        }
-        
-        /* Animation et utilitaires */
-        .transition {
-            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
-        }
-        
-        .duration-150 {
-            transition-duration: 150ms;
-        }
-        
-        .duration-200 {
-            transition-duration: 200ms;
-        }
-        
-        .ease-in {
-            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
-        }
-        
-        .ease-out {
-            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-        }
-        
-        [x-cloak] {
-            display: none !important;
-        }
-
-        .container {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 260px;
-            background-color: white;
-            min-height: calc(100vh - 70px);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-            z-index: 10;
-        }
-
-        .sidebar-menu {
-            padding: 1rem 0;
-        }
-
-        .menu-category {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--gray);
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-
-        .menu-item {
-            padding: 0.8rem 1.5rem;
-            display: flex;
-            align-items: center;
-            color: var(--dark-gray);
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            position: relative;
-        }
-
-        .menu-item i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .menu-item:hover,
-        .menu-item.active {
-            background-color: rgba(26, 188, 156, 0.1);
-            color: var(--secondary-color);
-            border-left: 3px solid var(--secondary-color);
-        }
-
-        .menu-item.active {
-            font-weight: bold;
-        }
-
-        .menu-badge {
-            position: absolute;
-            right: 15px;
-            background-color: var(--accent-color);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
+        /* Main Content Area */
         .main-content {
             flex: 1;
-            padding: 2rem;
-        }
-
-        .page-title {
-            margin-bottom: 2rem;
-            color: var(--primary-color);
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            padding: 1.5rem;
-            transition: all 0.3s;
+            margin-left: var(--sidebar-width);
+            transition: margin-left var(--transition);
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        .main-content.collapsed {
+            margin-left: var(--sidebar-width-collapsed);
         }
 
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1rem;
+        /* Content Area within Main */
+        .content {
+            padding: 25px;
+            flex-grow: 1;
         }
 
-        .stat-icon.blue {
-            background-color: rgba(52, 152, 219, 0.1);
-            color: var(--blue);
-        }
-
-        .stat-icon.green {
-            background-color: rgba(39, 174, 96, 0.1);
-            color: var(--success-color);
-        }
-
-        .stat-icon.orange {
-            background-color: rgba(243, 156, 18, 0.1);
-            color: var(--warning-color);
-        }
-
-        .stat-icon.red {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: var(--accent-color);
-        }
-
-        .stat-info {
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .trend {
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .trend.up {
-            color: var(--success-color);
-        }
-
-        .trend.down {
-            color: var(--accent-color);
-        }
-
-        .trend i {
-            margin-right: 5px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .recent-applications,
-        .upcoming-interviews,
-        .activity-feed {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            padding: 1.5rem;
+        /* Overlay pour le mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .widget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
         }
 
-        .widget-title {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .widget-action {
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .widget-action i {
-            margin-left: 5px;
-        }
-
-        .application-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .application-item:last-child {
-            border-bottom: none;
-        }
-
-        .application-position {
-            flex: 1;
-        }
-
-        .position-title {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.3rem;
-        }
-
-        .position-info {
-            display: flex;
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
-        .position-info span {
-            display: flex;
-            align-items: center;
-            margin-right: 1rem;
-        }
-
-        .position-info i {
-            margin-right: 5px;
-            font-size: 0.8rem;
-        }
-
-        .application-count {
-            background-color: var(--light-gray);
-            padding: 0.5rem 0.8rem;
-            border-radius: 4px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-right: 1rem;
-        }
-
-        .application-actions button {
-            padding: 0.5rem;
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-            color: var(--dark-gray);
-            transition: color 0.3s;
-        }
-
-        .application-actions button:hover {
-            color: var(--primary-color);
-        }
-
-        .interview-item {
-            padding: 1rem;
-            background-color: var(--light-gray);
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .interview-date {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--primary-color);
-        }
-
-        .interview-date i {
-            margin-right: 8px;
-        }
-
-        .interview-position {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-
-        .interview-candidates {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-
-        .candidate-tag {
-            background-color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .candidate-tag i {
-            margin-right: 5px;
-            font-size: 0.7rem;
-        }
-
-        .activity-item {
-            display: flex;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 15px;
-            margin-top: 5px;
-        }
-
-        .activity-dot.blue {
-            background-color: var(--blue);
-        }
-
-        .activity-dot.green {
-            background-color: var(--success-color);
-        }
-
-        .activity-dot.orange {
-            background-color: var(--warning-color);
-        }
-
-        .activity-dot.red {
-            background-color: var(--accent-color);
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-text {
-            margin-bottom: 0.3rem;
-        }
-
-        .activity-text strong {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .activity-time {
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-content.with-sidebar {
+                margin-left: var(--sidebar-width);
             }
 
             .sidebar {
-                width: 100%;
-                min-height: auto;
+                transform: translateX(-100%);
+                z-index: 1000;
             }
-
-            .search-box {
-                display: none;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
+            
+            .sidebar.show {
+                transform: translateX(0);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             }
         }
 
-        /* Styles supplémentaires pour le dropdown */
-        .profile-dropdown {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 0.5rem 0;
-            width: 250px;
-            z-index: 9999;
-        }
-        
-        /* Assurer que les transitions d'Alpine.js fonctionnent */
-        .opacity-0 {
-            opacity: 0;
-        }
-        
-        .opacity-100 {
-            opacity: 1;
-        }
-        
-        .scale-95 {
-            transform: scale(0.95);
-        }
-        
-        .scale-100 {
-            transform: scale(1);
+        @media (max-width: 576px) {
+            .content { 
+                padding: 15px; 
+            }
         }
     </style>
-    {{-- Alpine.js (déplacé en haut pour être chargé en premier) --}}
-    <script src="//unpkg.com/alpinejs" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    @livewireStyles()
+
+    @stack('styles')
 </head>
 
 <body>
-    @include('layouts.entreprises.header')
+    <div class="dashboard">
+        <!-- Overlay pour le mobile -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <div class="container">
         @include('layouts.entreprises.aside')
-        <main class="main-content">
+        
+        <div class="main-content" id="main-content">
+            @include('layouts.entreprises.header')
+            
+            <!-- Page Content -->
+            <main class="content">
             @yield('content')
-
         </main>
+        </div>
+    </div>
+
+    <!-- Toast Container for notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="successToastMessage">Opération effectuée avec succès !</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="errorToastMessage">Une erreur s'est produite.</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
     </div>
     
-    {{-- Formulaire de déconnexion --}}
+    <!-- Logout Form (Hidden) -->
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-    @stack('script')
-    @livewireScripts()
+    <!-- Bootstrap Bundle JS (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <!-- Core JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            // Sidebar Elements
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const toggleButton = document.getElementById('toggle-sidebar-btn');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            console.log('Sidebar:', sidebar);
+            console.log('Main Content:', mainContent);
+            console.log('Toggle Button:', toggleButton);
+            console.log('Overlay:', overlay);
+
+            // État mobile vs desktop
+            const isMobile = () => window.innerWidth <= 768;
+            
+            // Gérer l'état du sidebar
+            const updateSidebarState = (isCollapsed) => {
+                if (!sidebar || !mainContent) return;
+                
+                if (isMobile()) {
+                    // Sur mobile
+                    if (isCollapsed) {
+                        sidebar.classList.remove('show');
+                        overlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                    } else {
+                        sidebar.classList.add('show');
+                        overlay.classList.add('show');
+                        document.body.style.overflow = 'hidden'; // Bloque le scroll de la page
+                    }
+                } else {
+                    // Sur desktop
+                    if (isCollapsed) {
+                        sidebar.classList.add('collapsed');
+                        mainContent.classList.add('collapsed');
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                        mainContent.classList.remove('collapsed');
+                    }
+                }
+                
+                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+            };
+
+            // État initial
+            const setupInitialState = () => {
+                const savedState = localStorage.getItem('sidebarCollapsed') === 'true';
+                
+                if (isMobile()) {
+                    // Sur mobile, toujours commencer avec le menu fermé
+                    updateSidebarState(true);
+                } else {
+                    // Sur desktop, utiliser l'état sauvegardé
+                    updateSidebarState(savedState);
+                }
+            };
+            
+            // Initialiser
+            setupInitialState();
+            
+            // Gérer le redimensionnement de la fenêtre
+            window.addEventListener('resize', () => {
+                setupInitialState();
+            });
+
+            // Click sur le bouton de toggle
+            if (toggleButton && sidebar && mainContent) {
+                toggleButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Toggle button clicked');
+                    
+                    const isCurrentlyCollapsed = isMobile() 
+                        ? !sidebar.classList.contains('show')
+                        : sidebar.classList.contains('collapsed');
+                    
+                    updateSidebarState(!isCurrentlyCollapsed);
+                });
+            }
+            
+            // Click sur l'overlay pour fermer
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    updateSidebarState(true);
+                });
+            }
+
+            // Success and Error toasts
+            const successToast = document.getElementById('successToast');
+            const errorToast = document.getElementById('errorToast');
+            
+            if (successToast) {
+                const bsSuccessToast = new bootstrap.Toast(successToast);
+                window.showSuccessToast = function(message) {
+                    const messageEl = document.getElementById('successToastMessage');
+                    if (messageEl) messageEl.textContent = message;
+                    bsSuccessToast.show();
+                };
+            }
+            
+            if (errorToast) {
+                const bsErrorToast = new bootstrap.Toast(errorToast);
+                window.showErrorToast = function(message) {
+                    const messageEl = document.getElementById('errorToastMessage');
+                    if (messageEl) messageEl.textContent = message;
+                    bsErrorToast.show();
+                };
+            }
+
+            // Flash messages
+            @if(session('success'))
+                window.showSuccessToast("{{ session('success') }}");
+            @endif
+
+            @if(session('error'))
+                window.showErrorToast("{{ session('error') }}");
+            @endif
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 </html>

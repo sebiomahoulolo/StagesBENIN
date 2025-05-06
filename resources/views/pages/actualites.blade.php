@@ -5,7 +5,7 @@
     <div class="row mb-5">
         <div class="col-12">
             <h1 class="display-4 fw-bold text-center position-relative">
-                <span class="text-primary">Actualités</span>
+                <span class="text-primary">Marché public/ privé</span>
                 <span class="position-absolute start-50 translate-middle-x" style="bottom: -15px; width: 80px; height: 4px; background-color: var(--bs-primary);"></span>
             </h1>
         </div>
@@ -56,8 +56,8 @@
             <div class="col-md-8 mx-auto">
                 <div class="alert alert-info shadow-sm rounded-3 p-4 text-center">
                     <i class="bi bi-info-circle-fill fs-1 d-block mb-3"></i>
-                    <h4 class="alert-heading">Aucune actualité disponible</h4>
-                    <p class="mb-0">Revenez bientôt pour découvrir nos dernières actualités.</p>
+                    <h4 class="alert-heading">Aucun marché public/ privé disponible</h4>
+                    <p class="mb-0">Revenez bientôt pour découvrir nos dernières marché public ou privé.</p>
                 </div>
             </div>
         </div>

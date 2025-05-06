@@ -79,8 +79,20 @@
                 <h2 class="section-title">Informations Étudiant</h2>
                 <p class="section-description">Complétez ou modifiez vos informations complémentaires.</p>
             </header>
-            <form method="post" action="{{ route('etudiants.profile.updateEtudiantInfo') }}" class="mt-4 space-y-6">
+            <form method="post" action="{{ route('etudiants.profile.updateEtudiantInfo') }}" class="mt-4 space-y-6" enctype="multipart/form-data">
                 @csrf @method('patch')
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+                        <input id="etudiant_prenom" name="prenom" type="text" class="form-control @error('prenom') is-invalid @enderror" value="{{ old('prenom', $etudiant->prenom) }}" required>
+                        @error('prenom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_nom" class="form-label">Nom <span class="text-danger">*</span></label>
+                        <input id="etudiant_nom" name="nom" type="text" class="form-control @error('nom') is-invalid @enderror" value="{{ old('nom', $etudiant->nom) }}" required>
+                        @error('nom') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="etudiant_telephone" class="form-label">Téléphone</label>
@@ -89,7 +101,12 @@
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="etudiant_date_naissance" class="form-label">Date de Naissance</label>
-                        <input id="etudiant_date_naissance" name="date_naissance" type="date" class="form-control @error('date_naissance') is-invalid @enderror" value="{{ old('date_naissance', $etudiant->date_naissance) }}">
+                        <input id="etudiant_date_naissance" 
+                               name="date_naissance" 
+                               type="date" 
+                               class="form-control @error('date_naissance') is-invalid @enderror" 
+                               value="{{ old('date_naissance', $etudiant->date_naissance ?? '') }}"
+                               max="{{ date('Y-m-d') }}">
                         @error('date_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -101,12 +118,44 @@
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="etudiant_niveau" class="form-label">Niveau d'Études</label>
-                        <input id="etudiant_niveau" name="niveau" type="text" class="form-control @error('niveau') is-invalid @enderror" value="{{ old('niveau', $etudiant->niveau) }}" placeholder="Ex: Licence 3, Master 1...">
+                        <select id="etudiant_niveau" name="niveau" class="form-control @error('niveau') is-invalid @enderror">
+                            <option value="">Sélectionnez un niveau</option>
+                            <option value="Licence 1" {{ old('niveau', $etudiant->niveau) == 'Licence 1' ? 'selected' : '' }}>Licence 1</option>
+                            <option value="Licence 2" {{ old('niveau', $etudiant->niveau) == 'Licence 2' ? 'selected' : '' }}>Licence 2</option>
+                            <option value="Licence 3" {{ old('niveau', $etudiant->niveau) == 'Licence 3' ? 'selected' : '' }}>Licence 3</option>
+                            <option value="Master 1" {{ old('niveau', $etudiant->niveau) == 'Master 1' ? 'selected' : '' }}>Master 1</option>
+                            <option value="Master 2" {{ old('niveau', $etudiant->niveau) == 'Master 2' ? 'selected' : '' }}>Master 2</option>
+                        </select>
                         @error('niveau') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_specialite" class="form-label">Spécialité</label>
+                        <select id="etudiant_specialite" name="specialite_id" class="form-control @error('specialite_id') is-invalid @enderror">
+                            <option value="">Sélectionnez une spécialité</option>
+                            @foreach(\App\Models\Specialite::all() as $specialite)
+                                <option value="{{ $specialite->id }}" {{ old('specialite_id', $etudiant->specialite_id) == $specialite->id ? 'selected' : '' }}>
+                                    {{ $specialite->nom }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('specialite_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="etudiant_cv" class="form-label">CV (PDF uniquement, max 5MB)</label>
+                        <input id="etudiant_cv" name="cv" type="file" class="form-control @error('cv') is-invalid @enderror" accept=".pdf">
+                        @error('cv') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        @if($etudiant->cv_path)
+                            <div class="mt-2">
+                                <a href="{{ Storage::url($etudiant->cv_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-file-pdf"></i> Voir le CV actuel
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
                 <div class="flex items-center gap-4 mt-4">
-                    {{-- CORRECTION: Suppression de la classe 'save-btn' --}}
                     <button type="submit" class="action-button">Enregistrer Infos Étudiant</button>
                     @if (session('status') === 'student-info-updated')
                         <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2500)" class="text-sm text-success font-medium">Enregistré.</p>

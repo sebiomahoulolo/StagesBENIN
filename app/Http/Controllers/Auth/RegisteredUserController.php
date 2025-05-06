@@ -34,55 +34,33 @@ class RegisteredUserController extends Controller
     public function storeEtudiant(Request $request): RedirectResponse
     {
         $request->validate([
-            'nom' => ['required', 'string', 'max:100'], // Re-added
-            'prenom' => ['required', 'string', 'max:100'], // Re-added
+            'nom' => ['required', 'string', 'max:100'],
+            'prenom' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // Validation for other fields removed previously
+            'telephone' => ['required', 'string', 'min:8', 'max:15'],
         ]);
 
-        DB::beginTransaction();
-        try {
-            // Removed username generation from email
-            // $emailParts = explode('@', $request->email);
-            // $userName = $emailParts[0];
+        $user = User::create([
+            'name' => $request->nom . ' ' . $request->prenom, // Ajout du champ name
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => User::ROLE_ETUDIANT,
+        ]);
 
-            // Créer l'utilisateur
-            $user = User::create([
-                'name' => $request->prenom . ' ' . $request->nom, // Use nom + prenom
-                // 'name' => $userName,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => User::ROLE_ETUDIANT, // Rôle Etudiant
-            ]);
+        $etudiant = Etudiant::create([
+            'user_id' => $user->id,
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+        ]);
 
-            // Re-create the associated Etudiant profile with minimal info
-            $etudiant = Etudiant::create([
-                'user_id' => $user->id,
-                'nom' => $request->nom,
-                'prenom' => $request->prenom,
-                'email' => $request->email,
-                // Other fields will be null by default (ensure they are nullable in migration)
-            ]);
+        event(new Registered($user));
 
-            DB::commit();
+        Auth::login($user);
 
-            event(new Registered($user));
-
-            Auth::login($user);
-
-            // Rediriger vers le dashboard étudiant
-            return redirect()->route('etudiant.dashboard'); // Assurez-vous que cette route existe
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error("Erreur inscription étudiant: " . $e->getMessage());
-            // Flash all inputs now
-            return redirect()->back()
-                     // ->withInput($request->only('email')) // Flash all inputs
-                     ->withInput()
-                     ->with('error', "Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
-        }
+        return redirect()->route('profile.setup.etudiant');
     }
 
     /**
@@ -100,53 +78,32 @@ class RegisteredUserController extends Controller
      */
     public function storeRecruteur(Request $request): RedirectResponse
     {
-         $request->validate([
-            // Add validation for nom_entreprise
+        $request->validate([
             'nom_entreprise' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // nom_entreprise n'est plus validé ici
+            'telephone' => ['required', 'string', 'min:8', 'max:15'],
         ]);
 
-        DB::beginTransaction();
-        try {
-            // Keep username generation from email for User model
-            $emailParts = explode('@', $request->email);
-            $userName = $emailParts[0];
+        $user = User::create([
+            'name' => $request->nom_entreprise, // Ajout du champ name
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => User::ROLE_RECRUTEUR,
+        ]);
 
-            // Créer l'utilisateur
-            $user = User::create([
-                'name' => $userName, // Utilise la partie locale de l'email
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => User::ROLE_RECRUTEUR,
-            ]);
+        $entreprise = Entreprise::create([
+            'user_id' => $user->id,
+            'nom' => $request->nom_entreprise,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+        ]);
 
-            // Create the associated Entreprise profile with minimal info
-            $entreprise = Entreprise::create([
-                'user_id' => $user->id,
-                'nom' => $request->nom_entreprise, // Use submitted name
-                'email' => $request->email,
-                // Other fields will be null (ensure nullable in migration)
-            ]);
+        event(new Registered($user));
 
-            DB::commit();
+        Auth::login($user);
 
-            event(new Registered($user));
-
-            Auth::login($user);
-
-            // Rediriger vers le dashboard recruteur avec le bon nom de route
-            return redirect()->route('entreprises.dashboard');
-
-         } catch (\Exception $e) {
-             DB::rollBack();
-             // Log::error("Erreur inscription recruteur: " . $e->getMessage());
-             // Renvoyer un message d'erreur plus générique si le nom d'entreprise était la cause
-             return redirect()->back()
-                      ->withInput() // Flash all inputs
-                      ->with('error', "Une erreur est survenue l'inscription. Veuillez réessayer.");
-         }
+        return redirect()->route('profile.setup.recruteur');
     }
 
     // La méthode create originale de Breeze n'est plus utilisée directement
