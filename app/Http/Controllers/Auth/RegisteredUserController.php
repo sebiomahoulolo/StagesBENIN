@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->nom . ' ' . $request->prenom, // Ajout du champ name
+            'name' => $request->nom . ' ' . $request->prenom,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => User::ROLE_ETUDIANT,
@@ -56,11 +56,15 @@ class RegisteredUserController extends Controller
             'telephone' => $request->telephone,
         ]);
 
+        // Créer le profil CV pour l'étudiant
+        $cvProfile = $etudiant->cvProfile()->create([]);
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect()->route('profile.setup.etudiant');
+        // Rediriger vers l'édition du CV avec un message d'avertissement
+        return redirect()->route('etudiants.cv.edit')->with('warning', 'Bienvenue ! Pour continuer, veuillez compléter votre CV. Cette étape est importante pour augmenter vos chances de décrocher un stage.');
     }
 
     /**

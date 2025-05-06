@@ -1,1 +1,5 @@
-php artisan optimize:clear
+php artisan make:model DemandeEmploye
+php artisan make:controller Entreprises/DemandeEmployeController --resource
+php artisan make:migration create_demande_employes_table
+php artisan make:controller Admin/DemandeEmployeController
+mkdir -p resources/views/entreprises/demandes resources/views/admin/demandes

@@ -14,17 +14,17 @@
                     <form action="{{ route('profile.setup.recruteur.save') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Spécialité -->
+                        <!-- Secteur -->
                         <div class="mb-3">
-                            <label for="specialite_id" class="form-label">Domaine de spécialité</label>
-                            <select class="form-select @error('specialite_id') is-invalid @enderror" 
-                                    id="specialite_id" name="specialite_id" required>
-                                <option value="">Choisir une spécialité</option>
-                                @foreach($specialites as $specialite)
-                                    <option value="{{ $specialite->id }}">{{ $specialite->nom }}</option>
+                            <label for="secteur_id" class="form-label">Secteur d'activité</label>
+                            <select class="form-select @error('secteur_id') is-invalid @enderror" 
+                                    id="secteur_id" name="secteur_id" required>
+                                <option value="">Choisir un secteur d'activité</option>
+                                @foreach($secteurs as $secteur)
+                                    <option value="{{ $secteur->id }}">{{ $secteur->nom }}</option>
                                 @endforeach
                             </select>
-                            @error('specialite_id')
+                            @error('secteur_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

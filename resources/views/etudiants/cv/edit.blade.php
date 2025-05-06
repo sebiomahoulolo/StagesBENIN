@@ -26,6 +26,12 @@
          </div>
      </div>
 
+     @if (session()->has('warning'))
+         <div class="alert alert-warning mb-4">
+             {{ session('warning') }}
+         </div>
+     @endif
+
      @if (session()->has('message'))
          <div class="alert alert-success mb-4" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)">
              {{ session('message') }}

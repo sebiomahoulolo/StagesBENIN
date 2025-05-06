@@ -33,6 +33,8 @@ class EtudiantController extends Controller
                 'references' => fn($query) => $query->orderBy('order', 'asc')
             ])->first();
 
+            $nom_complet = $etudiant->nom . ' ' . $etudiant->prenom;
+
             // Si l'étudiant n'a pas encore de profil CV (cas rare mais possible)
             if (!$cvProfile) {
                 // Option 1: Rediriger avec un message
@@ -56,7 +58,7 @@ class EtudiantController extends Controller
             Log::info("Admin visualise les détails de l'étudiant ID: {$etudiant->id}, Profile ID: {$cvProfile->id}");
 
             // Passer le $cvProfile (potentiellement créé à la volée ou existant) à la vue
-            return view('admin.etudiants.show', compact('cvProfile', 'etudiant'));
+            return view('admin.etudiants.show', compact('cvProfile', 'etudiant', 'nom_complet'));
 
         } catch (\Exception $e) {
             Log::error("Erreur admin lors de la visualisation des détails de l'étudiant ID {$etudiant->id}: " . $e->getMessage(), ['exception' => $e]);

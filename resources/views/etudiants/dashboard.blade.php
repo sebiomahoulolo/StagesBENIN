@@ -139,7 +139,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.25rem;
-            border-bottom: 1px solid #e5e7eb;
+            /* border-bottom: 1px solid #e5e7eb; */
             padding-bottom: 0.75rem;
         }
         
@@ -268,7 +268,7 @@
             text-align: center;
             background-color: #fff;
             border-radius: 12px;
-            border: 6px solid #0d6efd;
+            border: 2px solid #0d6efd;
             padding: 1rem 0.5rem;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -473,24 +473,24 @@
         }
         
         .section-container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            /* background-color: #fff; */
+            /* border-radius: 12px; */
+            /* box-shadow: 0 4px 15px rgba(0,0,0,0.08); */
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
         }
         
-        .section-container:hover {
+        /* .section-container:hover {
             box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
+        } */
     </style>
 @endpush
 
     {{-- Section des fonctions principales (tirées de la sidebar) --}}
     <div class="section-container animate-fadeInUp delay-100">
         <div class="section-header">
-            <h2 class="section-title">Fonctions principales</h2>
+            <h2 class="section-title">Tableau de Bord</h2>
         </div>
         
         <div class="main-functions-grid">
@@ -510,11 +510,11 @@
                 <span class="main-function-title">Boostage</span>
             </a>
             <a href="{{ route('etudiants.boost-status') }}" class="main-function-item">
-    <div class="main-function-icon color-orange">
-        <i class="fas fa-star"></i> <!-- Changement de l'icône ici -->
-    </div>
-    <span class="main-function-title">Status de boostage</span>
-</a>
+                <div class="main-function-icon color-orange">
+                    <i class="fas fa-star"></i> <!-- Changement de l'icône ici -->
+                </div>
+                <span class="main-function-title">Status de boostage</span>
+            </a>
 
             {{-- Éditeur CV --}}
             <a href="{{ Auth::user()->etudiant?->cvProfile?->id ? route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant->cvProfile->id]) : route('etudiants.cv.edit', ['cvProfile' => 'new']) }}" class="main-function-item">
@@ -644,7 +644,7 @@
     </div>
 
     {{-- Section Activité récente et Événements à venir (côte à côte sur écrans larges) --}}
-    <div class="row gx-4 animate-fadeInUp delay-200"> {{-- Utilise les gouttières Bootstrap pour l'espacement horizontal --}}
+    <!-- <div class="row gx-4 animate-fadeInUp delay-200"> {{-- Utilise les gouttières Bootstrap pour l'espacement horizontal --}}
         {{-- Colonne gauche: Activité récente --}}
         <div class="col-lg-6 mb-4 mb-lg-0"> {{-- Prend la moitié de la largeur sur les grands écrans, pleine largeur en dessous --}}
             <div class="section-container">
@@ -709,10 +709,10 @@
                 </div>
             </div>
         </div>
-    </div> {{-- Fin .row --}}
+    </div>  -->
 
     {{-- Section Entretiens programmés --}}
-    @isset($entretiens)
+    <!-- @isset($entretiens)
         @if($entretiens->count() > 0)
             <div class="upcoming-interviews animate-fadeInUp delay-300">
                 <div class="section-container">
@@ -740,7 +740,7 @@
                 </div>
             </div>
         @endif
-    @endisset
+    @endisset -->
 
 @endsection
 {{-- Fin de la section de contenu --}}

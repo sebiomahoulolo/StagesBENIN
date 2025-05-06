@@ -242,7 +242,7 @@
     <div class="profile-banner">
         <img src="{{ Storage::url($cvProfile->photo_cv_path) }}" alt="Avatar" class="profile-banner-avatar">
         <div>
-            <h3>{{ $etudiant->nom_complet ?? 'Étudiant Inconnu' }}</h3>
+            <h3>{{ $nom_complet ?? 'Étudiant Inconnu' }}</h3>
             <p>{{ $cvProfile->titre_profil ?? ($etudiant->filiere ? ($etudiant->filiere->nom ?? $etudiant->filiere) . ' - ' . ($etudiant->niveau->nom ?? $etudiant->niveau) : 'Profil non complété') }}</p>
         </div>
     </div>
