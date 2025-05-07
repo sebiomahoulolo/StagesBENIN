@@ -486,7 +486,7 @@
      {{-- Or use @stack/'modals' --}}
 
      <!-- Event Modal -->
-     <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
        <div class="modal-dialog modal-lg">
          <div class="modal-content">
            <div class="modal-header">
@@ -543,6 +543,22 @@
                      <label for="event_image" class="form-label">Image (affiche)</label>
                      <input type="file" class="form-control" id="event_image" name="image" accept="image/*">
                    </div>
+                   <!-- Début ajout option ticket -->
+                   <div class="row">
+                     <div class="col-md-6 mb-3">
+                       <label for="event_requires_ticket" class="form-label">Vente de ticket</label>
+                       <select class="form-select" id="event_requires_ticket" name="requires_ticket" onchange="toggleTicketPrice()">
+                         <option value="non">Non</option>
+                         <option value="oui">Oui</option>
+                       </select>
+                     </div>
+                     <div class="col-md-6 mb-3" id="ticket_price_container" style="display: none;">
+                       <label for="event_ticket_price" class="form-label">Prix du ticket*</label>
+                       <input type="number" class="form-control" id="event_ticket_price" name="ticket_price" min="0" step="0.01" required>
+                     </div>
+                   </div>
+                   <!-- Fin ajout option ticket -->
+                   
                </div>
                <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -552,6 +568,26 @@
          </div>
        </div>
      </div>
+
+     <!-- Script pour gérer l'affichage du champ prix -->
+     <script>
+       function toggleTicketPrice() {
+         const requiresTicket = document.getElementById('event_requires_ticket').value;
+         const priceContainer = document.getElementById('ticket_price_container');
+         
+         if (requiresTicket === 'oui') {
+           priceContainer.style.display = 'block';
+         } else {
+           priceContainer.style.display = 'none';
+           document.getElementById('event_ticket_price').value = '';
+         }
+       }
+       
+       // Exécuter au chargement de la page pour initialiser l'état
+       document.addEventListener('DOMContentLoaded', function() {
+         toggleTicketPrice();
+       });
+     </script>
 
      <!-- Student Modal -->
      <div class="modal fade" id="etudiantModal" tabindex="-1" aria-labelledby="etudiantModalLabel" aria-hidden="true">

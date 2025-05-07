@@ -12,6 +12,16 @@ class PageController extends Controller
     
   
 
+    public function evenements() {
+        $events = Event::whereNotNull('ticket_price')
+                       ->where('ticket_price', '>', 0)
+                       ->where('is_published', 1)
+                       ->orderBy('start_date', 'asc')
+                       ->get();
+    
+        return view('pages.evenements', compact('events'));
+    }
+    
     
 
     public function index()
@@ -64,10 +74,7 @@ class PageController extends Controller
         return view('etudiants.offres.index'); 
     }
 
-    public function evenements()
-    {
-        return view('pages.evenements'); 
-    } public function publication()
+    public function publication()
     {
         return view('pages.publication'); 
     }

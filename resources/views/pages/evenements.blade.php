@@ -159,6 +159,21 @@
                             <input type="number" class="form-control" id="event_max_participants" name="max_participants" min="1">
                         </div>
                     </div>
+                    <!-- Début ajout option ticket -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="event_requires_ticket" class="form-label">Vente de ticket</label>
+                            <select class="form-select" id="event_requires_ticket" name="requires_ticket" onchange="toggleTicketPrice()">
+                                <option value="non">Non</option>
+                                <option value="oui">Oui</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3" id="ticket_price_container" style="display: none;">
+                            <label for="event_ticket_price" class="form-label">Prix du ticket* </label>
+                            <input type="number" class="form-control" id="event_ticket_price" name="ticket_price" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <!-- Fin ajout option ticket -->
                     <div class="mb-3">
                         <label for="event_image" class="form-label">Image (affiche)</label>
                         <input type="file" class="form-control" id="event_image" name="image" accept="image/*">
@@ -172,6 +187,26 @@
         </div>
     </div>
 </div>
+
+<!-- Script pour gérer l'affichage du champ prix -->
+<script>
+    function toggleTicketPrice() {
+        const requiresTicket = document.getElementById('event_requires_ticket').value;
+        const priceContainer = document.getElementById('ticket_price_container');
+        
+        if (requiresTicket === 'oui') {
+            priceContainer.style.display = 'block';
+        } else {
+            priceContainer.style.display = 'none';
+            document.getElementById('event_ticket_price').value = '';
+        }
+    }
+    
+    // Exécuter au chargement de la page pour initialiser l'état
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleTicketPrice();
+    });
+</script>
 
 <script>
 // 1. D'abord, modifions le script d'inscription
@@ -687,9 +722,73 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal" id="modalRegisterBtn">
                                     S'inscrire
                                 </button>
-                                <button type="button" class="btn btn-outline-primary" id="">
-                                    Acheter un ticket
-                                </button>
+<!-- Vérification et affichage des boutons pour chaque événement -->
+@foreach($events as $event)
+    @if(!is_null($event->ticket_price) && $event->ticket_price > 0)
+        <button type="button" class="btn btn-outline-primary" id="buy-ticket-btn-{{ $event->id }}" 
+                onclick="downloadTicket({{ $event->id }}, '{{ number_format($event->ticket_price, 0, ',', ' ') }}')">
+            Acheter un ticket ({{ number_format($event->ticket_price, 0, ',', ' ') }} FCFA)
+        </button>
+    @endif
+@endforeach
+</div>
+
+<!-- Script JavaScript pour gérer les téléchargements -->
+<script>
+    function downloadTicket(eventId, ticketPrice) {
+        const button = document.getElementById(`buy-ticket-btn-${eventId}`);
+
+        // Vérifier si le bouton existe avant de le manipuler
+        if (!button) {
+            console.error("Bouton non trouvé pour l'événement ID : " + eventId);
+            return;
+        }
+
+        // Désactiver le bouton et afficher un message de chargement
+        button.innerHTML = 'Préparation du ticket...';
+        button.disabled = true;
+
+        // Création d'un lien invisible pour télécharger le ticket
+        const link = document.createElement('a');
+        link.href = `{{ url("/events") }}/` + eventId + '/generate-ticket';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+
+        // Restaurer le bouton après un court délai
+        setTimeout(() => {
+            button.innerHTML = `Acheter un ticket (${ticketPrice} FCFA)`;
+            button.disabled = false;
+        }, 3000);
+    }
+</script>
+
+
+<!-- Alternative avec un formulaire (plus fiable dans certains navigateurs) -->
+{{--
+@if($event->ticket_price !== null)
+    <form action="{{ route('events.generate-ticket', $event->id) }}" method="GET" target="_blank">
+        <button type="submit" class="btn btn-outline-primary" id="buy-ticket-btn">
+            Acheter un ticket ({{ number_format($event->ticket_price, 0, ',', ' ') }} FCFA)
+        </button>
+    </form>
+@endif
+--}}
+
+<!-- Alternative avec la colonne requires_ticket -->
+<!-- Si vous stockez à la fois requires_ticket et ticket_price -->
+{{-- 
+@if($event->requires_ticket == 'oui' && $event->ticket_price !== null)
+    <button type="button" class="btn btn-outline-primary" id="buy-ticket-btn">
+        Acheter un ticket
+    </button>
+@endif
+--}}
+
+<!-- Si vous utilisez seulement la valeur du ticket pour déterminer si la vente est activée -->
+ 
+
+
                             </div>
                         </div>
                     </div>
@@ -778,34 +877,19 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-<!-- Modifiez également le Modal d'événement pour gérer les messages d'erreur -->
-<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eventModalLabel">Ajouter un événement</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="eventForm" action="{{ route('events.store') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
-                @csrf <!-- CSRF Token for Laravel -->
-                <!-- Les messages d'erreur seront insérés ici par JavaScript -->
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="event_title" class="form-label">Titre de l'événement*</label>
-                        <input type="text" class="form-control" id="event_title" name="title" required>
-                        <div class="invalid-feedback">Veuillez saisir un titre.</div>
-                    </div>
-                    <!-- Reste du formulaire inchangé -->
-                    <!-- ... -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary submit-btn" id="submitEvent">Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+<script>
+    function togglePriceField() {
+        var sellTickets = document.getElementById('sell_tickets').value;
+        var ticketPriceField = document.getElementById('ticket_price_field');
+
+        if (sellTickets === 'oui') {
+            ticketPriceField.style.display = 'block';
+        } else {
+            ticketPriceField.style.display = 'none';
+        }
+    }
+</script>
 
 <!-- Modifier le modal de confirmation -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">

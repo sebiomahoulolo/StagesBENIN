@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tier', function (Blueprint $table) {
+        
             $table->id(); // Colonne ID auto-incrémentée (bigint unsigned)
 
             // Clé étrangère vers la table users

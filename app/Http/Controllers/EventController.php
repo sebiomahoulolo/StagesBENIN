@@ -5,6 +5,7 @@ use App\Models\Event;
 use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;         // Moins utilisé maintenant
@@ -12,21 +13,70 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;       // Pour le débogage
 use Illuminate\Support\Str;             // Pour le traitement d'image
 use Carbon\Carbon; // Pour les dates
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
+    // Vérification dans EventController.php
 
-    public function generatePDF($id)
+
+ 
+    public function downloadTicket($eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $pdf = Pdf::loadView('evenements.event-details', compact('event'));
+        return $pdf->download('ticket-'.$event->id.'.pdf');
+        
+    }
+ 
+
+  
+    public function generateTicket($id)
     {
         try {
             $event = Event::findOrFail($id);
-            // Assurez-vous que la vue 'evenements.event-details' existe et est adaptée pour dompdf
-            $pdf = Pdf::loadView('evenements.event-details', compact('event'));
-            return $pdf->download('ticket-' . Str::slug($event->title) . '.pdf'); // Utiliser Str::slug
-        } catch (\Exception $e) {
-            Log::error("Erreur génération PDF Event ID {$id}: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Impossible de générer le ticket PDF.');
+    
+            if ($event->ticket_price === null) {
+                return redirect()->back()->with('error', 'Cet événement ne propose pas de tickets à vendre.');
+            }
+    
+            // Génère l’URL unique de vérification
+            $verificationUrl = route('events.verify', [
+                'id' => $event->id,
+                'reference' => strtoupper(substr(md5($event->id . time()), 0, 10))
+            ]);
+    
+            // Génère le QR code en SVG (format texte compatible avec les PDF)
+            $qrCodeSvg = QrCode::format('svg')->size(120)->generate($verificationUrl);
+    
+            // Charge la vue PDF avec le QR code inclus
+            $pdf = PDF::loadView('evenements.event-details', compact('event', 'qrCodeSvg'));
+    
+            return $pdf->download('ticket-' . Str::slug($event->title) . '.pdf');
+    
+        } catch (\Throwable $e) {
+            Log::error("Erreur inattendue lors de la génération du ticket pour l'événement ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue pendant la génération du ticket.');
         }
+    }
+    
+    
+    
+
+   /**
+     * Vérifie un ticket d'événement
+     * 
+     * @param int $id ID de l'événement
+     * @param string $reference Référence unique du ticket
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyTicket($id, $reference)
+    {
+  return view('evenements.verify-ticket', [
+            'event' => Event::findOrFail($id),
+            'reference' => $reference,
+            'valid' => true // À remplacer par une vérification réelle
+        ]);
     }
 
     // --- Méthodes publiques ---

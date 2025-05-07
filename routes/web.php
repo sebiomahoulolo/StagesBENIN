@@ -193,7 +193,10 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     Route::put('/candidatures/{candidature}/statut', [App\Http\Controllers\Admin\CandidatureController::class, 'updateStatut'])->name('candidatures.updateStatut');
     Route::get('/candidatures/{candidature}', [App\Http\Controllers\Admin\CandidatureController::class, 'show'])->name('candidatures.show');
 });
+Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
+Route::get('/events/{id}/verify/{reference}', [EventController::class, 'verifyTicket'])->name('events.verify');
 
+Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket']);
 
 Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudiants.')->group(function () {
 
@@ -209,7 +212,7 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     Route::get('/evenements', [EventController::class, 'upcomingForStudent'])->name('evenements.upcoming');
     Route::get('/evenements/{id}', [EventController::class, 'showForStudent'])->name('evenements.show');
     Route::post('/evenements/{id}/register', [EventController::class, 'registerStudent'])->name('evenements.register');
-
+   
     Route::get('/profil', [EtudiantProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profil', [EtudiantProfileController::class, 'updateEtudiantInfo'])->name('profile.updateEtudiantInfo'); // Pour infos spécifiques étudiant
     Route::post('/profil/photo', [EtudiantProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');      // Pour la photo
