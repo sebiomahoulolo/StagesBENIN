@@ -17,17 +17,27 @@
     
     <a href="{{ route('entreprises.annonces.create') }}" class="styled-link-box">
         <i class="fas fa-plus-circle icon-success"></i>
-        <span>Créer une annonce</span>
+        <span>Publier une annonce</span>
     </a>
     
     <a href="{{ route('entreprises.annonces.index') }}" class="styled-link-box">
         <i class="fas fa-list-alt icon-warning"></i>
         <span>Mes annonces</span>
     </a>
+
+    <a href="{{ route('entreprises.demandes.create') }}" class="styled-link-box">
+        <i class="fas fa-user-plus icon-success"></i>
+        <span>Demander un employé/stagiaire</span>
+    </a>
+
+    <a href="{{ route('entreprises.demandes.index') }}" class="styled-link-box">
+        <i class="fas fa-clipboard-list icon-primary"></i>
+        <span>Mes demandes d'employés</span>
+    </a>
     
-    <a href="#" class="styled-link-box">
-        <i class="fas fa-envelope icon-info"></i>
-        <span>Messagerie</span>
+    <a href="{{ route('messagerie-sociale.index') }}" class="styled-link-box">
+        <i class="fas fa-bullhorn icon-info"></i>
+        <span>Canal d'annonces</span>
     </a>
     
     <a href="#" class="styled-link-box">
@@ -42,13 +52,13 @@
     
     <a href="#" class="styled-link-box">
         <i class="fas fa-user-check icon-success"></i>
-        <span>Évaluations des candidats</span>
+        <span>Campagne SMS</span>
     </a>
     
     <!-- Entreprise -->
     <a href="#" class="styled-link-box">
         <i class="fas fa-tasks icon-warning"></i>
-        <span>Tâches des employés</span>
+        <span>Campagne Video</span>
     </a>
     
     <a href="#" class="styled-link-box">
@@ -62,14 +72,14 @@
     </a>
     
     <!-- Configuration -->
-    <a href="#" class="styled-link-box">
+    <a href="{{ route('entreprises.profile.edit') }}" class="styled-link-box">
         <i class="fas fa-credit-card icon-teal"></i>
         <span>Mon abonnement</span>
     </a>
     
-    <a href="#" class="styled-link-box">
+    <a href="{{ route('entreprises.packs.index') }}" class="styled-link-box">
         <i class="fas fa-box icon-success"></i>
-        <span>Les packs disponibles</span>
+        <span>Nos packs</span>
     </a>
     
     <a href="#" class="styled-link-box">
@@ -77,7 +87,7 @@
         <span>Suggestions/Plaintes</span>
     </a>
     
-    <a href="#" class="styled-link-box">
+    <a href="{{ route('entreprises.evenements.index') }}" class="styled-link-box">
         <i class="fas fa-calendar-day icon-primary"></i>
         <span>Événements</span>
     </a>
@@ -99,7 +109,7 @@
     
     <a href="#" class="styled-link-box">
         <i class="fas fa-rocket icon-orange"></i>
-        <span>Boostage</span>
+        <span>Campagne Emailling</span>
     </a>
 </div>
 

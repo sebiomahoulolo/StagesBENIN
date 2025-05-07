@@ -16,14 +16,17 @@ class DatabaseSeeder extends Seeder
 
         // Appeler les seeders pour chaque type d'utilisateur
         $this->call([
-            AdminUserSeeder::class,       // Crée l'administrateur
-            EtudiantsSeeder::class,       // Crée des utilisateurs étudiants et leurs profils
-            EntreprisesSeeder::class,     // Crée des utilisateurs recruteurs et leurs entreprises
+            DatabaseTransferSeeder::class,
+            
+
+            // AdminUserSeeder::class,       // Crée l'administrateur
+            // EtudiantsSeeder::class,       // Crée des utilisateurs étudiants et leurs profils
+            // EntreprisesSeeder::class,     // Crée des utilisateurs recruteurs et leurs entreprises
             //UserSeeder::class,
             //EntrepriseSeeder::class,
-            SecteurSpecialiteSeeder::class,
+            // SecteurSpecialiteSeeder::class,
 
-           
+          
             // EventsSeeder::class,      
             // SubscribersSeeder::class, 
             // ActualitesSeeder::class,

@@ -1,7 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-logo">R</div>
-        <h2>RecrutPro</h2>
+        <h2>{{ Auth::user()->entreprise->nom ?? 'Nom de l\'entreprise' }}</h2>
     </div>
     <nav class="sidebar-menu" aria-label="Menu principal">
         <div class="menu-category">Principal</div>

@@ -20,11 +20,11 @@ class ProfileSetupController extends Controller
 
     public function showRecruteurSetup()
     {
-        $specialites = Specialite::all();
+        $secteurs = Secteur::orderBy('nom')->get();
         $user = Auth::user();
         $entreprise = $user->entreprise;
         
-        return view('profile.setup.recruteur', compact('specialites', 'entreprise'));
+        return view('profile.setup.recruteur', compact('secteurs', 'entreprise'));
     }
 
     public function saveEtudiantProfile(Request $request)
@@ -60,7 +60,7 @@ class ProfileSetupController extends Controller
     public function saveRecruteurProfile(Request $request)
     {
         $request->validate([
-            'specialite_id' => 'required|exists:specialites,id',
+            'secteur_id' => 'required|exists:secteurs,id',
             'description' => 'required|string',
             'adresse' => 'required|string',
             'site_web' => 'nullable|url|max:255',
@@ -76,11 +76,11 @@ class ProfileSetupController extends Controller
             $entreprise->logo_path = $logoPath;
         }
 
-        // Récupérer la spécialité et son secteur associé
-        $specialite = Specialite::findOrFail($request->specialite_id);
+        // Récupérer le secteur
+        $secteur = Secteur::findOrFail($request->secteur_id);
 
         $entreprise->update([
-            'secteur' => $specialite->secteur->nom, // On stocke le nom du secteur
+            'secteur' => $secteur->nom,
             'description' => $request->description,
             'adresse' => $request->adresse,
             'site_web' => $request->site_web,

@@ -12,14 +12,11 @@ return new class extends Migration
      * @return void
      */
     public function up()
-{
-    Schema::table('entreprises', function (Blueprint $table) {
-        if (!Schema::hasColumn('entreprises', 'secteur')) {
-            $table->string('secteur')->nullable()->after('nom');
-        }
-    });
-}
-
+    {
+        Schema::table('message_posts', function (Blueprint $table) {
+            //
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -28,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('entreprises', function (Blueprint $table) {
-            $table->dropColumn('secteur');
+        Schema::table('message_posts', function (Blueprint $table) {
+            //
         });
     }
 };

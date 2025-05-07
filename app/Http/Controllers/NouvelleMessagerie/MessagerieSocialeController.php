@@ -32,7 +32,7 @@ class MessagerieSocialeController extends Controller
         } elseif ($user->isEtudiant()) {
             return view('nouvelle-messagerie.etudiant.index', compact('posts'));
         } elseif ($user->isRecruteur()) {
-            return view('nouvelle-messagerie.recruteur.index', compact('posts'));
+            return view('nouvelle-messagerie.entreprise.index', compact('posts'));
         } else {
             // Vue par défaut si aucun type spécifique reconnu
             return view('nouvelle-messagerie.index', compact('posts'));
@@ -97,7 +97,7 @@ class MessagerieSocialeController extends Controller
         if ($user->isAdmin()) {
             return view('nouvelle-messagerie.create-post');
         } elseif ($user->isRecruteur()) {
-            return view('nouvelle-messagerie.recruteur.create-post');
+            return view('nouvelle-messagerie.entreprise.create-post');
         } else {
             // Vue par défaut
             return view('nouvelle-messagerie.create-post');
@@ -124,7 +124,7 @@ class MessagerieSocialeController extends Controller
         } elseif ($user->isEtudiant()) {
             return view('nouvelle-messagerie.etudiant.show-post', compact('post'));
         } elseif ($user->isRecruteur()) {
-            return view('nouvelle-messagerie.recruteur.show-post', compact('post'));
+            return view('nouvelle-messagerie.entreprise.show-post', compact('post'));
         } else {
             // Vue par défaut
             return view('nouvelle-messagerie.show-post', compact('post'));
@@ -154,7 +154,7 @@ class MessagerieSocialeController extends Controller
         } elseif ($user->isEtudiant()) {
             return view('nouvelle-messagerie.etudiant.show-post', compact('post', 'share'));
         } elseif ($user->isRecruteur()) {
-            return view('nouvelle-messagerie.recruteur.show-post', compact('post', 'share'));
+            return view('nouvelle-messagerie.entreprise.show-post', compact('post', 'share'));
         } else {
             // Vue par défaut
             return view('nouvelle-messagerie.show-post', compact('post', 'share'));
@@ -288,4 +288,4 @@ class MessagerieSocialeController extends Controller
         
         return redirect()->route('messagerie-sociale.show-post', $post);
     }
-} 
+}

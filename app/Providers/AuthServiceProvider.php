@@ -10,6 +10,8 @@ use App\Models\MessagePost;
 use App\Models\MessageComment;
 use App\Models\Annonce;
 use App\Policies\AnnoncePolicy;
+use App\Models\DemandeEmploye;
+use App\Policies\DemandeEmployePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Annonce::class => AnnoncePolicy::class,
+        DemandeEmploye::class => DemandeEmployePolicy::class, 
     ];
 
     /**

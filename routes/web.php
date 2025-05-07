@@ -192,6 +192,14 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     // Routes pour les candidatures
     Route::put('/candidatures/{candidature}/statut', [App\Http\Controllers\Admin\CandidatureController::class, 'updateStatut'])->name('candidatures.updateStatut');
     Route::get('/candidatures/{candidature}', [App\Http\Controllers\Admin\CandidatureController::class, 'show'])->name('candidatures.show');
+
+    // Routes pour la gestion des demandes d'employés
+    Route::prefix('demandes')->name('demandes.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'index'])->name('index');
+        Route::get('/{demande}', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'show'])->name('show');
+        Route::patch('/{demande}/status', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/{demande}', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'destroy'])->name('destroy');
+    });
 });
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
 Route::get('/events/{id}/verify/{reference}', [EventController::class, 'verifyTicket'])->name('events.verify');
@@ -270,6 +278,36 @@ Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entr
     // Routes pour la CV-thèque
     Route::get('/cvtheque', [App\Http\Controllers\Entreprise\CvthequeController::class, 'index'])->name('cvtheque.index');
     Route::get('/cvtheque/{id}', [App\Http\Controllers\Entreprise\CvthequeController::class, 'view'])->name('cvtheque.view');
+
+    // Route pour les packs entreprises (corrigé)
+    Route::get('/packs', [App\Http\Controllers\Entreprises\PackController::class, 'index'])->name('packs.index');
+
+    // Routes pour les événements entreprise
+    Route::prefix('evenements')->name('evenements.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Entreprises\EventController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Entreprises\EventController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Entreprises\EventController::class, 'store'])->name('store');
+        Route::get('/{event}', [App\Http\Controllers\Entreprises\EventController::class, 'show'])->name('show');
+        Route::delete('/{event}', [App\Http\Controllers\Entreprises\EventController::class, 'destroy'])->name('destroy');
+        Route::get('/{event}/edit', [App\Http\Controllers\Entreprises\EventController::class, 'edit'])->name('edit');
+        Route::put('/{event}', [App\Http\Controllers\Entreprises\EventController::class, 'update'])->name('update');
+    });
+
+    // Routes pour les demandes d'employés
+    Route::prefix('demandes')->name('demandes.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'store'])->name('store');
+        Route::get('/{demande}', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'show'])->name('show');
+        Route::get('/{demande}/edit', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'edit'])->name('edit');
+        Route::put('/{demande}', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'update'])->name('update');
+        Route::delete('/{demande}', [App\Http\Controllers\Entreprises\DemandeEmployeController::class, 'destroy'])->name('destroy');
+    });
+
+    // Enterprise social messaging routes
+    Route::prefix('messagerie-sociale')->name('messagerie-sociale.')->group(function () {
+        Route::post('/store-post', [App\Http\Controllers\EntrepriseMessagerieSocialeController::class, 'storePost'])->name('store-post');
+    });
 });
 
 // Routes du profil entreprise
@@ -428,6 +466,39 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/canal-messagerie/shared/{token}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showSharedPost'])
         ->name('messagerie-sociale.shared-post');
+});
+
+// Routes pour la messagerie entreprise
+Route::middleware(['auth', 'role:recruteur'])->group(function () {
+    Route::get('/entreprises/canal-messagerie', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'index'])
+        ->name('entreprises.messagerie-sociale.index');
+    
+    Route::get('/entreprises/canal-messagerie/posts/create', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'createPost'])
+        ->name('entreprises.messagerie-sociale.create-post');
+    
+    Route::post('/entreprises/canal-messagerie/posts', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'storePost'])
+        ->name('entreprises.messagerie-sociale.store-post');
+    
+    Route::get('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'showPost'])
+        ->name('entreprises.messagerie-sociale.show-post');
+    
+    Route::get('/entreprises/canal-messagerie/posts/{post}/edit', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'editPost'])
+        ->name('entreprises.messagerie-sociale.edit-post');
+    
+    Route::put('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'updatePost'])
+        ->name('entreprises.messagerie-sociale.update-post');
+    
+    Route::delete('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'destroyPost'])
+        ->name('entreprises.messagerie-sociale.destroy-post');
+    
+    Route::post('/entreprises/canal-messagerie/posts/{post}/comments', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'storeComment'])
+        ->name('entreprises.messagerie-sociale.store-comment');
+    
+    Route::delete('/entreprises/canal-messagerie/comments/{comment}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'destroyComment'])
+        ->name('entreprises.messagerie-sociale.destroy-comment');
+    
+    Route::post('/entreprises/canal-messagerie/posts/{post}/share', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'sharePost'])
+        ->name('entreprises.messagerie-sociale.share-post');
 });
 
 // Routes pour le boostage
