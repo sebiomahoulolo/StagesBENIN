@@ -549,7 +549,7 @@
             </a>
             
             {{-- Messagerie --}}
-            <a href="{{ route('messaging.index') }}" class="main-function-item">
+            <a href="{{ route('messagerie-sociale.index') }}" class="main-function-item">
                 <div class="main-function-icon color-purple">
                     <i class="fas fa-envelope"></i>
                 </div>
@@ -583,12 +583,12 @@
             </a>
 
             {{-- Canal d'annonces --}}
-            <a href="{{ route('messagerie-sociale.index') }}" class="main-function-item">
+            <!-- <a href="{{ route('messagerie-sociale.index') }}" class="main-function-item">
                 <div class="main-function-icon color-blue">
                     <i class="fas fa-bullhorn"></i>
                 </div>
                 <span class="main-function-title">Canal d'annonces</span>
-            </a>
+            </a> -->
 
             {{-- Cours en ligne --}}
             <a href="https://fhcschoolbenin.com/" target="_blank" class="main-function-item">
@@ -616,15 +616,6 @@
 
            
 
-            {{-- Déconnexion --}}
-            <a href="{{ route('logout') }}" class="main-function-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <div class="main-function-icon color-red">
-                    <i class="fas fa-sign-out-alt"></i>
-                </div>
-                <span class="main-function-title">Déconnexion</span>
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
-            
             {{-- Profil --}}
             <a href="{{ route('etudiants.profile.edit') }}" class="main-function-item">
                 <div class="main-function-icon color-blue">
@@ -640,6 +631,17 @@
                 </div>
                 <span class="main-function-title">Plainte/Suggestion</span>
             </a>
+
+
+            {{-- Déconnexion --}}
+            <a href="{{ route('logout') }}" class="main-function-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <div class="main-function-icon color-red">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span class="main-function-title">Déconnexion</span>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
+            
         </div>
     </div>
 

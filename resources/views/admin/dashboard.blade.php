@@ -20,19 +20,33 @@
        <span>Étudiants</span>
     </a>
 
+    <!-- NOUVEAU : Recrutements -->
+    <a href="{{ route('admin.annonces.index') }}" class="styled-link-box">
+        <i class="fas fa-user-tie icon-purple"></i>
+        <span> Recrutements</span>
+    </a>
+
+     <!-- NOUVEAU : Événements -->
+    <a href="{{ route('admin.evenements') }}" class="styled-link-box">
+        <i class="fas fa-calendar-alt icon-danger"></i>
+
+        <span>   Événements</span>
+    </a>
+
     <a href="{{ route('admin.entreprises_partenaires') }}" class="styled-link-box">
         <i class="fas fa-building icon-success"></i>
         <span>Entreprises partenaires</span>
     </a>
 
-    <a href="" class="styled-link-box">
-        <i class="fas fa-briefcase icon-warning"></i>
-        <span >Offres actives</span>
-    </a>
 
     <a href="{{ route('admin.actualites') }}" class="styled-link-box">
         <i class="fas fa-newspaper icon-info"></i>
           <span>Actualités</span>
+    </a>
+
+    <a href="{{ route('admin.demandes.index') }}" class="styled-link-box">
+        <i class="fas fa-user-plus icon-primary"></i>
+        <span>Demande d'employés</span>
     </a>
 
     <!-- <a href="{{ route('admin.annonces.index') }}" class="styled-link-box">
@@ -50,48 +64,24 @@
         <span>Catalogues
         </span>
     </a>
-<a href="" class="styled-link-box">
-    <i class="fas fa-laptop icon-primary"></i>
-    <span>Les logiciels</span>
-</a>
+    
 
-<a href="" class="styled-link-box">
-    <i class="fas fa-sort-numeric-up icon-success"></i>
-    <span>Le nombre d'insertion</span>
-</a>
-
-<a href="" class="styled-link-box">
-    <i class="fas fa-cogs icon-warning"></i>
-    <span>Programmes</span>
-</a>
-
-<a href="{{ route('admin.boost') }}" class="styled-link-box">
-    <i class="fas fa-file-alt icon-info"></i>
-    <span>Listes des boost</span>
-</a>
+    <a href="{{ route('admin.boost') }}" class="styled-link-box">
+        <i class="fas fa-file-alt icon-info"></i>
+        <span>Listes des boost</span>
+    </a>
 
     <a href="{{ route('messagerie-sociale.index') }}" class="styled-link-box">
         <i class="fas fa-bullhorn icon-orange"></i>
        <span>Canal d'annonces</span>
     </a>
- <a href="{{ route('admin.entreprises') }}" class="styled-link-box">
+    <a href="{{ route('admin.entreprises') }}" class="styled-link-box">
         <i class="fas fa-building icon-success"></i>
        <span>Entreprises
         </span>
     </a>
 
-    <!-- NOUVEAU : Recrutements -->
-     <a href="{{ route('admin.annonces.index') }}" class="styled-link-box">
-        <i class="fas fa-user-tie icon-purple"></i>
-        <span> Recrutements</span>
-    </a>
 
-     <!-- NOUVEAU : Événements -->
-    <a href="{{ route('admin.evenements') }}" class="styled-link-box">
-        <i class="fas fa-calendar-alt icon-danger"></i>
-
-        <span>   Événements</span>
-    </a>
 
      <!-- NOUVEAU : Plaintes et suggestions -->
      <a href="{{ route('admin.complaints.index') }}" class="styled-link-box">
@@ -99,6 +89,26 @@
         <span>Plaintes et suggestions</span>
     </a>
 
+
+    <a href="" class="styled-link-box">
+        <i class="fas fa-laptop icon-primary"></i>
+        <span>Les logiciels</span>
+    </a>
+
+    <a href="" class="styled-link-box">
+        <i class="fas fa-sort-numeric-up icon-success"></i>
+        <span>Le nombre d'insertion</span>
+    </a>
+
+    <a href="" class="styled-link-box">
+        <i class="fas fa-cogs icon-warning"></i>
+        <span>Programmes</span>
+    </a>
+
+    <a href="" class="styled-link-box">
+        <i class="fas fa-briefcase icon-warning"></i>
+        <span >Offres actives</span>
+    </a>
 
 
 

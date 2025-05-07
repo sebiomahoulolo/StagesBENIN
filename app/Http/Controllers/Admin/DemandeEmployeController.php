@@ -4,107 +4,120 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DemandeEmploye;
-use App\Models\SocialPost;
+// Supprimez App\Models\SocialPost si non utilisé dans CE contrôleur
+// use App\Models\SocialPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log; // Utile pour le débogage
+// Supprimez Storage et Str si non utilisés directement dans CE contrôleur
+// use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Str;
 
 class DemandeEmployeController extends Controller
 {
     public function index()
     {
         $demandes = DemandeEmploye::with('entreprise')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->latest() // Raccourci pour orderBy('created_at', 'desc')
+            ->paginate(15); // Ajout de la pagination pour de meilleures performances et UI
         return view('admin.demandes.index', compact('demandes'));
     }
 
     public function show(DemandeEmploye $demande)
     {
+        // Charger les relations pour éviter les requêtes N+1 dans la vue
+        $demande->load(['entreprise', 'admin']);
         return view('admin.demandes.show', compact('demande'));
     }
 
     public function updateStatus(Request $request, DemandeEmploye $demande)
     {
         $validated = $request->validate([
-            'statut' => 'required|in:approuvee,rejetee,en_cours',
-            'commentaire_admin' => 'nullable|string',
+            'statut' => 'required|in:approuvee,rejetee,en_cours', // Assurez-vous que 'en_cours' est un statut valide dans votre BDD
+            // 'motif_rejet' est utilisé dans la vue du modal, donc il devrait être ici
+            'motif_rejet' => 'nullable|string|max:1000', // Augmenter la limite si nécessaire
         ]);
 
-        $demande->update([
-            'statut' => $validated['statut'],
-            'commentaire_admin' => $validated['commentaire_admin'],
-            'admin_id' => Auth::id(),
-        ]);
+        // Logique pour le champ commentaire_admin vs motif_rejet
+        // Si le statut est 'rejetee', le commentaire_admin sera le motif_rejet.
+        // Sinon, il sera null ou vide si aucun motif n'est fourni pour d'autres statuts.
+        $commentaireAdmin = null;
+        if ($validated['statut'] === 'rejetee') {
+            $commentaireAdmin = $validated['motif_rejet'] ?? null;
+        } else {
+            // Si vous aviez un champ séparé pour les commentaires généraux,
+            // vous le récupéreriez ici. Actuellement, il semble que 'motif_rejet'
+            // serve de commentaire principal quand on rejette.
+            // $commentaireAdmin = $request->input('commentaire_admin_general'); // Exemple
+        }
 
-        return redirect()->route('admin.demandes.index')
-            ->with('success', 'Le statut de la demande a été mis à jour avec succès.');
+
+        try {
+            $demande->update([
+                'statut' => $validated['statut'],
+                // *** CORRECTION ICI ***
+                // Utiliser 'motif_rejet' comme nom de colonne dans la BDD
+                // si c'est ce qui est défini dans votre modèle et migration.
+                // Si vous avez une colonne 'commentaire_admin' et une 'motif_rejet',
+                // vous devez décider laquelle utiliser ou les remplir toutes les deux.
+                // En se basant sur le formulaire et le modèle, il semble que 'motif_rejet' soit la bonne colonne.
+                'motif_rejet' => $commentaireAdmin, // Affecte le motif de rejet
+                'admin_id' => Auth::id(), // L'ID de l'admin qui a fait la modification
+                // 'commentaire_admin' => $commentaireAdmin, // Décommentez si vous avez une colonne distincte 'commentaire_admin'
+            ]);
+
+            $message = 'Le statut de la demande a été mis à jour avec succès.';
+            if ($validated['statut'] === 'rejetee' && $commentaireAdmin) {
+                $message .= ' Motif du rejet enregistré.';
+            }
+
+            return redirect()->route('admin.demandes.index')
+                         ->with('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la mise à jour du statut de la demande #{$demande->id}: " . $e->getMessage());
+            return redirect()->back()
+                         ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
+        }
     }
 
     public function destroy(DemandeEmploye $demande)
     {
-        $demande->delete();
-        return redirect()->route('admin.demandes.index')
-            ->with('success', 'La demande a été supprimée avec succès.');
+        try {
+            $demande->delete();
+            return redirect()->route('admin.demandes.index')
+                           ->with('success', 'La demande a été supprimée avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la suppression de la demande #{$demande->id}: " . $e->getMessage());
+            return redirect()->route('admin.demandes.index')
+                           ->with('error', 'Une erreur est survenue lors de la suppression de la demande.');
+        }
     }
 
+    // Les méthodes createPost, storePost, indexPosts, showPost semblent appartenir
+    // à un contrôleur de messagerie sociale et non à la gestion des DemandeEmploye.
+    // Il faudrait les déplacer dans le contrôleur approprié si ce n'est pas déjà fait.
+    // Je vais les commenter pour l'instant dans ce contrôleur.
+
+    /*
     public function createPost()
     {
-        return view('messagerie-sociale.entreprise.create-post');
+        // return view('messagerie-sociale.entreprise.create-post'); // Probablement pour un autre contrôleur
     }
 
     public function storePost(Request $request)
     {
-        $request->validate([
-            'content' => 'required|string|min:5',
-            'attachments.*' => 'nullable|file|max:10240', // 10MB max per file
-        ]);
-
-        try {
-            $post = new SocialPost();
-            $post->content = $request->content;
-            $post->user_id = Auth::id();
-            $post->save();
-
-            // Handle attachments if any
-            if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $file) {
-                    $path = $file->store('posts_attachments', 'public');
-                    $post->attachments()->create([
-                        'file_path' => $path,
-                        'file_name' => $file->getClientOriginalName(),
-                        'file_type' => $file->getMimeType(),
-                        'file_size' => $file->getSize(),
-                    ]);
-                }
-            }
-
-            // Generate a share link
-            $shareToken = Str::random(32);
-            $shareLink = route('messagerie-sociale.shared', ['token' => $shareToken]);
-
-            // Store the share information
-            $post->shares()->create([
-                'user_id' => Auth::id(),
-                'token' => $shareToken,
-            ]);
-
-            return redirect()->route('messagerie-sociale.entreprise.index')
-                ->with('success', 'Annonce publiée avec succès!')
-                ->with('share_url', $shareLink);
-        } catch (\Exception $e) {
-            return back()->with('error', 'Erreur lors de la publication: ' . $e->getMessage());
-        }
+        // ... Logique de messagerie sociale ...
     }
 
     public function indexPosts()
     {
-        return view('messagerie-sociale.entreprise.index');
+        // return view('messagerie-sociale.entreprise.index'); // Probablement pour un autre contrôleur
     }
 
-    public function showPost(SocialPost $post)
+    public function showPost(SocialPost $post) // Modèle SocialPost utilisé ici
     {
-        return view('messagerie-sociale.entreprise.show-post', compact('post'));
+        // return view('messagerie-sociale.entreprise.show-post', compact('post')); // Probablement pour un autre contrôleur
     }
+    */
 }

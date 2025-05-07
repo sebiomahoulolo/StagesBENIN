@@ -27,11 +27,12 @@ class DemandeEmploye extends Model
         'date_limite',
         'lieu',
         'statut',
-        'motif_rejet',
+        'motif_rejet', // <-- Ce champ est utilisé
         'est_urgente',
         'est_active',
         'nombre_vues',
         'admin_id'
+        // 'commentaire_admin', // Ajoutez si vous avez une colonne distincte et voulez l'utiliser
     ];
 
     protected $casts = [
@@ -74,9 +75,9 @@ class DemandeEmploye extends Model
         return $query->where('statut', 'en_attente');
     }
     
-    // Peut être transformée en post pour la messagerie sociale
-    public function post()
-    {
-        return $this->morphOne(Post::class, 'postable');
-    }
+    // La relation postable n'est pas utilisée dans ce contexte direct de gestion admin.
+    // public function post()
+    // {
+    //     return $this->morphOne(Post::class, 'postable');
+    // }
 }
