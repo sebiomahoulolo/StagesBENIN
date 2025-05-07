@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Registration;
-use App\Models\User;
+use App\Models\User; // Assurez-vous que ce modèle est utilisé si nécessaire
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;         // Moins utilisé maintenant
+// use Illuminate\Support\Facades\DB; // Moins utilisé si Eloquent suffit
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Log;       // Pour le débogage
-use Illuminate\Support\Str;             // Pour le traitement d'image
-use Carbon\Carbon; // Pour les dates
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -20,9 +20,8 @@ class EventController extends Controller
     {
         try {
             $event = Event::findOrFail($id);
-            // Assurez-vous que la vue 'evenements.event-details' existe et est adaptée pour dompdf
             $pdf = Pdf::loadView('evenements.event-details', compact('event'));
-            return $pdf->download('ticket-' . Str::slug($event->title) . '.pdf'); // Utiliser Str::slug
+            return $pdf->download('ticket-' . Str::slug($event->title) . '.pdf');
         } catch (\Exception $e) {
             Log::error("Erreur génération PDF Event ID {$id}: " . $e->getMessage());
             return redirect()->back()->with('error', 'Impossible de générer le ticket PDF.');
@@ -33,243 +32,307 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::where('is_published', 1)
-                       ->where('end_date', '>=', now()) // Afficher aussi ceux en cours
-                       ->orderBy('start_date', 'asc') // Trier par date de début
+                       ->where('end_date', '>=', now())
+                       ->orderBy('start_date', 'asc')
                        ->paginate(9);
         return view('evenements.index', compact('events'));
     }
 
-
-
     // --- Méthodes Admin ---
-    public function events() // Pour la vue admin/evenements (Liste complète)
+    public function events()
     {
-        // Cette ligne fonctionnera maintenant grâce à la relation ajoutée au modèle Event
-        $events = Event::with('user')
-                       ->withCount('registrations') // Compte les inscriptions via la relation
-                       ->latest('start_date')
+        $events = Event::with('user') // Eager load l'utilisateur créateur
+                       ->withCount('registrations')
+                       ->latest('start_date') // Ou created_at si plus pertinent
                        ->paginate(10);
-        return view('admin.evenements', compact('events')); // Assurez-vous que cette vue existe
+        return view('admin.evenements', compact('events'));
     }
 
-    // Méthode pour afficher le formulaire de création admin
-    public function create() // Assurez-vous que la route existe: admin.events.create
+    public function create()
     {
-         return view('admin.events.create'); // Assurez-vous que cette vue existe
+         return view('admin.events.create');
+    }
+
+    public function store(Request $request)
+    {
+        Log::info('Début de la méthode store. Données reçues : ', $request->all());
+
+        $user = auth()->user(); // Récupère l'utilisateur authentifié
+        $user_id = $user ? $user->id : null; // ID de l'utilisateur, ou null si non connecté
+        
+        // L'email de l'utilisateur connecté sera utilisé s'il est disponible.
+        // Si non connecté (par exemple, API sans authentification), on prend celui du request s'il existe.
+        $email_to_use = $user ? $user->email : $request->input('email');
+
+        // S'assurer que l'email est présent pour la validation et l'enregistrement
+        if (!$email_to_use) {
+            Log::warning('Validation échouée : Email manquant et utilisateur non connecté.');
+            return response()->json([
+                'errors' => ['email' => ['L\'adresse email est requise.']],
+                'message' => 'L\'adresse email est requise.'
+            ], 422);
+        }
+        
+        // Ajouter l'email déterminé au request pour la validation
+        $requestData = $request->all();
+        $requestData['email'] = $email_to_use;
+
+
+        $validator = Validator::make($requestData, [
+            // Les champs first_name, last_name, phone_number sont optionnels comme dans votre code
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'email' => 'required|email|max:255', // Email est requis
+            'title' => 'required|string|max:255|unique:events,title', // Titre unique
+            'description' => 'nullable|string', // 'string' n'enlève pas les sauts de ligne
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'max_participants' => 'nullable|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048' // Ajout de webp
+        ], [
+            // Messages de validation personnalisés (optionnel mais bonne pratique)
+            'title.required' => 'Le titre de l\'événement est obligatoire.',
+            'title.unique' => 'Un événement avec ce titre existe déjà.',
+            'email.required' => 'L\'adresse email est obligatoire.',
+            'email.email' => 'Veuillez fournir une adresse email valide.',
+            'start_date.required' => 'La date de début est obligatoire.',
+            'start_date.after_or_equal' => 'La date de début ne peut pas être antérieure à aujourd\'hui.',
+            'end_date.required' => 'La date de fin est obligatoire.',
+            'end_date.after_or_equal' => 'La date de fin doit être égale ou postérieure à la date de début.',
+            'image.image' => 'Le fichier doit être une image (jpeg, png, jpg, gif, webp).',
+            'image.mimes' => 'Format d\'image non supporté. Uniquement jpeg, png, jpg, gif, webp.',
+            'image.max' => 'L\'image ne doit pas dépasser 2Mo.',
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Validation échouée pour la création d\'événement : ', $validator->errors()->toArray());
+            // Retourner une réponse JSON si c'est une API, sinon redirect pour formulaires web
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'errors' => $validator->errors(),
+                    'message' => 'Validation échouée, veuillez vérifier vos données.'
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validatedData = $validator->validated(); // Récupère les données validées
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            try {
+                $image = $request->file('image');
+                // Nom de fichier plus robuste pour éviter les conflits et caractères spéciaux
+                $imageName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/events'), $imageName);
+                $imagePath = $imageName;
+                 Log::info('Image téléchargée avec succès : ' . $imagePath);
+            } catch (\Exception $e) {
+                Log::error('Erreur lors du téléchargement de l\'image : ' . $e->getMessage());
+                 if ($request->expectsJson()) {
+                    return response()->json([
+                        'errors' => ['image' => ['Erreur lors du traitement de l\'image.']],
+                        'message' => 'Impossible de traiter l\'image.'
+                    ], 500);
+                }
+                return redirect()->back()->with('error', 'Erreur lors du téléchargement de l\'image.')->withInput();
+            }
+        }
+
+        try {
+            $eventData = [
+                'first_name' => $validatedData['first_name'] ?? null,
+                'last_name' => $validatedData['last_name'] ?? null,
+                'phone_number' => $validatedData['phone_number'] ?? null,
+                'email' => $validatedData['email'], // Email validé
+                'title' => $validatedData['title'],
+                // La description est prise directement des données validées
+                'description' => $validatedData['description'] ?? null,
+                'start_date' => $validatedData['start_date'],
+                'end_date' => $validatedData['end_date'],
+                'location' => $validatedData['location'] ?? null,
+                'type' => $validatedData['type'] ?? null,
+                'max_participants' => $validatedData['max_participants'] ?? null,
+                'image' => $imagePath,
+                'is_published' => false, // Par défaut non publié, admin devra valider/publier
+                'user_id' => $user_id // Peut être null si l'événement peut être créé par des non-connectés
+            ];
+            
+            $event = Event::create($eventData);
+
+            Log::info('Événement créé avec succès : ', ['event_id' => $event->id]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Événement créé avec succès. Il sera publié après validation par un administrateur.',
+                    'event' => $event
+                ], 201);
+            }
+            // Redirection pour les formulaires web classiques (admin)
+            return redirect()->route('admin.evenements')->with('success', 'Événement créé. Il sera publié après validation.');
+
+
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la création de l\'événement : ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            if ($request->expectsJson()) {
+                 return response()->json([
+                    'errors' => ['general' => ['Une erreur est survenue lors de la création de l\'événement.']],
+                    'message' => 'Échec de la création de l\'événement.'
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Erreur serveur lors de la création de l\'événement.')->withInput();
+        }
     }
 
 
+    public function show($id) // Devrait être pour la vue publique/étudiant
+    {
+        // Logique pour la vue 'etudiants.evenements.show'
+        // Si c'est le même que showForStudent, on peut fusionner ou appeler l'autre
+        return $this->showForStudent($id);
+    }
+
+    public function edit($id) // Pour l'admin
+    {
+        try {
+            $event = Event::findOrFail($id);
+             // Potentiellement, ajouter une vérification de politique (Policy)
+             // if (Auth::user()->cannot('update', $event)) {
+             //     abort(403);
+             // }
+            return view('admin.events.edit', compact('event')); // Vue pour l'édition admin
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('admin.evenements')->with('error', 'Événement non trouvé.');
+        }
+    }
+
+    public function update(Request $request, $id) // Pour l'admin
+    {
+        try {
+            $event = Event::findOrFail($id);
+             // Policy check
+             // if (Auth::user()->cannot('update', $event)) {
+             //     abort(403);
+             // }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('admin.evenements')->with('error', 'Événement non trouvé.');
+        }
+
+        // Validation similaire à store, mais en ignorant l'ID actuel pour 'unique'
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255|unique:events,title,' . $event->id,
+            'description' => 'nullable|string', // N'altère pas les sauts de ligne
+            'start_date' => 'required|date', // Pas de after_or_equal:today pour permettre correction
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'max_participants' => 'nullable|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'is_published' => 'sometimes|boolean' // Pour la case à cocher de publication
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validatedData = $validator->validated();
+
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($event->image && file_exists(public_path('images/events/' . $event->image))) {
+                @unlink(public_path('images/events/' . $event->image));
+            }
+            // Uploader la nouvelle
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/events'), $imageName);
+            $validatedData['image'] = $imageName;
+        } elseif ($request->has('remove_image')) { // Option pour supprimer l'image sans en uploader une nouvelle
+            if ($event->image && file_exists(public_path('images/events/' . $event->image))) {
+                @unlink(public_path('images/events/' . $event->image));
+            }
+            $validatedData['image'] = null;
+        }
 
 
+        // Gérer la publication explicitement
+        $validatedData['is_published'] = $request->has('is_published');
 
 
+        try {
+            $event->update($validatedData);
+            return redirect()->route('admin.evenements')->with('success', 'Événement mis à jour avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur MàJ event ID {$id}: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect()->back()->with('error', 'Erreur serveur lors de la mise à jour.')->withInput();
+        }
+    }
 
 
+    public function destroy($id) // Pour l'admin
+    {
+        try {
+            $event = Event::findOrFail($id);
+             // Policy check
+             // if (Auth::user()->cannot('delete', $event)) {
+             //     abort(403);
+             // }
 
+            // Supprimer l'image associée
+            if ($event->image && file_exists(public_path('images/events/' . $event->image))) {
+                 @unlink(public_path('images/events/' . $event->image));
+            }
+            // Les inscriptions pourraient être supprimées par cascade si défini dans la migration
+            // ou manuellement: Registration::where('event_id', $id)->delete();
+            $event->delete();
+            return redirect()->route('admin.evenements')
+                           ->with('success', 'Événement supprimé avec succès.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+             return redirect()->route('admin.evenements')->with('error', 'Événement non trouvé.');
+        } catch (\Exception $e) {
+             Log::error("Erreur suppression event ID {$id}: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+             return redirect()->route('admin.evenements')->with('error', 'Erreur serveur lors de la suppression.');
+        }
+    }
+
+    // Méthode pour changer le statut de publication (admin)
+    public function toggleStatus($id)
+    {
+         try {
+            $event = Event::findOrFail($id);
+            // Policy check?
+
+            $event->is_published = !$event->is_published;
+            $event->save();
+
+            $message = $event->is_published ? 'Événement publié avec succès.' : 'La publication de l\'événement a été annulée.';
+            return redirect()->back()->with('success', $message);
+         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+              return redirect()->back()->with('error', 'Événement non trouvé.');
+         }
+    }
 
 
     // --- Méthodes Étudiant ---
-
     public function upcomingForStudent()
     {
         $upcomingEvents = Event::where('is_published', 1)
-                             ->where('start_date', '>', now()) // Uniquement futurs
+                             ->where('start_date', '>', now())
                              ->orderBy('start_date', 'asc')
-                             ->paginate(10);
+                             ->paginate(10); // Ajustez la pagination si nécessaire
 
         return view('etudiants.evenements.upcoming', compact('upcomingEvents'));
     }
 
-    public function toggleStatus($id)
-    {
-        $event = Event::findOrFail($id);
 
-        // Si l'événement est privé (0), on le rend publié (1)
-        $event->is_published = !$event->is_published;
-
-        $event->save();
-
-        return redirect()->back()->with('success', 'Statut de l\'événement mis à jour.');
-    }
-
-   // Dans EventController.php, modifions la méthode register pour retourner une réponse JSON
-public function register(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'event_id' => 'required|exists:events,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-        
-        // Vérifier si l'email existe déjà pour cet événement
-        $existing = Registration::where('email', $request->email)
-                             ->where('event_id', $request->event_id)
-                             ->first();
-        
-        if ($existing) {
-            return response()->json([
-                'errors' => [
-                    'email' => ['Vous êtes déjà inscrit à cet événement avec cette adresse email.']
-                ]
-            ], 422);
-        }
-
-        Registration::create($request->all());
-
-        return response()->json(['message' => 'Inscription réussie !'], 200);
-    } catch (\Exception $e) {
-        Log::error('Erreur lors de l\'inscription : '.$e->getMessage());
-        return response()->json(['errors' => ['general' => ['Une erreur est survenue lors de l\'inscription.']]], 500);
-    }
-}
-
-
-
-
-
-
-
-public function store(Request $request)
-{
-    Log::info('Données reçues : ', $request->all());
-
-    // Vérification de l'utilisateur connecté
-    $user = auth()->user();
-    $user_id = $user ? $user->id : null;
-    $email = $user ? $user->email : ($request->email ?? null); // Utiliser l'email de l'utilisateur si connecté
-
-    Log::info('Utilisateur connecté : ', ['user_id' => $user_id ?? 'Non connecté', 'email' => $email]);
-
-    // Ajouter l'email au request AVANT la validation
-    $request->merge(['email' => $email]);
-
-    // Validation des données
-    $validator = Validator::make($request->all(), [
-        'first_name' => 'nullable|string|max:255',
-        'last_name' => 'nullable|string|max:255',
-        'phone_number' => 'nullable|string|max:20',
-        'email' => 'required|email|max:255', // Maintenant, l'email sera toujours présent
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after:start_date',
-        'location' => 'nullable|string|max:255',
-        'type' => 'nullable|string|max:100',
-        'max_participants' => 'nullable|integer|min:1',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-    ]);
-
-    if ($validator->fails()) {
-        Log::warning('Validation échouée : ', $validator->errors()->toArray());
-        return response()->json([
-            'errors' => $validator->errors(),
-            'message' => 'Validation échouée, veuillez vérifier vos données.'
-        ], 422);
-    }
-
-    // Traitement de l'image si elle existe
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        try {
-            $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(public_path('images/events'), $imageName);
-            $imagePath = $imageName;
-        } catch (\Exception $e) {
-            Log::error('Erreur lors du téléchargement de l\'image : ' . $e->getMessage());
-            return response()->json([
-                'errors' => ['image' => ['Erreur lors du traitement de l\'image.']],
-                'message' => 'Impossible de traiter l\'image.'
-            ], 500);
-        }
-    }
-
-    try {
-        // Création de l'événement
-        $event = Event::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone_number' => $request->phone_number,
-            'email' => $email, // Utiliser l'email récupéré
-            'title' => $request->title,
-            'description' => $request->description,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'location' => $request->location,
-            'type' => $request->type,
-            'max_participants' => $request->max_participants,
-            'image' => $imagePath,
-            'is_published' => 0,
-            'user_id' => $user_id
-        ]);
-
-        Log::info('Événement créé avec succès : ', ['event_id' => $event->id]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Événement créé avec succès. Il sera publié après validation.',
-            'event' => $event
-        ], 201);
-
-    } catch (\Exception $e) {
-        Log::error('Erreur lors de la création de l\'événement : ' . $e->getMessage());
-
-        return response()->json([
-            'errors' => ['general' => ['Une erreur est survenue lors de la création de l\'événement.']],
-            'message' => 'Échec de la création de l\'événement.'
-        ], 500);
-    }
-}
-
-
-
-
-    
-
-    
-    
-
-    public function show($id)
-    {
-        $event = Event::findOrFail($id);
-        return view('evenements.show', compact('event'));
-    }
-
-    public function edit($id)
-    {
-        $event = Event::findOrFail($id);
-        return view('evenements.edit', compact('event'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $event = Event::findOrFail($id);
-        $event->update($request->all());
-
-        return redirect()->route('evenements.show', $event->id)->with('success', 'Événement mis à jour avec succès.');
-    }
-
-    public function destroy($id)
-    {
-        $event = Event::findOrFail($id);
-        $event->delete();
-
-        return redirect()->route('admin.evenements')->with('success', 'Événement supprimé avec succès.');
-    }
-
-    /**
-     * Affiche les détails d'un événement pour les étudiants.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function showForStudent($id)
     {
          try {
+            // Seuls les événements publiés sont visibles par les étudiants
             $event = Event::where('is_published', 1)->findOrFail($id);
          } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
               return redirect()->route('etudiants.evenements.upcoming')->with('error', 'Événement non trouvé ou non disponible.');
@@ -279,122 +342,170 @@ public function store(Request $request)
         $isRegistered = false;
 
         if ($user) {
-            $isRegistered = Registration::where('event_id', $event->id)
-                                        ->where('email', $user->email) // Vérifie par email
-                                        ->exists();
-        
-        // if (auth()->user()->etudiant) {
-        //     $isRegistered = DB::table('registrations')
-
-        //         ->where('event_id', $event->id)
-        //         ->where('etudiant_id', auth()->user()->etudiant->id)
-        //         ->exists();
+            // Utilise la relation 'registrations' définie dans le modèle Event
+            $isRegistered = $event->registrations()->where('email', $user->email)->exists();
         }
 
+        // Compte les participants pour cet événement spécifique
+        // On peut aussi utiliser la relation: $event->registrations()->count()
+        // ou charger avec un withCount dans la requête initiale si c'est souvent utilisé.
         $currentParticipants = Registration::where('event_id', $event->id)->count();
-        $event->current_participants = $currentParticipants;
+        $event->current_participants = $currentParticipants; // Ajoute dynamiquement à l'objet event
 
         return view('etudiants.evenements.show', compact('event', 'isRegistered'));
     }
 
     public function registerStudent(Request $request, $id)
     {
-        // 1. Trouver l'événement ou rediriger si non trouvé/non publié
         try {
             $event = Event::where('is_published', 1)->findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return redirect()->route('etudiants.evenements.upcoming')
-                       ->with('error', 'Cet événement n\'est pas disponible.');
+                       ->with('error', 'Cet événement n\'est plus disponible pour inscription.');
         }
 
-        $user = Auth::user(); // Utilisateur authentifié
+        $user = Auth::user();
+        if (!$user) {
+            // Devrait être géré par le middleware 'auth', mais double sécurité
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour vous inscrire.');
+        }
 
-        // 2. Valider les données reçues (même si readonly, sécurité)
+        // Valider les données soumises (name et email sont dans des champs cachés)
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
         ]);
 
-        // Si la validation échoue (ne devrait pas arriver avec readonly, mais bon)
         if ($validator->fails()) {
-            Log::warning("Validation échouée pour inscription event ID {$id}", ['errors' => $validator->errors()]);
+            Log::warning("Validation échouée pour inscription directe event ID {$id}", ['errors' => $validator->errors(), 'user_id' => $user->id]);
             return redirect()->route('etudiants.evenements.show', $event->id)
-                       ->withErrors($validator)
-                       ->with('error', 'Les informations fournies sont invalides.'); // Message d'erreur
+                       ->withErrors($validator) // Renvoie les erreurs pour affichage potentiel
+                       ->with('error', 'Une erreur est survenue avec vos informations.');
+        }
+        
+        // Sécurité supplémentaire: vérifier que l'email soumis correspond à l'utilisateur connecté
+        if ($request->email !== $user->email) {
+            Log::warning("Tentative d'inscription avec email différent pour event ID {$id} par user ID {$user->id}", ['request_email' => $request->email]);
+            return redirect()->route('etudiants.evenements.show', $event->id)
+                       ->with('error', 'Une erreur de sécurité est survenue.');
         }
 
-        // 3. Vérifier que l'email soumis correspond à l'utilisateur connecté
-        //    (Sécurité pour éviter qu'un utilisateur n'inscrive quelqu'un d'autre)
-        if ($user && $request->email !== $user->email) {
-            Log::warning("Tentative d'inscription avec email différent pour event ID {$id}", ['user_email' => $user->email, 'request_email' => $request->email]);
+        // Vérifier si l'événement est déjà passé (redondant avec la logique de la vue, mais bonne sécurité backend)
+        if ($event->start_date < now() && !$event->is_ongoing) { // Permettre inscription si en cours? À discuter.
              return redirect()->route('etudiants.evenements.show', $event->id)
-                        ->with('error', 'L\'adresse email ne correspond pas à votre compte.');
+                        ->with('error', 'Cet événement est déjà terminé. Inscription impossible.');
         }
 
-        // 4. Vérifier si l'événement est déjà passé
-        if ($event->start_date < now()) {
+        // Vérifier si déjà inscrit
+        // Utilisation de la relation pour la clarté
+        if ($event->registrations()->where('email', $user->email)->exists()) {
              return redirect()->route('etudiants.evenements.show', $event->id)
-                        ->with('error', 'Cet événement est déjà passé. Inscription impossible.');
+                        ->with('info', 'Vous êtes déjà inscrit(e) à cet événement.');
         }
 
-        // 5. Vérifier si déjà inscrit
-        $alreadyRegistered = Registration::where('event_id', $event->id)
-                                         ->where('email', $request->email)
-                                         ->exists();
-        if ($alreadyRegistered) {
-             return redirect()->route('etudiants.evenements.show', $event->id)
-                        ->with('info', 'Vous êtes déjà inscrit(e) à cet événement.'); // Utiliser 'info' ou 'warning'
-        }
-
-        // 6. Vérifier la capacité maximale
+        // Vérifier la capacité maximale
         if ($event->max_participants) {
-            $currentParticipants = Registration::where('event_id', $event->id)->count();
-            if ($currentParticipants >= $event->max_participants) {
+            // Compter directement via la relation pour être à jour
+            if ($event->registrations()->count() >= $event->max_participants) {
                  return redirect()->route('etudiants.evenements.show', $event->id)
                             ->with('error', 'Désolé, cet événement est complet.');
             }
         }
 
-        // 7. Enregistrer l'inscription (le point critique)
         try {
-            // Préparer les données (pour être sûr des clés)
             $registrationData = [
                 'event_id' => $event->id,
-                'name' => $request->name,
-                'email' => $request->email,
-                // 'user_id' => $user->id, // Décommentez si la colonne existe et est dans $fillable
+                'name' => $user->name, // Utiliser le nom de l'utilisateur connecté
+                'email' => $user->email, // Utiliser l'email de l'utilisateur connecté
+                // 'user_id' => $user->id, // Si vous avez une colonne user_id dans registrations et qu'elle est fillable
             ];
 
-            Log::info("Tentative d'enregistrement avec données:", $registrationData); // Log des données
-
-            // Utiliser create() - NÉCESSITE $fillable dans Registration.php
             Registration::create($registrationData);
 
-            Log::info("Inscription réussie pour Event ID {$id} avec email {$request->email}"); // Log succès
-
+            Log::info("Inscription directe réussie pour Event ID {$id} avec email {$user->email}");
             return redirect()->route('etudiants.evenements.show', $event->id)
-                           ->with('success', 'Inscription réussie !'); // Message succès simple
+                           ->with('success', 'Votre inscription à l\'événement a été enregistrée avec succès !');
 
-        } catch (\Illuminate\Database\QueryException $qe) { // Erreur spécifique BDD
-            Log::error("Erreur SQL inscription événement ID {$event->id}: " . $qe->getMessage(), [
-                'sql' => $qe->getSql(),
-                'bindings' => $qe->getBindings(),
-                'trace' => $qe->getTraceAsString()
-            ]);
+        } catch (\Illuminate\Database\QueryException $qe) {
+            Log::error("Erreur SQL inscription directe event ID {$event->id}: " . $qe->getMessage(), ['sql' => $qe->getSql(), 'bindings' => $qe->getBindings()]);
              return redirect()->route('etudiants.evenements.show', $event->id)
-                            ->with('error', 'Erreur de base de données lors de l\'inscription.');
-        } catch (\Illuminate\Database\Eloquent\MassAssignmentException $mae) { // Erreur MassAssignment
-             Log::error("Erreur MassAssignment inscription événement ID {$event->id}: " . $mae->getMessage(), ['trace' => $mae->getTraceAsString()]);
+                            ->with('error', 'Une erreur de base de données est survenue lors de l\'inscription.');
+        } catch (\Illuminate\Database\Eloquent\MassAssignmentException $mae) {
+             Log::error("Erreur MassAssignment inscription directe event ID {$event->id}: " . $mae->getMessage());
              return redirect()->route('etudiants.evenements.show', $event->id)
-                            ->with('error', 'Erreur de configuration (Mass Assignment). Contactez l\'administrateur.');
+                            ->with('error', 'Erreur de configuration du serveur. Veuillez contacter l\'administrateur.');
+        } catch (\Exception $e) {
+            Log::error("Erreur Générale inscription directe event ID {$event->id}: " . $e->getMessage(), ['exception_type' => get_class($e)]);
+             return redirect()->route('etudiants.evenements.show', $event->id)
+                            ->with('error', 'Une erreur technique est survenue. Veuillez réessayer plus tard.');
         }
-        catch (\Exception $e) { // Autres erreurs
-            Log::error("Erreur Générale inscription événement ID {$event->id}: " . $e->getMessage(), [
-                'exception_type' => get_class($e),
-                'trace' => $e->getTraceAsString()
+    }
+
+    // La méthode register que vous aviez pour une API (ou AJAX)
+    public function register(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'event_id' => 'required|exists:events,id',
+                // Pour une inscription "invité", ces champs sont nécessaires
+                'name' => 'required_without:user_id|string|max:255', // Requis si pas d'user_id
+                'email' => 'required_without:user_id|email',      // Requis si pas d'user_id
+                'user_id' => 'sometimes|nullable|exists:users,id' // Optionnel
             ]);
-             return redirect()->route('etudiants.evenements.show', $event->id)
-                            ->with('error', 'Une erreur technique est survenue. Veuillez réessayer.'); // Votre message générique
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            
+            $event = Event::find($request->event_id);
+            if (!$event || !$event->is_published || $event->start_date < now()) {
+                return response()->json(['errors' => ['event_id' => ['Cet événement n\'est pas disponible pour inscription.']]], 422);
+            }
+
+            $email_to_check = $request->email;
+            $name_to_register = $request->name;
+
+            if ($request->filled('user_id')) {
+                $user = User::find($request->user_id);
+                if ($user) {
+                    $email_to_check = $user->email;
+                    $name_to_register = $user->name;
+                }
+            }
+            
+            if (!$email_to_check) {
+                 return response()->json(['errors' => ['email' => ['Adresse email manquante.']]], 422);
+            }
+
+
+            // Vérifier si l'email existe déjà pour cet événement
+            $existing = Registration::where('email', $email_to_check)
+                                ->where('event_id', $request->event_id)
+                                ->first();
+            
+            if ($existing) {
+                return response()->json([
+                    'message' => 'Vous êtes déjà inscrit à cet événement avec cette adresse email.',
+                    'status' => 'already_registered'
+                ], 409); // 409 Conflict est plus approprié
+            }
+
+            // Vérifier capacité
+            if ($event->max_participants && $event->registrations()->count() >= $event->max_participants) {
+                return response()->json(['errors' => ['event_id' => ['Cet événement est complet.']]], 422);
+            }
+
+            Registration::create([
+                'event_id' => $request->event_id,
+                'name' => $name_to_register,
+                'email' => $email_to_check,
+                'user_id' => $request->user_id ?? null,
+            ]);
+
+            return response()->json(['message' => 'Inscription réussie !'], 200);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'inscription via API : '.$e->getMessage());
+            return response()->json(['errors' => ['general' => ['Une erreur est survenue lors de l\'inscription.']]], 500);
         }
     }
 }

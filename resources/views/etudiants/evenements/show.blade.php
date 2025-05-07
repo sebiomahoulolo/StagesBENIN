@@ -1,11 +1,10 @@
 {{-- /resources/views/etudiants/evenements/show.blade.php --}}
 
-@extends('layouts.etudiant.app') {{-- Assurez-vous que ce layout charge Bootstrap JS/CSS --}}
+@extends('layouts.etudiant.app')
 
 @section('title', ($event->title ?? 'Événement') . ' - StagesBENIN')
 
 @push('styles')
-    {{-- Styles CSS personnalisés pour cette page (SANS les styles du modal) --}}
     <style>
         .event-header {
             position: relative;
@@ -55,7 +54,12 @@
         }
         .event-sidebar { align-self: start; position: sticky; top: 80px; /* Ajustez si nécessaire */ }
 
-        .event-description { margin-bottom: 2rem; line-height: 1.7; color: #4b5563; white-space: pre-line; }
+        .event-description {
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            color: #4b5563;
+            white-space: pre-line; /* Conserve les sauts de ligne et fait le retour à la ligne automatique du texte long */
+        }
         .event-section-title {
             font-size: 1.3rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem;
             padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;
@@ -84,7 +88,6 @@
         .event-status-content p { color: #6b7280; font-size: 0.9rem; margin-bottom: 0; }
 
         .event-cta { text-align: center; margin-top: 1.5rem; }
-        /* Style du bouton inchangé visuellement */
         .btn-register {
             display: inline-block; background-color: #2563eb; color: white; padding: 0.75rem 1.5rem;
             border-radius: 8px; text-decoration: none; font-weight: 500; width: 100%;
@@ -110,33 +113,25 @@
         .countdown-value { font-size: 1.25rem; font-weight: 700; color: #2563eb; margin-bottom: 0.1rem; }
         .countdown-unit { font-size: 0.65rem; color: #6b7280; text-transform: uppercase; }
 
-        /* Flash messages (inchangé) */
         .flash-message { padding: 1rem; border-radius: 8px; margin: 0 0 1.5rem 0; text-align: center; border: 1px solid transparent; }
         .flash-success { background-color: #dcfce7; color: #166534; border-color: #bbf7d0; }
         .flash-error { background-color: #fee2e2; color: #991b1b; border-color: #fecaca;}
-        .flash-info { background-color: #e0f2fe; color: #075985; border-color: #bae6fd;} /* Ajout pour info */
-
-        /* Plus besoin des styles .modal-* ici */
+        .flash-info { background-color: #e0f2fe; color: #075985; border-color: #bae6fd;}
 
     </style>
 @endpush
 
 @section('content')
-<div class="container"> {{-- Container Bootstrap standard --}}
+<div class="container">
 
-    {{-- En-tête de l'événement (inchangé) --}}
     <div class="event-header">
-        @if($event->image && file_exists(public_path('images/events/' . $event->image)))
-            <img src="{{ asset('images/events/' . $event->image) }}" alt="{{ $event->title }}" class="event-header-image">
-        @else
-            <img src="{{ asset('images/event-placeholder.jpg') }}" alt="{{ $event->title }}" class="event-header-image">
-        @endif
+        <img src="{{ $event->image_url }}" alt="{{ $event->title }}" class="event-header-image">
         <div class="event-header-content">
             <div class="event-type-badge">{{ $event->type ?? 'Événement' }}</div>
             <h1 class="event-title">{{ $event->title }}</h1>
             <div class="event-meta">
-                 <div class="event-meta-item"><i class="far fa-calendar-alt"></i><span>{{ \Carbon\Carbon::parse($event->start_date)->isoFormat('D MMMM YYYY') }}</span></div>
-                 <div class="event-meta-item"><i class="far fa-clock"></i><span>{{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_date)->format('H:i') }}</span></div>
+                 <div class="event-meta-item"><i class="far fa-calendar-alt"></i><span>{{ $event->start_date->isoFormat('D MMMM YYYY') }}</span></div>
+                 <div class="event-meta-item"><i class="far fa-clock"></i><span>{{ $event->start_date->format('H:i') }} - {{ $event->end_date->format('H:i') }}</span></div>
                  <div class="event-meta-item"><i class="fas fa-map-marker-alt"></i><span>{{ $event->location ?? 'À déterminer' }}</span></div>
                  @if($event->max_participants)
                      <div class="event-meta-item"><i class="fas fa-users"></i><span>{{ $event->max_participants }} places max</span></div>
@@ -145,21 +140,18 @@
         </div>
     </div>
 
-    {{-- Messages Flash (inchangé) --}}
     <div class="row">
         <div class="col-12">
-            {{-- Utilisation de tous les types de messages possibles --}}
             @if(session('success'))
                 <div class="flash-message flash-success">{{ session('success') }}</div>
             @endif
             @if(session('error'))
                 <div class="flash-message flash-error">{{ session('error') }}</div>
             @endif
-             @if(session('info')) {{-- Ajout pour le message 'info' (déjà inscrit) --}}
+             @if(session('info'))
                 <div class="flash-message flash-info">{{ session('info') }}</div>
             @endif
-            {{-- Affichage des erreurs de validation générales (au cas où) --}}
-            @if ($errors->any() && !$errors->has('confirm_participation')) {{-- Ne pas afficher si c'était juste l'erreur du modal --}}
+            @if ($errors->any())
                 <div class="flash-message flash-error">
                     <ul class="mb-0" style="list-style: none; padding-left: 0;">
                         @foreach ($errors->all() as $error)
@@ -172,7 +164,6 @@
     </div>
 
     <div class="event-container">
-        {{-- Détails de l'événement (inchangé) --}}
         <div class="event-details">
             <h2 class="event-section-title"><i class="fas fa-info-circle"></i> À propos de cet événement</h2>
             <div class="event-description">
@@ -185,14 +176,14 @@
                     <div class="event-info-icon"><i class="far fa-calendar-alt"></i></div>
                     <div>
                         <div class="event-info-label">Date</div>
-                        <div class="event-info-value">{{ \Carbon\Carbon::parse($event->start_date)->isoFormat('dddd D MMMM YYYY') }}</div>
+                        <div class="event-info-value">{{ $event->start_date->isoFormat('dddd D MMMM YYYY') }}</div>
                     </div>
                 </div>
                  <div class="event-info-item">
                     <div class="event-info-icon"><i class="far fa-clock"></i></div>
                     <div>
                         <div class="event-info-label">Horaires</div>
-                        <div class="event-info-value">{{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_date)->format('H:i') }}</div>
+                        <div class="event-info-value">{{ $event->start_date->format('H:i') }} - {{ $event->end_date->format('H:i') }}</div>
                     </div>
                 </div>
                 <div class="event-info-item">
@@ -221,20 +212,28 @@
             </div>
         </div>
 
-        {{-- Sidebar (avec modification du CTA) --}}
         <div class="event-sidebar">
             <div class="event-status">
                 <div class="event-status-icon" id="status-icon-wrapper">
-                    <i class="fas fa-calendar-check" id="status-icon"></i>
+                    <i class="fas {{ $event->is_finished ? 'fa-calendar-times' : ($event->is_ongoing ? 'fa-running' : 'fa-calendar-check') }}" id="status-icon"></i>
                 </div>
                 <div class="event-status-content">
-                    <h4 id="status-title">Événement à venir</h4>
-                    <p id="status-desc">Inscrivez-vous dès maintenant</p>
+                    <h4 id="status-title">
+                        @if($event->is_finished) Événement terminé
+                        @elseif($event->is_ongoing) Événement en cours
+                        @else Événement à venir
+                        @endif
+                    </h4>
+                    <p id="status-desc">
+                         @if($event->is_finished) Les inscriptions sont closes
+                         @elseif($event->is_ongoing) L'événement a déjà commencé
+                         @else Inscrivez-vous dès maintenant
+                         @endif
+                    </p>
                 </div>
             </div>
 
-            {{-- Compte à rebours (inchangé) --}}
-            @if($event->start_date > now())
+            @if($event->is_upcoming)
             <div class="countdown-container">
                 <div class="countdown-label">L'événement commence dans :</div>
                 <div class="countdown-timer" id="countdown">
@@ -246,7 +245,6 @@
             </div>
             @endif
 
-            {{-- Statistiques (inchangé) --}}
             @if($event->max_participants)
                 <div class="event-stat">
                     <div class="event-stat-value">{{ $event->current_participants ?? 0 }}/{{ $event->max_participants }}</div>
@@ -254,14 +252,12 @@
                 </div>
             @endif
 
-            {{-- Bouton d'inscription / Statut (MODIFIÉ) --}}
             <div class="event-cta">
                 @php
-                    $user = Auth::user(); // Récupérer l'utilisateur une seule fois
-                    $eventPassed = $event->start_date < now();
-                    // S'assurer que $isRegistered est défini, même si l'utilisateur n'est pas connecté
+                    $user = Auth::user();
                     $isRegistered = $user ? $event->registrations()->where('email', $user->email)->exists() : false;
                     $isFull = $event->max_participants && ($event->current_participants ?? 0) >= $event->max_participants;
+                    $eventPassed = $event->is_finished; // Utilisation de l'accesseur
                 @endphp
 
                 @if($isRegistered)
@@ -270,46 +266,37 @@
                     <button class="btn-register" disabled><i class="fas fa-calendar-times me-2"></i>Événement terminé</button>
                 @elseif($isFull)
                      <button class="btn-register" disabled><i class="fas fa-users-slash me-2"></i>Événement complet</button>
-                @elseif(!$user) {{-- Si l'utilisateur n'est pas connecté --}}
+                @elseif(!$user)
                      <a href="{{ route('login') }}?redirect={{ url()->current() }}" class="btn-register">
                          <i class="fas fa-sign-in-alt me-2"></i> Connectez-vous pour vous inscrire
                      </a>
-                @else {{-- Utilisateur connecté, peut s'inscrire --}}
-                     {{-- Début du formulaire d'inscription directe --}}
+                @else
                      <form action="{{ route('etudiants.evenements.register', $event->id) }}" method="POST" id="directRegistrationForm">
                         @csrf
-                        {{-- Champs cachés pour envoyer les données nécessaires au contrôleur --}}
                         <input type="hidden" name="name" value="{{ $user->name ?? '' }}">
                         <input type="hidden" name="email" value="{{ $user->email ?? '' }}">
-
-                        {{-- Le bouton est maintenant de type submit --}}
                         <button type="submit" class="btn-register">
                             <i class="fas fa-edit me-2"></i> S'inscrire à l'événement
                         </button>
                      </form>
-                     {{-- Fin du formulaire d'inscription directe --}}
                 @endif
             </div>
         </div>
-    </div> {{-- Fin event-container --}}
+    </div>
 
-</div> {{-- Fin container --}}
+</div>
 
-{{-- LE MODAL A ÉTÉ SUPPRIMÉ --}}
-
-@endsection {{-- Fin de la section content --}}
+@endsection
 
 @push('scripts')
-    {{-- Script personnalisé pour cette page (SANS la gestion du modal) --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Fonction de compte à rebours (inchangée) ---
             function updateCountdown() {
                 const countdownElement = document.getElementById("countdown");
                 if (!countdownElement) return;
 
-                const eventDate = new Date("{{ \Carbon\Carbon::parse($event->start_date)->toIso8601String() }}").getTime();
+                const eventDate = new Date("{{ $event->start_date->toIso8601String() }}").getTime();
                 const now = new Date().getTime();
                 const distance = eventDate - now;
 
@@ -318,33 +305,12 @@
                 const minutesEl = document.getElementById("countdown-minutes");
                 const secondsEl = document.getElementById("countdown-seconds");
 
-                const statusIconWrapper = document.getElementById("status-icon-wrapper");
-                const statusIcon = document.getElementById("status-icon");
-                const statusTitle = document.getElementById("status-title");
-                const statusDesc = document.getElementById("status-desc");
-                // On cible maintenant le bouton submit dans le formulaire s'il existe
-                const registerSubmitBtn = document.querySelector("#directRegistrationForm button[type='submit']");
-
                 if (distance < 0) {
                     clearInterval(countdownInterval);
                     if (daysEl) daysEl.textContent = "0";
                     if (hoursEl) hoursEl.textContent = "00";
                     if (minutesEl) minutesEl.textContent = "00";
                     if (secondsEl) secondsEl.textContent = "00";
-
-                    if (statusIconWrapper) statusIconWrapper.style.backgroundColor = "#fef2f2";
-                    if (statusIcon) { statusIcon.className = "fas fa-calendar-times"; statusIcon.style.color = "#ef4444"; }
-                    if (statusTitle) statusTitle.textContent = "Événement terminé";
-                    if (statusDesc) statusDesc.textContent = "Les inscriptions sont closes";
-
-                    // Désactiver le bouton submit s'il existe
-                    if (registerSubmitBtn) {
-                        registerSubmitBtn.disabled = true;
-                        registerSubmitBtn.innerHTML = '<i class="fas fa-calendar-times me-2"></i>Événement terminé';
-                        // On pourrait aussi masquer le formulaire entier si souhaité
-                        // document.getElementById('directRegistrationForm')?.remove();
-                    }
-
                 } else {
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -355,12 +321,6 @@
                     if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
                     if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
                     if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-
-                    // Statut initial (inchangé ici)
-                    if (statusIconWrapper) statusIconWrapper.style.backgroundColor = "#ecfdf5";
-                    if (statusIcon) { statusIcon.className = "fas fa-calendar-check"; statusIcon.style.color = "#10b981"; }
-                    if (statusTitle) statusTitle.textContent = "Événement à venir";
-                    if (statusDesc) statusDesc.textContent = "Inscrivez-vous dès maintenant";
                 }
             }
 
@@ -369,25 +329,19 @@
             if (countdownContainer) {
                 updateCountdown();
                 countdownInterval = setInterval(updateCountdown, 1000);
-            } else {
-                 const eventDate = new Date("{{ \Carbon\Carbon::parse($event->start_date)->toIso8601String() }}").getTime();
-                 if (eventDate < new Date().getTime()) {
-                    updateCountdown();
-                 }
             }
 
-            // --- Fermeture automatique des messages Flash (inchangé) ---
             setTimeout(() => {
                 const flashMessages = document.querySelectorAll('.flash-message');
                 flashMessages.forEach(msg => {
                     if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
                         const alertInstance = bootstrap.Alert.getOrCreateInstance(msg);
                         if(alertInstance) {
-                            alertInstance.close();
+                           alertInstance.close();
                         } else {
-                            msg.style.transition = 'opacity 0.5s ease';
-                            msg.style.opacity = '0';
-                            setTimeout(() => msg.remove(), 500);
+                           msg.style.transition = 'opacity 0.5s ease';
+                           msg.style.opacity = '0';
+                           setTimeout(() => msg.remove(), 500);
                         }
                     } else {
                         msg.style.transition = 'opacity 0.5s ease';
@@ -397,8 +351,6 @@
                 });
             }, 7000);
 
-            // --- PLUS BESOIN DE LA LOGIQUE POUR REOUVRIR LE MODAL ---
-
-        }); // Fin de DOMContentLoaded
+        });
     </script>
 @endpush
