@@ -204,7 +204,7 @@
                 <!-- Bloc 1 -->
                 <div class="col-md-4">
                     <div class="info-box">
-                        <h4 class="info-title">Sélection des cabinets, entreprises et centres de formation pour obtention d'accréditation</h4>
+                        <h4 class="info-title">Sélection des cabinets, entreprises et centres de formation </h4>
                         <p class="align-left">
     StagesBENIN est une entreprise de FHC Groupe qui accompagne les jeunes diplômés depuis 2023 en matière de stages et d'insertion professionnelle.
     FHC GROUPE est le porteur du projet StagesBENIN et a été sélectionné comme lauréat du projet RISE (Renforcement de la croissance et de la résilience des PME au Bénin).

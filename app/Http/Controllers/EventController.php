@@ -103,21 +103,6 @@ class EventController extends Controller
     }
 
     // Méthode pour afficher le formulaire de création admin
-    public function create() // Assurez-vous que la route existe: admin.events.create
-    {
-         return view('admin.events.create'); // Assurez-vous que cette vue existe
-    }
-
-
-
-
-
-
-
-
-
-
-
     // --- Méthodes Étudiant ---
 
     public function upcomingForStudent()
@@ -210,17 +195,21 @@ public function store(Request $request)
         'end_date' => 'required|date|after:start_date',
         'location' => 'nullable|string|max:255',
         'type' => 'nullable|string|max:100',
+        'ticket_price' => 'nullable|string|max:20',
         'max_participants' => 'nullable|integer|min:1',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
     if ($validator->fails()) {
         Log::warning('Validation échouée : ', $validator->errors()->toArray());
-        return response()->json([
-            'errors' => $validator->errors(),
-            'message' => 'Validation échouée, veuillez vérifier vos données.'
-        ], 422);
+        
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput()
+            ->with('message', 'Validation échouée, veuillez vérifier vos données.');
     }
+    
+    
 
     // Traitement de l'image si elle existe
     $imagePath = null;
@@ -254,24 +243,27 @@ public function store(Request $request)
             'max_participants' => $request->max_participants,
             'image' => $imagePath,
             'is_published' => 0,
+            'ticket_price' => $request->ticket_price,
             'user_id' => $user_id
         ]);
 
         Log::info('Événement créé avec succès : ', ['event_id' => $event->id]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Événement créé avec succès. Il sera publié après validation.',
-            'event' => $event
-        ], 201);
+        return redirect()->back()->with('success', 'Événement créé avec succès. Il sera publié après validation.');
+
 
     } catch (\Exception $e) {
         Log::error('Erreur lors de la création de l\'événement : ' . $e->getMessage());
 
-        return response()->json([
-            'errors' => ['general' => ['Une erreur est survenue lors de la création de l\'événement.']],
-            'message' => 'Échec de la création de l\'événement.'
-        ], 500);
+        if ($validator->fails()) {
+            Log::warning('Validation échouée : ', $validator->errors()->toArray());
+            
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('message', 'Validation échouée, veuillez vérifier vos données.');
+        }
+        
     }
 }
 
@@ -317,6 +309,33 @@ public function store(Request $request)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
+       public function showEventDetails($id)
+    {
+        $event = Event::findOrFail($id);
+        
+        // Prepare dates for JavaScript
+        $eventData = [
+            'startDate' => $event->start_date instanceof \Carbon\Carbon 
+                ? $event->start_date->toIso8601String() 
+                : \Carbon\Carbon::parse($event->start_date)->toIso8601String(),
+            'endDate' => $event->end_date instanceof \Carbon\Carbon 
+                ? $event->end_date->toIso8601String() 
+                : \Carbon\Carbon::parse($event->end_date)->toIso8601String()
+        ];
+        
+        return view('pages.details_events', [
+            'event' => $event,
+            'eventData' => $eventData
+        ]);
+    }
+    public function create()
+{
+    return view('pages.event-form'); // Assure-toi que la vue existe dans resources/views/events/create.blade.php
+}
+
     public function showForStudent($id)
     {
          try {

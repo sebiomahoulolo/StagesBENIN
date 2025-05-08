@@ -10,7 +10,11 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     
-  
+    public function create()
+    {
+        return view('event-form'); // ou le nom de ta vue exacte
+    }
+    
 
     public function evenements() {
         $events = Event::whereNotNull('ticket_price')
@@ -92,10 +96,7 @@ class PageController extends Controller
         return view('pages.programmes'); 
     }
     
-    public function create()
-    {
-        return view('pages.create_event'); 
-    }
+    
 
 
 
@@ -126,6 +127,26 @@ class PageController extends Controller
     {
         return view('pages.desc_paas2');
         
+    }
+
+    public function showEventDetails($id)
+    {
+        $event = Event::findOrFail($id);
+        
+        // Prepare dates for JavaScript
+        $eventData = [
+            'startDate' => $event->start_date instanceof \Carbon\Carbon 
+                ? $event->start_date->toIso8601String() 
+                : \Carbon\Carbon::parse($event->start_date)->toIso8601String(),
+            'endDate' => $event->end_date instanceof \Carbon\Carbon 
+                ? $event->end_date->toIso8601String() 
+                : \Carbon\Carbon::parse($event->end_date)->toIso8601String()
+        ];
+        
+        return view('pages.details_events', [
+            'event' => $event,
+            'eventData' => $eventData
+        ]);
     }
 
     public function paps3()

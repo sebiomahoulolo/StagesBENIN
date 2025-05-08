@@ -23,7 +23,7 @@
         </a>
         <a href="{{ route('admin.actualites') }}" class="menu-item {{ request()->routeIs('admin.actualites.*') ? 'active' : '' }}"> {{-- Adjust route name --}}
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-newspaper"></i></span>
-            <span class="menu-text">Actualités</span>
+            <span class="menu-text">Marché public ou privé</span>
             {{-- Add dynamic badge count if needed --}}
             {{-- <span class="menu-badge">5</span> --}}
         </a>

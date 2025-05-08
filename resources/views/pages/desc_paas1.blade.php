@@ -43,7 +43,7 @@
 
         <!-- Appel à candidature -->
         <section>
-            <h5 class="section-title">Sélection des cabinets , entreprises et centres de formation pour obtention d’accréditation</h5>
+            <h5 class="section-title">Sélection des cabinets , entreprises et centres de formation </h5>
             <h3 class="sub-title">1 - Conditions d’éligibilités</h3>
             <div class="info-box">
                 <ul>

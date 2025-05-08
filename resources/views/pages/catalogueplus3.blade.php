@@ -31,7 +31,7 @@
     .card-content {
         position: relative;
         z-index: 2;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        text-shadow:  rgba(0, 0, 0, 0.6);
     }
 
     .card-custom h5 {

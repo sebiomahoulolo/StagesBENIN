@@ -8,10 +8,10 @@
 @section('content')
 <div class="tab-content active" id="actualites-content" role="tabpanel" aria-labelledby="actualites-tab">
     <div class="action-bar d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Liste des Actualités (<span id="totalActualites">{{ $actualites->count() }}</span>)</h4>
+        <h4 class="mb-0">Liste des marchés public ou privé(<span id="totalActualites">{{ $actualites->count() }}</span>)</h4>
         <div class="action-buttons">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#actualiteModal">
-                <i class="fas fa-plus-circle me-1"></i> Ajouter Actualité
+                <i class="fas fa-plus-circle me-1"></i> Ajouter un marché
             </button>
             <input type="text" id="searchInput" class="form-control ms-3" placeholder="Recherche par titre, catégorie ou auteur...">
         </div>
@@ -58,7 +58,7 @@
             </table>
             {{ $actualites->links() }} {{-- Pagination --}}
         @else
-            <div class="alert alert-info text-center">Aucune actualité trouvée pour le moment.</div>
+            <div class="alert alert-info text-center">Aucun marché public ou privé trouvée pour le moment.</div>
         @endif
     </div>
 </div>

@@ -37,10 +37,11 @@
         <i class="fas fa-calendar-day"></i> Aujourd'hui: {{ $currentDate }}
         <!-- Bouton pour ouvrir le formulaire d'informations utilisateur -->
 <div class="action-buttons">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userInfoModal">
+    <a href="{{ route('pages.event-form') }}" class="btn btn-primary">
         <i class="fas fa-plus-circle me-1"></i> Ajouter Événement
-    </button>
+    </a>
 </div>
+
 
     </div>
 
@@ -584,20 +585,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             @else
                                 <span class="badge badge-info">Dans {{ $daysUntil }} jours</span>
                             @endif
+    <div class="d-flex justify-content-center gap-3 mt-4">
+    <a href="{{ route('pages.details_events', ['event' => $event->id]) }}" 
+       class="btn btn-primary px-4 py-2 shadow-sm">
+        Savoir plus
+    </a>
 
-                            <button type="button" class="btn btn-info mt-2" data-bs-toggle="modal" data-bs-target="#detailsModal" 
-                                data-event-id="{{ $event->id }}" 
-                                data-title="{{ $event->title }}"
-                                data-date="{{ $formatDate($event->start_date) }}" 
-                                data-location="{{ $event->location }}"
-                                data-description="{{ $event->description }}"
-                                data-image="{{ $event->image }}">
-                                Voir
-                            </button>
-                        </div>
-                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal" data-event-id="{{ $event->id }}">
-                            S'inscrire
-                        </button>
+    <button type="button" class="btn btn-primary px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#registerModal" data-event-id="{{ $event->id }}">
+        S'inscrire
+    </button>
+</div>
+  </div>
                     </div>
                 @endforeach
             </div>
@@ -638,15 +636,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="badge badge-danger">Se termine dans {{ $hoursLeft }} heure(s)</span>
                             @endif
                         </div>
-                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#detailsModal" 
-                            data-event-id="{{ $event->id }}" 
-                            data-title="{{ $event->title }}"
-                            data-date="Du {{ $formatDate($event->start_date) }} au {{ $formatDate($event->end_date) }}" 
-                            data-location="{{ $event->location }}"
-                            data-description="{{ $event->description }}"
-                            data-image="{{ $event->image }}">
-                            Consulter
-                        </button>
+                         <br>
+    <a href="{{ route('pages.details_events', ['event' => $event->id]) }}" 
+       class="btn btn-primary px-4 py-2 shadow-sm">  Consulter
+    </a>
                     </div>
                 @endforeach
             </div>

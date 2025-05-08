@@ -41,7 +41,7 @@
 
     <a href="{{ route('admin.actualites') }}" class="styled-link-box">
         <i class="fas fa-newspaper icon-info"></i>
-          <span>Actualités</span>
+          <span>Marché public ou privé</span>
     </a>
 
     <a href="{{ route('admin.demandes.index') }}" class="styled-link-box">

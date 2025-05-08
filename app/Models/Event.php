@@ -30,7 +30,8 @@ class Event extends Model
         'is_published',
         'first_name',  // Nouveau champ : Prénom
         'last_name',   // Nouveau champ : Nom
-        'phone_number', // Nouveau champ : Numéro de téléphone
+        'phone_number',
+        'ticket_price', // Nouveau champ : Numéro de téléphone
         'email'       // Nouveau champ : Email
     ];
 
@@ -53,6 +54,11 @@ class Event extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+
+     public function participants(): HasMany
+    {
+        return $this->hasMany(Registration::class, 'event_id');
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class); // Assurez-vous que App\Models\User existe

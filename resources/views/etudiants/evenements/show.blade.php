@@ -2,7 +2,7 @@
 
 @extends('layouts.etudiant.app') {{-- Assurez-vous que ce layout charge Bootstrap JS/CSS --}}
 
-@section('title', ($event->title ?? 'Événement') . ' - StagesBENIN')
+@section('title','StagesBENIN')
 
 @push('styles')
     {{-- Styles CSS personnalisés pour cette page (SANS les styles du modal) --}}

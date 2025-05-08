@@ -181,6 +181,7 @@
             
             <div class="ticket-body">
                 <div class="ticket-info">
+                    <h3>COPIE CLIENT - {{ $event->title }}</h3>
                     <table>
                         <tr>
                             <td><strong>Date:</strong></td>
@@ -206,10 +207,11 @@
                 </div>
                 
             
-            <div class="ticket-footer">
-                <p>COPIE CLIENT - Veuillez présenter ce ticket à l'entrée</p>
-                <p>Ticket généré le {{ now()->format('d/m/Y à H:i') }}</p>
-            </div>
+           <div class="ticket-footer" >
+    <p>Veuillez présenter ce ticket à l'entrée, Ticket généré le {{ now()->format('d/m/Y à H:i') }}</p>
+   
+</div>
+
         </div>
         
         <div class="dotted-line"></div>
@@ -234,8 +236,7 @@
         </div>
         
         <div class="company-info">
-            <p>StagesBENIN - Votre partenaire événementiel</p>
-            <p>Email: contact@stagesbenin.com | Tél: +229 01 66 69 39 56</p>
+            <p>StagesBENIN - Votre partenaire événementiel, Email: contact@stagesbenin.com | Tél: +229 01 66 69 39 56</p>
         </div>
     </div>
 </body>

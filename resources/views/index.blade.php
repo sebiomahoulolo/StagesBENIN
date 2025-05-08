@@ -77,7 +77,7 @@ typeWriterEffect();
             @if(isset($annonces) && $annonces->count() > 0)
                 <ul class="list-unstyled">
                     @foreach($annonces as $annonce)
-                        <li class="text-primary fw-bold">
+                        <li class="text-primary bold">
                             {{ $annonce->nom_du_poste }} ({{ $annonce->type_de_poste }})
                         </li>
                     @endforeach
@@ -103,7 +103,7 @@ typeWriterEffect();
     <ul class="list-unstyled">
       
         @foreach($evenements as $evenement)
-            <li class="text-primary fw-bold">{{ $evenement->title }}</li>
+            <li class="text-primary bold">{{ $evenement->title }}</li>
         @endforeach
     </ul>
 @else
@@ -128,7 +128,7 @@ typeWriterEffect();
     @if(isset($nombre_actualites) && $nombre_actualites > 0)
         <ul class="list-unstyled text-start"> <!-- Alignement à gauche -->
             @foreach($actualites as $actualite)
-                <li class="text-primary fw-bold">{{ $actualite->titre }}</li> <!-- Titres en bleu et en gras -->
+                <li class="text-primary bold">{{ $actualite->titre }}</li> <!-- Titres en bleu et en gras -->
             @endforeach
         </ul>
     @else
@@ -151,11 +151,11 @@ typeWriterEffect();
     <div class="row align-items-center">
       <!-- Texte à gauche -->
       <div class="col-md-6">
-        <p class="fs-5">
-          Explorez une sélection prestigieuse d'entreprises leaders dans leurs domaines respectifs. Chacune d'elles 
-          incarne l'innovation, l'excellence et la vision stratégique. Ce catalogue est votre porte d'accès à des partenaires 
-          fiables et des solutions adaptées à vos besoins, peu importe votre secteur ou vos ambitions.
-        </p>
+        
+        <p class="">  Explorez une sélection prestigieuse d'entreprises leaders dans leurs domaines respectifs. </p>
+        <p class="">  Chacune d'elles incarne l'innovation, l'excellence et la vision stratégique.</p>
+        <p class="">   Ce catalogue est votre porte d'accès à des partenaires fiables et des solutions adaptées à vos besoins, peu importe votre secteur ou vos ambitions.</p>
+      
         <a href="{{ route('pages.catalogue') }}" class="btn btn-lg btn-primary shadow">Découvrir le Catalogue</a>
       </div>
       <!-- Image à droite -->
@@ -186,10 +186,10 @@ typeWriterEffect();
       
       <!-- Texte à droite -->
       <div class="col-md-6">
-        <p class="fs-5">
+        <p class="">
           StagesBENIN est une entreprise spécialisée dans l’insertion professionnelle et la visibilité digitale des entreprises. 
       </p>
-        <p class="fs-5 mb-4">
+        <p class=" mb-4">
           Nos packs, adaptés aux besoins des entreprises et des candidats, incluent des services tels que la CV thèque, 
           campagnes digitales, études de marché, création d'entreprise, et bien plus encore.
         </p>
@@ -450,6 +450,15 @@ document.addEventListener("DOMContentLoaded", function() {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
   transition: transform 0.3s ease-in-out;
 }
+.catalogue-title {
+    font-size: 2.2rem; /* Taille normale */
+}
+
+@media (max-width: 576px) {
+    .catalogue-title {
+        font-size: 1.2rem; /* Taille réduite sur les petits écrans */
+    }
+}
 
 .testimonial:hover {
   transform: scale(1.05); /* Slight zoom effect on hover */
@@ -506,7 +515,7 @@ p {
   color: #ffd700; /* Gold color for stars */
 }
 .catalogue-title {
-  font-size: 2rem;
+  
   color: #007bff; /* Adjust title color */
   margin-bottom: 20px;
 }

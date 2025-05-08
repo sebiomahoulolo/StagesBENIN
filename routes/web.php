@@ -83,6 +83,7 @@ Route::get('/pee', [PageController::class, 'pee'])->name('pages.pee');
 Route::get('/paps', [PageController::class, 'paps'])->name('pages.paps');
 Route::get('/paps1', [PageController::class, 'paps1'])->name('pages.desc_paas1');
 Route::get('/paps2', [PageController::class, 'paps2'])->name('pages.desc_paas2');
+Route::get('/evenements/{event}', [PageController::class, 'showEventDetails'])->name('pages.details_events');
 Route::get('/paps3', [PageController::class, 'paps3'])->name('pages.desc_paas3');
 // Routes Publiques pour les Événements
 Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
@@ -91,6 +92,7 @@ Route::get('/events/{event}', [EventController::class, 'show'])->name('events.sh
 Route::post('/events/register', [EventController::class, 'register'])->name('events.register'); // Inscription publique à un event
 Route::get('/nos-evenements', [PageController::class, 'evenements'])->name('pages.evenements'); // Ou le nom/controller correct
 Route::post('/events/register', [EventController::class, 'register'])->name('events.register.store');
+Route::get('/pages/event-form', [EventController::class, 'create'])->name('pages.event-form');
 
 // Route pour envoyer le formulaire de contact
 Route::post('/contactez-stageesbenin', [ContactController::class, 'sendContactForm'])->name('contact.send');
