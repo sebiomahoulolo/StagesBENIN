@@ -87,7 +87,7 @@ typeWriterEffect();
             @endif
         </div>
         <div class="card-footer text-center">
-            <a href=" {{ route('etudiants.offres.index') }}" class="btn btn-outline-primary">Consulter</a>
+            <a href=" {{ route('pages.offres') }}" class="btn btn-outline-primary">Consulter</a>
         </div>
     </div>
 </div>

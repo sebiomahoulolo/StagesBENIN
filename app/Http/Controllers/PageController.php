@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\Catalogue;
 use App\Models\Actualite;
 use App\Models\Avis;
+use App\Models\Secteur;
+use App\Models\Category;
 use App\Models\Event;
 use App\Models\Annonce;
+use App\Models\Specialite;
 use Illuminate\Http\Request;
 class PageController extends Controller
 {
@@ -43,8 +46,27 @@ class PageController extends Controller
         return view('index', compact('actualites', 'nombre_actualites', 'evenements', 'nombre_events', 'annonces', 'nombre_offres'));
     }
     
+    public function offres() {
+    $secteurs = Secteur::all();
+      $annonces = Annonce::paginate(10);
+      $specialites = Specialite::all();// Récupération des secteurs depuis la base de données
+    return view('pages.offres', compact('secteurs','annonces','specialites'));
+}
+
     
+    public function actualite()
+    {
+        $actualites = Actualite::paginate(10); // Pagination des actualités
+        $categories = Category::all(); // Récupérer toutes les catégories
     
+        return view('pages.actualites', compact('actualites', 'categories'));
+    }
+      public function marche()
+    {
+        $actualites = Actualite::paginate(10); // Pagination des actualités
+       
+        return view('pages.marche', compact('actualites'));
+    }
     
     public function showParSecteur($secteur_activite)
     {
@@ -73,10 +95,7 @@ class PageController extends Controller
     {
         return view('pages.contact'); 
     }
-    public function offres()
-    {
-        return view('etudiants.offres.index'); 
-    }
+   
 
     public function publication()
     {
@@ -88,7 +107,9 @@ class PageController extends Controller
         return view('pages.services'); 
     } public function actualites()
     {
-        return view('pages.actualites'); 
+        $actualites = Actualite::latest()->paginate(10);
+        $categories = \App\Models\Category::all();
+        return view('pages.actualites', compact('actualites', 'categories')); 
     }
 
     public function programmes()

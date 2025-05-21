@@ -53,7 +53,7 @@
                             <tr>
                                 <td>{{ $annonce->id }}</td>
                                 <td>{{ $annonce->titre ?? $annonce->nom_du_poste ?? 'Sans titre' }}</td>
-                                <td>{{ $annonce->entreprise?->nom ?? 'Non spécifié' }}</td>
+                                <td>{{ $annonce->entreprise }}</td>
                                 <td>{{ $annonce->specialite?->nom ?? 'Non spécifié' }}</td>
                                 <td>{{ $annonce->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
@@ -94,6 +94,18 @@
                                                 <i class="fas fa-times"></i> Rejeter
                                             </button>
                                         @endif
+                                        @if($annonce->admin_id === auth()->id())
+                                            <a href="{{ route('admin.annonces.edit', $annonce) }}" 
+                                               class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> Modifier
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ $annonce->id }}">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -131,6 +143,29 @@
                                                 <button type="submit" class="btn btn-danger">Confirmer le rejet</button>
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal de suppression -->
+                            <div class="modal fade" id="deleteModal{{ $annonce->id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Supprimer l'annonce</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est irréversible.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <form action="{{ route('admin.annonces.destroy', $annonce) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

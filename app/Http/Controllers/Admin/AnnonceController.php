@@ -89,7 +89,7 @@ class AnnonceController extends Controller
     {
         try {
             $validated = $request->validate([
-                'entreprise_id' => 'required|exists:entreprises,user_id',
+                'entreprise' => 'required||string|max:255',
                 'nom_du_poste' => 'required|string|max:255',
                 'type_de_poste' => 'required|string|max:255',
                 'nombre_de_place' => 'required|integer|min:1',
@@ -107,7 +107,7 @@ class AnnonceController extends Controller
             
             // Créer l'annonce avec le statut directement approuvé
             $annonce = new \App\Models\Annonce($validated);
-            $annonce->entreprise_id = $validated['entreprise_id'];
+            $annonce->entreprise = $validated['entreprise'];
             $annonce->secteur_id = $specialite->secteur_id;
             $annonce->statut = 'approuve'; // Statut directement approuvé
             $annonce->admin_id = auth()->id(); // Admin qui a créé l'annonce
@@ -125,6 +125,93 @@ class AnnonceController extends Controller
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Une erreur inattendue s\'est produite: ' . $e->getMessage());
+        }
+    }
+
+    public function edit(Annonce $annonce)
+    {
+        // Vérifier si l'annonce a été créée par l'admin connecté
+        if ($annonce->admin_id !== auth()->id()) {
+            return redirect()->route('admin.annonces.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
+        }
+
+        $entreprises = \App\Models\Entreprise::all();
+        $specialites = \App\Models\Specialite::with('secteur')->get();
+        
+        return view('admin.annonces.edit', compact('annonce', 'entreprises', 'specialites'));
+    }
+
+    public function update(Request $request, Annonce $annonce)
+    {
+        // Vérifier si l'annonce a été créée par l'admin connecté
+        if ($annonce->admin_id !== auth()->id()) {
+            return redirect()->route('admin.annonces.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
+        }
+
+        try {
+            $validated = $request->validate([
+                'entreprise' => 'required|string|max:255',
+                'nom_du_poste' => 'required|string|max:255',
+                'type_de_poste' => 'required|string|max:255',
+                'nombre_de_place' => 'required|integer|min:1',
+                'niveau_detude' => 'required|string|max:255',
+                'specialite_id' => 'required|exists:specialites,id',
+                'lieu' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'date_cloture' => 'required|date|after:today',
+                'description' => 'required|string',
+                'pretension_salariale' => 'nullable|numeric|min:0',
+            ]);
+
+            // Récupérer le secteur_id à partir de la spécialité sélectionnée
+            $specialite = \App\Models\Specialite::findOrFail($validated['specialite_id']);
+            
+            $annonce->update([
+                'entreprise' => $validated['entreprise'],
+                'nom_du_poste' => $validated['nom_du_poste'],
+                'type_de_poste' => $validated['type_de_poste'],
+                'nombre_de_place' => $validated['nombre_de_place'],
+                'niveau_detude' => $validated['niveau_detude'],
+                'specialite_id' => $validated['specialite_id'],
+                'secteur_id' => $specialite->secteur_id,
+                'lieu' => $validated['lieu'],
+                'email' => $validated['email'],
+                'date_cloture' => $validated['date_cloture'],
+                'description' => $validated['description'],
+                'pretension_salariale' => $validated['pretension_salariale'],
+            ]);
+
+            return redirect()->route('admin.annonces.index')
+                ->with('success', 'Annonce mise à jour avec succès.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('error', 'Erreur lors de la mise à jour de l\'annonce. Veuillez vérifier les informations saisies.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Une erreur inattendue s\'est produite: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy(Annonce $annonce)
+    {
+        // Vérifier si l'annonce a été créée par l'admin connecté
+        if ($annonce->admin_id !== auth()->id()) {
+            return redirect()->route('admin.annonces.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à supprimer cette annonce.');
+        }
+
+        try {
+            $annonce->delete();
+            return redirect()->route('admin.annonces.index')
+                ->with('success', 'Annonce supprimée avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.annonces.index')
+                ->with('error', 'Une erreur s\'est produite lors de la suppression de l\'annonce.');
         }
     }
 } 

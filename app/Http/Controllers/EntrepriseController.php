@@ -24,6 +24,7 @@ class EntrepriseController extends Controller
      }
      public function dashboard()
      {
+        
          return view('entreprises.dashboard');
      }
 
@@ -77,6 +78,7 @@ class EntrepriseController extends Controller
          $entreprise = Entreprise::findOrFail($id);
          return view('entreprises.edit', compact('entreprise'));
      }
+
      
      /**
       * Met à jour une entreprise
@@ -178,4 +180,5 @@ class EntrepriseController extends Controller
             'entreprise' => $entreprise
         ], 201);
     }
+    
 }

@@ -19,6 +19,10 @@ class EtudiantController extends Controller
 {
     return $this->hasOne(Etudiant::class, 'user_id');
 }
+public function entreprise()
+{
+    return $this->belongsTo(Entreprise::class);
+}
 
     /**
      * Stocker un nouvel étudiant dans la base de données.

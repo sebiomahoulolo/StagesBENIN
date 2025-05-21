@@ -26,7 +26,7 @@ class AnnonceController extends Controller
         }
 
         // Filtrer les annonces par l'ID de l'entreprise (entreprise.id)
-        $annonces = Annonce::where('entreprise_id', $entreprise->id) // <-- CORRECTION ICI
+        $annonces = Annonce::where('entreprise', $entreprise->id) // <-- CORRECTION ICI
             ->with(['candidatures', /*'entreprise',*/ 'secteur', 'specialite']) // 'entreprise' est moins utile ici car on filtre déjà
             ->latest() // orderBy('created_at', 'desc')
             ->paginate(10);
@@ -86,7 +86,7 @@ class AnnonceController extends Controller
         $annonce = new Annonce($validated);
 
         // Assigner l'ID de l'entreprise (entreprise.id)
-        $annonce->entreprise_id = $entreprise->id; // <-- CORRECTION ICI
+        $annonce->entreprise = $entreprise->id; // <-- CORRECTION ICI
 
         // Les valeurs par défaut (statut, est_active) sont gérées par la migration/modèle
         // $annonce->statut = 'en_attente'; // Redondant si default dans la migration

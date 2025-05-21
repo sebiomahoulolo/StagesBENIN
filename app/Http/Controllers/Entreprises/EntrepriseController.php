@@ -31,7 +31,7 @@ class EntrepriseController extends Controller
     }
     public function dashboard()
     {
-        $annonces = Annonce::where('entreprise_id', Auth::user()->entreprise->id)
+        $annonces = Annonce::where('entreprise', Auth::user()->entreprise->id)
                           ->with(['candidatures', 'entreprise'])
                           ->latest()
                           ->take(5)

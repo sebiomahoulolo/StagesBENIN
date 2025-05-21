@@ -385,7 +385,7 @@
                                         {{ $annonce->nom_du_poste }}
                                     </a>
                                 </h5>
-                                <p class="offre-card-entreprise">{{ $annonce->entreprise?->nom ?? 'Entreprise non spécifiée' }}</p>
+                                <p class="offre-card-entreprise">{{ $annonce->entreprise }}</p>
                             </div>
                             <div class="offre-card-body">
                                 <div class="badge-container">

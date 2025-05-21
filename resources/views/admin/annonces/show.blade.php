@@ -19,7 +19,7 @@
                     <i class="fas fa-building fa-2x text-white"></i>
                 </div>
                 <div class="col">
-                    <h4 class="m-0 font-weight-bold text-white">{{ $annonce->entreprise?->nom ?? 'Entreprise non spécifiée' }}</h4>
+                    <h4 class="m-0 font-weight-bold text-white">{{ $annonce->entreprise  }}</h4>
                     <p class="text-white-80 mb-0 mt-1">{{ $annonce->titre ?? $annonce->nom_du_poste ?? 'Sans titre' }}</p>
                 </div>
                 <div class="col-auto">
@@ -52,7 +52,7 @@
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item bg-transparent border-0 py-2 ps-0">
                                         <i class="fas fa-building mr-2 text-primary"></i>
-                                        <strong>Entreprise :</strong> {{ $annonce->entreprise?->nom ?? 'Non spécifié' }}
+                                        <strong>Entreprise :</strong> {{ $annonce->entreprise  }}
                                     </li>
                                     <li class="list-group-item bg-transparent border-0 py-2 ps-0">
                                         <i class="fas fa-briefcase mr-2 text-info"></i>

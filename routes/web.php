@@ -52,8 +52,10 @@ Route::get('/generate-pdf/{id}', [EventController::class, 'generatePDF'])->name(
 // Routes Publiques des Pages statiques/info via PageController
 Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->name('pages.apropos'); // URL conservée
 Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name('pages.contact'); // URL conservée
-Route::get('/les-actualites', [PageController::class, 'actualites'])->name('pages.actualites'); // Liste publique des actualités
 Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue'); 
+Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche'); 
+Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres'); 
+
 //Route::get('/secteur/{secteur}', [CatalogueController::class, 'showParSecteur'])->name('secteur.show');
 Route::post('/avis', [App\Http\Controllers\PageController::class, 'store'])->name('avis.store');
 //Route::get('/catalogues-des-entreprises/{id}', [PageController::class, 'catalogueplus2'])->name('pages.catalogueplus');
@@ -188,6 +190,9 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     Route::get('/annonces/create', [AdminAnnonceController::class, 'create'])->name('annonces.create');
     Route::post('/annonces', [AdminAnnonceController::class, 'store'])->name('annonces.store');
     Route::get('/annonces/{annonce}', [AdminAnnonceController::class, 'show'])->name('annonces.show');
+    Route::get('/annonces/{annonce}/edit', [AdminAnnonceController::class, 'edit'])->name('annonces.edit');
+    Route::put('/annonces/{annonce}', [AdminAnnonceController::class, 'update'])->name('annonces.update');
+    Route::delete('/annonces/{annonce}', [AdminAnnonceController::class, 'destroy'])->name('annonces.destroy');
     Route::post('/annonces/{annonce}/approuver', [AdminAnnonceController::class, 'approuver'])->name('annonces.approuver');
     Route::post('/annonces/{annonce}/rejeter', [AdminAnnonceController::class, 'rejeter'])->name('annonces.rejeter');
 
@@ -327,7 +332,7 @@ Route::middleware(['auth', 'role:recruteur'])->group(function () {
 });
 
 //actulites
-Route::resource('actualites', ActualiteController::class);
+
 Route::get('/les-actualites', [ActualiteController::class, 'actualites'])->name('pages.actualites');
 
 Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
@@ -402,6 +407,7 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
  Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
  Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
  Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)
+Route::resource('actualites', ActualiteController::class);
 
 // Routes pour la messagerie avec middleware auth
 Route::middleware(['auth'])->group(function () {

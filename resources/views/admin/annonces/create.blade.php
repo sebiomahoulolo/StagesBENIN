@@ -37,20 +37,19 @@
                             </div>
                             <div class="card-body">
                                 <!-- Entreprise -->
-                                <div class="mb-3">
-                                    <label for="entreprise_id" class="form-label">Entreprise <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('entreprise_id') is-invalid @enderror" id="entreprise_id" name="entreprise_id" required>
-                                        <option value="">Sélectionner une entreprise</option>
-                                        @foreach($entreprises as $entreprise)
-                                            <option value="{{ $entreprise->user_id }}" {{ old('entreprise_id') == $entreprise->user_id ? 'selected' : '' }}>
-                                                {{ $entreprise->nom }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('entreprise_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                      <div class="mb-3">
+    <label for="entreprise_nom" class="form-label">Nom de l'entreprise <span class="text-danger">*</span></label>
+    <input type="text" 
+           class="form-control @error('entreprise_nom') is-invalid @enderror" 
+           id="entreprise_nom" 
+           name="entreprise" 
+           value="{{ old('entreprise_nom') }}" 
+           required>
+    @error('entreprise_nom')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
 
                                 <!-- Titre du poste -->
                                 <div class="mb-3">
@@ -97,6 +96,7 @@
                                     <label for="niveau_detude" class="form-label">Niveau d'étude requis <span class="text-danger">*</span></label>
                                     <select class="form-select @error('niveau_detude') is-invalid @enderror" id="niveau_detude" name="niveau_detude" required>
                                         <option value="">Sélectionner un niveau</option>
+                                          <option value="BEPC" {{ old('niveau_detude') == 'BEPC' ? 'selected' : '' }}>BEPC</option>
                                         <option value="Bac" {{ old('niveau_detude') == 'Bac' ? 'selected' : '' }}>Bac</option>
                                         <option value="Bac+2" {{ old('niveau_detude') == 'Bac+2' ? 'selected' : '' }}>Bac+2</option>
                                         <option value="Bac+3" {{ old('niveau_detude') == 'Bac+3' ? 'selected' : '' }}>Bac+3</option>

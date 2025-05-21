@@ -278,7 +278,7 @@
             <div class="offre-detail">
                 <div class="offre-header">
                     <h1 class="offre-title">{{ $annonce->nom_du_poste }}</h1>
-                    <p class="offre-entreprise">{{ $annonce->entreprise?->nom ?? 'Entreprise non spécifiée' }}</p>
+                    <p class="offre-entreprise">{{ $annonce->entreprise }}</p>
                 </div>
                 <div class="offre-body">
                     <h5 class="section-title">Description du poste</h5>
@@ -305,15 +305,7 @@
                         </li>
                     </ul>
 
-                    <div class="contact-info">
-                        <h6 class="section-title">Contact</h6>
-                        <ul class="info-list">
-                            <li>
-                                <strong>Email:</strong>
-                                <span><a href="mailto:{{ $annonce->email }}" class="text-decoration-none">{{ $annonce->email }}</a></span>
-                            </li>
-                        </ul>
-                    </div>
+                   
 
                     <div class="action-buttons">
                         @if(Auth::check() && Auth::user()->etudiant)
@@ -357,8 +349,8 @@
                     <h5 class="section-title mb-0">À propos de l'entreprise</h5>
                 </div>
                 <div class="offre-body">
-                    <h6 class="text-muted mb-3">{{ $annonce->entreprise?->nom ?? 'Entreprise non spécifiée' }}</h6>
-                    <p class="mb-4">{{ $annonce->entreprise?->description ?? 'Aucune description disponible' }}</p>
+                    <h6 class="text-muted mb-3">{{ $annonce->entreprise  }}</h6>
+                    <p class="mb-4">{{ $annonce->description ?? 'Aucune description disponible' }}</p>
                     <ul class="info-list">
                         <li>
                             <strong>Secteur:</strong>
@@ -376,12 +368,17 @@
                             <strong>Téléphone:</strong>
                             <span>{{ $annonce->entreprise?->telephone ?? 'Non spécifié' }}</span>
                         </li>
-                        @if($annonce->entreprise?->site_web)
-                            <li>
-                                <strong>Site web:</strong>
-                                <span><a href="{{ $annonce->entreprise->site_web }}" target="_blank" class="text-decoration-none">{{ $annonce->entreprise->site_web }}</a></span>
-                            </li>
-                        @endif
+                      @if(is_object($annonce->entreprise) && $annonce->entreprise->site_web)
+    <li>
+        <strong>Site web:</strong>
+        <span>
+            <a href="{{ $annonce->entreprise->site_web }}" target="_blank" class="text-decoration-none">
+                {{ $annonce->entreprise->site_web }}
+            </a>
+        </span>
+    </li>
+@endif
+
                     </ul>
                 </div>
             </div>
