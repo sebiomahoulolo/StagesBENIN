@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class AnnonceController extends Controller
 {
@@ -23,18 +25,36 @@ class AnnonceController extends Controller
         return view('admin.annonces.index', compact('annonces'));
     }
 
-    public function show(Annonce $annonce)
-    {
-        // Préchargement explicite de la relation entreprise et autres relations nécessaires
-        $annonce->load(['entreprise', 'secteur', 'specialite', 'admin']);
-        
-        $candidatures = $annonce->candidatures()
-                               ->with('etudiant.user', 'etudiant.specialite')
-                               ->latest()
-                               ->paginate(10);
+public function show($slug)
+{
+    // Récupérer l’annonce et ses relations
+    $annonce = Annonce::where('slug', $slug)
+                      ->with(['entreprise', 'secteur', 'specialite', 'admin'])
+                      ->firstOrFail();
 
-        return view('admin.annonces.show', compact('annonce', 'candidatures'));
-    }
+    // Charger les candidatures avec toutes les relations nécessaires de l’étudiant
+    $candidatures = $annonce->candidatures()
+        ->with([
+            'etudiant.user',
+            'etudiant.specialite',
+            'etudiant.cvProfile.formations',
+            'etudiant.cvProfile.experiences',
+            'etudiant.cvProfile.competences',
+        ])
+        ->latest()
+        ->paginate(10);
+
+    // Log pour débogage
+    \Log::info('Candidatures récupérées avec CV profiles');
+
+    return view('admin.annonces.show', compact('annonce', 'candidatures'));
+}
+
+
+
+
+
+
 
     public function approuver(Annonce $annonce)
     {
@@ -128,6 +148,8 @@ class AnnonceController extends Controller
         }
     }
 
+
+    
     public function edit(Annonce $annonce)
     {
         // Vérifier si l'annonce a été créée par l'admin connecté

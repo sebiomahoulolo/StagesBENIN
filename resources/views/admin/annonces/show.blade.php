@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Détails de l\'annonce')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container-fluid">
@@ -242,14 +242,15 @@
                                                                     </div>
                                                                 </div>
                                                                 
-                                                                @if($candidature->cv_path)
-                                                                    <div class="mb-3">
-                                                                        <h6>CV</h6>
-                                                                        <a href="{{ asset('storage/' . $candidature->cv_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-download me-1"></i> Télécharger le CV
-                                                                        </a>
-                                                                    </div>
-                                                                @endif
+                                                               @if($candidature->cv_path)
+    <div class="mb-3">
+        
+        <a href="{{ asset('assets/' . $candidature->cv_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-download me-1"></i> Télécharger le CV
+        </a>
+    </div>
+@endif
+
                                                                 
                                                                 @if($candidature->motif_rejet)
                                                                     <div class="mb-3">

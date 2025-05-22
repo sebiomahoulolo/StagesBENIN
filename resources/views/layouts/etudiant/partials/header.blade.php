@@ -44,7 +44,8 @@
             <button @click="open = !open" class="header-icon-button profile-trigger-button" aria-label="Menu utilisateur">
                 <div class="profile-image">
                     @if(Auth::user() && Auth::user()->etudiant?->cvProfile?->photo_url)
-                         <img src="{{ Storage::url(Auth::user()->etudiant->photo_path) }}" alt="Profil">
+                        <img src="{{ asset('assets/' . Auth::user()->etudiant->photo_path) }}" alt="Profil">
+
                     @else
                         <i class="fas fa-user"></i>
                     @endif

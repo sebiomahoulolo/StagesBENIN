@@ -130,8 +130,9 @@ class OffreEmploiController extends Controller
                             ->withInput();
         }
         
-        $cvPath = $request->file('cv')->store('cvs', 'public');
-        
+
+$cvPath = $request->file('cv')->move(public_path('assets/cvs/candidatures'), $request->file('cv')->getClientOriginalName());
+
         Candidature::create([
             'annonce_id' => $annonce->id,
             'etudiant_id' => Auth::user()->etudiant->id,

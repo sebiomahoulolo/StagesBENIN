@@ -622,18 +622,18 @@
                        <div class="invalid-feedback">Veuillez saisir une adresse email valide.</div>
                      </div>
                      <div class="col-md-6 mb-3">
-                       <label for="etudiant_telephone" class="form-label">Téléphone</label>
-                       <input type="tel" class="form-control" id="etudiant_telephone" name="telephone">
+                       <label for="etudiant_telephone" class="form-label">Téléphone*</label>
+                       <input type="tel" class="form-control" id="etudiant_telephone" name="telephone"required>
                      </div>
                    </div>
                    <div class="row">
                      <div class="col-md-6 mb-3">
-                       <label for="etudiant_formation" class="form-label">Formation</label>
-                       <input type="text" class="form-control" id="etudiant_formation" name="formation">
+                       <label for="etudiant_formation" class="form-label">Formation*</label>
+                       <input type="text" class="form-control" id="etudiant_formation" name="formation"required>
                      </div>
                      <div class="col-md-6 mb-3">
-                       <label for="etudiant_niveau" class="form-label">Niveau</label>
-                       <select class="form-select" id="etudiant_niveau" name="niveau">
+                       <label for="etudiant_niveau" class="form-label">Niveau*</label>
+                       <select class="form-select" id="etudiant_niveau" name="niveau"required>
                          <option value="">Sélectionner un niveau</option>
                          <option value="Bac">Bac</option>
                          <option value="Bac+1">Bac+1</option>
@@ -1377,8 +1377,4 @@
     @stack('scripts') {{-- Placeholder for page-specific JS --}}
 
 </body>
-<<<<<<< Updated upstream
-</html> 
-=======
 </html>
->>>>>>> Stashed changes

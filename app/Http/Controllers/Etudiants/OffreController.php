@@ -137,7 +137,25 @@ class OffreController extends Controller
         }
 
         // Enregistrer le CV
-        $cvPath = $request->file('cv_file')->store('cvs/candidatures/' . auth()->id(), 'public');
+       // Obtenir le fichier envoyé
+$file = $request->file('cv_file');
+
+// Construire le chemin de destination
+$destinationPath = public_path('assets/cvs/candidatures/' . auth()->id());
+
+// Créer le dossier s’il n’existe pas
+if (!file_exists($destinationPath)) {
+    mkdir($destinationPath, 0755, true);
+}
+
+// Générer un nom de fichier unique
+$fileName = time() . '_' . $file->getClientOriginalName();
+
+// Déplacer le fichier
+$file->move($destinationPath, $fileName);
+
+// Enregistrer le chemin relatif (ex: assets/cvs/candidatures/3/nomdufichier.pdf)
+$cvPath = 'cvs/candidatures/' . auth()->id() . '/' . $fileName;
 
         // Créer la candidature
         $candidature = new \App\Models\Candidature([

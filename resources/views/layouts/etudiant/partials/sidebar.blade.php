@@ -127,7 +127,7 @@
         <hr class="sidebar-separator">
 
         {{-- TITRE DE LA NOUVELLE SECTION --}}
-        <div class="sidebar-section-title">Autres produits du groupe FHC</div>
+        <div class="sidebar-section-title">Autres produits de FHC GROUPE</div>
 
         {{-- LISTE DES AUTRES PRODUITS --}}
         <a href="https://fhcschoolbenin.com/" target="_blank" class="menu-item1">
