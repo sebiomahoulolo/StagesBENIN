@@ -54,48 +54,49 @@ class CvController extends Controller
 
         // Vérification après chargement (au cas où firstOrCreate retournerait null, bien que peu probable)
         if (!$cvProfile) {
-             Log::critical("Impossible de récupérer ou créer CvProfile pour etudiant ID: " . $etudiant->id);
-             throw new \Exception('Erreur lors du chargement du profil CV.');
+            Log::critical("Impossible de récupérer ou créer CvProfile pour etudiant ID: " . $etudiant->id);
+            throw new \Exception('Erreur lors du chargement du profil CV.');
         }
 
         return $cvProfile;
     }
 
     public function view($id)
-{
-    try {
-        // Récupérer le profil CV en fonction de l'ID
-        $cvProfile = CvProfile::findOrFail($id);
+    {
+        // dd($id);
+        try {
+            // Récupérer le profil CV en fonction de l'ID
+            $cvProfile = CvProfile::where('etudiant_id', $id)->first();
 
-        // Retourner la vue correspondante avec les données du CV
-        return view('admin.cvtheque.view', compact('cvProfile'));
-    } catch (\Exception $e) {
-        // Gérer les erreurs, par exemple, si le CV n'est pas trouvé
-        return redirect()->route('admin.cvtheque.cvtheque')
-            ->with('error', 'Le CV demandé est introuvable.');
-    }
-}
-public function download($id)
-{
-    try {
-        // Récupère le profil du CV
-        $cvProfile = CvProfile::findOrFail($id);
-
-        // Vérifie que le fichier existe dans le système
-        $filePath = storage_path('app/cv/' . $cvProfile->file_name);
-        if (!file_exists($filePath)) {
+            // Retourner la vue correspondante avec les données du CV
+            return view('admin.cvtheque.view', compact('cvProfile'));
+        } catch (\Exception $e) {
+            // Gérer les erreurs, par exemple, si le CV n'est pas trouvé
             return redirect()->route('admin.cvtheque.cvtheque')
-                ->with('error', 'Le fichier du CV est introuvable.');
+                ->with('error', 'Le CV demandé est introuvable.');
         }
-
-        // Télécharge le fichier
-        return response()->download($filePath, $cvProfile->titre . '.pdf');
-    } catch (\Exception $e) {
-        // Gestion des erreurs
-        return redirect()->route('admin.cvtheque.cvtheque')
-            ->with('error', 'Une erreur est survenue lors du téléchargement du CV : ' . $e->getMessage());
     }
-}
+    public function download($id)
+    {
+        try {
+            // Récupère le profil du CV
+            $cvProfile = CvProfile::findOrFail($id);
+
+            // Vérifie que le fichier existe dans le système
+            $filePath = storage_path('app/cv/' . $cvProfile->file_name);
+            if (!file_exists($filePath)) {
+                return redirect()->route('admin.cvtheque.cvtheque')
+                    ->with('error', 'Le fichier du CV est introuvable.');
+            }
+
+            // Télécharge le fichier
+            return response()->download($filePath, $cvProfile->titre . '.pdf');
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return redirect()->route('admin.cvtheque.cvtheque')
+                ->with('error', 'Une erreur est survenue lors du téléchargement du CV : ' . $e->getMessage());
+        }
+    }
 
 
     /**
@@ -111,11 +112,10 @@ public function download($id)
             // Passe l'objet CvProfile complet à la vue.
             // Les composants Livewire utiliseront $cvProfile->id.
             return view('etudiants.cv.edit', compact('cvProfile'));
-
         } catch (\Exception $e) {
             Log::error("Erreur majeure lors du chargement de la page edit CV: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('etudiants.dashboard')
-                      ->with('error', $e->getMessage()); // Affiche l'erreur spécifique
+                ->with('error', $e->getMessage()); // Affiche l'erreur spécifique
         }
     }
 
@@ -124,32 +124,31 @@ public function download($id)
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-     public function show()
-     {
-         try {
+    public function show()
+    {
+        try {
             // Récupère le profil CV avec toutes ses relations déjà chargées
             $cvProfile = $this->getCurrentCvProfile();
             Log::info("Affichage du CV Show pour CvProfile ID: " . $cvProfile->id);
 
             // Vérifie si la vue existe avant de la retourner
-             if (!view()->exists('etudiants.cv.show')) {
-                  Log::error("La vue 'etudiants.cv.show' est introuvable.");
-                  abort(500, "Erreur de configuration de l'affichage du CV.");
-             }
+            if (!view()->exists('etudiants.cv.show')) {
+                Log::error("La vue 'etudiants.cv.show' est introuvable.");
+                abort(500, "Erreur de configuration de l'affichage du CV.");
+            }
             if (!view()->exists('etudiants.cv.templates.default')) {
-                  Log::error("Le template CV 'etudiants.cv.templates.default' est introuvable.");
-                  abort(500, "Erreur de configuration du template CV.");
-             }
+                Log::error("Le template CV 'etudiants.cv.templates.default' est introuvable.");
+                abort(500, "Erreur de configuration du template CV.");
+            }
 
             return view('etudiants.cv.show', compact('cvProfile'));
-
-         } catch (\Exception $e) {
-              Log::error("Erreur lors de l'affichage du CV (show): " . $e->getMessage(), ['exception' => $e]);
-              // Redirige vers l'éditeur si l'affichage échoue, car le dashboard pourrait ne pas exister
-              return redirect()->route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant?->cvProfile?->id ?? 0])
-                        ->with('error', 'Impossible d\'afficher le CV pour le moment : ' . $e->getMessage());
-         }
-     }
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'affichage du CV (show): " . $e->getMessage(), ['exception' => $e]);
+            // Redirige vers l'éditeur si l'affichage échoue, car le dashboard pourrait ne pas exister
+            return redirect()->route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant?->cvProfile?->id ?? 0])
+                ->with('error', 'Impossible d\'afficher le CV pour le moment : ' . $e->getMessage());
+        }
+    }
 
     /**
      * Exporte le CV au format PDF.
@@ -174,8 +173,8 @@ public function download($id)
 
             // Génération du PDF en utilisant le template PDF optimisé
             $pdf = Pdf::loadView('etudiants.cv.templates.pdf', compact('cvProfile'))
-                       ->setPaper('a4', 'portrait'); // Définit explicitement le format
-            
+                ->setPaper('a4', 'portrait'); // Définit explicitement le format
+
             // Force dompdf à ne pas utiliser de margin (important)
             $pdf->setOptions([
                 'dpi' => 150,
@@ -189,88 +188,85 @@ public function download($id)
             ]);
 
             // Nom de fichier dynamique et "slugifié"
-             $filename = 'cv-' . Str::slug($cvProfile->nom_complet ?: 'etudiant-' . $cvProfile->etudiant_id) . '.pdf';
+            $filename = 'cv-' . Str::slug($cvProfile->nom_complet ?: 'etudiant-' . $cvProfile->etudiant_id) . '.pdf';
 
             Log::info("Export PDF serveur (dompdf) réussi pour {$filename}");
 
             // Retourne le PDF pour téléchargement
             return $pdf->download($filename);
-
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'export PDF serveur (dompdf): " . $e->getMessage(), ['exception' => $e]);
             // Redirige vers la page de visualisation avec un message d'erreur
             return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
-                      ->with('error', 'Erreur lors de la génération du PDF : ' . $e->getMessage()); // Message d'erreur plus générique
+                ->with('error', 'Erreur lors de la génération du PDF : ' . $e->getMessage()); // Message d'erreur plus générique
         }
     }
     // Fin de exportPdf
 
-     /**
-      * Exporte le CV au format PNG en utilisant Browsershot.
-      *
-      * @return \Symfony\Component\HttpFoundation\Response|\Illuminate\Http\RedirectResponse
-      */
-      public function exportPng()
-      {
-          $cvProfile = null; // Initialise pour le bloc catch
-          Log::info("Tentative d'export PNG pour CvProfile ID: " . Auth::user()->etudiant?->cvProfile?->id);
-          try {
-                // Vérifier si Browsershot est disponible
-                 if (!class_exists(Browsershot::class)) {
-                     Log::error("Le package 'spatie/laravel-browsershot' n'est pas installé ou Puppeteer/Chrome n'est pas configuré.");
-                     throw new \Exception("La génération d'image PNG n'est pas disponible sur le serveur.");
-                 }
+    /**
+     * Exporte le CV au format PNG en utilisant Browsershot.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function exportPng()
+    {
+        $cvProfile = null; // Initialise pour le bloc catch
+        Log::info("Tentative d'export PNG pour CvProfile ID: " . Auth::user()->etudiant?->cvProfile?->id);
+        try {
+            // Vérifier si Browsershot est disponible
+            if (!class_exists(Browsershot::class)) {
+                Log::error("Le package 'spatie/laravel-browsershot' n'est pas installé ou Puppeteer/Chrome n'est pas configuré.");
+                throw new \Exception("La génération d'image PNG n'est pas disponible sur le serveur.");
+            }
 
-                $cvProfile = $this->getCurrentCvProfile(); // Récupère profil et relations
+            $cvProfile = $this->getCurrentCvProfile(); // Récupère profil et relations
 
-                // Rendre la vue Blade en HTML
-                $htmlContent = view('etudiants.cv.templates.default', compact('cvProfile'))->render();
+            // Rendre la vue Blade en HTML
+            $htmlContent = view('etudiants.cv.templates.default', compact('cvProfile'))->render();
 
-                // Log HTML pour débogage si nécessaire (peut être volumineux)
-                // Log::debug("HTML généré pour PNG: " . substr($htmlContent, 0, 500) . "...");
+            // Log HTML pour débogage si nécessaire (peut être volumineux)
+            // Log::debug("HTML généré pour PNG: " . substr($htmlContent, 0, 500) . "...");
 
-                // Configuration et exécution de Browsershot
-                $browsershot = Browsershot::html($htmlContent)
-                    ->noSandbox() // Souvent nécessaire sur les serveurs (sécurité à évaluer)
-                     // Optionnel: Spécifier le chemin vers Chrome/Chromium si non trouvé automatiquement
-                     // ->setChromePath('/chemin/vers/chrome-ou-chromium')
-                    ->windowSize(1000, 1414) // Taille approx A4 pour une bonne résolution initiale
-                    ->deviceScaleFactor(2) // Augmente la résolution (qualité x2)
-                    // ->fullPage() // Capture la page entière (peut être très long si le CV est grand) - à tester
-                    ->waitUntilNetworkIdle(1000, 500) // Attend le réseau (1s idle, check toutes les 500ms)
-                    ->timeout(120); // Timeout de 2 minutes pour le rendu
+            // Configuration et exécution de Browsershot
+            $browsershot = Browsershot::html($htmlContent)
+                ->noSandbox() // Souvent nécessaire sur les serveurs (sécurité à évaluer)
+                // Optionnel: Spécifier le chemin vers Chrome/Chromium si non trouvé automatiquement
+                // ->setChromePath('/chemin/vers/chrome-ou-chromium')
+                ->windowSize(1000, 1414) // Taille approx A4 pour une bonne résolution initiale
+                ->deviceScaleFactor(2) // Augmente la résolution (qualité x2)
+                // ->fullPage() // Capture la page entière (peut être très long si le CV est grand) - à tester
+                ->waitUntilNetworkIdle(1000, 500) // Attend le réseau (1s idle, check toutes les 500ms)
+                ->timeout(120); // Timeout de 2 minutes pour le rendu
 
-                // Capture d'écran et récupération des données binaires PNG
-                $imageData = $browsershot->screenshot();
+            // Capture d'écran et récupération des données binaires PNG
+            $imageData = $browsershot->screenshot();
 
-                if (!$imageData) {
-                     throw new \Exception("Browsershot a retourné une image vide.");
-                }
+            if (!$imageData) {
+                throw new \Exception("Browsershot a retourné une image vide.");
+            }
 
-                // Nom de fichier dynamique
-                $filename = 'cv-' . Str::slug($cvProfile->nom_complet ?: 'etudiant-' . $cvProfile->etudiant_id) . '.png';
+            // Nom de fichier dynamique
+            $filename = 'cv-' . Str::slug($cvProfile->nom_complet ?: 'etudiant-' . $cvProfile->etudiant_id) . '.png';
 
-                Log::info("Export PNG réussi pour {$filename}");
+            Log::info("Export PNG réussi pour {$filename}");
 
-                // Retourner la réponse pour télécharger l'image
-                return response($imageData)
-                        ->header('Content-Type', 'image/png')
-                        ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-
-           } catch (CouldNotTakeBrowsershot $e) { // Erreur spécifique à Browsershot
-                Log::error("Erreur Browsershot lors de l'export PNG: " . $e->getMessage(), ['exception' => $e]);
-                $errorMessage = 'Erreur technique lors de la génération de l\'image PNG (Browsershot).';
-                 // Tenter de détecter le problème Chrome/Puppeteer
-                 if (str_contains(strtolower($e->getMessage()), 'chrome') || str_contains(strtolower($e->getMessage()), 'puppeteer')) {
-                     $errorMessage .= ' Assurez-vous que Chrome/Puppeteer est correctement installé et accessible.';
-                 }
-                return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
-                          ->with('error', $errorMessage . ' Consultez les logs serveur pour détails.');
-           }
-            catch (\Exception $e) { // Autres erreurs
-                Log::error("Erreur générale lors de l'export PNG: " . $e->getMessage(), ['exception' => $e]);
-                return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
-                          ->with('error', 'Erreur inattendue lors de la génération du PNG : ' . $e->getMessage());
-           }
-      }
+            // Retourner la réponse pour télécharger l'image
+            return response($imageData)
+                ->header('Content-Type', 'image/png')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        } catch (CouldNotTakeBrowsershot $e) { // Erreur spécifique à Browsershot
+            Log::error("Erreur Browsershot lors de l'export PNG: " . $e->getMessage(), ['exception' => $e]);
+            $errorMessage = 'Erreur technique lors de la génération de l\'image PNG (Browsershot).';
+            // Tenter de détecter le problème Chrome/Puppeteer
+            if (str_contains(strtolower($e->getMessage()), 'chrome') || str_contains(strtolower($e->getMessage()), 'puppeteer')) {
+                $errorMessage .= ' Assurez-vous que Chrome/Puppeteer est correctement installé et accessible.';
+            }
+            return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
+                ->with('error', $errorMessage . ' Consultez les logs serveur pour détails.');
+        } catch (\Exception $e) { // Autres erreurs
+            Log::error("Erreur générale lors de l'export PNG: " . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
+                ->with('error', 'Erreur inattendue lors de la génération du PNG : ' . $e->getMessage());
+        }
+    }
 }

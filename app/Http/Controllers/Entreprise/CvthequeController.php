@@ -60,4 +60,16 @@ class CvthequeController extends Controller
         
         return view('entreprises.cv_detail', compact('cvProfile'));
     }
+<<<<<<< Updated upstream
 } 
+=======
+
+       public function specialite()
+    {
+        $entreprises = \App\Models\Entreprise::all();
+        $specialites = \App\Models\Specialite::with('secteur')->get();
+
+        return view('admin.cvtheque.specialite', compact('entreprises', 'specialites'));
+    }
+}
+>>>>>>> Stashed changes
