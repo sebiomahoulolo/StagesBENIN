@@ -635,6 +635,7 @@
                        <label for="etudiant_niveau" class="form-label">Niveau*</label>
                        <select class="form-select" id="etudiant_niveau" name="niveau"required>
                          <option value="">Sélectionner un niveau</option>
+                         <option value="BEPC">BEPC</option>
                          <option value="Bac">Bac</option>
                          <option value="Bac+1">Bac+1</option>
                          <option value="Bac+2">Bac+2</option>
