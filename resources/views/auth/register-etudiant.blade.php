@@ -104,6 +104,45 @@
                                 @enderror
                             </div>
 
+                            <!-- Formation -->
+                            <div class="mb-3">
+                                <label for="formation" class="form-label">{{ __('Formation') }}</label>
+                                {{-- <input type="text" class="form-control" id="etudiant_formation" name="formation"> --}}
+                                <select class="form-select @error('specialite_id') is-invalid @enderror" id="formation" name="formation" required>
+                                    <option value="">Sélectionner une spécialité</option>
+                                    @foreach($specialites as $specialite)
+                                        <option value="{{ $specialite->id }}" {{ old('specialite_id') == $specialite->id ? 'selected' : '' }}>
+                                            {{ $specialite->nom }} ({{ $specialite->secteur->nom }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('formation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Niveau d'étude -->
+                            <div class="mb-3">
+                                <label for="niveau" class="form-label">{{ __('Niveau d\'étude') }}</label>
+                                <select id="niveau"
+                                        name="niveau"
+                                        class="form-select @error('niveau') is-invalid @enderror"
+                                        required>
+                                        <option value="">Sélectionner un niveau</option>
+                                        <option value="BEPC">BEPC</option>
+                                        <option value="Bac">Bac</option>
+                                        <option value="Bac+1">Bac+1</option>
+                                        <option value="Bac+2">Bac+2</option>
+                                        <option value="Bac+3">Bac+3</option>
+                                        <option value="Bac+4">Bac+4</option>
+                                        <option value="Bac+5">Bac+5</option>
+                                        <option value="Doctorat">Doctorat</option>
+                                </select>
+                                @error('niveau')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Password -->
                             <div class="mb-3 password-wrapper">
                                 <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
@@ -144,7 +183,8 @@
                                         {{ __('Déjà inscrit?') }}
                                     </a>
                                 </div>
-                                 <div class="switch-register-link">
+
+                                <div class="switch-register-link">
                                     <a href="{{ route('register.recruteur.create') }}">
                                         {{ __('S\'inscrire comme Recruteur ?') }}
                                     </a>
