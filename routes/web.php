@@ -81,6 +81,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/admin/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('admin.cv.download');
+Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue');
+Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche');
+Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres');
 
 //Route::get('/secteur/{secteur}', [CatalogueController::class, 'showParSecteur'])->name('secteur.show');
 Route::post('/avis', [App\Http\Controllers\PageController::class, 'store'])->name('avis.store');
@@ -139,7 +142,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', function() {
         return view('auth.register-choice'); // Assurez-vous que ceci existe
     })->name('register');
-    
+
     Route::get('register/etudiant', [RegisteredUserController::class, 'createEtudiant'])->name('register.etudiant.create');
     Route::get('register/recruteur', [RegisteredUserController::class, 'createRecruteur'])->name('register.recruteur.create');
 
@@ -157,7 +160,7 @@ Route::get('/etudiants/boost-status', [BoostController::class, 'status'])->name(
 
 Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants/boostage')->name('etudiants.boostage.')->group(function () {
     Route::get('/status', [BoostController::class, 'status'])->name('status');
-    Route::get('/select', [BoostController::class, 'selectTier'])->name('select'); 
+    Route::get('/select', [BoostController::class, 'selectTier'])->name('select');
     Route::get('/renew/{tier}', [BoostController::class, 'renew'])->name('renew');
     Route::get('/upgrade/{tier}', [BoostController::class, 'upgrade'])->name('upgrade');
     Route::post('/renew/{tier}', [BoostController::class, 'processRenewal'])->name('processRenewal');
@@ -248,12 +251,12 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     Route::get('/boostage', function() {
         return view('etudiants.boostage');
     })->name('boostage');
-    
+
     // Routes pour les événements
     Route::get('/evenements', [EventController::class, 'upcomingForStudent'])->name('evenements.upcoming');
     Route::get('/evenements/{id}', [EventController::class, 'showForStudent'])->name('evenements.show');
     Route::post('/evenements/{id}/register', [EventController::class, 'registerStudent'])->name('evenements.register');
-   
+
     Route::get('/profil', [EtudiantProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profil', [EtudiantProfileController::class, 'updateEtudiantInfo'])->name('profile.updateEtudiantInfo'); // Pour infos spécifiques étudiant
     Route::post('/profil/photo', [EtudiantProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');      // Pour la photo
@@ -296,7 +299,7 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
 // --- Groupe Recruteur (Entreprise) ---
 Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entreprises.')->group(function () {
     Route::get('/dashboard', [EntrepriseController::class, 'dashboard'])->name('dashboard');
-    
+
     // Routes pour les annonces
     Route::prefix('annonces')->name('annonces.')->group(function () {
         Route::get('/', [AnnonceController::class, 'index'])->name('index');
@@ -307,10 +310,11 @@ Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entr
         Route::put('/{annonce}', [AnnonceController::class, 'update'])->name('update');
         Route::delete('/{annonce}', [AnnonceController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Routes pour la CV-thèque
     Route::get('/cvtheque', [App\Http\Controllers\Entreprise\CvthequeController::class, 'index'])->name('cvtheque.index');
     Route::get('/cvtheque/{id}', [App\Http\Controllers\Entreprise\CvthequeController::class, 'view'])->name('cvtheque.view');
+    Route::get('/cvtheque/specialite', [App\Http\Controllers\Entreprise\CvthequeController::class, 'specialite'])->name('cvtheque.specialite');
 
     // Route pour les packs entreprises (corrigé)
     Route::get('/packs', [App\Http\Controllers\Entreprises\PackController::class, 'index'])->name('packs.index');
@@ -358,7 +362,6 @@ Route::middleware(['auth', 'role:recruteur'])->group(function () {
 });
 
 //actulites
-
 Route::get('/les-actualites', [ActualiteController::class, 'actualites'])->name('pages.actualites');
 
 Route::get('/entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
@@ -370,10 +373,10 @@ Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('
 Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
-Route::get('/boost', [AdminController::class, 'listBoosts']) ->name('admin.boost.index'); 
+Route::get('/boost', [AdminController::class, 'listBoosts']) ->name('admin.boost.index');
 Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost');
 
-Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
+// Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
 Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
 Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
 Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
@@ -385,6 +388,7 @@ Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('a
 Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
 Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
 Route::get('/admin/cvtheque', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
+Route::get('/admin/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('admin.cvtheque.specialite');
 Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
 Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
 // Route pour changer le statut de l'étudiant (bloquer/débloquer)
@@ -411,7 +415,7 @@ Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
 // Géré par register.etudiant.store
 Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');
 Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat'])->name('candidat.dashboard');
-Route::get('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'createEntretien'])->name('etudiants.entretiens');
+// Route::get('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'createEntretien'])->name('etudiants.entretiens');
 Route::post('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('etudiants.entretiens');
 Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
 Route::get('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
@@ -423,7 +427,7 @@ Route::get('/etudiants/{id}/edit', [EtudiantController::class, 'edit'])->name('e
 Route::put('/etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiants.update');
 Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
 Route::get('/etudiants/{id}/cv', [EtudiantController::class, 'downloadCV'])->name('etudiants.cv.download');
-Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store'); 
+Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store');
 // ==================================================================
 // ROUTES POST PUBLIQUES ORIGINALES (MAINTENANT OBSOLÈTES/DÉPLACÉES)
 // ==================================================================
@@ -444,7 +448,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{conversation}', [App\Http\Controllers\MessagingController::class, 'show'])->name('show');
         Route::post('/{conversation}/messages', [App\Http\Controllers\MessagingController::class, 'sendMessage'])->name('send-message');
         Route::post('/{conversation}/mark-as-read', [App\Http\Controllers\MessagingController::class, 'markAsRead'])->name('mark-as-read');
-        
+
         // Routes pour le nouveau MessageController
         Route::prefix('api')->name('api.')->group(function () {
             Route::post('/conversations/{conversationId}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
@@ -470,34 +474,34 @@ Route::prefix('nouvelle-messagerie')->name('nouvelle-messagerie.')->middleware([
 Route::middleware(['auth'])->group(function () {
     Route::get('/canal-messagerie', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'index'])
         ->name('messagerie-sociale.index');
-    
+
     Route::get('/canal-messagerie/posts/create', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'createPost'])
         ->name('messagerie-sociale.create-post');
-    
+
     Route::post('/canal-messagerie/posts', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'storePost'])
         ->name('messagerie-sociale.store-post');
-    
+
     Route::get('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showPost'])
         ->name('messagerie-sociale.show-post');
-    
+
     Route::get('/canal-messagerie/posts/{post}/edit', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'editPost'])
         ->name('messagerie-sociale.edit-post');
-    
+
     Route::put('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'updatePost'])
         ->name('messagerie-sociale.update-post');
-    
+
     Route::delete('/canal-messagerie/posts/{post}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'destroyPost'])
         ->name('messagerie-sociale.destroy-post');
-    
+
     Route::post('/canal-messagerie/posts/{post}/comments', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'storeComment'])
         ->name('messagerie-sociale.store-comment');
-    
+
     Route::delete('/canal-messagerie/comments/{comment}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'destroyComment'])
         ->name('messagerie-sociale.destroy-comment');
-    
+
     Route::post('/canal-messagerie/posts/{post}/share', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'sharePost'])
         ->name('messagerie-sociale.share-post');
-    
+
     Route::get('/canal-messagerie/shared/{token}', [App\Http\Controllers\NouvelleMessagerie\MessagerieSocialeController::class, 'showSharedPost'])
         ->name('messagerie-sociale.shared-post');
 });
@@ -506,41 +510,41 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:recruteur'])->group(function () {
     Route::get('/entreprises/canal-messagerie', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'index'])
         ->name('entreprises.messagerie-sociale.index');
-    
+
     Route::get('/entreprises/canal-messagerie/posts/create', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'createPost'])
         ->name('entreprises.messagerie-sociale.create-post');
-    
-    Route::post('/entreprises/canal-messagerie/posts', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'storePost'])
-        ->name('entreprises.messagerie-sociale.store-post');
-    
+
+    // Route::post('/entreprises/canal-messagerie/posts', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'storePost'])
+    //     ->name('entreprises.messagerie-sociale.store-post');
+
     Route::get('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'showPost'])
         ->name('entreprises.messagerie-sociale.show-post');
-    
+
     Route::get('/entreprises/canal-messagerie/posts/{post}/edit', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'editPost'])
         ->name('entreprises.messagerie-sociale.edit-post');
-    
+
     Route::put('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'updatePost'])
         ->name('entreprises.messagerie-sociale.update-post');
-    
+
     Route::delete('/entreprises/canal-messagerie/posts/{post}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'destroyPost'])
         ->name('entreprises.messagerie-sociale.destroy-post');
-    
+
     Route::post('/entreprises/canal-messagerie/posts/{post}/comments', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'storeComment'])
         ->name('entreprises.messagerie-sociale.store-comment');
-    
+
     Route::delete('/entreprises/canal-messagerie/comments/{comment}', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'destroyComment'])
         ->name('entreprises.messagerie-sociale.destroy-comment');
-    
+
     Route::post('/entreprises/canal-messagerie/posts/{post}/share', [App\Http\Controllers\Entreprises\MessagerieSocialeController::class, 'sharePost'])
         ->name('entreprises.messagerie-sociale.share-post');
 });
 
 // Routes pour le boostage
 Route::middleware(['auth', 'role:etudiant'])->group(function () {
-    Route::get('/etudiants/boost/status', [BoostController::class, 'status'])->name('etudiants.boostage.status');
-    Route::get('/etudiants/boost/renew', [BoostController::class, 'renew'])->name('etudiants.boostage.renew');
+    // Route::get('/etudiants/boost/status', [BoostController::class, 'status'])->name('etudiants.boostage.status');
+    // Route::get('/etudiants/boost/renew', [BoostController::class, 'renew'])->name('etudiants.boostage.renew');
     Route::post('/etudiants/boost/renew', [BoostController::class, 'processRenewal'])->name('etudiants.boostage.process-renewal');
-    Route::get('/etudiants/boost/upgrade', [BoostController::class, 'upgrade'])->name('etudiants.boostage.upgrade');
+    // Route::get('/etudiants/boost/upgrade', [BoostController::class, 'upgrade'])->name('etudiants.boostage.upgrade');
     Route::post('/etudiants/boost/upgrade', [BoostController::class, 'processUpgrade'])->name('etudiants.boostage.process-upgrade');
 });
 

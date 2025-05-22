@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Etudiant;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cvtheque;
+
 class AdminController extends Controller
 {
-   
+
     public function validateSubmittedTier(Request $request) // <-- Prend Request, pas Tier $tier
     {
         // 1. Récupérer l'ID du Tier depuis le formulaire (champ caché)
@@ -26,7 +27,7 @@ class AdminController extends Controller
         // 2. Valider que l'ID est présent
         if (!$tierId) {
             return redirect()->route('admin.boost') // Redirige vers la liste
-                             ->with('error', "Erreur : ID du Boost manquant dans la requête.");
+                ->with('error', "Erreur : ID du Boost manquant dans la requête.");
         }
 
         // 3. Essayer de trouver le Tier dans la base de données
@@ -35,13 +36,13 @@ class AdminController extends Controller
         // 4. Vérifier si le Tier a été trouvé
         if (!$tier) {
             return redirect()->route('admin.boost')
-                             ->with('error', "Erreur : Boost avec l'ID {$tierId} non trouvé.");
+                ->with('error', "Erreur : Boost avec l'ID {$tierId} non trouvé.");
         }
 
         // 5. Vérifier si le tier n'est pas déjà payé (logique existante)
         if ($tier->payment_status === 'paid') {
             return redirect()->route('admin.boost')
-                             ->with('warning', "Le Boost (ID: {$tier->id}) est déjà marqué comme payé.");
+                ->with('warning', "Le Boost (ID: {$tier->id}) est déjà marqué comme payé.");
         }
 
         // 6. Essayer de mettre à jour et sauvegarder (logique existante)
@@ -53,27 +54,26 @@ class AdminController extends Controller
             Log::info("Boost (Tier ID: {$tier->id}) validé par l'administrateur (via validateSubmittedTier).");
 
             return redirect()->route('admin.boost')
-                             ->with('success', "Le Boost (ID: {$tier->id}) a été marqué comme Payé avec succès.");
-
+                ->with('success', "Le Boost (ID: {$tier->id}) a été marqué comme Payé avec succès.");
         } catch (\Exception $e) {
             Log::error("Erreur lors de la validation du Boost (Tier ID: {$tier->id}) (via validateSubmittedTier): " . $e->getMessage());
             return redirect()->route('admin.boost')
-                             ->with('error', "Une erreur est survenue lors de la validation du Boost (ID: {$tier->id}).");
+                ->with('error', "Une erreur est survenue lors de la validation du Boost (ID: {$tier->id}).");
         }
     }
     public function index()
     {
-   
+
         $etudiants = Etudiant::paginate(10);
         $actualites = Actualite::paginate(10);
         $events = Event::paginate(10);
         $catalogues = Catalogue::paginate(10);
-    $catalogueItems = Catalogue::all(); 
+        $catalogueItems = Catalogue::all();
 
 
-      
+
         $totalEtudiants = Etudiant::count();
-        $progression = "N/A"; 
+        $progression = "N/A";
 
         return view('admin.dashboard', compact(
             'etudiants',
@@ -84,39 +84,54 @@ class AdminController extends Controller
             'progression'
         ));
     }
- 
+
 
     public function cvtheque()
     {
         try {
-            // Récupère tous les profils CV avec leurs relations associées (ex. étudiant)
+            // Récupère tous les profils CV avec leurs relations associées
             $cvProfiles = CvProfile::with('etudiant')->get();
-    
+
+            $entreprises = \App\Models\Entreprise::all();
+            $specialites = \App\Models\Specialite::with('secteur')->get();
+
+            // Récupérer tous les niveaux d'études uniques
+            $niveaux = \App\Models\Etudiant::select('niveau')
+                ->whereNotNull('niveau')
+                ->distinct()
+                ->orderBy('niveau')
+                ->pluck('niveau');
+
+            // Compter le nombre d'étudiants par spécialité
+            $specialites->each(function ($specialite) {
+                $specialite->setAttribute('nombre_etudiants', \App\Models\Etudiant::where('formation', $specialite->id)->count());
+            });
+
             if ($cvProfiles->isEmpty()) {
                 Log::warning("Aucun CV trouvé dans la base de données.");
             }
-    
+
             Log::info("Affichage de tous les CV pour l'admin : " . $cvProfiles->count() . " CV(s) récupéré(s).");
-    
+
             // Vérifie si la vue existe avant de la retourner
             if (!view()->exists('admin.cvtheque.cvtheque')) {
                 Log::error("La vue 'admin.cvtheque.cvtheque' est introuvable.");
                 abort(500, "Erreur de configuration de l'affichage de la CVthèque.");
             }
-    
+
             // Retourne la vue avec les profils CV, même s'il est vide
-            return view('admin.cvtheque.cvtheque', compact('cvProfiles'));
-    
+            return view('admin.cvtheque.cvtheque', compact('cvProfiles', 'entreprises', 'specialites', 'niveaux'));
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage de la CVthèque : " . $e->getMessage(), [
                 'exception' => $e,
             ]);
-    
+
             return view('admin.cvtheque.cvtheque')->with('error', 'Une erreur est survenue lors de l\'affichage des CV.');
         }
     }
-    
-    
+
+
+
     public function etudiants()
     {
         // Récupérer les étudiants depuis la base de données
@@ -185,43 +200,70 @@ class AdminController extends Controller
 
         return redirect()->route('admin.evenements')->with('success', 'Événement supprimé avec succès.');
     }
-public function evenements()
-{
-    // Récupérez les données nécessaires (par exemple, les événements)
-    $evenements = Event::paginate(10);
+    public function evenements()
+    {
+        // Récupérez les données nécessaires (par exemple, les événements)
+        $evenements = Event::paginate(10);
 
-    // Retournez la vue avec les événements
-    return view('admin.evenements', compact('evenements'));
-}
-public function entreprises()
-{
-    // Exemple : Récupérez les entreprises de la base de données
-    $entreprises = Entreprise::paginate(10);
+        // Retournez la vue avec les événements
+        return view('admin.evenements', compact('evenements'));
+    }
+    public function entreprises()
+    {
+        // Exemple : Récupérez les entreprises de la base de données
+        $entreprises = Entreprise::paginate(10);
 
-    // Retournez la vue avec les entreprises
-    return view('admin.entreprises', compact('entreprises'));
-}
-public function catalogues()
-{
-    // Exemple : Récupérez les catalogues depuis la base de données
-    $catalogueItems = Catalogue::all();
+        // Retournez la vue avec les entreprises
+        return view('admin.entreprises', compact('entreprises'));
+    }
+    public function catalogues()
+    {
+        // Exemple : Récupérez les catalogues depuis la base de données
+        $catalogueItems = Catalogue::all();
 
-    // Retournez la vue avec les catalogues
-    return view('admin.catalogues', compact('catalogueItems'));
-}
+        // Retournez la vue avec les catalogues
+        return view('admin.catalogues', compact('catalogueItems'));
+    }
 
-public function recrutements()
-{
-    // Exemple : Récupérez les données nécessaires pour les recrutements
-    $recrutements = Recrutement::paginate(10);
+    public function recrutements()
+    {
+        // Exemple : Récupérez les données nécessaires pour les recrutements
+        $recrutements = Recrutement::paginate(10);
 
-    // Retournez la vue avec les données
-    return view('admin.recrutements', compact('recrutements'));
-}
+        // Retournez la vue avec les données
+        return view('admin.recrutements', compact('recrutements'));
+    }
 
     public function manageUsers()
     {
         // Gérer les utilisateurs
         return view('admin.manage_users');
     }
+
+    public function specialite($id)
+    {
+        try {
+            $specialite = \App\Models\Specialite::findOrFail($id);
+            $etudiants = \App\Models\Etudiant::where('formation', $id)->get();
+            $nombreEtudiants = $etudiants->count();
+
+            // Récupérer les niveaux uniques des étudiants
+            $niveaux = \App\Models\Etudiant::where('formation', $id)
+                ->whereNotNull('niveau')
+                ->distinct()
+                ->pluck('niveau')
+                ->sort();
+
+            Log::info("Affichage des étudiants pour la spécialité {$specialite->nom} : {$nombreEtudiants} étudiant(s) trouvé(s).");
+
+            return view('admin.cvtheque.specialite', compact('specialite', 'etudiants', 'nombreEtudiants', 'niveaux'));
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'affichage des étudiants de la spécialité : " . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'affichage des étudiants.');
+        }
+    }
+
 }

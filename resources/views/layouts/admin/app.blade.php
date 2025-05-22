@@ -14,6 +14,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <style>
         /* Global Variables */
         :root {
@@ -1326,7 +1329,52 @@
     }); // End DOMContentLoaded
     </script>
 
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        // Configuration de Toastr
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Affichage des messages de succès
+        @if(Session::has('success'))
+            toastr.success("{{ Session::get('success') }}");
+        @endif
+
+        // Affichage des messages d'erreur
+        @if(Session::has('error'))
+            toastr.error("{{ Session::get('error') }}");
+        @endif
+
+        // Affichage des messages d'information
+        @if(Session::has('info'))
+            toastr.info("{{ Session::get('info') }}");
+        @endif
+
+        // Affichage des messages d'avertissement
+        @if(Session::has('warning'))
+            toastr.warning("{{ Session::get('warning') }}");
+        @endif
+    </script>
+
     @stack('scripts') {{-- Placeholder for page-specific JS --}}
 
 </body>
-</html> 
+</html>
