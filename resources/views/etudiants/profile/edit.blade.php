@@ -184,7 +184,8 @@
                             <span class="form-label d-block mb-2">Aperçu :</span>
                             <template x-if="photoPreview"><img :src="photoPreview" alt="Aperçu nouvelle photo"></template>
                             <template x-if="!photoPreview">
-                                @if ($etudiant->photo_path) <img src="{{ Storage::url($etudiant->photo_path) }}" alt="Photo actuelle">
+                                @if ($etudiant->photo_path) <img src="{{ asset('assets/' . $etudiant->photo_path) }}" alt="Photo actuelle">
+                          
                                 @else <div class="placeholder"><i class="fas fa-user"></i></div>
                                 @endif
                             </template>

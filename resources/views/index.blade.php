@@ -27,7 +27,9 @@
         </div>
     </div>
 <div class="text-center my-4">
-  <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">RECRUTER EMPLOYE / STAGIAIRE</a><br><br>
+ <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">RECRUTER EMPLOYE / STAGIAIRE</a>
+  <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">CONNEXION</a>
+  <a href="{{ route('register') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">INSCRIPTION</a>
 </div>
 </div>
 </div>

@@ -55,6 +55,32 @@ Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name(
 Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue'); 
 Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche'); 
 Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres'); 
+// routes/web.php
+
+
+
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    
+    // Routes pour les étudiants
+    Route::get('/etudiants', [EtudiantController::class, 'index'])->name('admin.etudiants.index');
+    
+    // Route pour récupérer tous les étudiants (AJAX)
+    Route::get('/etudiants/all-students', [EtudiantController::class, 'getAllStudents'])->name('admin.etudiants.all');
+    
+    // Route pour la recherche d'étudiants (AJAX)
+    Route::get('/etudiants/search', [EtudiantController::class, 'search'])->name('admin.etudiants.search');
+    
+    // Route pour changer le statut (AJAX compatible)
+    Route::patch('/etudiants/toggle-status/{id}', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
+    
+    // Route pour voir les détails d'un étudiant
+    Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('admin.etudiants.show');
+    
+    // Route pour supprimer un étudiant (AJAX compatible)
+    Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');   
+});
+
+Route::get('/admin/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('admin.cv.download');
 
 //Route::get('/secteur/{secteur}', [CatalogueController::class, 'showParSecteur'])->name('secteur.show');
 Route::post('/avis', [App\Http\Controllers\PageController::class, 'store'])->name('avis.store');

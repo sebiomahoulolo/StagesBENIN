@@ -100,10 +100,25 @@ class ComplaintSuggestionController extends Controller
         $complainSuggestion->is_anonymous = $request->has('is_anonymous');
         
         // Gestion de l'upload de la photo de preuve
-        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
-            $photoPath = $request->file('photo')->store('complaints', 'public');
-            $complainSuggestion->photo_path = $photoPath;
-        }
+if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+    // Chemin de destination dans le dossier public
+    $destinationPath = public_path('assets/complaints');
+
+    // Créer le dossier s'il n'existe pas
+    if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0755, true);
+    }
+
+    // Générer un nom unique pour la photo
+    $fileName = time() . '_' . $request->file('photo')->getClientOriginalName();
+
+    // Déplacer le fichier vers le dossier public
+    $request->file('photo')->move($destinationPath, $fileName);
+
+    // Stocker le chemin relatif dans la base de données
+    $complainSuggestion->photo_path = 'complaints/' . $fileName;
+}
+
         
         // Si non anonyme, associer à l'étudiant
         if (!$complainSuggestion->is_anonymous) {

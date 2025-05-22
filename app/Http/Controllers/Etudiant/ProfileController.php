@@ -76,27 +76,40 @@ class ProfileController extends Controller
 
     /**
      * Met à jour la photo de profil de l'étudiant.
-     */
-    public function updatePhoto(Request $request)
-    {
-        $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // 2MB Max
-        ]);
+     */public function updatePhoto(Request $request)
+{
+    $request->validate([
+        'photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // 2MB max
+    ]);
 
-        $user = $request->user();
-        $etudiant = $user->etudiant()->firstOrFail();
+    $user = $request->user();
+    $etudiant = $user->etudiant()->firstOrFail();
 
-        // Supprimer l'ancienne photo si elle existe
-        if ($etudiant->photo_path && Storage::disk('public')->exists($etudiant->photo_path)) {
-            Storage::disk('public')->delete($etudiant->photo_path);
-        }
+    // Définir le chemin public de destination
+    $destinationPath = public_path('assets/etudiant_photos/user_' . $user->id);
 
-        // Stocker la nouvelle photo dans 'etudiant_photos/user_{id}'
-        $path = $request->file('photo')->store('etudiant_photos/user_' . $user->id, 'public');
-
-        // Mettre à jour le chemin dans la base de données
-        $etudiant->update(['photo_path' => $path]);
-
-        return redirect()->route('etudiants.profile.edit')->with('status', 'profile-photo-updated');
+    // Créer le dossier s'il n'existe pas
+    if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0755, true);
     }
+
+    // Supprimer l'ancienne photo si elle existe
+    if ($etudiant->photo_path && file_exists(public_path('assets/' . $etudiant->photo_path))) {
+        unlink(public_path('assets/' . $etudiant->photo_path));
+    }
+
+    // Générer un nom unique pour la nouvelle photo
+    $fileName = time() . '_' . $request->file('photo')->getClientOriginalName();
+
+    // Déplacer la photo dans le dossier public
+    $request->file('photo')->move($destinationPath, $fileName);
+
+    // Enregistrer le chemin relatif (à partir de 'assets/')
+    $etudiant->update([
+        'photo_path' => 'etudiant_photos/user_' . $user->id . '/' . $fileName
+    ]);
+
+    return redirect()->route('etudiants.profile.edit')->with('status', 'profile-photo-updated');
+}
+
 }

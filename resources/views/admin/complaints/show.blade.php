@@ -39,8 +39,8 @@
                         <h5 class="border-bottom pb-2">Preuve photo</h5>
                         <div class="p-3 bg-light rounded">
                             <div class="text-center position-relative">
-                                <img src="{{ asset('storage/' . $complaintSuggestion->photo_path) }}" 
-                                     alt="Photo de preuve" 
+                               <img src="{{ asset('assets/' . $complaintSuggestion->photo_path) }}" alt="Photo de preuve" class="img-fluid"
+                                 alt="Photo de preuve" 
                                      class="img-fluid" 
                                      style="max-height: 400px; cursor: pointer;"
                                      id="preuve-photo"
@@ -59,12 +59,12 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center p-0">
-                                    <img src="{{ asset('storage/' . $complaintSuggestion->photo_path) }}" 
+                                    <img src="{{ asset('assets/' . $complaintSuggestion->photo_path) }}" 
                                          alt="Photo de preuve (agrandie)" 
                                          class="img-fluid">
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="{{ asset('storage/' . $complaintSuggestion->photo_path) }}" 
+                                    <a href="{{ asset('assets/' . $complaintSuggestion->photo_path) }}" 
                                        class="btn btn-primary" 
                                        download="preuve_{{ $complaintSuggestion->id }}.{{ pathinfo(storage_path('app/public/' . $complaintSuggestion->photo_path), PATHINFO_EXTENSION) }}">
                                         <i class="fas fa-download me-1"></i> Télécharger

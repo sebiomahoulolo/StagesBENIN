@@ -55,7 +55,9 @@
                                 {{-- Ajout de la photo de profil --}}
                                 <span class="profile-image-container" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; vertical-align: middle; margin-right: 5px;">
                                     @if(Auth::user() && Auth::user()->etudiant?->cvProfile?->photo_url)
-                                        <img src="{{ Storage::url(Auth::user()->etudiant->photo_path) }}" alt="Profil" style="width: 100%; height: 100%; object-fit: cover;">
+                
+                                        <img src="{{ asset('assets/' . Auth::user()->etudiant->photo_path) }}" alt="Profil" style="width: 100%; height: 100%; object-fit: cover;">
+
                                     @else
                                         <i class="fas fa-user-circle fa-fw" style="font-size: 1.5rem;"></i>
                                     @endif
