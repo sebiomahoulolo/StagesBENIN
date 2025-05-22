@@ -23,7 +23,8 @@ class RegisteredUserController extends Controller
      */
     public function createEtudiant(): View
     {
-        return view('auth.register-etudiant');
+        $specialites = \App\Models\Specialite::with('secteur')->get();
+        return view('auth.register-etudiant', compact('specialites'));
     }
 
     /**
@@ -39,6 +40,8 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'telephone' => ['required', 'string', 'min:8', 'max:15'],
+            'formation' => ['required', 'string', 'max:100'],
+            'niveau' => ['required', 'string', 'max:100'],
         ]);
 
         $user = User::create([
@@ -54,6 +57,8 @@ class RegisteredUserController extends Controller
             'prenom' => $request->prenom,
             'email' => $request->email,
             'telephone' => $request->telephone,
+            'formation' => $request->formation,
+            'niveau' => $request->niveau,
         ]);
 
         // Créer le profil CV pour l'étudiant
