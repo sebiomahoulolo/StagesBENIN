@@ -16,7 +16,7 @@ class CvthequeController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Affiche la liste de tous les CV disponibles
      */
@@ -28,27 +28,27 @@ class CvthequeController extends Controller
 
         // Débogage
         \Log::info('CV-thèque chargée', ['count' => count($cvProfiles)]);
-        
+
         return view('entreprises.cvtheque', compact('cvProfiles'));
     }
-    
+
     /**
      * Affiche un CV spécifique
      */
     public function view($id)
     {
         $cvProfile = CvProfile::with([
-            'etudiant', 
-            'formations', 
-            'experiences', 
-            'competences', 
-            'langues', 
+            'etudiant',
+            'formations',
+            'experiences',
+            'competences',
+            'langues',
             'centresInteret',
             'certifications',
             'projets',
             'references'
         ])->findOrFail($id);
-        
+
         // Débogage
         \Log::info('CV détail chargé', ['id' => $id, 'étudiant' => optional($cvProfile->etudiant)->nom]);
         
@@ -57,12 +57,9 @@ class CvthequeController extends Controller
             return redirect()->route('entreprises.cvtheque.index')
                 ->with('error', 'Ce CV n\'est plus disponible.');
         }
-        
+
         return view('entreprises.cv_detail', compact('cvProfile'));
     }
-<<<<<<< Updated upstream
-} 
-=======
 
        public function specialite()
     {
@@ -72,4 +69,3 @@ class CvthequeController extends Controller
         return view('admin.cvtheque.specialite', compact('entreprises', 'specialites'));
     }
 }
->>>>>>> Stashed changes
