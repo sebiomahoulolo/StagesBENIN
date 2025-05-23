@@ -84,7 +84,7 @@
                                                     title="Paiement déjà validé"><i class="fas fa-check-circle"></i>
                                                     Payé</span>
                                                     <div class="btn-group">
-                                                        <a href="{{ route('admin.cvtheque.view',  $tier->user_id) }}" class="btn btn-info btn-sm" title="Voir le CV">
+                                                        <a href="{{ route('admin.cvtheque.view',  $tier->etudiant_id) }}" class="btn btn-info btn-sm" title="Voir le CV">
                                                             <i class="fas fa-eye"></i> Voir
                                                         </a>
                                                     </div>
