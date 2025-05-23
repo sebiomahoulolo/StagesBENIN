@@ -141,9 +141,13 @@ class AdminController extends Controller
     public function etudiants()
     {
         // Récupérer les étudiants depuis la base de données
-        $etudiants = Etudiant::paginate(10);
+        $etudiants = Etudiant::join('specialites', 'etudiants.formation', '=', 'specialites.id')
+        ->select('etudiants.*', 'specialites.nom as specialite_nom')
+        ->paginate(10);
 $specialites = \App\Models\Specialite::with('secteur')->get();
   
+        // dd($etudiants);
+
         // Retourner la vue avec les étudiants
         return view('admin.etudiants.etudiants', compact('etudiants','specialites'));
     }

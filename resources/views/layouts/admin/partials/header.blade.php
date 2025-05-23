@@ -4,41 +4,41 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <div class="search-bar">
+<!--div class="search-bar">
         <i class="fas fa-search search-icon"></i>
         <input type="search" class="form-control form-control-sm" placeholder="Rechercher..." aria-label="Rechercher">
-    </div>
+    </div-->
 
     <div class="header-actions">
-        {{-- Notifications Dropdown/Link --}}
+        {{-- Notifications Dropdown/Link
         <div class="dropdown">
             <button class="header-icon" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications" data-bs-tooltip="tooltip" title="Notifications">
                 <i class="fas fa-bell"></i>
                  {{-- Optional: Add badge for unread notifications --}}
                  {{-- <span class="notification-badge"></span> --}}
-            </button>
+            {{--</button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
               <li><a class="dropdown-item" href="#">Notification 1</a></li>
               <li><a class="dropdown-item" href="#">Notification 2</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Voir toutes les notifications</a></li>
             </ul>
-        </div>
+        </div> --}}
 
-         {{-- Messages Dropdown/Link --}}
+         {{-- Messages Dropdown/Link
          <div class="dropdown">
             <button class="header-icon" id="messagesDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Messages" data-bs-tooltip="tooltip" title="Messages">
                 <i class="fas fa-envelope"></i>
                 {{-- Optional: Add badge for unread messages --}}
                 {{-- <span class="notification-badge"></span> --}}
-            </button>
+              {{-- </button>
              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="messagesDropdown">
               <li><a class="dropdown-item" href="#">Message de Jean</a></li>
               <li><a class="dropdown-item" href="#">Message de Marie</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Voir tous les messages</a></li>
             </ul>
-         </div>
+         </div> --}}
 
         {{-- User Profile Dropdown --}}
         <div class="dropdown">
