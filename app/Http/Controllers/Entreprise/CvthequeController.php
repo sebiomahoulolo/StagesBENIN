@@ -58,11 +58,10 @@ class CvthequeController extends Controller
                 ->with('error', 'Ce CV n\'est plus disponible.');
         }
         
+        
         return view('entreprises.cv_detail', compact('cvProfile'));
     }
-<<<<<<< Updated upstream
-} 
-=======
+
 
        public function specialite()
     {
@@ -72,4 +71,3 @@ class CvthequeController extends Controller
         return view('admin.cvtheque.specialite', compact('entreprises', 'specialites'));
     }
 }
->>>>>>> Stashed changes

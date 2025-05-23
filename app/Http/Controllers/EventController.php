@@ -176,7 +176,7 @@ public function store(Request $request)
     // Vérification de l'utilisateur connecté
     $user = auth()->user();
     $user_id = $user ? $user->id : null;
-    $email = $user ? $user->email : ($request->email ?? null); // Utiliser l'email de l'utilisateur si connecté
+    $email = $user ? $user->email : ($request->email ?? null);
 
     Log::info('Utilisateur connecté : ', ['user_id' => $user_id ?? 'Non connecté', 'email' => $email]);
 
@@ -188,28 +188,23 @@ public function store(Request $request)
         'first_name' => 'nullable|string|max:255',
         'last_name' => 'nullable|string|max:255',
         'phone_number' => 'nullable|string|max:20',
-        'email' => 'required|email|max:255', // Maintenant, l'email sera toujours présent
+        'email' => 'required|email|max:255',
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
         'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date',
         'location' => 'nullable|string|max:255',
         'type' => 'nullable|string|max:100',
-        'ticket_price' => 'nullable|string|max:20',
+        'ticket_price' => 'nullable|numeric|min:0',
         'max_participants' => 'nullable|integer|min:1',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
+    // Retourner une réponse JSON si la validation échoue
     if ($validator->fails()) {
         Log::warning('Validation échouée : ', $validator->errors()->toArray());
-        
-        return redirect()->back()
-            ->withErrors($validator)
-            ->withInput()
-            ->with('message', 'Validation échouée, veuillez vérifier vos données.');
+        return response()->json(['errors' => $validator->errors(), 'message' => 'Validation échouée.'], 422);
     }
-    
-    
 
     // Traitement de l'image si elle existe
     $imagePath = null;
@@ -233,7 +228,7 @@ public function store(Request $request)
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone_number' => $request->phone_number,
-            'email' => $email, // Utiliser l'email récupéré
+            'email' => $email,
             'title' => $request->title,
             'description' => $request->description,
             'start_date' => $request->start_date,
@@ -249,22 +244,21 @@ public function store(Request $request)
 
         Log::info('Événement créé avec succès : ', ['event_id' => $event->id]);
 
-        return redirect()->back()->with('success', 'Événement créé avec succès. Il sera publié après validation.');
-
+        // Retourner une réponse JSON pour AJAX
+        return response()->json([
+            'message' => 'Événement enregistré avec succès',
+            'event_id' => $event->id,
+            'image' => $imagePath
+        ], 201);
 
     } catch (\Exception $e) {
         Log::error('Erreur lors de la création de l\'événement : ' . $e->getMessage());
-
-        if ($validator->fails()) {
-            Log::warning('Validation échouée : ', $validator->errors()->toArray());
-            
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('message', 'Validation échouée, veuillez vérifier vos données.');
-        }
-        
+        return response()->json([
+            'message' => 'Une erreur est survenue lors de la création de l\'événement.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+
 }
 
 

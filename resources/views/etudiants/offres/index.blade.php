@@ -226,20 +226,79 @@
             border-radius: 0 0 10px 10px;
         }
 
-        .pagination {
+        /* Styles personnalisés pour la pagination */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .pagination {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-item {
+            margin: 0;
         }
 
         .page-link {
-            border-radius: 6px;
-            margin: 0 3px;
-            color: #3498db;
             border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 45px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+        }
+
+        .page-link:hover {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+            color: #3498db;
+            transform: translateY(-1px);
         }
 
         .page-item.active .page-link {
             background-color: #3498db;
             border-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .page-item.disabled .page-link {
+            color: #bbb;
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .page-item.disabled .page-link:hover {
+            transform: none;
+        }
+
+        /* Masquer les icônes dans les liens de pagination */
+        .page-link svg,
+        .page-link i {
+            display: none;
+        }
+
+        /* Pagination info */
+        .pagination-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
         /* Animation */
@@ -274,6 +333,26 @@
             
             .offre-card-item {
                 margin: 10px;
+            }
+
+            .pagination {
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .page-link {
+                padding: 8px 12px;
+                min-width: 40px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-link {
+                padding: 6px 10px;
+                min-width: 35px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -408,9 +487,64 @@
                         </div>
                     @endforeach
                     
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $annonces->links() }}
-                    </div>
+                    <!-- Pagination améliorée -->
+                    @if($annonces->hasPages())
+                        <div class="pagination-wrapper">
+                            <div class="text-center w-100">
+                                <div class="pagination-info">
+                                    Affichage {{ $annonces->firstItem() ?? 0 }} à {{ $annonces->lastItem() ?? 0 }} 
+                                    sur {{ $annonces->total() }} offres
+                                </div>
+                                
+                                <nav aria-label="Navigation des pages">
+                                    <ul class="pagination">
+                                        {{-- Lien vers la première page --}}
+                                        @if ($annonces->currentPage() > 3)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $annonces->url(1) }}">1</a>
+                                            </li>
+                                            @if ($annonces->currentPage() > 4)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                        @endif
+
+                                        {{-- Liens des pages précédentes --}}
+                                        @for ($i = max(1, $annonces->currentPage() - 2); $i < $annonces->currentPage(); $i++)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $annonces->url($i) }}">{{ $i }}</a>
+                                            </li>
+                                        @endfor
+
+                                        {{-- Page courante --}}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ $annonces->currentPage() }}</span>
+                                        </li>
+
+                                        {{-- Liens des pages suivantes --}}
+                                        @for ($i = $annonces->currentPage() + 1; $i <= min($annonces->lastPage(), $annonces->currentPage() + 2); $i++)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $annonces->url($i) }}">{{ $i }}</a>
+                                            </li>
+                                        @endfor
+
+                                        {{-- Lien vers la dernière page --}}
+                                        @if ($annonces->currentPage() < $annonces->lastPage() - 2)
+                                            @if ($annonces->currentPage() < $annonces->lastPage() - 3)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $annonces->url($annonces->lastPage()) }}">{{ $annonces->lastPage() }}</a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>
@@ -471,4 +605,4 @@
         });
     });
 </script>
-@endpush 
+@endpush

@@ -18,7 +18,7 @@ class CvController extends Controller
         // On vérifie que le profil CV existe
         if (!$etudiant->cvProfile) {
             return back()->with('error', 'Ce candidat n\'a pas encore de CV.');
-             dd("Aucun CV trouvé pour l'étudiant ID $id");
+            //  dd("Aucun CV trouvé pour l'étudiant ID $id");
         }
 
         return Pdf::loadView('etudiants.cv.show-pdf', [

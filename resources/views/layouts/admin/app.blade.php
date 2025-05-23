@@ -528,14 +528,34 @@
                      <div class="col-md-6 mb-3">
                        <label for="event_type" class="form-label">Type d'événement</label>
                        <select class="form-select" id="event_type" name="type">
-                         <option value="">Sélectionner un type</option>
-                         <option value="Conférence">Conférence</option>
-                         <option value="Workshop">Workshop</option>
-                         <option value="Salon">Salon</option>
-                         <option value="Formation">Formation</option>
-                         <option value="Networking">Networking</option>
-                         <option value="Autre">Autre</option>
-                       </select>
+    <option value="">Sélectionner un type</option>
+    <option value="Conférence">Conférence</option>
+    <option value="Workshop">Workshop</option>
+    <option value="Salon">Salon</option>
+    <option value="Formation">Formation</option>
+    <option value="Networking">Networking</option>
+    <option value="Fête de gala">Fête de gala</option>
+    <option value="Séance d'animations">Séance d'animations</option>
+    <option value="Spectacle">Spectacle</option>
+    <option value="Concert">Concert</option>
+    <option value="Festival">Festival</option>
+    <option value="Projection cinématographique">Projection cinématographique</option>
+    <option value="Exposition d'art">Exposition d'art</option>
+    <option value="Événement caritatif">Événement caritatif</option>
+    <option value="Assemblée générale">Assemblée générale</option>
+    <option value="Rencontre communautaire">Rencontre communautaire</option>
+    <option value="Activités bénévoles">Activités bénévoles</option>
+    <option value="Compétition sportive">Compétition sportive</option>
+    <option value="Marche/Randonnée">Marche/Randonnée</option>
+    <option value="Cours de bien-être (Yoga, Méditation)">Cours de bien-être (Yoga, Méditation)</option>
+    <option value="Anniversaire">Anniversaire</option>
+    <option value="Mariage">Mariage</option>
+    <option value="Baptême">Baptême</option>
+    <option value="Soirée privée">Soirée privée</option>
+    <option value="Retraite/Séjour">Retraite/Séjour</option>
+   
+</select>
+
                      </div>
                      <div class="col-md-6 mb-3">
                        <label for="event_max_participants" class="form-label">Nombre max. de participants</label>
@@ -557,7 +577,7 @@
                      </div>
                      <div class="col-md-6 mb-3" id="ticket_price_container" style="display: none;">
                        <label for="event_ticket_price" class="form-label">Prix du ticket*</label>
-                       <input type="number" class="form-control" id="event_ticket_price" name="ticket_price" min="0" step="0.01" required>
+                       <input type="number" class="form-control" id="event_ticket_price" name="ticket_price" min="0" step="0.01">
                      </div>
                    </div>
                    <!-- Fin ajout option ticket -->
@@ -627,10 +647,101 @@
                      </div>
                    </div>
                    <div class="row">
-                     <div class="col-md-6 mb-3">
-                       <label for="etudiant_formation" class="form-label">Formation*</label>
-                       <input type="text" class="form-control" id="etudiant_formation" name="formation"required>
-                     </div>
+                                                 <div class="mb-3">
+                                <label for="formation" class="form-label">{{ __('Formation') }}</label>
+                                {{-- <input type="text" class="form-control" id="etudiant_formation" name="formation"> --}}
+                               <select class="form-select"   id="formation" name="formation" required>
+    <option value="">Sélectionner une spécialité</option>
+    <option value="1">Administrateur système</option>
+    <option value="2">Assistant administratif</option>
+    <option value="3">Assistant de direction</option>
+    <option value="4">Assistant ressources humaines</option>
+    <option value="5">Cadre ressources humaines</option>
+    <option value="6">Chargé(e) de projet / Chef de projet</option>
+    <option value="7">Conseiller/conseillère en ressources humaines</option>
+    <option value="8">Directeur/directrice d'établissement</option>
+    <option value="9">Directeur/directrice des ressources humaines</option>
+    <option value="10">Employé administratif</option>
+    <option value="11">Manager / Superviseur/superviseuse</option>
+    <option value="12">Réceptionniste</option>
+    <option value="13">Responsable administratif</option>
+    <option value="14">Responsable d'exploitation</option>
+    <option value="15">Responsable des ressources humaines</option>
+    <option value="16">Secrétaire administratif</option>
+    <option value="17">Agent d'assurance</option>
+    <option value="18">Analyste crédit</option>
+    <option value="19">Analyste financier</option>
+    <option value="20">Auditeur/auditrice</option>
+    <option value="21">Cadre financier</option>
+    <option value="22">Comptable</option>
+    <option value="23">Conseiller/conseillère financier/financière</option>
+    <option value="24">Contrôleur de gestion</option>
+    <option value="25">Directeur/directrice financier/financière</option>
+    <option value="26">Expert-comptable</option>
+    <option value="27">Expert en assurance</option>
+    <option value="28">Analyste commercial</option>
+    <option value="29">Assistant marketing</option>
+    <option value="30">Cadre marketing</option>
+    <option value="31">Caissier/caissière</option>
+    <option value="32">Chargé(e) d'études</option>
+    <option value="33">Chargé(e) de clientèle</option>
+    <option value="34">Chargé(e) de communication</option>
+    <option value="35">Chef de produit</option>
+    <option value="36">Commercial</option>
+    <option value="37">Directeur/directrice commercial(e)</option>
+    <option value="38">Directeur/directrice marketing</option>
+    <option value="39">Expert en communication</option>
+    <option value="40">Expert en marketing digital</option>
+    <option value="41">Expert en relations publiques</option>
+    <option value="42">Responsable commercial</option>
+    <option value="43">Responsable marketing</option>
+    <option value="44">Vendeur/vendeuse</option>
+    <option value="45">Analyste de données</option>
+    <option value="46">Concepteur UX/UI</option>
+    <option value="47">Développeur web</option>
+    <option value="48">Ingénieur en informatique</option>
+    <option value="49">Informaticien/informaticienne</option>
+    <option value="50">Programmeur/programmeuse</option>
+    <option value="51">Responsable informatique</option>
+    <option value="52">Spécialiste en cybersécurité</option>
+    <option value="53">Technicien/technicienne en informatique</option>
+    <option value="54">Webdesigner</option>
+    <option value="55">Éducateur/éducatrice spécialisé(e)</option>
+    <option value="56">Infirmier/infirmière</option>
+    <option value="57">Kinésithérapeute</option>
+    <option value="58">Médecin</option>
+    <option value="59">Opticien/opticienne</option>
+    <option value="60">Orthophoniste</option>
+    <option value="61">Pharmacien/pharmacienne</option>
+    <option value="62">Psychologue</option>
+    <option value="63">Sage-femme</option>
+    <option value="64">Secrétaire médical</option>
+    <option value="65">Technicien/technicienne de laboratoire</option>
+    <option value="66">Technicien/technicienne en radiologie</option>
+    <option value="67">Vétérinaire</option>
+    <option value="68">Architecte</option>
+    <option value="69">Conducteur/conductrice de travaux</option>
+    <option value="70">Maçon</option>
+    <option value="71">Menuisier/menuisière</option>
+    <option value="72">Monteur/monteuse</option>
+    <option value="73">Peintre</option>
+    <option value="74">Plombier/plombière</option>
+    <option value="75">Soudeur/soudeuse</option>
+    <option value="76">Ingénieur civil</option>
+    <option value="77">Agent technique</option>
+    <option value="78">Ingénieur chimiste</option>
+    <option value="79">Ingénieur mécanique</option>
+    <option value="80">Ingénieur électrique</option>
+    <option value="81">Mécanicien/mécanicienne</option>
+    <option value="82">Responsable qualité</option>
+    <option value="83">Technicien/technicienne en maintenance</option>
+</select>
+
+                                @error('formation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                      <div class="col-md-6 mb-3">
                        <label for="etudiant_niveau" class="form-label">Niveau*</label>
                        <select class="form-select" id="etudiant_niveau" name="niveau"required>

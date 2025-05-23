@@ -433,6 +433,7 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
 // ==================================================================
 
   // Déplacé dans admin group
+  
  Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
  Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
  Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)

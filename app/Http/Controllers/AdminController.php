@@ -8,7 +8,8 @@ use App\Models\CvProfile;
 use App\Models\Catalogue;
 use App\Models\Recrutement;
 use App\Models\Entreprise;
-use App\Models\Tier;
+use App\Models\Tier; 
+use App\Models\Specialite;
 use App\Models\Entretien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,6 +71,10 @@ class AdminController extends Controller
         $catalogues = Catalogue::paginate(10);
         $catalogueItems = Catalogue::all();
 
+    $specialites = Specialite::all(); // Fetch specialties
+   
+
+
 
 
         $totalEtudiants = Etudiant::count();
@@ -79,6 +84,7 @@ class AdminController extends Controller
             'etudiants',
             'actualites',
             'events',
+            'specialites',
             'catalogueItems',
             'totalEtudiants',
             'progression'
@@ -136,9 +142,10 @@ class AdminController extends Controller
     {
         // Récupérer les étudiants depuis la base de données
         $etudiants = Etudiant::paginate(10);
-
+$specialites = \App\Models\Specialite::with('secteur')->get();
+  
         // Retourner la vue avec les étudiants
-        return view('admin.etudiants.etudiants', compact('etudiants'));
+        return view('admin.etudiants.etudiants', compact('etudiants','specialites'));
     }
 
     public function actualites()
@@ -246,7 +253,9 @@ class AdminController extends Controller
             $specialite = \App\Models\Specialite::findOrFail($id);
             $etudiants = \App\Models\Etudiant::where('formation', $id)->get();
             $nombreEtudiants = $etudiants->count();
-
+            $specialites = \App\Models\Specialite::with('secteur')->get();
+  
+   
             // Récupérer les niveaux uniques des étudiants
             $niveaux = \App\Models\Etudiant::where('formation', $id)
                 ->whereNotNull('niveau')
@@ -256,7 +265,7 @@ class AdminController extends Controller
 
             Log::info("Affichage des étudiants pour la spécialité {$specialite->nom} : {$nombreEtudiants} étudiant(s) trouvé(s).");
 
-            return view('admin.cvtheque.specialite', compact('specialite', 'etudiants', 'nombreEtudiants', 'niveaux'));
+            return view('admin.cvtheque.specialite', compact('specialite', 'etudiants', 'nombreEtudiants', 'niveaux','specialites'));
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage des étudiants de la spécialité : " . $e->getMessage(), [
                 'exception' => $e,

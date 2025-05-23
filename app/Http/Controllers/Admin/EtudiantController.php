@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Etudiant;
+use App\Models\Specialite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -15,7 +16,7 @@ public function index(Request $request)
     $query = Etudiant::query();
 
     $etudiants = Etudiant::paginate(10);
-
+       
 
     // Gestion des filtres existants
     if ($request->has('filter')) {
@@ -68,6 +69,7 @@ public function index(Request $request)
         'month' => Etudiant::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
     ];
 
+   
     return view('admin.etudiants.etudaints', compact('etudiants', 'stats'));
 }
 
@@ -109,7 +111,11 @@ public function index(Request $request)
                  // $cvProfile = new \App\Models\CvProfile(); 
                  // $cvProfile->etudiant = $etudiant; // Assigner l'étudiant manuellement
             }
-            
+
+
+    $specialites = Specialite::all(); // Ensure you're fetching specialties
+
+  
             // Vérifier si le template CV existe
             if (!view()->exists('etudiants.cv.templates.default')) {
                 Log::error("Le template CV 'etudiants.cv.templates.default' est introuvable pour l'admin.");
@@ -119,7 +125,7 @@ public function index(Request $request)
             Log::info("Admin visualise les détails de l'étudiant ID: {$etudiant->id}, Profile ID: {$cvProfile->id}");
 
             // Passer le $cvProfile (potentiellement créé à la volée ou existant) à la vue
-            return view('admin.etudiants.show', compact('cvProfile', 'etudiant', 'nom_complet'));
+            return view('admin.etudiants.show', compact('cvProfile', 'etudiant', 'nom_complet','specialites'));
 
         } catch (\Exception $e) {
             Log::error("Erreur admin lors de la visualisation des détails de l'étudiant ID {$etudiant->id}: " . $e->getMessage(), ['exception' => $e]);
