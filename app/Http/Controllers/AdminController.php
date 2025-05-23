@@ -167,7 +167,11 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
     public function boost()
     {
         // Récupérer les étudiants depuis la base de données
-        $tiers = Tier::paginate(10);
+        $tiers = Tier::join('etudiants', 'tier.user_id', '=', 'etudiants.user_id')
+        ->select('tier.*', 'etudiants.nom', 'etudiants.prenom', 'etudiants.email', 'etudiants.telephone', 'etudiants.formation', 'etudiants.niveau', 'etudiants.id as etudiant_id')
+        ->paginate(10);
+
+        // dd($tiers);
 
 
         // Retourner la vue avec les étudiants
@@ -263,6 +267,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
                 ->distinct()
                 ->pluck('niveau')
                 ->sort();
+                // dd($etudiants);
 
             Log::info("Affichage des étudiants pour la spécialité {$specialite->nom} : {$nombreEtudiants} étudiant(s) trouvé(s).");
 
