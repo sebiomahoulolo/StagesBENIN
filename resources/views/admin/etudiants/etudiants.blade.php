@@ -11,11 +11,11 @@
         align-items: center;
         margin-top: 1.5rem;
     }
-    
+
     .pagination .page-item {
         margin: 0 2px;
     }
-    
+
     .pagination .page-link {
         border-radius: 4px;
         padding: 0.5rem 0.75rem;
@@ -23,18 +23,18 @@
         background-color: #fff;
         border: 1px solid #dee2e6;
     }
-    
+
     .pagination .page-item.active .page-link {
         background-color: #0d6efd;
         border-color: #0d6efd;
         color: white;
     }
-    
+
     .pagination .page-link:hover {
         background-color: #e9ecef;
         border-color: #dee2e6;
     }
-    
+
     /* Style pour les lignes en surbrillance lors de la recherche */
     #etudiantTable tbody tr.highlight {
         background-color: rgba(208, 231, 255, 0.5);
@@ -173,7 +173,7 @@
 @section('content')
 
 <div class="tab-content active" id="etudiants-content" role="tabpanel" aria-labelledby="etudiants-tab">
-    
+
     <!-- Barre d'actions -->
     <div class="action-bar d-flex justify-content-between align-items-center mb-4">
         <div class="action-buttons">
@@ -181,7 +181,7 @@
                 <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
             </button>
         </div>
-        
+
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-outline-secondary" id="resetFilters">
                 <i class="fas fa-refresh me-1"></i> Réinitialiser
@@ -205,21 +205,21 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="filter-item">
                 <label for="niveauFilter">Niveau</label>
                 <select id="niveauFilter" class="form-select">
                     <option value="">Tous les niveaux</option>
                 </select>
             </div>
-            
+
             <div class="filter-item">
                 <label for="formationFilter">Formation</label>
                 <select id="formationFilter" class="form-select">
                     <option value="">Toutes les formations</option>
                 </select>
             </div>
-            
+
             <div class="filter-item">
                 <label>Période d'inscription</label>
                 <select id="dateFilter" class="form-select mb-2">
@@ -296,7 +296,7 @@
                     <tr>
                         <th>
                             <div class="d-flex align-items-center">
-                                Nom 
+                                Nom
                                 <button class="btn btn-sm btn-link p-0 ms-1 sort-btn" data-column="nom">
                                     <i class="fas fa-sort"></i>
                                 </button>
@@ -345,21 +345,21 @@
                             <td>{{ $etudiant->prenom }}</td>
                             <td>{{ $etudiant->telephone ?: '-' }}</td>
                             <td>{{ $etudiant->niveau ?: '-' }}</td>
-                            <td>{{ $etudiant->formation ?: '-' }}</td>
+                            <td>{{ $etudiant->specialite_nom ?: '-' }}</td>
                             <td>{{ $etudiant->created_at->format('d/m/Y') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.etudiants.show', $etudiant->id) }}" 
+                                    <a href="{{ route('admin.etudiants.show', $etudiant->id) }}"
                                        class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir détails">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <button type="button" class="btn btn-{{ $etudiant->statut == 1 ? 'warning' : 'success' }} btn-sm toggle-status" 
+                                    <button type="button" class="btn btn-{{ $etudiant->statut == 1 ? 'warning' : 'success' }} btn-sm toggle-status"
                                         data-id="{{ $etudiant->id }}" data-status="{{ $etudiant->statut }}"
-                                        data-bs-toggle="tooltip" 
+                                        data-bs-toggle="tooltip"
                                         title="{{ $etudiant->statut == 1 ? 'Bloquer' : 'Débloquer' }}">
                                         <i class="fas fa-{{ $etudiant->statut == 1 ? 'ban' : 'check' }}"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm delete-student" 
+                                    <button type="button" class="btn btn-danger btn-sm delete-student"
                                             data-id="{{ $etudiant->id }}" data-bs-toggle="tooltip" title="Supprimer">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
         originalTableData = Array.from(rows).map(row => {
             const cells = row.querySelectorAll('td');
             const studentId = row.getAttribute('data-student-id');
-            
+
             return {
                 id: studentId,
                 nom: cells[0]?.textContent.trim() || '',
@@ -450,10 +450,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         allStudents = [...originalTableData];
         filteredStudents = [...originalTableData];
-        
+
         // Peupler les options de filtres
         populateFilterOptions();
-        
+
         // Mettre à jour le compteur
         updateResultsCount();
     }
@@ -461,10 +461,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour charger tous les étudiants via AJAX
     async function loadAllStudents() {
         if (isLoading) return;
-        
+
         isLoading = true;
         showLoading(true);
-        
+
         try {
             const response = await fetch('/admin/etudiants/all-students', {
                 headers: {
@@ -472,11 +472,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Accept': 'application/json'
                 }
             });
-            
+
             if (!response.ok) throw new Error('Erreur réseau');
-            
+
             const data = await response.json();
-            
+
             if (data.students && Array.isArray(data.students)) {
                 allStudents = data.students;
                 filteredStudents = [...allStudents];
@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 throw new Error('Format de données invalide');
             }
-            
+
         } catch (error) {
             console.error('Erreur lors du chargement des étudiants:', error);
             showToast('Erreur lors du chargement. Utilisation des données actuelles.', 'warning');
@@ -530,18 +530,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour convertir une date au format français en objet Date
     function parseDate(dateStr) {
         if (!dateStr) return new Date();
-        
+
         // Si c'est déjà au format ISO
         if (dateStr.includes('-') && dateStr.length > 8) {
             return new Date(dateStr);
         }
-        
+
         // Si c'est au format dd/mm/yyyy
         const parts = dateStr.split('/');
         if (parts.length === 3) {
             return new Date(parts[2], parts[1] - 1, parts[0]);
         }
-        
+
         return new Date(dateStr);
     }
 
@@ -549,22 +549,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function filterByDate(studentDateStr, filterValue, customFrom = null, customTo = null) {
         const studentDate = parseDate(studentDateStr);
         const now = new Date();
-        
+
         switch (filterValue) {
             case 'today':
                 return studentDate.toDateString() === now.toDateString();
-            
+
             case 'yesterday':
                 const yesterday = new Date(now);
                 yesterday.setDate(yesterday.getDate() - 1);
                 return studentDate.toDateString() === yesterday.toDateString();
-            
+
             case 'week':
                 const weekStart = new Date(now);
                 weekStart.setDate(now.getDate() - now.getDay());
                 weekStart.setHours(0, 0, 0, 0);
                 return studentDate >= weekStart;
-            
+
             case 'last_week':
                 const lastWeekStart = new Date(now);
                 lastWeekStart.setDate(now.getDate() - now.getDay() - 7);
@@ -573,26 +573,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
                 lastWeekEnd.setHours(23, 59, 59, 999);
                 return studentDate >= lastWeekStart && studentDate <= lastWeekEnd;
-            
+
             case 'month':
-                return studentDate.getMonth() === now.getMonth() && 
+                return studentDate.getMonth() === now.getMonth() &&
                        studentDate.getFullYear() === now.getFullYear();
-            
+
             case 'last_month':
                 const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
                 const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
                 return studentDate >= lastMonth && studentDate <= lastMonthEnd;
-            
+
             case 'year':
                 return studentDate.getFullYear() === now.getFullYear();
-            
+
             case 'custom':
                 if (!customFrom || !customTo) return true;
                 const fromDate = new Date(customFrom);
                 const toDate = new Date(customTo);
                 toDate.setHours(23, 59, 59, 999);
                 return studentDate >= fromDate && studentDate <= toDate;
-            
+
             default:
                 return true;
         }
@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     student.niveau || '',
                     student.formation || ''
                 ].join(' ').toLowerCase();
-                
+
                 if (!searchableText.includes(searchValue)) {
                     return false;
                 }
@@ -696,14 +696,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function createStudentRow(student) {
         const row = document.createElement('tr');
         row.setAttribute('data-student-id', student.id);
-        
+
         // Formater la date
         let formattedDate = student.created_at;
         if (student.created_at && student.created_at.includes('-')) {
             const date = new Date(student.created_at);
             formattedDate = date.toLocaleDateString('fr-FR');
         }
-        
+
         row.innerHTML = `
             <td>${student.nom || ''}</td>
             <td>${student.prenom || ''}</td>
@@ -713,17 +713,17 @@ document.addEventListener('DOMContentLoaded', function() {
             <td>${formattedDate}</td>
             <td>
                 <div class="btn-group" role="group">
-                    <a href="/admin/etudiants/${student.id}" 
+                    <a href="/admin/etudiants/${student.id}"
                        class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir détails">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <button type="button" class="btn btn-${student.statut == 1 ? 'warning' : 'success'} btn-sm toggle-status" 
+                    <button type="button" class="btn btn-${student.statut == 1 ? 'warning' : 'success'} btn-sm toggle-status"
                         data-id="${student.id}" data-status="${student.statut}"
-                        data-bs-toggle="tooltip" 
+                        data-bs-toggle="tooltip"
                         title="${student.statut == 1 ? 'Bloquer' : 'Débloquer'}">
                         <i class="fas fa-${student.statut == 1 ? 'ban' : 'check'}"></i>
                     </button>
-                    <button type="button" class="btn btn-danger btn-sm delete-student" 
+                    <button type="button" class="btn btn-danger btn-sm delete-student"
                             data-id="${student.id}" data-bs-toggle="tooltip" title="Supprimer">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -748,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function() {
             filteredStudents.forEach((student, index) => {
                 const row = createStudentRow(student);
                 tableBody.appendChild(row);
-                
+
                 // Animation séquentielle
                 setTimeout(() => {
                     row.classList.add('fade-in');
@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateResultsCount();
-        
+
         // Masquer la pagination si filtrage actif
         if (isFilterActive()) {
             paginationContainer.style.display = 'none';
@@ -814,11 +814,11 @@ document.addEventListener('DOMContentLoaded', function() {
         dateTo.value = '';
         customDateRange.classList.add('d-none');
         currentSort = { column: null, direction: 'asc' };
-        
+
         filteredStudents = [...allStudents];
         updateSortIcons();
         updateDisplay();
-        
+
         showToast('Filtres réinitialisés', 'info');
     }
 
@@ -838,13 +838,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const csvContent = "data:text/csv;charset=utf-8," + 
+        const csvContent = "data:text/csv;charset=utf-8," +
             "Nom,Prénom,Téléphone,Niveau,Formation,Date d'inscription\n" +
             filteredStudents.map(student => {
-                const date = student.created_at && student.created_at.includes('-') 
+                const date = student.created_at && student.created_at.includes('-')
                     ? new Date(student.created_at).toLocaleDateString('fr-FR')
                     : student.created_at || '';
-                    
+
                 return [
                     `"${student.nom || ''}"`,
                     `"${student.prenom || ''}"`,
@@ -862,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         showToast('Export réalisé avec succès', 'success');
     }
 
@@ -878,7 +878,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
         `;
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             if (toast.parentElement) {
                 toast.remove();
@@ -905,12 +905,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (student) {
                     student.statut = student.statut == 1 ? 0 : 1;
                 }
-                
+
                 const filteredStudent = filteredStudents.find(s => s.id == studentId);
                 if (filteredStudent) {
                     filteredStudent.statut = filteredStudent.statut == 1 ? 0 : 1;
                 }
-                
+
                 updateDisplay();
                 showToast(`Statut de l'étudiant ${currentStatus == 1 ? 'bloqué' : 'activé'}`, 'success');
             } else {
@@ -939,10 +939,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Retirer l'étudiant de nos données locales
                 allStudents = allStudents.filter(s => s.id != studentId);
                 filteredStudents = filteredStudents.filter(s => s.id != studentId);
-                
+
                 updateDisplay();
                 showToast('Étudiant supprimé avec succès', 'success');
-                
+
                 // Mettre à jour le compteur total
                 const totalElement = document.getElementById('totalStudentsCard');
                 if (totalElement) {
@@ -965,7 +965,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supprimer les anciens tooltips
         const existingTooltips = document.querySelectorAll('.tooltip');
         existingTooltips.forEach(tooltip => tooltip.remove());
-        
+
         // Initialiser les nouveaux tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -975,11 +975,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event listeners
     const debouncedFilter = debounce(filterStudents, 300);
-    
+
     searchInput.addEventListener('input', debouncedFilter);
     niveauFilter.addEventListener('change', filterStudents);
     formationFilter.addEventListener('change', filterStudents);
-    
+
     dateFilter.addEventListener('change', function() {
         if (this.value === 'custom') {
             customDateRange.classList.remove('d-none');
@@ -988,15 +988,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         filterStudents();
     });
-    
+
     dateFrom.addEventListener('change', filterStudents);
     dateTo.addEventListener('change', filterStudents);
-    
+
     clearSearchBtn.addEventListener('click', () => {
         searchInput.value = '';
         filterStudents();
     });
-    
+
     resetFiltersBtn.addEventListener('click', resetFilters);
     showAllBtn.addEventListener('click', loadAllStudents);
     document.getElementById('exportBtn').addEventListener('click', exportData);
@@ -1018,12 +1018,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 await deleteStudent(btn.dataset.id);
             }
         }
-        
+
         if (e.target.closest('.toggle-status')) {
             const btn = e.target.closest('.toggle-status');
             const currentStatus = btn.dataset.status;
             const action = currentStatus == 1 ? 'bloquer' : 'débloquer';
-            
+
             if (confirm(`Êtes-vous sûr de vouloir ${action} cet étudiant ?`)) {
                 await toggleStudentStatus(btn.dataset.id, currentStatus);
             }
@@ -1046,15 +1046,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function initialize() {
         // Extraire les données du tableau HTML
         extractTableData();
-        
+
         // Initialiser les tooltips
         initializeTooltips();
-        
+
         // Si aucun étudiant n'est présent, afficher le message approprié
         if (allStudents.length === 0) {
             updateDisplay();
         }
-        
+
         console.log(`${allStudents.length} étudiant(s) chargé(s)`);
     }
 
