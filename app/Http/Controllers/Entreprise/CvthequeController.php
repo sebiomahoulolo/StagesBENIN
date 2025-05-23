@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CvProfile;
 use App\Models\Etudiant;
+use App\Models\Tier;
 
 class CvthequeController extends Controller
 {
@@ -22,14 +23,21 @@ class CvthequeController extends Controller
      */
     public function index()
     {
-        $cvProfiles = CvProfile::with(['etudiant', 'formations', 'experiences', 'competences'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // $cvProfiles = CvProfile::with(['etudiant', 'formations', 'experiences', 'competences'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
+
+        $tiers = Tier::join('etudiants', 'tier.user_id', '=', 'etudiants.user_id')
+            ->join('users', 'etudiants.user_id', '=', 'users.id')
+            ->select('tier.*', 'etudiants.nom', 'etudiants.prenom', 'etudiants.email', 'etudiants.telephone', 'etudiants.formation', 'etudiants.niveau', 'etudiants.id as etudiant_id')
+            ->where('tier.payment_status', 'paid')->get();
+
+            // dd($tiers);
 
         // Débogage
-        \Log::info('CV-thèque chargée', ['count' => count($cvProfiles)]);
+        \Log::info('CV-thèque chargée', ['count' => count($tiers)]);
 
-        return view('entreprises.cvtheque', compact('cvProfiles'));
+        return view('entreprises.cvtheque', compact('tiers'));
     }
 
     /**
@@ -51,7 +59,7 @@ class CvthequeController extends Controller
 
         // Débogage
         \Log::info('CV détail chargé', ['id' => $id, 'étudiant' => optional($cvProfile->etudiant)->nom]);
-        
+
         // Vérifier si l'étudiant est actif
         if (!$cvProfile->etudiant || $cvProfile->etudiant->status !== 'active') {
             return redirect()->route('entreprises.cvtheque.index')
@@ -61,7 +69,7 @@ class CvthequeController extends Controller
         return view('entreprises.cv_detail', compact('cvProfile'));
     }
 
-       public function specialite()
+    public function specialite()
     {
         $entreprises = \App\Models\Entreprise::all();
         $specialites = \App\Models\Specialite::with('secteur')->get();

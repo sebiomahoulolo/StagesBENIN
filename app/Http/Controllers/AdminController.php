@@ -162,6 +162,7 @@ class AdminController extends Controller
         // Récupérer les étudiants depuis la base de données
         $tiers = Tier::paginate(10);
 
+
         // Retourner la vue avec les étudiants
         return view('admin.boost', compact('tiers'));
     }
