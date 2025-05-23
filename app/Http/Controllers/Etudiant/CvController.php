@@ -68,6 +68,12 @@ class CvController extends Controller
             // Récupérer le profil CV en fonction de l'ID
             $cvProfile = CvProfile::where('etudiant_id', $id)->first();
 
+            // dd($cvProfile);
+
+            if (!$cvProfile) {
+                return redirect()->back()->with('error', 'Le CV demandé est introuvable.');
+            }
+
             // Retourner la vue correspondante avec les données du CV
             return view('admin.cvtheque.view', compact('cvProfile'));
         } catch (\Exception $e) {

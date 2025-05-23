@@ -52,32 +52,32 @@ Route::get('/generate-pdf/{id}', [EventController::class, 'generatePDF'])->name(
 // Routes Publiques des Pages statiques/info via PageController
 Route::get('/a-propos-de-stageesbenin', [PageController::class, 'apropos'])->name('pages.apropos'); // URL conservée
 Route::get('/contactez-stageesbenin', [PageController::class, 'contact'])->name('pages.contact'); // URL conservée
-Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue'); 
-Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche'); 
-Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres'); 
+Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue');
+Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche');
+Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres');
 // routes/web.php
 
 
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    
+
     // Routes pour les étudiants
     Route::get('/etudiants', [EtudiantController::class, 'index'])->name('admin.etudiants.index');
-    
+
     // Route pour récupérer tous les étudiants (AJAX)
     Route::get('/etudiants/all-students', [EtudiantController::class, 'getAllStudents'])->name('admin.etudiants.all');
-    
+
     // Route pour la recherche d'étudiants (AJAX)
     Route::get('/etudiants/search', [EtudiantController::class, 'search'])->name('admin.etudiants.search');
-    
+
     // Route pour changer le statut (AJAX compatible)
-    Route::patch('/etudiants/toggle-status/{id}', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
-    
+    // Route::patch('/etudiants/toggle-status/{id}', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
+
     // Route pour voir les détails d'un étudiant
-    Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('admin.etudiants.show');
-    
+    // Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('admin.etudiants.show');
+
     // Route pour supprimer un étudiant (AJAX compatible)
-    Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');   
+    Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 });
 
 Route::get('/admin/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('admin.cv.download');
@@ -374,9 +374,9 @@ Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->na
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
 Route::get('/boost', [AdminController::class, 'listBoosts']) ->name('admin.boost.index');
-Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost');
+Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost.validate');
 
-// Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
+Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
 Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
 Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
 Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');

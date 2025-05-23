@@ -24,7 +24,7 @@ class RegisteredUserController extends Controller
     public function createEtudiant(): View
     {
         $specialites = \App\Models\Specialite::with('secteur')->get();
-        return view('auth.register-etudiant', compact('specialites'));
+        return view('auth.register-etudiant', compact('specialites')); 
     }
 
     /**

@@ -66,10 +66,10 @@
     </a>
     
 
-    <!--a href="{{ route('admin.boost') }}" class="styled-link-box">
+    <a href="{{ route('admin.boost') }}" class="styled-link-box">
         <i class="fas fa-file-alt icon-info"></i>
         <span>Listes des boost</span>
-    </a-->
+    </a>
 
     <a href="{{ route('messagerie-sociale.index') }}" class="styled-link-box">
         <i class="fas fa-bullhorn icon-orange"></i>
