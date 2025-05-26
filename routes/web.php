@@ -396,6 +396,8 @@ Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('
 Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
 Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 
+Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
+
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
 Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
@@ -434,7 +436,7 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
 // ==================================================================
 
   // Déplacé dans admin group
-  
+
  Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
  Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
  Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)

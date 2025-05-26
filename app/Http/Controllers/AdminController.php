@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendMail;
 use App\Models\Actualite;
 use App\Models\Event;
 use App\Models\CvProfile;
@@ -17,6 +18,7 @@ use App\Models\Etudiant;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cvtheque;
 use App\Models\Secteur;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -101,7 +103,7 @@ class AdminController extends Controller
                 Log::error("La vue 'admin.cvtheque.cvtheque' est introuvable.");
                 abort(500, "Erreur de configuration de l'affichage de la CVthèque.");
             }
-    
+
             // Récupère tous les profils CV avec la relation 'etudiant' pour un secteur donné
             // $cvProfiles = CvProfile::with('etudiant')->where('formation', $id)->get();
             $cvProfiles = CvProfile::join('etudiants', 'cv_profiles.etudiant_id', 'etudiants.id')
@@ -111,46 +113,46 @@ class AdminController extends Controller
             ->get();
 
             // $cvProfiles = CvProfile::with('etudiant')->where('secteur', $id)->get();
-    
+
             // Récupère toutes les entreprises
             $entreprises = \App\Models\Entreprise::all();
-    
+
             // Récupère toutes les spécialités avec leur secteur associé
             $specialites = \App\Models\Specialite::where('secteur_id', $id)->get();
             // dd($specialites);
-    
+
             // Récupère les niveaux d'études distincts et non nuls
             $niveaux = \App\Models\Etudiant::whereNotNull('niveau')
                 ->select('niveau')
                 ->distinct()
                 ->orderBy('niveau')
                 ->pluck('niveau');
-    
+
             // Compte le nombre d'étudiants par spécialité
             foreach ($specialites as $specialite) {
                 $nombreEtudiants = \App\Models\Etudiant::where('formation', $specialite->id)->count();
                 $specialite->setAttribute('nombre_etudiants', $nombreEtudiants);
             }
-    
+
             // Log si aucun CV trouvé
             if ($cvProfiles->isEmpty()) {
                 Log::warning("Aucun CV trouvé pour le secteur ID {$id}.");
             }
-    
+
             Log::info("Affichage des CV pour l'admin : " . $cvProfiles->count() . " CV(s) récupéré(s).");
-    
+
             // Retourne la vue avec les données
             return view('admin.cvtheque.cvtheque', compact('cvProfiles', 'entreprises', 'specialites', 'niveaux'));
-    
+
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage de la CVthèque : " . $e->getMessage(), [
                 'exception' => $e,
             ]);
-    
+
             return view('admin.cvtheque.cvtheque')->with('error', "Une erreur est survenue lors de l'affichage des CV.");
         }
     }
-    
+
 
     public function cvthequeSeteur()
     {
@@ -313,4 +315,17 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'affichage des étudiants.');
         }
     }
+
+    public function sendEmail(Request $request)
+    {
+        $details = [
+            'title' => 'Mail de test',
+            'body' => 'Ceci est un mail de test.'
+        ];
+
+        Mail::to('aboudousaliou284@gmail.com')->send(new SendMail($details));
+        return redirect()->back()->with('success', 'Mail envoyé avec succès.');
+    }
+
+
 }
