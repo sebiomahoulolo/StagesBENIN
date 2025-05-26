@@ -115,9 +115,23 @@ class CvController extends Controller
         try {
             $cvProfile = $this->getCurrentCvProfile();
             Log::info("Chargement de la page edit (Livewire) pour CvProfile ID: " . $cvProfile->id);
-            // Passe l'objet CvProfile complet à la vue.
-            // Les composants Livewire utiliseront $cvProfile->id.
-            return view('etudiants.cv.edit', compact('cvProfile'));
+            
+            // Vérifier le pourcentage de complétion
+            $completion = $cvProfile->calculateCompletion();
+            
+            // Si le CV n'est pas à 100%, utiliser le layout de base
+            if ($completion < 100) {
+                return view('etudiants.cv.edit', [
+                    'cvProfile' => $cvProfile,
+                    'layout' => 'layouts.app'
+                ]);
+            }
+            
+            // Sinon, utiliser le layout étudiant complet
+            return view('etudiants.cv.edit', [
+                'cvProfile' => $cvProfile,
+                'layout' => 'layouts.etudiant.app'
+            ]);
         } catch (\Exception $e) {
             Log::error("Erreur majeure lors du chargement de la page edit CV: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('etudiants.dashboard')
@@ -273,6 +287,50 @@ class CvController extends Controller
             Log::error("Erreur générale lors de l'export PNG: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('etudiants.cv.show', ['cvProfile' => $cvProfile->id ?? Auth::user()->etudiant?->cvProfile?->id ?? 0])
                 ->with('error', 'Erreur inattendue lors de la génération du PNG : ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Met à jour le CV de l'étudiant.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        try {
+            $cvProfile = $this->getCurrentCvProfile();
+            
+            // Valider les données du formulaire
+            $validated = $request->validate([
+                'titre_profil' => 'nullable|string|max:255',
+                'resume_profil' => 'nullable|string',
+                'adresse' => 'nullable|string|max:255',
+                'telephone_cv' => 'nullable|string|max:20',
+                'email_cv' => 'nullable|email|max:255',
+                'linkedin_url' => 'nullable|url|max:255',
+                'portfolio_url' => 'nullable|url|max:255',
+                'photo_cv_path' => 'nullable|image|max:2048',
+                'template_slug' => 'nullable|string|max:255',
+                'situation_matrimoniale' => 'nullable|string|max:255',
+                'nationalite' => 'nullable|string|max:255',
+                'date_naissance' => 'nullable|date',
+                'lieu_naissance' => 'nullable|string|max:255',
+            ]);
+
+            // Mettre à jour les données du CV
+            $cvProfile->update($validated);
+
+            // Mettre à jour le pourcentage de complétion
+            $cvProfile->updateCompletionStatus();
+
+            return redirect()->route('etudiants.cv.edit', ['cvProfile' => $cvProfile->id])
+                ->with('success', 'Le CV a été mis à jour avec succès.');
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la mise à jour du CV: " . $e->getMessage(), ['exception' => $e]);
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Une erreur est survenue lors de la mise à jour du CV.');
         }
     }
 }

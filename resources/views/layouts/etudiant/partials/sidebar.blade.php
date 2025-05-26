@@ -6,21 +6,21 @@
 
     <nav class="sidebar-menu">
         {{-- Tableau de bord (toujours visible) --}}
-        <a href="{{ route('etudiants.dashboard') }}" class="menu-item1 {{ request()->routeIs('etudiants.dashboard') ? 'active' : '' }}">
+        <a href="{{ route('etudiants.dashboard') }}" class="menu-item1 {{ request()->routeIs('etudiants.dashboard') ? 'active' : '' }}" :class="{ 'disabled-menu-item': !isCvComplete }" :disabled="!isCvComplete">
             <i class="fas fa-home fa-fw"></i><span>Tableau de bord</span>
         </a>
 
-        <a href="{{ route('etudiants.boostage') }}" class="menu-item1 {{ request()->routeIs('etudiants.boostage') ? 'active' : '' }}">
+        <a href="{{ route('etudiants.boostage') }}" class="menu-item1 {{ request()->routeIs('etudiants.boostage') ? 'active' : '' }}" :class="{ 'disabled-menu-item': !isCvComplete }" :disabled="!isCvComplete">
              <i class="fas fa-rocket fa-fw"></i>
              <span>Boostage</span>
         </a>
         
-        <a href="{{ route('etudiants.boost-status') }}" class="menu-item1 {{ request()->routeIs('etudiants.boost-status') ? 'active' : '' }}"> <!-- Correction de la route pour boost-status -->
+        <a href="{{ route('etudiants.boost-status') }}" class="menu-item1 {{ request()->routeIs('etudiants.boost-status') ? 'active' : '' }}" :class="{ 'disabled-menu-item': !isCvComplete }" :disabled="!isCvComplete"> <!-- Correction de la route pour boost-status -->
              <i class="fas fa-star"></i>
              <span>Status de boostage</span>
         </a>
 
-        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('etudiants.profile.edit') ? 'active' : '' }}"> <!-- Correction de la route pour profile.edit -->
+        <a href="{{ route('etudiants.profile.edit') }}" class="menu-item1 {{ request()->routeIs('etudiants.profile.edit') ? 'active' : '' }}" :class="{ 'disabled-menu-item': !isCvComplete }" :disabled="!isCvComplete"> <!-- Correction de la route pour profile.edit -->
             <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
         </a>
          

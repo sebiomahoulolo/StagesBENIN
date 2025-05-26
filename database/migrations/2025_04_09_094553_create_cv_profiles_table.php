@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('portfolio_url')->nullable();   // Lien site web/portfolio
             $table->string('photo_cv_path')->nullable(); // Option pour surcharger la photo de l'étudiant
             $table->string('template_slug')->default('default'); // Pour gérer plusieurs templates plus tard
+            $table->json('completion_status')->nullable();
+            $table->integer('completion_percentage')->nullable();
             $table->timestamps();
         });
     }
