@@ -387,13 +387,16 @@ Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('adm
 Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
 Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
 Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
-Route::get('/admin/cvtheque', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
+Route::get('/admin/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('admin.cvtheque.cvtheque.secteur');
+Route::get('/admin/cvtheque/{id}', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
 Route::get('/admin/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('admin.cvtheque.specialite');
 Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
 Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
 // Route pour changer le statut de l'étudiant (bloquer/débloquer)
 Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
 Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
+
+Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
 
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
@@ -433,7 +436,7 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
 // ==================================================================
 
   // Déplacé dans admin group
-  
+
  Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
  Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
  Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
@@ -557,3 +560,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/setup/recruteur', [ProfileSetupController::class, 'saveRecruteurProfile'])->name('profile.setup.recruteur.save');
     Route::get('/specialites/{secteur}', [ProfileSetupController::class, 'getSpecialites'])->name('specialites.get');
 });
+
+Route::get('/get-specialites', [App\Http\Controllers\Auth\RegisteredUserController::class, 'getSpecialites'])->name('get.specialites');

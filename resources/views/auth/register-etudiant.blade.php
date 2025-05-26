@@ -104,19 +104,29 @@
                                 @enderror
                             </div>
 
-                            <!-- Formation -->
+                            <!-- Secteur -->
                             <div class="mb-3">
-                                <label for="formation" class="form-label">{{ __('Formation') }}</label>
-                                {{-- <input type="text" class="form-control" id="etudiant_formation" name="formation"> --}}
-                                <select class="form-select @error('specialite_id') is-invalid @enderror" id="formation" name="formation" required>
-                                    <option value="">Sélectionner une spécialité</option>
-                                    @foreach($specialites as $specialite)
-                                        <option value="{{ $specialite->id }}" {{ old('specialite_id') == $specialite->id ? 'selected' : '' }}>
-                                            {{ $specialite->nom }} ({{ $specialite->secteur->nom }})
+                                <label for="secteur" class="form-label">{{ __('Secteur') }}</label>
+                                <select class="form-select @error('secteur_id') is-invalid @enderror" id="secteur" name="secteur_id" required>
+                                    <option value="">Sélectionner un secteur</option>
+                                    @foreach($secteurs as $secteur)
+                                        <option value="{{ $secteur->id }}" {{ old('secteur_id') == $secteur->id ? 'selected' : '' }}>
+                                            {{ $secteur->nom }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('formation')
+                                @error('secteur_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Formation -->
+                            <div class="mb-3">
+                                <label for="formation" class="form-label">{{ __('Formation') }}</label>
+                                <select class="form-select @error('specialite_id') is-invalid @enderror" id="formation" name="specialite_id" required>
+                                    <option value="">Sélectionner une spécialité</option>
+                                </select>
+                                @error('specialite_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -202,6 +212,7 @@
 
 {{-- Injecte les scripts spécifiques --}}
 @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Fonction générique pour basculer la visibilité d'un champ mot de passe
         function setupPasswordToggle(toggleId, inputId) {
@@ -234,6 +245,57 @@
         document.addEventListener('DOMContentLoaded', function() {
             setupPasswordToggle('togglePassword', 'password');
             setupPasswordToggle('toggleConfirmPassword', 'password_confirmation');
+        });
+
+        $(document).ready(function() {
+            // Gestion du chargement dynamique des spécialités
+            $('#secteur').on('change', function() {
+                const secteurId = $(this).val();
+                const $formationSelect = $('#formation');
+                
+                // Réinitialiser le select des formations
+                $formationSelect.html('<option value="">Sélectionner une spécialité</option>');
+                
+                if (!secteurId) return;
+
+                // Afficher un indicateur de chargement
+                $formationSelect.prop('disabled', true);
+                $formationSelect.html('<option value="">Chargement...</option>');
+
+                // Faire la requête AJAX
+                $.ajax({
+                    url: "{{ route('get.specialites') }}",
+                    method: 'GET',
+                    data: {
+                        secteur_id: secteurId
+                    },
+                    success: function(specialites) {
+                        // Réinitialiser le select
+                        $formationSelect.html('<option value="">Sélectionner une spécialité</option>');
+                        
+                        // Ajouter les options
+                        specialites.forEach(function(specialite) {
+                            $formationSelect.append(
+                                $('<option></option>')
+                                    .val(specialite.id)
+                                    .text(specialite.nom)
+                            );
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erreur lors du chargement des spécialités:', error);
+                        $formationSelect.html('<option value="">Erreur de chargement</option>');
+                    },
+                    complete: function() {
+                        $formationSelect.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Si un secteur est déjà sélectionné au chargement de la page
+            if ($('#secteur').val()) {
+                $('#secteur').trigger('change');
+            }
         });
     </script>
 @endsection

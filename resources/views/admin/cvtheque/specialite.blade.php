@@ -89,7 +89,7 @@
                     <div class="niveau-select">
                         <select id="niveauFilter" class="form-select">
                             <option value="">Tous les niveaux</option>
-                            @foreach($niveaux as $niveau)
+                            @foreach ($niveaux as $niveau)
                                 <option value="{{ $niveau }}">{{ $niveau }}</option>
                             @endforeach
                         </select>
@@ -117,13 +117,15 @@
                         <tbody>
                             @foreach ($etudiants as $etudiant)
                                 <tr data-niveau="{{ $etudiant->niveau ?? '' }}">
-                                    <td>{{ $etudiant->prenom ?? 'Non spécifié' }} {{ $etudiant->nom ?? 'Non spécifié' }}</td>
+                                    <td>{{ $etudiant->prenom ?? 'Non spécifié' }} {{ $etudiant->nom ?? 'Non spécifié' }}
+                                    </td>
                                     <td>{{ $etudiant->email ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->telephone ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->niveau ?? 'Non spécifié' }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="{{ route('admin.cvtheque.view', $etudiant->id) }}" class="btn btn-info btn-sm" title="Voir le CV">
+                                            <a href="{{ route('admin.cvtheque.view', $etudiant->id) }}"
+                                                class="btn btn-info btn-sm" title="Voir le CV">
                                                 <i class="fas fa-eye"></i> Voir
                                             </a>
                                         </div>

@@ -11,7 +11,7 @@
             <span class="menu-icon" aria-hidden="true"><i class="fas fa-tachometer-alt"></i></span>
             <span class="menu-text">Tableau de bord</span>
         </a>
-           <a href="{{ route('admin.cvtheque.cvtheque') }}" class="menu-item {{ request()->routeIs('admin.cvtheque.cvtheque') ? 'active' : '' }} ? 'active' : '' }}">
+           <a href="{{ route('admin.cvtheque.cvtheque.secteur') }}" class="menu-item {{ request()->routeIs('admin.cvtheque.cvtheque') ? 'active' : '' }} ? 'active' : '' }}">
     <span class="menu-icon" aria-hidden="true"><i class="fas fa-folder-open"></i></span>
     <span class="menu-text">CV THEQUE</span>
 </a>
