@@ -8,7 +8,7 @@ use App\Models\CvProfile;
 use App\Models\Catalogue;
 use App\Models\Recrutement;
 use App\Models\Entreprise;
-use App\Models\Tier; 
+use App\Models\Tier;
 use App\Models\Specialite;
 use App\Models\Entretien;
 use Illuminate\Http\Request;
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Etudiant;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cvtheque;
+use App\Models\Secteur;
 
 class AdminController extends Controller
 {
@@ -71,8 +72,8 @@ class AdminController extends Controller
         $catalogues = Catalogue::paginate(10);
         $catalogueItems = Catalogue::all();
 
-    $specialites = Specialite::all(); // Fetch specialties
-   
+        $specialites = Specialite::all(); // Fetch specialties
+
 
 
 
@@ -92,64 +93,85 @@ class AdminController extends Controller
     }
 
 
-    public function cvtheque()
+    public function cvtheque($id)
     {
         try {
-            // Récupère tous les profils CV avec leurs relations associées
-            $cvProfiles = CvProfile::with('etudiant')->get();
-
-            $entreprises = \App\Models\Entreprise::all();
-            $specialites = \App\Models\Specialite::with('secteur')->get();
-
-            // Récupérer tous les niveaux d'études uniques
-            $niveaux = \App\Models\Etudiant::select('niveau')
-                ->whereNotNull('niveau')
-                ->distinct()
-                ->orderBy('niveau')
-                ->pluck('niveau');
-
-            // Compter le nombre d'étudiants par spécialité
-            $specialites->each(function ($specialite) {
-                $specialite->setAttribute('nombre_etudiants', \App\Models\Etudiant::where('formation', $specialite->id)->count());
-            });
-
-            if ($cvProfiles->isEmpty()) {
-                Log::warning("Aucun CV trouvé dans la base de données.");
-            }
-
-            Log::info("Affichage de tous les CV pour l'admin : " . $cvProfiles->count() . " CV(s) récupéré(s).");
-
-            // Vérifie si la vue existe avant de la retourner
+            // Vérifie si la vue existe avant d'exécuter le traitement
             if (!view()->exists('admin.cvtheque.cvtheque')) {
                 Log::error("La vue 'admin.cvtheque.cvtheque' est introuvable.");
                 abort(500, "Erreur de configuration de l'affichage de la CVthèque.");
             }
+    
+            // Récupère tous les profils CV avec la relation 'etudiant' pour un secteur donné
+            // $cvProfiles = CvProfile::with('etudiant')->where('formation', $id)->get();
+            $cvProfiles = CvProfile::join('etudiants', 'cv_profiles.etudiant_id', 'etudiants.id')
+            ->join('specialites', 'etudiants.formation', 'specialites.id')
+            ->join('secteurs', 'specialites.secteur_id', 'secteurs.id')
+            ->where('specialites.secteur_id', $id)
+            ->get();
 
-            // Retourne la vue avec les profils CV, même s'il est vide
+            // $cvProfiles = CvProfile::with('etudiant')->where('secteur', $id)->get();
+    
+            // Récupère toutes les entreprises
+            $entreprises = \App\Models\Entreprise::all();
+    
+            // Récupère toutes les spécialités avec leur secteur associé
+            $specialites = \App\Models\Specialite::where('secteur_id', $id)->get();
+            // dd($specialites);
+    
+            // Récupère les niveaux d'études distincts et non nuls
+            $niveaux = \App\Models\Etudiant::whereNotNull('niveau')
+                ->select('niveau')
+                ->distinct()
+                ->orderBy('niveau')
+                ->pluck('niveau');
+    
+            // Compte le nombre d'étudiants par spécialité
+            foreach ($specialites as $specialite) {
+                $nombreEtudiants = \App\Models\Etudiant::where('formation', $specialite->id)->count();
+                $specialite->setAttribute('nombre_etudiants', $nombreEtudiants);
+            }
+    
+            // Log si aucun CV trouvé
+            if ($cvProfiles->isEmpty()) {
+                Log::warning("Aucun CV trouvé pour le secteur ID {$id}.");
+            }
+    
+            Log::info("Affichage des CV pour l'admin : " . $cvProfiles->count() . " CV(s) récupéré(s).");
+    
+            // Retourne la vue avec les données
             return view('admin.cvtheque.cvtheque', compact('cvProfiles', 'entreprises', 'specialites', 'niveaux'));
+    
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage de la CVthèque : " . $e->getMessage(), [
                 'exception' => $e,
             ]);
-
-            return view('admin.cvtheque.cvtheque')->with('error', 'Une erreur est survenue lors de l\'affichage des CV.');
+    
+            return view('admin.cvtheque.cvtheque')->with('error', "Une erreur est survenue lors de l'affichage des CV.");
         }
     }
+    
 
+    public function cvthequeSeteur()
+    {
+        $secteurs = Secteur::all();
+        // dd($secteurs);
+        return view('admin.cvtheque.secteur', compact('secteurs'));
+    }
 
 
     public function etudiants()
     {
         // Récupérer les étudiants depuis la base de données
         $etudiants = Etudiant::join('specialites', 'etudiants.formation', '=', 'specialites.id')
-        ->select('etudiants.*', 'specialites.nom as specialite_nom')
-        ->paginate(10);
-$specialites = \App\Models\Specialite::with('secteur')->get();
-  
+            ->select('etudiants.*', 'specialites.nom as specialite_nom')
+            ->paginate(10);
+        $specialites = \App\Models\Specialite::with('secteur')->get();
+
         // dd($etudiants);
 
         // Retourner la vue avec les étudiants
-        return view('admin.etudiants.etudiants', compact('etudiants','specialites'));
+        return view('admin.etudiants.etudiants', compact('etudiants', 'specialites'));
     }
 
     public function actualites()
@@ -160,6 +182,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retourner la vue avec les étudiants
         return view('admin.actualites', compact('actualites'));
     }
+
     public function entretiens()
     {
         // Récupérer les étudiants depuis la base de données
@@ -168,12 +191,13 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retourner la vue avec les étudiants
         return view('admin.entretiens', compact('entretiens'));
     }
+
     public function boost()
     {
         // Récupérer les étudiants depuis la base de données
         $tiers = Tier::join('etudiants', 'tier.user_id', '=', 'etudiants.user_id')
-        ->select('tier.*', 'etudiants.nom', 'etudiants.prenom', 'etudiants.email', 'etudiants.telephone', 'etudiants.formation', 'etudiants.niveau', 'etudiants.id as etudiant_id')
-        ->paginate(10);
+            ->select('tier.*', 'etudiants.nom', 'etudiants.prenom', 'etudiants.email', 'etudiants.telephone', 'etudiants.formation', 'etudiants.niveau', 'etudiants.id as etudiant_id')
+            ->paginate(10);
 
         // dd($tiers);
 
@@ -181,6 +205,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retourner la vue avec les étudiants
         return view('admin.boost', compact('tiers'));
     }
+
     public function entreprises_partenaires()
     {
         // Récupérer les étudiants depuis la base de données
@@ -189,6 +214,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retourner la vue avec les étudiants
         return view('admin.entreprises_partenaires', compact('entreprises'));
     }
+
     public function show($id)
     {
         $event = Event::findOrFail($id);
@@ -216,6 +242,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
 
         return redirect()->route('admin.evenements')->with('success', 'Événement supprimé avec succès.');
     }
+
     public function evenements()
     {
         // Récupérez les données nécessaires (par exemple, les événements)
@@ -224,6 +251,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retournez la vue avec les événements
         return view('admin.evenements', compact('evenements'));
     }
+
     public function entreprises()
     {
         // Exemple : Récupérez les entreprises de la base de données
@@ -232,6 +260,7 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
         // Retournez la vue avec les entreprises
         return view('admin.entreprises', compact('entreprises'));
     }
+
     public function catalogues()
     {
         // Exemple : Récupérez les catalogues depuis la base de données
@@ -263,19 +292,19 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
             $etudiants = \App\Models\Etudiant::where('formation', $id)->get();
             $nombreEtudiants = $etudiants->count();
             $specialites = \App\Models\Specialite::with('secteur')->get();
-  
-   
+
+
             // Récupérer les niveaux uniques des étudiants
             $niveaux = \App\Models\Etudiant::where('formation', $id)
                 ->whereNotNull('niveau')
                 ->distinct()
                 ->pluck('niveau')
                 ->sort();
-                // dd($etudiants);
+            // dd($etudiants);
 
             Log::info("Affichage des étudiants pour la spécialité {$specialite->nom} : {$nombreEtudiants} étudiant(s) trouvé(s).");
 
-            return view('admin.cvtheque.specialite', compact('specialite', 'etudiants', 'nombreEtudiants', 'niveaux','specialites'));
+            return view('admin.cvtheque.specialite', compact('specialite', 'etudiants', 'nombreEtudiants', 'niveaux', 'specialites'));
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage des étudiants de la spécialité : " . $e->getMessage(), [
                 'exception' => $e,
@@ -284,5 +313,4 @@ $specialites = \App\Models\Specialite::with('secteur')->get();
             return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'affichage des étudiants.');
         }
     }
-
 }

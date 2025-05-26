@@ -387,7 +387,8 @@ Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('adm
 Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
 Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
 Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
-Route::get('/admin/cvtheque', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
+Route::get('/admin/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('admin.cvtheque.cvtheque.secteur');
+Route::get('/admin/cvtheque/{id}', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
 Route::get('/admin/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('admin.cvtheque.specialite');
 Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
 Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
