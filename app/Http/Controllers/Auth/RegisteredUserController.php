@@ -27,7 +27,7 @@ class RegisteredUserController extends Controller
     {
         $secteurs = Secteur::all();
         $specialites = \App\Models\Specialite::with('secteur')->get();
-        return view('auth.register-etudiant', compact('specialites', 'secteurs')); 
+        return view('auth.register-etudiant', compact('specialites', 'secteurs'));
     }
 
     /**
@@ -37,15 +37,18 @@ class RegisteredUserController extends Controller
      */
     public function storeEtudiant(Request $request): RedirectResponse
     {
+
         $request->validate([
             'nom' => ['required', 'string', 'max:100'],
             'prenom' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'telephone' => ['required', 'string', 'min:8', 'max:15'],
-            'formation' => ['required', 'string', 'max:100'],
+            'specialite_id' => ['required', 'string', 'max:100'],
             'niveau' => ['required', 'string', 'max:100'],
         ]);
+
+        // dd($request->all());
 
         $user = User::create([
             'name' => $request->nom . ' ' . $request->prenom,
@@ -60,7 +63,7 @@ class RegisteredUserController extends Controller
             'prenom' => $request->prenom,
             'email' => $request->email,
             'telephone' => $request->telephone,
-            'formation' => $request->formation,
+            'formation' => $request->specialite_id,
             'niveau' => $request->niveau,
         ]);
 
@@ -128,7 +131,7 @@ class RegisteredUserController extends Controller
     public function getSpecialites(Request $request)
     {
         $secteurId = $request->input('secteur_id');
-        
+
         if (!$secteurId) {
             return response()->json(['error' => 'ID du secteur requis'], 400);
         }
