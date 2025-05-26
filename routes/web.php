@@ -558,3 +558,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/setup/recruteur', [ProfileSetupController::class, 'saveRecruteurProfile'])->name('profile.setup.recruteur.save');
     Route::get('/specialites/{secteur}', [ProfileSetupController::class, 'getSpecialites'])->name('specialites.get');
 });
+
+Route::get('/get-specialites', [App\Http\Controllers\Auth\RegisteredUserController::class, 'getSpecialites'])->name('get.specialites');

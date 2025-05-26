@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Entreprises\AnnonceController;
+use App\Http\Controllers\Api\SecteurController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/specialites/{secteur}', [AnnonceController::class, 'getSpecialites']);
+Route::get('/secteurs/{secteur}/specialites', [SecteurController::class, 'getSpecialites']);

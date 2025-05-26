@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Etudiant; // Importer Etudiant
 use App\Models\Entreprise; // Importer Entreprise
+use App\Models\Secteur;
+use App\Models\Specialite;
 // use App\Providers\RouteServiceProvider; // On gèrera la redirection manuellement
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -23,8 +25,9 @@ class RegisteredUserController extends Controller
      */
     public function createEtudiant(): View
     {
+        $secteurs = Secteur::all();
         $specialites = \App\Models\Specialite::with('secteur')->get();
-        return view('auth.register-etudiant', compact('specialites')); 
+        return view('auth.register-etudiant', compact('specialites', 'secteurs')); 
     }
 
     /**
@@ -121,4 +124,19 @@ class RegisteredUserController extends Controller
 
     // La méthode store originale n'est plus utilisée directement
     // public function store(Request $request): RedirectResponse { ... }
+
+    public function getSpecialites(Request $request)
+    {
+        $secteurId = $request->input('secteur_id');
+        
+        if (!$secteurId) {
+            return response()->json(['error' => 'ID du secteur requis'], 400);
+        }
+
+        $specialites = Specialite::where('secteur_id', $secteurId)
+            ->select('id', 'nom')
+            ->get();
+
+        return response()->json($specialites);
+    }
 }
