@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
             'telephone' => ['required', 'string', 'min:8', 'max:15'],
             'specialite_id' => ['required', 'string', 'max:100'],
             'niveau' => ['required', 'string', 'max:100'],
+            'type_emploi' => ['required', 'string', 'max:100'],
         ]);
 
         // dd($request->all());
@@ -65,6 +66,7 @@ class RegisteredUserController extends Controller
             'telephone' => $request->telephone,
             'formation' => $request->specialite_id,
             'niveau' => $request->niveau,
+            'type_emploi' => $request->type_emploi,
         ]);
 
         // Créer le profil CV pour l'étudiant
