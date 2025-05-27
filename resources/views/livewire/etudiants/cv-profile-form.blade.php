@@ -1,7 +1,7 @@
 <div class="form-section">
     <div class="form-section-header">
         <h4>Informations Générales</h4>
-        
+
     </div>
 
     @if (session()->has('profile_form_message'))
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        
+
     </div>
 
     {{-- Ajout des nouveaux champs personnels --}}
@@ -113,7 +113,7 @@
         @error('resume_profil') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
     </div>
 
-    <button type="button" wire:click="save" class="action-button save-btn btn-sm">
+    <button type="button" wire:click="save" class="btn btn-primary  btn-sm">
         <i class="fas fa-save"></i> <span>Enregistrer</span>
     </button>
 
