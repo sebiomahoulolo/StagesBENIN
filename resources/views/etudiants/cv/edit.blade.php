@@ -56,7 +56,7 @@
             @endif
         </div>
 
-        @if ($cvProfile->calculateCompletion() < 99)
+        @if ($cvProfile->calculateCompletion() < 89)
             <div class="flex flex-col gap-4 w-full bg-indigo-500 alert alert-warning my-4">
                 <span class=" text-black">Toutes les sections doivent être complétées pour pouvoir visualiser le CV et
                     le tableau de bord de l' etudiant</span>
@@ -302,7 +302,7 @@
             @endisset
         </div>
         <div class="row">
-            @if ($cvProfile->calculateCompletion() > 99)
+            @if ($cvProfile->calculateCompletion() > 89)
                 <a href="{{ route('candidat.dashboard') }}" class=" btn btn-primary my-3 w-100">Suivant</a>
             @endif
         </div>
