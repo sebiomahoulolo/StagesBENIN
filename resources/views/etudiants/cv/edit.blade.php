@@ -28,7 +28,6 @@
 <body>
 
     <div class="container flex flex-col mx-auto justify-center items-center w-full py-4">
-        {{-- HEADER --}}
         {{-- ALERTES --}}
         @if (session('warning'))
             <div class="alert alert-warning mb-3">{{ session('warning') }}</div>
@@ -41,7 +40,6 @@
         @if (session('error'))
             <div class="alert alert-danger mb-3">{{ session('error') }}</div>
         @endif
-
 
         {{-- BOUTON DE VISUALISATION --}}
         <div class="d-flex justify-content-end mt-3">
@@ -64,8 +62,6 @@
                     le tableau de bord de l' etudiant</span>
             </div>
         @endif
-
-
 
         {{-- PROGRESSION DU CV --}}
         <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
@@ -265,7 +261,6 @@
                 overflow-x: hidden;
             }
         </style>
-
 
         {{-- FORMULAIRES CV --}}
         <div class="cv-editor-container space-y-6 flex flex-col gap-4 w-full ">
