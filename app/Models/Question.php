@@ -9,17 +9,31 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['texte', 'bonne_reponse_id'];
+    /**
+     * Les attributs qui sont mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'annonce_id',
+        'question',
+        'created_at',
+        'updated_at'
+    ];
 
-    // Définir la relation avec les options de réponse
-    public function options()
+    /**
+     * Obtenir l'entretien associé à cette question.
+     */
+    public function entretien()
     {
-        return $this->hasMany(Option::class);
+        return $this->belongsTo(Entretien::class);
     }
 
+    /**
+     * Obtenir les réponses associées à cette question.
+     */
     public function reponses()
-{
-    return $this->hasMany(Reponse::class);
-}
-
+    {
+        return $this->hasMany(Reponse::class);
+    }
 }

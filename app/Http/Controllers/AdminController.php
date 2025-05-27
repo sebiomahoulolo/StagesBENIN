@@ -199,20 +199,23 @@ class AdminController extends Controller
 
     public function storeEntretien(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         // Validation basique
-        $validated = $request->validate([
-            'annonce_id' => 'required|exists:annonces,id',
-            'data_questions' => 'required|array',
-            'data_questions.*.texte' => 'required|string',
-            'data_questions.*.reponses' => 'required|array|min:2',
-            'data_questions.*.reponses.*.texte' => 'required|string',
-        ]);
+        // $validated = $request->validate([
+        //     'annonce_id' => 'required|exists:annonces,id',
+        //     'data_questions' => 'required|array',
+        //     'data_questions.*.texte' => 'required|string',
+        //     'data_questions.*.reponses' => 'required|array|min:2',
+        //     'data_questions.*.reponses.*.texte' => 'required|string',
+        // ]);
+
+        $annonce_id = $request->input('annonce_id');
 
         foreach ($request->input('data_questions') as $questionData) {
             // Création de la question
             $question = Question::create([
-                'texte' => $questionData['texte'] ?? $questionData['question'] ?? '',
+                'annonce_id' => $annonce_id,
+                'question' => $questionData['question'] ?? $questionData['question'] ?? '',
             ]);
 
             // Insertion des réponses

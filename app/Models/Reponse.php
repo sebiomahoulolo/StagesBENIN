@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,21 +9,28 @@ class Reponse extends Model
 {
     use HasFactory;
 
-    // Définir les colonnes qui peuvent être remplies via un formulaire ou une requête
-    protected $fillable = ['etudiant_id', 'question_id', 'choix_index'];
-
-    // Définir les relations avec d'autres modèles
-
     /**
-     * Relation avec le modèle Etudiant
+     * Les attributs qui sont mass assignable.
+     *
+     * @var array<int, string>
      */
-    public function etudiant()
-    {
-        return $this->belongsTo(Etudiant::class);
-    }
+    protected $fillable = [
+        'question_id',
+        'texte',
+        'valide'
+    ];
 
     /**
-     * Relation avec le modèle Question
+     * Les attributs qui doivent être castés.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'valide' => 'boolean',
+    ];
+
+    /**
+     * Obtenir la question associée à cette réponse.
      */
     public function question()
     {
