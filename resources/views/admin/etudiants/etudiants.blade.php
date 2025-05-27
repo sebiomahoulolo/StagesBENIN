@@ -174,23 +174,108 @@
 
 <div class="tab-content active" id="etudiants-content" role="tabpanel" aria-labelledby="etudiants-tab">
 
-    <!-- Barre d'actions -->
-    <div class="action-bar d-flex justify-content-between align-items-center mb-4">
-        <div class="action-buttons">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantModal">
-                <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
-            </button>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="button" class="btn btn-outline-secondary" id="resetFilters">
-                <i class="fas fa-refresh me-1"></i> Réinitialiser
-            </button>
-            <button type="button" class="btn btn-outline-primary" id="exportBtn">
-                <i class="fas fa-download me-1"></i> Exporter
-            </button>
-        </div>
+<!-- Barre d'actions avec tous les boutons alignés -->
+<div class="action-bar d-flex justify-content-between align-items-center mb-4">
+    <div class="action-buttons">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantModal">
+            <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
+        </button>
     </div>
+
+    <div class="d-flex gap-2">
+    <!-- Bouton 1 : Envoyer directement les dernières offres -->
+    <form id="offresForm" action="{{ route('emails.offres') }}" method="POST">
+        @csrf
+        <button type="submit" id="btnOffres" class="btn btn-primary">
+            Envoyer les dernières offres
+        </button>
+    </form>
+
+    <!-- Bouton 2 : Ouvre un modal pour envoyer un message -->
+    <button type="button" id="btnMessage" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalMessage">
+        Envoyer un message à tous les étudiants
+    </button>
+
+        <button type="button" class="btn btn-outline-secondary" id="resetFilters">
+            <i class="fas fa-refresh me-1"></i> Réinitialiser
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="exportBtn">
+            <i class="fas fa-download me-1"></i> Exporter
+        </button>
+
+        
+    </div>
+</div>
+<script>
+    document.getElementById('offresForm').addEventListener('submit', function(event) {
+        let btn = document.getElementById('btnOffres');
+        btn.disabled = true;
+        btn.textContent = "Envoi en cours...";
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = "Envoyer les dernières offres";
+        }, 120000); // 120000 ms = 2 minutes
+    });
+
+    document.getElementById('btnMessage').addEventListener('click', function() {
+        let btn = document.getElementById('btnMessage');
+        btn.disabled = true;
+
+        setTimeout(() => {
+            btn.disabled = false;
+        }, 120000); // Réapparition après 2 minutes
+    });
+</script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" tabindex="-1" aria-labelledby="modalMessageLabel" aria-hidden="true">
+  <div class="modal-dialog">
+<form action="{{ route('emails.message') }}" method="POST" enctype="multipart/form-data">
+  @csrf
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="modalMessageLabel">Message aux étudiants</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Sujet -->
+      <div class="mb-3">
+        <label for="sujet" class="form-label">Sujet</label>
+        <input type="text" class="form-control" name="sujet" required>
+      </div>
+
+      <!-- Message -->
+      <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" name="message" rows="5" required></textarea>
+      </div>
+
+      <!-- Lien (URL) -->
+      <div class="mb-3">
+        <label for="lien" class="form-label">Lien à insérer (facultatif)</label>
+        <input type="url" class="form-control" name="lien" placeholder="https://exemple.com">
+      </div>
+
+      <!-- Fichier (image, vidéo, autre) -->
+      <div class="mb-3">
+        <label for="fichier" class="form-label">Joindre un fichier (facultatif)</label>
+        <input type="file" class="form-control" name="fichier" accept="image/*,video/*,application/pdf,.doc,.docx,.ppt,.pptx">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-success">Envoyer le message</button>
+    </div>
+  </div>
+</form>
+
+  </div>
+</div>
+
+
 
     <!-- Section des filtres -->
     <div class="filters-section">
