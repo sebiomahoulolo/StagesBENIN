@@ -136,7 +136,20 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
+ <!-- type_emploi d'étude -->
+                                <div class="mb-3">
+                                    <label for="type_emploi" class="form-label">{{ __('Type d\'offres recherché') }}</label>
+                                    <select id="type_emploi" name="type_emploi"
+                                        class="form-select @error('type_emploi') is-invalid @enderror" required>
+                                        <option value="">Sélectionner le type d'offres recherché </option>
+                                        <option value="Stage">Stage</option>
+                                        <option value="Emploi">Emploi</option>
+                                        <option value="Stage/Emploi">Stage/Emploi</option>
+                                    </select>
+                                    @error('type_emploi')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <!-- Password -->
                                 <div class="mb-3 password-wrapper">
                                     <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
@@ -160,19 +173,7 @@
                                     {{-- L'erreur 'confirmed' sera liée au champ 'password' principal par défaut --}}
                                 </div>
 
-                                <!-- type_emploi d'étude -->
-                                <div class="mb-3">
-                                    <label for="type_emploi" class="form-label">{{ __('Type Emploi') }}</label>
-                                    <select id="type_emploi" name="type_emploi"
-                                        class="form-select @error('type_emploi') is-invalid @enderror" required>
-                                        <option value="">Sélectionner un type emploi</option>
-                                        <option value="Stage">Stage</option>
-                                        <option value="Emploi">Emploi</option>
-                                    </select>
-                                    @error('type_emploi')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                               
 
                                 {{-- Bouton de soumission --}}
                                 <button type="submit" class="btn btn-submit">

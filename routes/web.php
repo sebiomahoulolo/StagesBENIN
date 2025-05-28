@@ -9,6 +9,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EmailController;
 
 // --- Contrôleurs Spécifiques (seront utilisés dans les groupes protégés) ---
 use App\Http\Controllers\AdminController;
@@ -203,6 +204,11 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     Route::get('/', [AdminController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /admin -> admin.dashboard
     Route::get('/manage-users', [AdminController::class, 'manageUsers'])->name('manage_users'); // Conserve admin.manage_users
 
+    // Routes pour l'envoi de mail
+    // Routes pour l'envoi de mail
+    Route::get('/send-mail', [MailController::class, 'showSendMailForm'])->name('send-mail');
+    Route::post('/send-mail', [MailController::class, 'sendMail'])->name('send-mail.post');
+
     Route::resource('events', EventController::class)->except(['index', 'show']); // Noms: admin.events.create, admin.events.store, etc.
 
     // Route pour visualiser les détails d'un étudiant
@@ -213,6 +219,7 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
     // IMPORTANT: La route de filtre doit être définie AVANT la route resource pour éviter les conflits
     Route::get('complaints/filter', [AdminComplaintController::class, 'filter'])->name('complaints.filter');
     Route::resource('complaints', AdminComplaintController::class)->except(['create', 'store']);
+
 
     // Routes pour la gestion des annonces
     Route::get('/annonces', [AdminAnnonceController::class, 'index'])->name('annonces.index');
@@ -400,6 +407,9 @@ Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 
 Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 
 Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
+Route::get('/send-emails', [EmailController::class, 'sendEmails']);
+Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');
+Route::post('/emails/message', [EmailController::class, 'envoyerMessage'])->name('emails.message');
 
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');

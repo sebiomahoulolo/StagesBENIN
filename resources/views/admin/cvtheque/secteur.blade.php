@@ -48,12 +48,6 @@
             </div>
         </div>
     </div>
-
-    <form action="{{ route('admin.sendmail') }}" method="POST">
-        @csrf
-        <button class="btn btn-primary">Envoyer un mail</button>
-    </form>
-
     <div class="row" id="specialitesGrid">
         @forelse($secteurs as $secteur)
             <div class="col-md-4 col-lg-3 mb-4 specialite-item">
