@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('annonce_id')->constrained()->onDelete('cascade');
             $table->date('date');
             $table->time('heure');
+            $table->integer('duree');
             $table->enum('statut', ['en_attente', 'confirme', 'annule', 'planifie', 'termine'])->default('en_attente');
             $table->timestamps();
         });

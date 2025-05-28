@@ -33,7 +33,7 @@
                                 novalidate>
                                 @csrf
                                 <div class="row g-3">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="annonce_id" class="form-label fw-bold">Annonce</label>
                                             <select name="annonce_id" id="annonce_id"
@@ -53,7 +53,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="date" class="form-label fw-bold">Date</label>
                                             <input type="date" name="date" id="date"
@@ -66,13 +66,26 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="heure" class="form-label fw-bold">Durée</label>
+                                            <label for="heure" class="form-label fw-bold">Heure</label>
                                             <input type="time" name="heure" id="heure"
                                                 class="form-control form-control-md @error('heure') is-invalid @enderror"
                                                 value="{{ old('heure') }}">
                                             @error('heure')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="duree" class="form-label fw-bold">Durée (en minutes)</label>
+                                            <input type="number" name="duree" id="duree" min="1" max="120" step="1"
+                                                class="form-control form-control-md @error('duree') is-invalid @enderror"
+                                                value="{{ old('duree') }}">
+                                            @error('duree')
                                                 <div class="invalid-feedback">
                                                     <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
                                                 </div>
@@ -110,6 +123,7 @@
                                             <th class="py-3">Refernece</th>
                                             <th class="py-3">Annonce</th>
                                             <th class="py-3">Date</th>
+                                            <th class="py-3">Heure Entretien</th>
                                             <th class="py-3">Durée Entretien</th>
                                             <th class="py-3">Statut</th>
                                             <th class="py-3">Actions</th>
@@ -126,6 +140,7 @@
                                                 <td class="py-3">{{ $entretien->nom_du_poste }}</td>
                                                 <td class="py-3">{{ date('d-m-Y', strtotime($entretien->date)) }}</td>
                                                 <td class="py-3">{{ $entretien->heure  }}</td>
+                                                <td class="py-3">{{ $entretien->duree  }} minutes</td>
                                                 <td>
                                                     @if ($entretien->status === 'en_attente')
                                                         <span class="badge bg-warning text-dark">En attente</span>

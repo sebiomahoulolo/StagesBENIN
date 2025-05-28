@@ -207,6 +207,7 @@ class AdminController extends Controller
             'annonce_id' => 'required|exists:annonces,id',
             'date' => 'required|date|after_or_equal:today',
             'heure' => 'required|date_format:H:i',
+            'duree' => 'required|integer|min:1|max:120',
         ], [
             'annonce_id.required' => 'Veuillez sélectionner une annonce',
             'annonce_id.exists' => 'L\'annonce sélectionnée n\'existe pas',
@@ -215,6 +216,10 @@ class AdminController extends Controller
             'date.after_or_equal' => 'La date doit être aujourd\'hui ou une date future',
             'heure.required' => 'L\'heure est requise',
             'heure.date_format' => 'Le format de l\'heure est invalide',
+            'duree.required' => 'La durée est requise',
+            'duree.integer' => 'La durée doit être un nombre entier',
+            'duree.min' => 'La durée doit être au moins de 1 minute',
+            'duree.max' => 'La durée ne doit pas dépasser 120 minutes',
         ]);
 
         try {
@@ -225,6 +230,7 @@ class AdminController extends Controller
                 'reference' => $reference,
                 'date' => $validated['date'],
                 'heure' => $validated['heure'],
+                'duree' => $validated['duree'],
                 'statut' => 'en_attente'
             ]);
 
