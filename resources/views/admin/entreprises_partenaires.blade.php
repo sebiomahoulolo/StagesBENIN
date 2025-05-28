@@ -77,14 +77,17 @@
                                           @endforeach
                                       </tbody>
                                   </table>
-                                  {{ $entreprises->links() }} {{-- Render pagination links --}}
+                                  <!-- Pagination -->
+                                  <div class="d-flex justify-content-center mt-4" id="paginationContainer">
+                                      {{ $entreprises->links('pagination::bootstrap-4') }}
+                                  </div>
                               @else
                                   <div class="alert alert-info">Aucune entreprise trouvée pour le moment.</div>
                               @endif
                           </div>
                       </div>
-@endsection
+                  @endsection
 
-@push('scripts')
-    {{-- Scripts spécifiques si besoin --}}
-@endpush
+                  @push('scripts')
+                      {{-- Scripts spécifiques si besoin --}}
+                  @endpush
