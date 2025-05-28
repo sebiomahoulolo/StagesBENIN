@@ -15,10 +15,10 @@ class Entretien extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'date', 'lieu', 'commentaires', 'user_id'];
-  
+    protected $fillable = ['etudiant_id', 'date', 'lieu', 'commentaires', 'user_id', 'reference', 'annonce_id', 'heure', 'status'];
 
-    
+
+
     // Définir la relation avec l'utilisateur (celui qui programme l'entretien)
     public function user()
     {
@@ -44,7 +44,7 @@ class Entretien extends Model
     {
         return $this->hasMany(Reponse::class);
     }
-    
+
 
     // Définir la relation avec l'entreprise
     public function entreprise()

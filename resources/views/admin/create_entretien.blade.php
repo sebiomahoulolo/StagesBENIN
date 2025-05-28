@@ -6,32 +6,24 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 text-center alert alert-info">
-            <h4>QCM</h4>
+            <h4>Etablir le QCM pour l'entretien {{ $entretien->reference }}</h4>
         </div>
         <div class="col-md-3"></div>
     </div>
 
-    <form id="qcm-form" method="POST" action="{{ route('admin.entretiens.store') }}">
+    <form id="qcm-form" method="POST" action="{{ route('admin.entretiens.storeQuestionnaire') }}">
         @csrf
 
         <div class="content-area table-responsive">
-            <div class="card my-3 shadow-lg rounded-3">
+            {{-- <div class="card my-3 shadow-lg rounded-3">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Sélection de l'offre</h5>
+                    <h5 class="mb-0">{{ $entretien->reference }}</h5>
                 </div>
-                <div class="card-body">
-                    <label for="annonce_id" class="form-label">Sélectionner l'annonce <span class="text-danger fw-bold">*</span></label>
-                    <select name="annonce_id" id="annonce_id" class="form-select form-control-lg">
-                        <option value="">Sélectionner l'annonce</option>
-                        @foreach ($offres as $annonce)
-                            <option value="{{ $annonce->id }}">{{ $annonce->nom_du_poste }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+            </div> --}}
+            <input type="hidden" name="annonce_id" id="annonce_id" class="form-control form-control-md" value="{{ $entretien->id         }}" readonly>
 
             <!-- Bouton d'ajout -->
-            <button id="add-questionnaire" type="button" class="btn btn-primary my-3 btn-lg w-100">
+            <button id="add-questionnaire" type="button" class="btn btn-primary my-3 btn-md w-100">
                 <i class="fas fa-plus-circle me-2"></i>Ajouter une question
             </button>
 
@@ -39,7 +31,7 @@
             <div id="qcm-container"></div>
 
             <!-- Bouton pour envoyer le formulaire -->
-            <button type="submit" class="btn btn-success btn-lg w-100 my-4" id="submit-qcm" disabled>
+            <button type="submit" class="btn btn-success btn-md w-100 my-4" id="submit-qcm" disabled>
                 <i class="fas fa-save me-2"></i>Enregistrer le QCM
             </button>
         </div>

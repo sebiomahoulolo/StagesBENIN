@@ -191,13 +191,53 @@ class AdminController extends Controller
     public function entretiens()
     {
         // Récupérer les étudiants depuis la base de données
-        $entretiens = Entretien::paginate(10);
-
+        $entretiens = Entretien::join('annonces', 'entretiens.annonce_id', '=', 'annonces.id')
+            ->select('entretiens.*', 'annonces.nom_du_poste', 'annonces.id as annonce_id')
+            ->latest()
+            ->paginate(10);
+        $annonces = Annonce::all();
         // Retourner la vue avec les étudiants
-        return view('admin.entretiens', compact('entretiens'));
+        return view('admin.entretiens', compact('entretiens', 'annonces'));
     }
 
-    public function storeEntretien(Request $request)
+    public function storeEntretien(Request $request)  {
+        // dd($request->all());
+        // Validation des données
+        $validated = $request->validate([
+            'annonce_id' => 'required|exists:annonces,id',
+            'date' => 'required|date|after_or_equal:today',
+            'heure' => 'required|date_format:H:i',
+        ], [
+            'annonce_id.required' => 'Veuillez sélectionner une annonce',
+            'annonce_id.exists' => 'L\'annonce sélectionnée n\'existe pas',
+            'date.required' => 'La date est requise',
+            'date.date' => 'Le format de la date est invalide',
+            'date.after_or_equal' => 'La date doit être aujourd\'hui ou une date future',
+            'heure.required' => 'L\'heure est requise',
+            'heure.date_format' => 'Le format de l\'heure est invalide',
+        ]);
+
+        try {
+            $reference = 'ENT' . date('Ymd') . rand(100, 999);
+            // Création de l'entretien
+            $entretien = Entretien::create([
+                'annonce_id' => $validated['annonce_id'],
+                'reference' => $reference,
+                'date' => $validated['date'],
+                'heure' => $validated['heure'],
+                'statut' => 'en_attente'
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'L\'entretien a été programmé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Une erreur est survenue lors de la programmation de l\'entretien.');
+        }
+    }
+
+    public function storeQuestionnaire(Request $request)
     {
         // dd($request->all());
         // Validation basique
@@ -214,7 +254,7 @@ class AdminController extends Controller
         foreach ($request->input('data_questions') as $questionData) {
             // Création de la question
             $question = Question::create([
-                'annonce_id' => $annonce_id,
+                'entretien_id' => $annonce_id,
                 'question' => $questionData['question'] ?? $questionData['question'] ?? '',
             ]);
 
@@ -231,12 +271,12 @@ class AdminController extends Controller
     }
 
 
-    public function createEntretien()
+    public function createEntretien($id)
     {
-        $offres = Annonce::all();
+        $entretien = Entretien::findOrFail($id);
 
         // Retourner la vue avec les étudiants
-        return view('admin.create_entretien', compact('offres'));
+        return view('admin.create_entretien', compact('entretien'));
     }
 
     public function boost()

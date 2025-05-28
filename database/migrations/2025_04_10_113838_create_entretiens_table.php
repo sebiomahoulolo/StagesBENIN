@@ -9,12 +9,10 @@ return new class extends Migration {
     {
         Schema::create('entretiens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('etudiant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Celui qui programme l'entretien
-            $table->foreignId('entreprise_id')->nullable()->constrained()->onDelete('cascade'); // L'entreprise concernée
-            $table->datetime('date');
-            $table->string('lieu');
-            $table->text('commentaires')->nullable();
+            $table->foreignId('annonce_id')->constrained()->onDelete('cascade');
+            $table->date('date');
+            $table->time('heure');
+            $table->enum('statut', ['en_attente', 'confirme', 'annule', 'planifié'])->default('en_attente');
             $table->timestamps();
         });
     }

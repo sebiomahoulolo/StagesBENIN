@@ -378,7 +378,8 @@ Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])-
 
 Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
 Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
-Route::get('/admin/entretiens/create', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
+Route::get('/admin/entretiens/create/{id}', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
+Route::post('/admin/entretiens/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('admin.entretiens.storeQuestionnaire');
 Route::post('/admin/entretiens/store', [AdminController::class, 'storeEntretien'])->name('admin.entretiens.store');
 Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
 Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');

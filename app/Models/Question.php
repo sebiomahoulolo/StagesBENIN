@@ -15,7 +15,7 @@ class Question extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'annonce_id',
+        'entretien_id',
         'question',
         'created_at',
         'updated_at'
