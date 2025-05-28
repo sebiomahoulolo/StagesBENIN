@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Etudiants\OffreController;
 use App\Mail\SendMail;
 use App\Models\Actualite;
+use App\Models\Annonce;
 use App\Models\Event;
 use App\Models\CvProfile;
 use App\Models\Catalogue;
@@ -17,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Etudiant;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cvtheque;
+use App\Models\Question;
 use App\Models\Secteur;
 use Illuminate\Support\Facades\Mail;
 
@@ -192,6 +195,48 @@ class AdminController extends Controller
 
         // Retourner la vue avec les étudiants
         return view('admin.entretiens', compact('entretiens'));
+    }
+
+    public function storeEntretien(Request $request)
+    {
+        // dd($request->all());
+        // Validation basique
+        // $validated = $request->validate([
+        //     'annonce_id' => 'required|exists:annonces,id',
+        //     'data_questions' => 'required|array',
+        //     'data_questions.*.texte' => 'required|string',
+        //     'data_questions.*.reponses' => 'required|array|min:2',
+        //     'data_questions.*.reponses.*.texte' => 'required|string',
+        // ]);
+
+        $annonce_id = $request->input('annonce_id');
+
+        foreach ($request->input('data_questions') as $questionData) {
+            // Création de la question
+            $question = Question::create([
+                'annonce_id' => $annonce_id,
+                'question' => $questionData['question'] ?? $questionData['question'] ?? '',
+            ]);
+
+            // Insertion des réponses
+            foreach ($questionData['reponses'] as $reponseData) {
+                $question->reponses()->create([
+                    'texte' => $reponseData['texte'],
+                    'valide' => isset($reponseData['valide']) ? true : false,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'QCM enregistré avec succès.');
+    }
+
+
+    public function createEntretien()
+    {
+        $offres = Annonce::all();
+
+        // Retourner la vue avec les étudiants
+        return view('admin.create_entretien', compact('offres'));
     }
 
     public function boost()
