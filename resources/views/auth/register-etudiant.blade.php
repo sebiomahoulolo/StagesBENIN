@@ -12,28 +12,28 @@
 
 {{-- Contenu principal de la page --}}
 @section('content')
-<main id="content" class="site-main">
-    {{-- Section contenant le formulaire --}}
-    <section class="candidate-signup-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-7 col-md-9 col-sm-11"> {{-- Colonne pour le formulaire --}}
-                    <div class="signup-form-container">
+    <main id="content" class="site-main">
+        {{-- Section contenant le formulaire --}}
+        <section class="candidate-signup-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7 col-md-9 col-sm-11"> {{-- Colonne pour le formulaire --}}
+                        <div class="signup-form-container">
 
-                        <h2 class="signup-form-title">Inscription Étudiant</h2>
-                        <p class="signup-form-subtitle">Créez votre compte pour trouver votre stage.</p>
+                            <h2 class="signup-form-title">Inscription Étudiant</h2>
+                            <p class="signup-form-subtitle">Créez votre compte pour trouver votre stage.</p>
 
-                        {{-- Formulaire utilisant les classes Bootstrap et les directives Blade --}}
-                        <form class="signup-form" method="POST" action="{{ route('register.etudiant.store') }}">
-                            @csrf
+                            {{-- Formulaire utilisant les classes Bootstrap et les directives Blade --}}
+                            <form class="signup-form" method="POST" action="{{ route('register.etudiant.store') }}">
+                                @csrf
 
-                            {{-- Affichage des erreurs générales (session flash) --}}
-                            @if (session('error'))
-                                <div class="alert alert-danger mb-3 text-center small">{{ session('error') }}</div>
-                            @endif
+                                {{-- Affichage des erreurs générales (session flash) --}}
+                                @if (session('error'))
+                                    <div class="alert alert-danger mb-3 text-center small">{{ session('error') }}</div>
+                                @endif
 
-                            {{-- Affichage global des erreurs de validation (optionnel si vous les affichez par champ) --}}
-                            {{-- @if ($errors->any())
+                                {{-- Affichage global des erreurs de validation (optionnel si vous les affichez par champ) --}}
+                                {{-- @if ($errors->any())
                                 <div class="alert alert-danger mb-4">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -43,101 +43,85 @@
                                 </div>
                             @endif --}}
 
-                            <!-- Prénom -->
-                            <div class="mb-3">
-                                <label for="prenom" class="form-label">{{ __('Prénom') }}</label>
-                                <input type="text"
-                                       id="prenom"
-                                       name="prenom"
-                                       class="form-control @error('prenom') is-invalid @enderror"
-                                       value="{{ old('prenom') }}"
-                                       required
-                                       autofocus
-                                       autocomplete="given-name">
-                                @error('prenom')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Prénom -->
+                                <div class="mb-3">
+                                    <label for="prenom" class="form-label">{{ __('Prénom') }}</label>
+                                    <input type="text" id="prenom" name="prenom"
+                                        class="form-control @error('prenom') is-invalid @enderror"
+                                        value="{{ old('prenom') }}" required autofocus autocomplete="given-name">
+                                    @error('prenom')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Nom -->
-                            <div class="mb-3">
-                                <label for="nom" class="form-label">{{ __('Nom') }}</label>
-                                <input type="text"
-                                       id="nom"
-                                       name="nom"
-                                       class="form-control @error('nom') is-invalid @enderror"
-                                       value="{{ old('nom') }}"
-                                       required
-                                       autocomplete="family-name">
-                                @error('nom')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Nom -->
+                                <div class="mb-3">
+                                    <label for="nom" class="form-label">{{ __('Nom') }}</label>
+                                    <input type="text" id="nom" name="nom"
+                                        class="form-control @error('nom') is-invalid @enderror" value="{{ old('nom') }}"
+                                        required autocomplete="family-name">
+                                    @error('nom')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Email Address -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label">{{ __('Email') }}</label>
-                                <input type="email"
-                                       id="email"
-                                       name="email"
-                                       class="form-control @error('email') is-invalid @enderror"
-                                       value="{{ old('email') }}"
-                                       required
-                                       autocomplete="username">
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Email Address -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">{{ __('Email') }}</label>
+                                    <input type="email" id="email" name="email"
+                                        class="form-control @error('email') is-invalid @enderror"
+                                        value="{{ old('email') }}" required autocomplete="username">
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Téléphone -->
-                            <div class="mb-3">
-                                <label for="telephone" class="form-label">{{ __('Téléphone') }}</label>
-                                <input type="tel"
-                                       id="telephone"
-                                       name="telephone"
-                                       class="form-control @error('telephone') is-invalid @enderror"
-                                       value="{{ old('telephone') }}"
-                                       required
-                                       autocomplete="tel">
-                                @error('telephone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Téléphone -->
+                                <div class="mb-3">
+                                    <label for="telephone" class="form-label">{{ __('Téléphone') }}</label>
+                                    <input type="tel" id="telephone" name="telephone"
+                                        class="form-control @error('telephone') is-invalid @enderror"
+                                        value="{{ old('telephone') }}" required autocomplete="tel">
+                                    @error('telephone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Secteur -->
-                            <div class="mb-3">
-                                <label for="secteur" class="form-label">{{ __('Secteur') }}</label>
-                                <select class="form-select @error('secteur_id') is-invalid @enderror" id="secteur" name="secteur_id" required>
-                                    <option value="">Sélectionner un secteur</option>
-                                    @foreach($secteurs as $secteur)
-                                        <option value="{{ $secteur->id }}" {{ old('secteur_id') == $secteur->id ? 'selected' : '' }}>
-                                            {{ $secteur->nom }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('secteur_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Secteur -->
+                                <div class="mb-3">
+                                    <label for="secteur" class="form-label">{{ __('Secteur') }}</label>
+                                    <select class="form-select @error('secteur_id') is-invalid @enderror" id="secteur"
+                                        name="secteur_id" required>
+                                        <option value="">Sélectionner un secteur</option>
+                                        @foreach ($secteurs as $secteur)
+                                            <option value="{{ $secteur->id }}"
+                                                {{ old('secteur_id') == $secteur->id ? 'selected' : '' }}>
+                                                {{ $secteur->nom }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('secteur_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Formation -->
-                            <div class="mb-3">
-                                <label for="formation" class="form-label">{{ __('Formation') }}</label>
-                                <select class="form-select @error('specialite_id') is-invalid @enderror" id="formation" name="specialite_id" required>
-                                    <option value="">Sélectionner une spécialité</option>
-                                </select>
-                                @error('specialite_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <!-- Formation -->
+                                <div class="mb-3">
+                                    <label for="formation" class="form-label">{{ __('Formation') }}</label>
+                                    <select class="form-select @error('specialite_id') is-invalid @enderror" id="formation"
+                                        name="specialite_id" required>
+                                        <option value="">Sélectionner une spécialité</option>
+                                    </select>
+                                    @error('specialite_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                            <!-- Niveau d'étude -->
-                            <div class="mb-3">
-                                <label for="niveau" class="form-label">{{ __('Niveau d\'étude') }}</label>
-                                <select id="niveau"
-                                        name="niveau"
-                                        class="form-select @error('niveau') is-invalid @enderror"
-                                        required>
+                                <!-- Niveau d'étude -->
+                                <div class="mb-3">
+                                    <label for="niveau" class="form-label">{{ __('Niveau d\'étude') }}</label>
+                                    <select id="niveau" name="niveau"
+                                        class="form-select @error('niveau') is-invalid @enderror" required>
                                         <option value="">Sélectionner un niveau</option>
                                         <option value="BEPC">BEPC</option>
                                         <option value="Bac">Bac</option>
@@ -147,67 +131,77 @@
                                         <option value="Bac+4">Bac+4</option>
                                         <option value="Bac+5">Bac+5</option>
                                         <option value="Doctorat">Doctorat</option>
-                                </select>
-                                @error('niveau')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Password -->
-                            <div class="mb-3 password-wrapper">
-                                <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
-                                <input type="password"
-                                       id="password"
-                                       name="password"
-                                       class="form-control @error('password') is-invalid @enderror"
-                                       required
-                                       autocomplete="new-password">
-                                <span class="toggle-password" id="togglePassword"><i class="fas fa-eye"></i></span>
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Confirm Password -->
-                            <div class="mb-3 password-wrapper">
-                                <label for="password_confirmation" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
-                                <input type="password"
-                                       id="password_confirmation"
-                                       name="password_confirmation"
-                                       class="form-control"
-                                       required
-                                       autocomplete="new-password">
-                                <span class="toggle-password" id="toggleConfirmPassword"><i class="fas fa-eye"></i></span>
-                                {{-- L'erreur 'confirmed' sera liée au champ 'password' principal par défaut --}}
-                            </div>
-
-                            {{-- Bouton de soumission --}}
-                            <button type="submit" class="btn btn-submit">
-                                {{ __('S\'inscrire comme Étudiant') }}
-                            </button>
-
-                             {{-- Liens en bas --}}
-                            <div class="bottom-links-wrapper">
-                                <div class="login-link">
-                                    <a href="{{ route('login') }}">
-                                        {{ __('Déjà inscrit?') }}
-                                    </a>
+                                    </select>
+                                    @error('niveau')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+ <!-- type_emploi d'étude -->
+                                <div class="mb-3">
+                                    <label for="type_emploi" class="form-label">{{ __('Type d\'offres recherché') }}</label>
+                                    <select id="type_emploi" name="type_emploi"
+                                        class="form-select @error('type_emploi') is-invalid @enderror" required>
+                                        <option value="">Sélectionner le type d'offres recherché </option>
+                                        <option value="Stage">Stage</option>
+                                        <option value="Emploi">Emploi</option>
+                                        <option value="Stage/Emploi">Stage/Emploi</option>
+                                    </select>
+                                    @error('type_emploi')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <!-- Password -->
+                                <div class="mb-3 password-wrapper">
+                                    <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
+                                    <input type="password" id="password" name="password"
+                                        class="form-control @error('password') is-invalid @enderror" required
+                                        autocomplete="new-password">
+                                    <span class="toggle-password" id="togglePassword"><i class="fas fa-eye"></i></span>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
-                                <div class="switch-register-link">
-                                    <a href="{{ route('register.recruteur.create') }}">
-                                        {{ __('S\'inscrire comme Recruteur ?') }}
-                                    </a>
+                                <!-- Confirm Password -->
+                                <div class="mb-3 password-wrapper">
+                                    <label for="password_confirmation"
+                                        class="form-label">{{ __('Confirmer le mot de passe') }}</label>
+                                    <input type="password" id="password_confirmation" name="password_confirmation"
+                                        class="form-control" required autocomplete="new-password">
+                                    <span class="toggle-password" id="toggleConfirmPassword"><i
+                                            class="fas fa-eye"></i></span>
+                                    {{-- L'erreur 'confirmed' sera liée au champ 'password' principal par défaut --}}
                                 </div>
-                            </div>
 
-                        </form>
-                    </div> {{-- Fin .signup-form-container --}}
-                </div> {{-- Fin .col --}}
-            </div> {{-- Fin .row --}}
-        </div> {{-- Fin .container --}}
-    </section>
-</main>
+                               
+
+                                {{-- Bouton de soumission --}}
+                                <button type="submit" class="btn btn-submit">
+                                    {{ __('S\'inscrire comme Étudiant') }}
+                                </button>
+
+                                {{-- Liens en bas --}}
+                                <div class="bottom-links-wrapper">
+                                    <div class="login-link">
+                                        <a href="{{ route('login') }}">
+                                            {{ __('Déjà inscrit?') }}
+                                        </a>
+                                    </div>
+
+                                    <div class="switch-register-link">
+                                        <a href="{{ route('register.recruteur.create') }}">
+                                            {{ __('S\'inscrire comme Recruteur ?') }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div> {{-- Fin .signup-form-container --}}
+                    </div> {{-- Fin .col --}}
+                </div> {{-- Fin .row --}}
+            </div> {{-- Fin .container --}}
+        </section>
+    </main>
 @endsection
 
 {{-- Injecte les scripts spécifiques --}}
@@ -224,14 +218,14 @@
 
                 // Initialise l'icône
                 if (inputElement.getAttribute('type') === 'password') {
-                     icon.classList.add('fa-eye');
-                     icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    icon.classList.remove('fa-eye-slash');
                 } else {
-                     icon.classList.add('fa-eye-slash');
-                     icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    icon.classList.remove('fa-eye');
                 }
 
-                toggleElement.addEventListener('click', function () {
+                toggleElement.addEventListener('click', function() {
                     const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
                     inputElement.setAttribute('type', type);
                     // Bascule les classes de l'icône Font Awesome
@@ -252,10 +246,10 @@
             $('#secteur').on('change', function() {
                 const secteurId = $(this).val();
                 const $formationSelect = $('#formation');
-                
+
                 // Réinitialiser le select des formations
                 $formationSelect.html('<option value="">Sélectionner une spécialité</option>');
-                
+
                 if (!secteurId) return;
 
                 // Afficher un indicateur de chargement
@@ -271,14 +265,15 @@
                     },
                     success: function(specialites) {
                         // Réinitialiser le select
-                        $formationSelect.html('<option value="">Sélectionner une spécialité</option>');
-                        
+                        $formationSelect.html(
+                            '<option value="">Sélectionner une spécialité</option>');
+
                         // Ajouter les options
                         specialites.forEach(function(specialite) {
                             $formationSelect.append(
                                 $('<option></option>')
-                                    .val(specialite.id)
-                                    .text(specialite.nom)
+                                .val(specialite.id)
+                                .text(specialite.nom)
                             );
                         });
                     },

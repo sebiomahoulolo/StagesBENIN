@@ -18,6 +18,7 @@ class Etudiant extends Model
         'telephone',
         'formation',
         'niveau',
+        'type_emploi',
         'date_naissance',
         'cv_path',
         'photo_path',

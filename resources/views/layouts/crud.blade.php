@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title') - {{ config('app.name', 'StagesBENIN') }}</title>
+<!-- Ajout de l'icône -->
+<link rel="icon" type="image/png" href="{{ asset('assets/images/logostagesbenin.jpg') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

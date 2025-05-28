@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +15,19 @@
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     @livewireStyles
     @stack('styles')
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     {{-- Alpine.js --}}
     <script src="//unpkg.com/alpinejs" defer></script>
 </head>
+
 <body>
-    
+
     <div class="container flex flex-col mx-auto justify-center items-center w-full py-4">
-        {{-- HEADER --}}
         {{-- ALERTES --}}
         @if (session('warning'))
             <div class="alert alert-warning mb-3">{{ session('warning') }}</div>
@@ -43,13 +45,23 @@
         <div class="d-flex justify-content-end mt-3">
             @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id; @endphp
             @if ($cvProfileId)
-                <a class=" px-4 py-2 bg-indigo-600 rounded-md text-white " href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="btn btn-primary"
-                    target="_blank">
-                    <i class="fas fa-eye me-1"></i> Visualiser le CV
-                </a>
+                @if ($cvProfile->calculateCompletion() > 99)
+                    <a class=" px-4 py-2 bg-indigo-600 rounded-md text-white "
+                        href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="btn btn-primary"
+                        target="_blank">
+                        <i class="fas fa-eye me-1"></i> Visualiser le CV
+                    </a>
+                @endif
+
             @endif
         </div>
 
+        @if ($cvProfile->calculateCompletion() < 89)
+            <div class="flex flex-col gap-4 w-full bg-indigo-500 alert alert-warning my-4">
+                <span class=" text-black">Toutes les sections doivent être complétées pour pouvoir visualiser le CV et
+                    le tableau de bord de l' etudiant</span>
+            </div>
+        @endif
 
         {{-- PROGRESSION DU CV --}}
         <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
@@ -250,9 +262,8 @@
             }
         </style>
 
-
         {{-- FORMULAIRES CV --}}
-        <div class="cv-editor-container space-y-6 ">
+        <div class="cv-editor-container space-y-6 flex flex-col gap-4 w-full ">
             <p class="text-muted">Remplissez ou modifiez chaque section pour construire votre CV.</p>
             @isset($cvProfile)
                 <div class="card shadow-sm">
@@ -291,24 +302,22 @@
             @endisset
         </div>
         <div class="row">
-            <div class="col-md-4">
-                <button class=" btn btn-primary my-3 " disabled>Suivant</button>
-            </div>
+            @if ($cvProfile->calculateCompletion() > 89)
+                <a href="{{ route('candidat.dashboard') }}" class=" btn btn-primary my-3 w-100">Suivant</a>
+            @endif
         </div>
     </div>
 
-     {{-- Overlay (couvre le contenu quand la sidebar est ouverte sur petit écran) --}}
-    <div class="sidebar-overlay"
-         x-show="isSidebarOpen"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-         @click="isSidebarOpen = false"
-         x-cloak {{-- Important --}}
-         style="display: none;"
-    ></div>
+    {{-- Overlay (couvre le contenu quand la sidebar est ouverte sur petit écran) --}}
+    <div class="sidebar-overlay" x-show="isSidebarOpen" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" @click="isSidebarOpen = false" x-cloak {{-- Important --}}
+        style="display: none;"></div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    
+
     @livewireScripts
     @stack('scripts')
 </body>
+
 </html>
