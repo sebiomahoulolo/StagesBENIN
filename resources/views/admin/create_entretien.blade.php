@@ -20,7 +20,7 @@
                     <h5 class="mb-0">{{ $entretien->reference }}</h5>
                 </div>
             </div> --}}
-            <input type="hidden" name="annonce_id" id="annonce_id" class="form-control form-control-md" value="{{ $entretien->id         }}" readonly>
+            <input type="hidden" name="annonce_id" id="annonce_id" class="form-control form-control-md" value="{{ $entretien->id }}" readonly>
 
             <!-- Bouton d'ajout -->
             <button id="add-questionnaire" type="button" class="btn btn-primary my-3 btn-md w-100">
@@ -28,10 +28,56 @@
             </button>
 
             <!-- Conteneur des questionnaires -->
-            <div id="qcm-container"></div>
+            <div id="qcm-container">
+                @if(isset($questions) && count($questions) > 0)
+                    @foreach($questions as $index => $question)
+                        <div class="card my-4 shadow-lg rounded-3 question-card">
+                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Question {{ $index + 1 }}</h5>
+                                <button type="button" class="btn btn-light btn-sm remove-questionnaire">
+                                    <i class="fas fa-trash me-1"></i>Supprimer
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Question</label>
+                                    <input type="text" class="form-control form-control-lg"
+                                           name="data_questions[{{ $index }}][question]"
+                                           value="{{ $question->question }}"
+                                           placeholder="Entrer la question">
+                                </div>
+                                <div class="reponses-container">
+                                    @foreach($question->reponses as $reponseIndex => $reponse)
+                                        <div class="form-group d-flex align-items-center mb-3 reponse-item">
+                                            <div class="form-check me-3">
+                                                <input type="checkbox" class="form-check-input" value="true"
+                                                       name="data_questions[{{ $index }}][reponses][{{ $reponseIndex }}][valide]"
+                                                       id="reponse_{{ $index }}_{{ $reponseIndex }}"
+                                                       {{ $reponse->valide ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="reponse_{{ $index }}_{{ $reponseIndex }}">Correcte</label>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   name="data_questions[{{ $index }}][reponses][{{ $reponseIndex }}][texte]"
+                                                   value="{{ $reponse->texte }}"
+                                                   placeholder="Texte de la réponse">
+                                            <button type="button" class="btn btn-danger ms-2 remove-reponse">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm mt-3 add-reponse"
+                                        data-question-index="{{ $index }}">
+                                    <i class="fas fa-plus me-1"></i>Ajouter une réponse
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
 
             <!-- Bouton pour envoyer le formulaire -->
-            <button type="submit" class="btn btn-success btn-md w-100 my-4" id="submit-qcm" disabled>
+            <button type="submit" class="btn btn-success btn-md w-100 my-4" id="submit-qcm">
                 <i class="fas fa-save me-2"></i>Enregistrer le QCM
             </button>
         </div>
@@ -40,7 +86,7 @@
 
 @push('scripts')
     <script>
-        let questionIndex = 0;
+        let questionIndex = {{ isset($questions) ? count($questions) : 0 }};
 
         function toggleSubmitButton() {
             const hasQuestionnaire = $('#qcm-container .card').length > 0;
@@ -121,6 +167,9 @@
             $(this).closest('.card').remove();
             toggleSubmitButton();
         });
+
+        // Initialiser l'état du bouton submit
+        toggleSubmitButton();
     </script>
 
     <style>
