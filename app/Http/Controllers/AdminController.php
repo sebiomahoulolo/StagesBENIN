@@ -412,5 +412,26 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Mail envoyé avec succès.');
     }
 
+    public function updateStatus(Request $request, Entretien $entretien)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:en_attente,planifié,terminé'
+        ], [
+            'status.required' => 'Le statut est requis',
+            'status.in' => 'Le statut sélectionné est invalide'
+        ]);
+
+        // try {
+            $entretien->update([
+                'status' => $validated['status']
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Le statut de l\'entretien a été mis à jour avec succès.');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()
+        //         ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
+        // }
+    }
 
 }

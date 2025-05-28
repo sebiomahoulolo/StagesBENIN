@@ -116,34 +116,50 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($entretiens as $entretien)
+                                        @forelse ( $entretiens as $entretien )
+
+
+
+
                                             <tr>
                                                 <td class="py-3">{{ $entretien->reference }}</td>
                                                 <td class="py-3">{{ $entretien->nom_du_poste }}</td>
-                                                <td class="py-3">{{ $entretien->date }}</td>
-                                                <td class="py-3">{{ $entretien->heure }}</td>
+                                                <td class="py-3">{{ date('d-m-Y', strtotime($entretien->date)) }}</td>
+                                                <td class="py-3">{{ $entretien->heure  }}</td>
                                                 <td>
                                                     @if ($entretien->status === 'en_attente')
                                                         <span class="badge bg-warning text-dark">En attente</span>
-                                                       
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                            <i class="fas fa-edit me-2"></i>Modifier
+                                                        </button>
                                                     @elseif($entretien->status === 'planifié')
                                                         <span class="badge bg-info text-dark">Planifié</span>
-                                                       
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                            <i class="fas fa-edit me-2"></i>Modifier
+                                                        </button>
                                                     @elseif($entretien->status === 'terminé')
                                                         <span class="badge bg-success">Terminé</span>
-                                                        {{-- Pas de bouton si terminé --}}
                                                     @else
                                                         <span class="badge bg-secondary text-white">Inconnu</span>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                            <i class="fas fa-edit me-2"></i>Modifier
+                                                        </button>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('admin.entretiens.create', $entretien->id) }}"
+                                                    <a href="{{ route('admin.entretiens.create', ['id' => $entretien->id]) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit me-2"></i>Créer le questionnaire
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                            @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center">
+                                                    <h5>Aucun entretien trouvé</h5>
+                                                </td>
+                                            </tr>
+                                            @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -157,6 +173,44 @@
             </div>
         </div>
     </div>
+
+    @foreach ($entretiens as $entretien)
+        <!-- Modal de modification du statut -->
+        <div class="modal fade" id="updateStatusModal{{ $entretien->id }}" tabindex="-1" aria-labelledby="updateStatusModalLabel{{ $entretien->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="updateStatusModalLabel{{ $entretien->id }}">
+                            <i class="fas fa-edit me-2"></i>Modifier le statut
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('admin.entretiens.update-status', $entretien->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="status{{ $entretien->id }}" class="form-label fw-bold">Statut</label>
+                                <select name="status" id="status{{ $entretien->id }}" class="form-select">
+                                    <option value="en_attente" {{ $entretien->status === 'en_attente' ? 'selected' : '' }}>En attente</option>
+                                    <option value="planifié" {{ $entretien->status === 'planifié' ? 'selected' : '' }}>Planifié</option>
+                                    <option value="terminé" {{ $entretien->status === 'terminé' ? 'selected' : '' }}>Terminé</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Annuler
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     <style>
         .content-area {
@@ -287,6 +341,51 @@
         .pagination .page-item.active .page-link {
             background: linear-gradient(45deg, #007bff, #0056b3);
             border: none;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            padding: 1rem 1.5rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        .bg-warning {
+            background: linear-gradient(45deg, #ffc107, #d39e00) !important;
+        }
+
+        .bg-info {
+            background: linear-gradient(45deg, #17a2b8, #138496) !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34) !important;
+        }
+
+        .bg-secondary {
+            background: linear-gradient(45deg, #6c757d, #545b62) !important;
         }
     </style>
 @endsection

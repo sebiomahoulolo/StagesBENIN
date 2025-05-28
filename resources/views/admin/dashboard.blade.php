@@ -54,7 +54,7 @@
             <span>Offres d'emploi</span>
         </a> -->
 
-        <a href="{{ route('admin.entretiens') }}" class="styled-link-box">
+        <a href="{{ route('admin.entretiens.index') }}" class="styled-link-box">
             <i class="fas fa-calendar-check icon-danger"></i>
             <span>Entretiens programmés</span>
         </a>

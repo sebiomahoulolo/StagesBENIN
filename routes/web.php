@@ -243,6 +243,16 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
         Route::patch('/{demande}/status', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/{demande}', [App\Http\Controllers\Admin\DemandeEmployeController::class, 'destroy'])->name('destroy');
     });
+
+    // Routes pour les entretiens
+    Route::prefix('entretiens')->name('entretiens.')->group(function () {
+        Route::get('/', [AdminController::class, 'entretiens'])->name('index');
+        Route::post('/', [AdminController::class, 'storeEntretien'])->name('store');
+        Route::get('/create/{id}', [AdminController::class, 'createEntretien'])->name('create');
+        Route::put('/{entretien}/update-status', [AdminController::class, 'updateStatus'])->name('update-status');
+        Route::post('/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('storeQuestionnaire');
+    });
+
 });
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
 Route::get('/events/{id}/verify/{reference}', [EventController::class, 'verifyTicket'])->name('events.verify');
@@ -385,10 +395,10 @@ Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])-
 
 Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
 Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
-Route::get('/admin/entretiens/create/{id}', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
-Route::post('/admin/entretiens/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('admin.entretiens.storeQuestionnaire');
-Route::post('/admin/entretiens/store', [AdminController::class, 'storeEntretien'])->name('admin.entretiens.store');
-Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
+// Route::get('/admin/entretiens/create/{id}', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
+// Route::post('/admin/entretiens/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('admin.entretiens.storeQuestionnaire');
+// Route::post('/admin/entretiens/store', [AdminController::class, 'storeEntretien'])->name('admin.entretiens.store');
+// Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
 Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
 Route::get('/admin/evenements', [AdminController::class, 'evenements'])->name('admin.evenements');
 Route::get('/admin/entreprises', [AdminController::class, 'entreprises'])->name('admin.entreprises');
