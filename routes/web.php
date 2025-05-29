@@ -264,6 +264,9 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     // ... Route pour le dashboard étudiant ...
     Route::get('/dashboard', [EtudiantController::class, 'index'])->name('dashboard');
 
+    // Route pour la soumission de l'examen
+    Route::post('/examen/{etudiant_id}/submit', [EtudiantController::class, 'submitExamen'])->name('examen.submit');
+
     // Route pour le boostage
     Route::get('/boostage', function() {
         return view('etudiants.boostage');
@@ -437,6 +440,9 @@ Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('ev
 Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
 Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
+// entretiens etudians 
+
+
 
 // Géré par register.etudiant.store
 Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');

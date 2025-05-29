@@ -8,7 +8,7 @@ class Examen extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'user_id', 'score', 'total_questions'];
+    protected $fillable = ['etudiant_id', 'user_id', 'score', 'total_questions', 'reponses', 'bonnes_reponses'];
 
     public function etudiant()
     {

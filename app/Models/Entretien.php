@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Annonce;
 
 
 
@@ -52,8 +53,24 @@ class Entretien extends Model
         return $this->belongsTo(Entreprise::class);
     }
 
+    // Définir la relation avec l'annonce
+   
+    public function annonce()
+{
+    return $this->belongsTo(Annonce::class, 'annonce_id');
+}
 
 
+    public function candidatures()
+    {
+        return $this->belongsToMany(Etudiant::class, 'candidatures', 'entretien_id', 'etudiant_id');
+    }
+
+
+public static function planifies()
+{
+    return self::where('status', 'planifié')->get();
+}
 
 
 }

@@ -12,6 +12,8 @@ use App\Models\Entreprise;
 use App\Models\Examen;
 use App\Models\Question;
 use App\Models\Reponse;
+use Illuminate\Support\Facades\Log;
+
 use App\Models\User;
 class EtudiantController extends Controller
 {
@@ -33,21 +35,23 @@ public function entreprise()
 
 
      
-     public function index(Request $request)
-     {
-        $etudiant = auth()->user()->etudiant; 
+public function index(Request $request)
+{
+    $etudiant = auth()->user()->etudiant; 
     
-        $userId = $request->user()->id;
+    $userId = $request->user()->id;
 
-        // Récupérer les entretiens programmés pour l'utilisateur
-        $entretiens = Entretien::where('user_id', $userId)
-            ->where('date', '>=', now()) // Filtrer les entretiens futurs
-            ->orderBy('date', 'asc')    // Trier par date croissante
-            ->get();
+    // Récupérer les entretiens planifiés à venir pour l'utilisateur connecté
+    $entretiens = Entretien::where('user_id', $userId)
+        ->where('status', 'planifié')        // 🔍 Filtre sur le statut
+        ->where('date', '>=', now())         // 🔍 Filtre sur la date future
+        ->orderBy('date', 'asc')             // 🔃 Tri croissant par date
+        ->get();
 
-        // Retourner les entretiens à la vue
-        return view('etudiants.dashboard', compact('entretiens','etudiant'));
-    }
+    // Retourner les entretiens à la vue
+    return view('etudiants.dashboard', compact('entretiens', 'etudiant'));
+}
+
 
    
 
@@ -237,19 +241,51 @@ public function rejeterCandidature($id)
 
 public function showExamen($etudiant_id)
 {
+    // Trouver l'étudiant ou renvoyer une erreur
     $etudiant = Etudiant::findOrFail($etudiant_id);
-    $questions = Question::all();
-    
 
-    // Convertir chaque `options` en tableau PHP
+    // Récupérer les entretiens "planifiés" avec leur annonce
+    $entretiens_planifies = Entretien::where('status', 'planifié')->with('annonce')->get();
+
+    // Récupérer les questions liées aux entretiens planifiés
+    $questions = Question::whereIn('entretien_id', $entretiens_planifies->pluck('id'))->with('reponses')->get();
+
+    // Assurer que les options sont bien formatées
     foreach ($questions as $question) {
-        $question->options = json_decode($question->options, true); // Décoder JSON
+        $question->options = is_string($question->options) 
+            ? json_decode($question->options, true) ?? [] 
+            : ($question->reponses->pluck('texte')->toArray() ?? []);
     }
-    
-    return view('etudiants.examen', compact('etudiant','questions'));
-    
+
+    // Récupérer le dernier examen de l'étudiant
+    $examen = Examen::where('etudiant_id', $etudiant_id)->latest()->first();
+
+    // Récupérer l'entretien lié à l'étudiant via l'annonce et les candidatures
+    $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
+        $query->where('etudiant_id', $etudiant->id);
+    })->with('annonce')->first();
+
+    // Sécurisation du nom du poste
+    $nom_du_poste = optional($entretien?->annonce)->nom_du_poste ?? 'Non disponible';
+
+    // Passer les résultats à la vue
+    return view('etudiants.examen', [
+    'etudiant' => $etudiant,
+    'questions' => $questions,
+    'examen' => $examen,
+    'score' => $examen->score ?? 0,
+    'total_questions' => $examen->total_questions ?? 0,
+    'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
+    'pourcentage' => $examen ? round(($examen->bonnes_reponses / max($examen->total_questions, 1)) * 100, 2) : 0,
+    'nom_du_poste' => $nom_du_poste,
+    'entretiens_planifies' => $entretiens_planifies // Ajout de cette variable
+]);
 
 }
+
+
+
+
 
 
 
@@ -276,57 +312,104 @@ public function createEntretien($etudiant_id)
 
 
 
-public function submitExamen(Request $request, $etudiant_id)
-{
-    $etudiant = Etudiant::findOrFail($etudiant_id);
-    $questions = Question::all();
-    $score = 0;
 
-    // Parcourir les questions pour enregistrer les réponses et calculer le score
-    foreach ($questions as $question) {
-        $reponseChoisie = $request->reponses[$question->id] ?? null;
-    
-        if ($reponseChoisie) {
-          
-            $options = json_decode($question->options, true); // decode JSON → tableau associatif
-            $choixIndex = array_search($reponseChoisie, $options);
-            
-            // Vérifie que l'index existe
-            if ($choixIndex !== false) {
-                // Enregistrer dans la table `reponses`
-                Reponse::create([
-                    'etudiant_id' => $etudiant->id,
-                    'question_id' => $question->id,
-                    'choix_index' => $choixIndex,
-                ]);
-    
-                // Vérifier si la réponse est correcte
-                if ($question->bonne_reponse_id == $choixIndex) {
-                    $score++;
+
+// Dans votre contrôleur d'examen
+public function submitExamen(Request $request)
+{
+    try {
+        $etudiant_id = $request->input('etudiant_id');
+        if (!$etudiant_id) {
+            return back()->with('error', 'Étudiant non défini.');
+        }
+
+        $reponses = collect($request->input('reponses', []));
+
+        $questions = Question::whereIn('id', $reponses->keys())->get();
+        $total_questions = $questions->count();
+        $bonnes_reponses = 0;
+
+        foreach ($questions as $question) {
+            $reponse_etudiant = $reponses->get($question->id);
+
+            if ($reponse_etudiant) {
+                // Récupérer les bonnes réponses validées
+                $reponses_valides = \App\Models\Reponse::where('question_id', $question->id)
+                    ->where('valide', 1)
+                    ->pluck('texte')
+                    ->map(fn($val) => strtolower(trim($val)))
+                    ->toArray();
+
+                // Vérifier les réponses
+                if (is_array($reponse_etudiant)) {
+                    $reponse_etudiant = collect($reponse_etudiant)->map(fn($val) => strtolower(trim($val)))->sort()->toArray();
+                    if ($reponse_etudiant === collect($reponses_valides)->sort()->toArray()) {
+                        $bonnes_reponses++;
+                    }
+                } else {
+                    if (in_array(strtolower(trim($reponse_etudiant)), $reponses_valides)) {
+                        $bonnes_reponses++;
+                    }
                 }
             }
         }
+
+        // Calcul du score sur 20
+        $score_sur_20 = ($total_questions > 0) ? round(($bonnes_reponses / $total_questions) * 20, 2) : 0;
+
+        // Sauvegarde en base de données
+        $examen = Examen::create([
+            'etudiant_id' => $etudiant_id,
+            'score' => $score_sur_20,
+            'total_questions' => $total_questions,
+            'bonnes_reponses' => $bonnes_reponses,
+            'reponses' => json_encode($reponses),
+            'date_passage' => now(),
+        ]);
+
+        // Stocker les informations dans la session
+        session(['score' => $score_sur_20]);
+        session(['total_questions' => $total_questions]);
+        session(['bonnes_reponses' => $bonnes_reponses]);
+
+        // Récupérer les informations de l'étudiant
+        $etudiant = Etudiant::findOrFail($etudiant_id);
+
+        // Récupérer l'entretien lié à cet étudiant
+        $entretien = \App\Models\Entretien::where('etudiant_id', $etudiant_id)
+            ->with('annonce')
+            ->first();
+
+        // Passer le nom du poste à la vue
+        $nomPoste = $entretien ? $entretien->annonce->nom_du_poste : 'Non spécifié';
+
+        // Récupérer les questions pour l'examen
+        $questions = Question::whereIn('id', $reponses->keys())
+            ->with('reponses')
+            ->get();
+
+        // Assurer que les options sont bien formatées
+        foreach ($questions as $question) {
+            $question->options = is_string($question->options) 
+                ? json_decode($question->options, true) ?? [] 
+                : ($question->reponses->pluck('texte')->toArray() ?? []);
+        }
+
+        return view('etudiants.examen', [
+            'etudiant' => $etudiant,
+            'questions' => $questions,
+            'score' => $score_sur_20,
+            'total_questions' => $total_questions,
+            'bonnes_reponses' => $bonnes_reponses,
+            'pourcentage' => round(($bonnes_reponses / max($total_questions, 1)) * 100, 2),
+            'examen' => $examen,
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error("Erreur lors de l'enregistrement de l'examen : " . $e->getMessage());
+        return back()->with('error', 'Une erreur est survenue lors de la soumission de l\'examen.');
     }
-    
-
-    // Enregistrer le score dans la table `examens`
-    Examen::create([
-        'etudiant_id' => $etudiant->id,
-        'score' => $score,
-        'total_questions' => count($questions),
-    ]);
-
-    // Envoyer la note à l'entreprise associée
-    $entretien = Entretien::where('etudiant_id', $etudiant->id)->first();
-    if ($entretien) {
-        $user_id = $entretien->user_id;
-       
-    }
-
-  
-    return redirect()->route('admin.dashboard')->with('success', 'Test terminé. Score : ' . $score);
 }
-
 
 
 
