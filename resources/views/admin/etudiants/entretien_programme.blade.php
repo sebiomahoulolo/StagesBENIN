@@ -80,9 +80,13 @@
                                     <i class="fas fa-clock me-1"></i>
                                     Planifié
                                 </span>
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $entretien->id }}">
+                                {{-- <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $entretien->id }}">
                                     <i class="fas fa-eye me-1"></i>
                                     Voir détails
+                                </button> --}}
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $entretien->id }}">
+                                    <i class="fas fa-eye me-1"></i>
+                                    Passer l'entretien
                                 </button>
                             </div>
                         </div>
