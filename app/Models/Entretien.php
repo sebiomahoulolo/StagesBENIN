@@ -16,7 +16,7 @@ class Entretien extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'date', 'lieu', 'commentaires', 'user_id', 'reference', 'annonce_id', 'heure', 'status'];
+    protected $fillable = ['etudiant_id', 'date', 'lieu', 'commentaires', 'user_id', 'reference', 'annonce_id', 'heure', 'duree', 'status'];
 
 
 

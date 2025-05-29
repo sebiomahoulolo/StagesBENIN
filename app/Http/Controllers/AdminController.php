@@ -207,6 +207,7 @@ class AdminController extends Controller
             'annonce_id' => 'required|exists:annonces,id',
             'date' => 'required|date|after_or_equal:today',
             'heure' => 'required|date_format:H:i',
+            'duree' => 'required|integer|min:1|max:120',
         ], [
             'annonce_id.required' => 'Veuillez sélectionner une annonce',
             'annonce_id.exists' => 'L\'annonce sélectionnée n\'existe pas',
@@ -215,6 +216,10 @@ class AdminController extends Controller
             'date.after_or_equal' => 'La date doit être aujourd\'hui ou une date future',
             'heure.required' => 'L\'heure est requise',
             'heure.date_format' => 'Le format de l\'heure est invalide',
+            'duree.required' => 'La durée est requise',
+            'duree.integer' => 'La durée doit être un nombre entier',
+            'duree.min' => 'La durée doit être au moins de 1 minute',
+            'duree.max' => 'La durée ne doit pas dépasser 120 minutes',
         ]);
 
         try {
@@ -225,6 +230,7 @@ class AdminController extends Controller
                 'reference' => $reference,
                 'date' => $validated['date'],
                 'heure' => $validated['heure'],
+                'duree' => $validated['duree'],
                 'statut' => 'en_attente'
             ]);
 
@@ -239,44 +245,59 @@ class AdminController extends Controller
 
     public function storeQuestionnaire(Request $request)
     {
-        // dd($request->all());
-        // Validation basique
-        // $validated = $request->validate([
-        //     'annonce_id' => 'required|exists:annonces,id',
-        //     'data_questions' => 'required|array',
-        //     'data_questions.*.texte' => 'required|string',
-        //     'data_questions.*.reponses' => 'required|array|min:2',
-        //     'data_questions.*.reponses.*.texte' => 'required|string',
-        // ]);
-
         $annonce_id = $request->input('annonce_id');
+        $entretien = Entretien::findOrFail($annonce_id);
+        $annonce = Annonce::findOrFail($entretien->annonce_id);
 
         foreach ($request->input('data_questions') as $questionData) {
-            // Création de la question
-            $question = Question::create([
-                'entretien_id' => $annonce_id,
-                'question' => $questionData['question'] ?? $questionData['question'] ?? '',
-            ]);
+            // Vérifier si la question existe déjà
+            $existingQuestion = Question::where('entretien_id', $annonce_id)
+                ->where('question', $questionData['question'])
+                ->first();
 
-            // Insertion des réponses
-            foreach ($questionData['reponses'] as $reponseData) {
-                $question->reponses()->create([
-                    'texte' => $reponseData['texte'],
-                    'valide' => isset($reponseData['valide']) ? true : false,
+            if ($existingQuestion) {
+                // Mettre à jour la question existante
+                $existingQuestion->update([
+                    'question' => $questionData['question']
                 ]);
+
+                // Supprimer les anciennes réponses
+                $existingQuestion->reponses()->delete();
+
+                // Ajouter les nouvelles réponses
+                foreach ($questionData['reponses'] as $reponseData) {
+                    $existingQuestion->reponses()->create([
+                        'texte' => $reponseData['texte'],
+                        'valide' => isset($reponseData['valide']) ? true : false,
+                    ]);
+                }
+            } else {
+                // Créer une nouvelle question
+                $question = Question::create([
+                    'entretien_id' => $annonce_id,
+                    'question' => $questionData['question'],
+                ]);
+
+                // Ajouter les réponses
+                foreach ($questionData['reponses'] as $reponseData) {
+                    $question->reponses()->create([
+                        'texte' => $reponseData['texte'],
+                        'valide' => isset($reponseData['valide']) ? true : false,
+                    ]);
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'QCM enregistré avec succès.');
+        return redirect()->route('admin.entretiens.index')->with('success', 'QCM enregistré avec succès.');
     }
 
 
     public function createEntretien($id)
     {
         $entretien = Entretien::findOrFail($id);
+        $questions = Question::where('entretien_id', $id)->with('reponses')->get();
 
-        // Retourner la vue avec les étudiants
-        return view('admin.create_entretien', compact('entretien'));
+        return view('admin.create_entretien', compact('entretien', 'questions'));
     }
 
     public function boost()
