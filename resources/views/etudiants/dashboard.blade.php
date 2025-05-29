@@ -557,14 +557,23 @@
             </a>
             
             {{-- Entretiens --}}
-            @if(Auth::user()->etudiant)
+            {{-- @if(Auth::user()->etudiant)
                 <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="main-function-item">
                     <div class="main-function-icon color-green">
                         <i class="fas fa-comments"></i>
                     </div>
                     <span class="main-function-title">Entretiens</span>
                 </a>
-            @endif
+            @endif --}}
+
+            @if(Auth::user()->etudiant)
+            <a href="{{ route('etudiants.entretiens.programmes') }}" class="main-function-item">
+                <div class="main-function-icon color-green">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <span class="main-function-title">Entretiens</span>
+            </a>
+        @endif
             
             {{-- Événements --}}
             <a href="{{ route('etudiants.evenements.upcoming') }}" class="main-function-item">

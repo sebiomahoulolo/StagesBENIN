@@ -528,12 +528,12 @@
                      <div class="col-md-6 mb-3">
                        <label for="event_type" class="form-label">Type d'événement</label>
                        <select class="form-select" id="event_type" name="type">
-    <option value="">Sélectionner un type</option>
-    <option value="Conférence">Conférence</option>
-    <option value="Workshop">Workshop</option>
-    <option value="Salon">Salon</option>
-    <option value="Formation">Formation</option>
-    <option value="Networking">Networking</option>
+                         <option value="">Sélectionner un type</option>
+                         <option value="Conférence">Conférence</option>
+                         <option value="Workshop">Workshop</option>
+                         <option value="Salon">Salon</option>
+                         <option value="Formation">Formation</option>
+                         <option value="Networking">Networking</option>
     <option value="Fête de gala">Fête de gala</option>
     <option value="Séance d'animations">Séance d'animations</option>
     <option value="Spectacle">Spectacle</option>
@@ -554,7 +554,7 @@
     <option value="Soirée privée">Soirée privée</option>
     <option value="Retraite/Séjour">Retraite/Séjour</option>
    
-</select>
+                       </select>
 
                      </div>
                      <div class="col-md-6 mb-3">
@@ -581,7 +581,7 @@
                      </div>
                    </div>
                    <!-- Fin ajout option ticket -->
-                   
+
                </div>
                <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -597,7 +597,7 @@
        function toggleTicketPrice() {
          const requiresTicket = document.getElementById('event_requires_ticket').value;
          const priceContainer = document.getElementById('ticket_price_container');
-         
+
          if (requiresTicket === 'oui') {
            priceContainer.style.display = 'block';
          } else {
@@ -605,7 +605,7 @@
            document.getElementById('event_ticket_price').value = '';
          }
        }
-       
+
        // Exécuter au chargement de la page pour initialiser l'état
        document.addEventListener('DOMContentLoaded', function() {
          toggleTicketPrice();
@@ -740,7 +740,7 @@
                                 @error('formation')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>
+                     </div>
 
                      <div class="col-md-6 mb-3">
                        <label for="etudiant_niveau" class="form-label">Niveau*</label>
@@ -1377,7 +1377,7 @@
                  return response.json();
             })
             .then(data => {
-                // --- Success --- 
+                // --- Success ---
                 form.reset();
                 form.classList.remove('was-validated');
                 modalInstance.hide();
@@ -1395,7 +1395,7 @@
                   // location.reload();
             })
             .catch(error => {
-                // --- Error --- 
+                // --- Error ---
                 console.error("AJAX Error:", error);
                 let displayMessage = "Une erreur inattendue s'est produite.";
 

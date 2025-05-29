@@ -3,43 +3,43 @@
 @section('title', 'StagesBENIN')
 
 @push('styles')
-<style>
-    /* Styles pour améliorer la pagination */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 1.5rem;
-    }
+    <style>
+        /* Styles pour améliorer la pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
 
-    .pagination .page-item {
-        margin: 0 2px;
-    }
+        .pagination .page-item {
+            margin: 0 2px;
+        }
 
-    .pagination .page-link {
-        border-radius: 4px;
-        padding: 0.5rem 0.75rem;
-        color: #0d6efd;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-    }
+        .pagination .page-link {
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            color: #0d6efd;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
 
-    .pagination .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        color: white;
-    }
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
 
-    .pagination .page-link:hover {
-        background-color: #e9ecef;
-        border-color: #dee2e6;
-    }
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
 
-    /* Style pour les lignes en surbrillance lors de la recherche */
-    #etudiantTable tbody tr.highlight {
-        background-color: rgba(208, 231, 255, 0.5);
-        transition: background-color 0.3s ease;
-    }
+        /* Style pour les lignes en surbrillance lors de la recherche */
+        #etudiantTable tbody tr.highlight {
+            background-color: rgba(208, 231, 255, 0.5);
+            transition: background-color 0.3s ease;
+        }
 
     /* Styles pour les filtres */
     .filters-section {
@@ -167,20 +167,20 @@
     .date-range-container input {
         flex: 1;
     }
-</style>
+    </style>
 @endpush
 
 @section('content')
 
-<div class="tab-content active" id="etudiants-content" role="tabpanel" aria-labelledby="etudiants-tab">
+    <div class="tab-content active" id="etudiants-content" role="tabpanel" aria-labelledby="etudiants-tab">
 
 <!-- Barre d'actions avec tous les boutons alignés -->
 <div class="action-bar d-flex justify-content-between align-items-center mb-4">
-    <div class="action-buttons">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantModal">
-            <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
-        </button>
-    </div>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantModal">
+                    <i class="fas fa-plus-circle me-1"></i> Ajouter Étudiant
+                </button>
+            </div>
 
     <div class="d-flex gap-2">
     <!-- Bouton 1 : Envoyer directement les dernières offres -->
@@ -395,7 +395,7 @@
                                 </button>
                             </div>
                         </th>
-                        <th>Téléphone</th>
+                            <th>Téléphone</th>
                         <th>
                             <div class="d-flex align-items-center">
                                 Niveau
@@ -420,14 +420,14 @@
                                 </button>
                             </div>
                         </th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
                 <tbody id="studentsTableBody">
                     @forelse($etudiants as $etudiant)
                         <tr data-student-id="{{ $etudiant->id }}">
-                            <td>{{ $etudiant->nom }}</td>
-                            <td>{{ $etudiant->prenom }}</td>
+                                <td>{{ $etudiant->nom }}</td>
+                                <td>{{ $etudiant->prenom }}</td>
                             <td>{{ $etudiant->telephone ?: '-' }}</td>
                             <td>{{ $etudiant->niveau ?: '-' }}</td>
                             <td>{{ $etudiant->specialite_nom ?: '-' }}</td>
@@ -440,14 +440,14 @@
                                     </a>
                                     <button type="button" class="btn btn-{{ $etudiant->statut == 1 ? 'warning' : 'success' }} btn-sm toggle-status"
                                         data-id="{{ $etudiant->id }}" data-status="{{ $etudiant->statut }}"
-                                        data-bs-toggle="tooltip"
-                                        title="{{ $etudiant->statut == 1 ? 'Bloquer' : 'Débloquer' }}">
+                                            data-bs-toggle="tooltip"
+                                            title="{{ $etudiant->statut == 1 ? 'Bloquer' : 'Débloquer' }}">
                                         <i class="fas fa-{{ $etudiant->statut == 1 ? 'ban' : 'check' }}"></i>
-                                    </button>
+                                        </button>
                                     <button type="button" class="btn btn-danger btn-sm delete-student"
                                             data-id="{{ $etudiant->id }}" data-bs-toggle="tooltip" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                 </div>
                             </td>
                         </tr>
@@ -457,11 +457,11 @@
                                 <i class="fas fa-users fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">Aucun étudiant trouvé</h5>
                                 <p class="text-muted">Commencez par ajouter des étudiants.</p>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                     @endforelse
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
         </div>
 
         <!-- Message aucun résultat (pour les recherches) -->
@@ -475,7 +475,7 @@
         <div id="loadingSpinner" class="text-center p-4 d-none">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Chargement...</span>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -488,7 +488,7 @@
 @endsection
 
 @push('scripts')
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Variables globales
     let allStudents = [];
@@ -964,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.body.appendChild(toast);
 
-        setTimeout(() => {
+                    setTimeout(() => {
             if (toast.parentElement) {
                 toast.remove();
             }
@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 updateDisplay();
                 showToast(`Statut de l'étudiant ${currentStatus == 1 ? 'bloqué' : 'activé'}`, 'success');
-            } else {
+                } else {
                 throw new Error('Erreur de mise à jour');
             }
         } catch (error) {
@@ -1145,6 +1145,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Démarrer l'initialisation
     initialize();
-});
-</script>
+        });
+    </script>
 @endpush
