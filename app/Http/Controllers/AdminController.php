@@ -110,10 +110,10 @@ class AdminController extends Controller
             // Récupère tous les profils CV avec la relation 'etudiant' pour un secteur donné
             // $cvProfiles = CvProfile::with('etudiant')->where('formation', $id)->get();
             $cvProfiles = CvProfile::join('etudiants', 'cv_profiles.etudiant_id', 'etudiants.id')
-            ->join('specialites', 'etudiants.formation', 'specialites.id')
-            ->join('secteurs', 'specialites.secteur_id', 'secteurs.id')
-            ->where('specialites.secteur_id', $id)
-            ->get();
+                ->join('specialites', 'etudiants.formation', 'specialites.id')
+                ->join('secteurs', 'specialites.secteur_id', 'secteurs.id')
+                ->where('specialites.secteur_id', $id)
+                ->get();
 
             // $cvProfiles = CvProfile::with('etudiant')->where('secteur', $id)->get();
 
@@ -146,7 +146,6 @@ class AdminController extends Controller
 
             // Retourne la vue avec les données
             return view('admin.cvtheque.cvtheque', compact('cvProfiles', 'entreprises', 'specialites', 'niveaux'));
-
         } catch (\Exception $e) {
             Log::error("Erreur lors de l'affichage de la CVthèque : " . $e->getMessage(), [
                 'exception' => $e,
@@ -190,17 +189,24 @@ class AdminController extends Controller
 
     public function entretiens()
     {
-        // Récupérer les étudiants depuis la base de données
+        // Récupérer les entretiens avec les annonces associées
         $entretiens = Entretien::join('annonces', 'entretiens.annonce_id', '=', 'annonces.id')
             ->select('entretiens.*', 'annonces.nom_du_poste', 'annonces.id as annonce_id')
             ->latest()
             ->paginate(10);
-        $annonces = Annonce::all();
-        // Retourner la vue avec les étudiants
+
+        // Récupérer les ID des annonces déjà utilisées dans les entretiens
+        $annonceIdsDejaUtilisees = Entretien::pluck('annonce_id')->toArray();
+
+        // Récupérer toutes les annonces SAUF celles déjà programmées
+        $annonces = Annonce::whereNotIn('id', $annonceIdsDejaUtilisees)->get();
+
         return view('admin.entretiens', compact('entretiens', 'annonces'));
     }
 
-    public function storeEntretien(Request $request)  {
+
+    public function storeEntretien(Request $request)
+    {
         // dd($request->all());
         // Validation des données
         $validated = $request->validate([
@@ -443,16 +449,15 @@ class AdminController extends Controller
         ]);
 
         // try {
-            $entretien->update([
-                'status' => $validated['status']
-            ]);
+        $entretien->update([
+            'status' => $validated['status']
+        ]);
 
-            return redirect()->back()
-                ->with('success', 'Le statut de l\'entretien a été mis à jour avec succès.');
+        return redirect()->back()
+            ->with('success', 'Le statut de l\'entretien a été mis à jour avec succès.');
         // } catch (\Exception $e) {
         //     return redirect()->back()
         //         ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
         // }
     }
-    
 }
