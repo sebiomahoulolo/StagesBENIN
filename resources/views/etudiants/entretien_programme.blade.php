@@ -110,57 +110,37 @@
         </div>
     </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            @forelse ($entretiens as $entretien)
-                <div class="card col-md-4  mb-4 shadow-lg rounded-lg p-3 m-2 ">
+<div class="container-fluid">
+    <div class="row">
+        @forelse ($entretiens as $entretien)
+            <div class="col-md-4 mb-4">
+                <div class="entretien-card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-briefcase me-2"></i>
-                            {{ $entretien->nom_du_poste }}
+                       Poste :      {{ $entretien->nom_du_poste }}
                         </h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="info-item">
                             <div class="info-label">
                                 <i class="fas fa-calendar me-2"></i>
-                                Date et heure
-                            </div>
-                            <div class="info-value">
-                                {{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }} à {{   \Carbon\Carbon::parse($entretien->heure)->format('H:i')}}
+                                Date de l'entretien : <strong class="info-value">      {{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }} </strong>
                             </div>
                         </div>
+
+                         <div class="info-item ">
+    <div class="info-label">
+        <i class="fas fa-clock me-2"></i> Heure de démarrage : <strong class="info-value"> {{ $entretien->heure }}</strong> 
+    </div>
+</div>
 
                         <div class="info-item">
                             <div class="info-label">
                                 <i class="fas fa-clock me-2"></i>
-                                Durée
-                            </div>
-                            <div class="info-value">
-                                {{ $entretien->duree }} minutes
+                                Durée : <strong class="info-value"> {{ $entretien->duree }} minutes</strong>
                             </div>
                         </div>
-
-                        {{-- <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-user me-2"></i>
-                                Candidat
-                            </div>
-                            <div class="info-value">
-                                {{ $entretien->prenom }} {{ $entretien->nom }}
-                            </div>
-                        </div> --}}
-
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-hashtag me-2"></i>
-                                Référence
-                            </div>
-                            <div class="info-value">
-                                {{ $entretien->reference }}
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-footer bg-light px-4">
                         <div class="d-flex justify-content-between align-items-center px-3 py-3">
                             <span class="status-badge">
