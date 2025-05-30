@@ -158,10 +158,12 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @if ($entretien->status === 'en_attente')
                                                     <a href="{{ route('admin.entretiens.create', ['id' => $entretien->id]) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit me-2"></i>Créer le questionnaire
                                                     </a>
+                                                    @endif
                                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#viewEntretienModal{{ $entretien->id }}">
                                                         <i class="fas fa-eye me-2"></i>Voir
                                                     </button>
