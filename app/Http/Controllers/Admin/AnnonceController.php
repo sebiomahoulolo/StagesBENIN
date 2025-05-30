@@ -49,6 +49,8 @@ public function show($slug)
 
         $examens = Examen::whereIn('etudiant_id', $etudiantIds)->get()->keyBy('etudiant_id');
 
+        // dd($examens);
+
 
     // Log pour débogage
     \Log::info('Candidatures récupérées avec CV profiles');
