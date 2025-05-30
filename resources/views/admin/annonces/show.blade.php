@@ -212,7 +212,7 @@
                                                     @if($score !== null)
                                                         {{ $score }} / 20
                                                     @else
-                                                        <span class="text-muted">Pas </span>
+                                                        <span class="text-muted">Pas de note</span>
                                                     @endif
                                                 </td>
                                                 
