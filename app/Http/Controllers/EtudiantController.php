@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Etudiant;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Entretien;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Response;
 use App\Models\Entreprise;
+use App\Models\Entretien;
+use App\Models\Etudiant;
 use App\Models\Examen;
 use App\Models\Question;
 use App\Models\Reponse;
-use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class EtudiantController extends Controller
 {
@@ -270,7 +272,13 @@ class EtudiantController extends Controller
     public function showExamen($etudiant_id)
     {
         // Trouver l'étudiant ou renvoyer une erreur
-        $etudiant = Etudiant::findOrFail($etudiant_id);
+        // $etudiant = Etudiant::findOrFail($etudiant_id);
+
+         $user_id = Auth::user()->id;
+
+            $etudiant = Etudiant::where('user_id', $user_id)->first();
+            // dd($etudiant);
+            $etudiant_id = $etudiant->id;
 
         // Récupérer les entretiens "planifiés" avec leur annonce
         $entretiens_planifies = Entretien::where('status', 'planifié')->with('annonce')->get();
@@ -286,8 +294,10 @@ class EtudiantController extends Controller
         }
 
         // Récupérer le dernier examen de l'étudiant
-        $examen = Examen::where('etudiant_id', $etudiant_id)->latest()->first();
+        $examen = Examen::where('etudiant_id', $etudiant->id)->first();
 
+        // dd($etudiant->id);
+        
         // Récupérer l'entretien lié à l'étudiant via l'annonce et les candidatures
         $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
             $query->where('etudiant_id', $etudiant->id);
@@ -346,9 +356,14 @@ class EtudiantController extends Controller
     public function submitExamen(Request $request)
     {
         try {
-            $etudiant_id = $request->input('etudiant_id');
-            if (!$etudiant_id) {
-                return back()->with('error', 'Étudiant non défini.');
+            $user_id = Auth::user()->id;
+
+            $etudiant = Etudiant::where('user_id', $user_id)->first();
+            // dd($etudiant);
+            $etudiant_id = $etudiant->id;
+
+            if(!$etudiant){
+                return  back()->with('error', 'Étudiant non défini.');
             }
 
             $reponses = collect($request->input('reponses', []));
@@ -400,16 +415,14 @@ class EtudiantController extends Controller
             session(['total_questions' => $total_questions]);
             session(['bonnes_reponses' => $bonnes_reponses]);
 
-            // Récupérer les informations de l'étudiant
-            $etudiant = Etudiant::findOrFail($etudiant_id);
 
-            // Récupérer l'entretien lié à cet étudiant
-            $entretien = \App\Models\Entretien::where('etudiant_id', $etudiant_id)
-                ->with('annonce')
-                ->first();
+            // // Récupérer l'entretien lié à cet étudiant
+            // $entretien = \App\Models\Entretien::where('etudiant_id', $etudiant_id)
+            //     ->with('annonce')
+            //     ->first();
 
             // Passer le nom du poste à la vue
-            $nomPoste = $entretien ? $entretien->annonce->nom_du_poste : 'Non spécifié';
+            // $nomPoste = $entretien ? $entretien->annonce->nom_du_poste : 'Non spécifié';
 
             // Récupérer les questions pour l'examen
             $questions = Question::whereIn('id', $reponses->keys())
