@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Annonce;
+use App\Models\Examen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -44,10 +45,15 @@ public function show($slug)
         ->latest()
         ->paginate(10);
 
+        $etudiantIds = $candidatures->pluck('etudiant.id')->filter()->toArray();
+
+        $examens = Examen::whereIn('etudiant_id', $etudiantIds)->get()->keyBy('etudiant_id');
+
+
     // Log pour débogage
     \Log::info('Candidatures récupérées avec CV profiles');
 
-    return view('admin.annonces.show', compact('annonce', 'candidatures'));
+    return view('admin.annonces.show', compact('annonce', 'candidatures', 'examens'));
 }
 
 

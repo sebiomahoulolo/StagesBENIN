@@ -140,6 +140,7 @@
                                             <th>Spécialité</th>
                                             <th>Date</th>
                                             <th>Statut</th>
+                                            <th>Note</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -169,6 +170,9 @@
                                                             case 'en_cours':
                                                                 $statutClass = 'bg-info';
                                                                 break;
+                                                            case 'selectionner_panel':
+                                                                $statutClass = 'bg-primary';
+                                                                break;
                                                             default:
                                                                 $statutClass = 'bg-secondary';
                                                         }
@@ -191,11 +195,27 @@
                                                                 Rejetée
                                                             @break
 
+                                                            @case('selectionner_panel')
+                                                                Selectionner par le panel
+                                                            @break
+
                                                             @default
                                                                 {{ $candidature->statut }}
                                                         @endswitch
                                                     </span>
                                                 </td>
+                                                <td>
+                                                    @php
+                                                        $score = $examens[$candidature->etudiant->id]->score ?? null;
+                                                    @endphp
+                                                
+                                                    @if($score !== null)
+                                                        {{ $score }} / 20
+                                                    @else
+                                                        <span class="text-muted">Pas </span>
+                                                    @endif
+                                                </td>
+                                                
                                                 <td>
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-sm btn-outline-primary"
@@ -258,6 +278,10 @@
                                                                                             Rejetée
                                                                                         @break
 
+                                                                                        @case('selectionner_panel')
+                                                                                            Selectionner par le panel
+                                                                                        @break
+
                                                                                         @default
                                                                                             {{ $candidature->statut }}
                                                                                     @endswitch
@@ -294,7 +318,6 @@
                                                                             manquant.
                                                                         </div>
                                                                     @endif
-
 
 
                                                                     @if ($candidature->motif_rejet)
@@ -345,6 +368,9 @@
                                                                                 <option value="accepte"
                                                                                     {{ $candidature->statut == 'accepte' ? 'selected' : '' }}>
                                                                                     Acceptée</option>
+                                                                                <option value="selectionner_panel"
+                                                                                    {{ $candidature->statut == 'selectionner_panel' ? 'selected' : '' }}>
+                                                                                    Selectionner par le panel</option>
                                                                                 <option value="rejete"
                                                                                     {{ $candidature->statut == 'rejete' ? 'selected' : '' }}>
                                                                                     Rejetée</option>

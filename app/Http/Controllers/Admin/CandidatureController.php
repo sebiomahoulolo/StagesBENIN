@@ -13,7 +13,7 @@ class CandidatureController extends Controller
     {
         // Valider les données du formulaire
         $validated = $request->validate([
-            'statut' => 'required|in:en_attente,en_cours,accepte,rejete',
+            'statut' => 'required|in:en_attente,en_cours,accepte,rejete,selectionner_panel',
             'motif_rejet' => 'required_if:statut,rejete|nullable|string|min:10',
         ], [
             'statut.required' => 'Le statut est requis.',
