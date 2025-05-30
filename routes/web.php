@@ -267,6 +267,9 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     // Route pour la soumission de l'examen
     Route::post('/examen/{etudiant_id}/submit', [EtudiantController::class, 'submitExamen'])->name('examen.submit');
 
+Route::get('entretiens/programmes', [EtudiantController::class, 'entretiensProgrammes'])->name('entretiens.programmes');
+
+
     // Route pour le boostage
     Route::get('/boostage', function() {
         return view('etudiants.boostage');
@@ -440,17 +443,16 @@ Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('ev
 Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
 Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
-// entretiens etudians 
+// entretiens etudians
 
 
 
 // Géré par register.etudiant.store
 Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');
 Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat'])->name('candidat.dashboard');
-Route::get('/etudiants/entretiens/programmes', [EtudiantController::class, 'entretiensProgrammes'])->name('etudiants.entretiens.programmes');
 // Route::get('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'createEntretien'])->name('etudiants.entretiens');
 Route::post('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('etudiants.entretiens');
-Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
+// Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
 Route::get('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
 Route::post('/etudiants/{id}/accepter', [EtudiantController::class, 'accepterCandidature'])->name('candidatures.accepter');
 Route::post('/etudiants/{id}/rejeter', [EtudiantController::class, 'rejeterCandidature'])->name('candidatures.rejeter');

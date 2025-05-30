@@ -104,7 +104,7 @@ class EtudiantController extends Controller
             ->orderBy('date', 'asc')
             ->get();
 
-        return view('admin.etudiants.entretien_programme', compact('entretiens'));
+        return view('etudiants.entretien_programme', compact('entretiens'));
     }
 
 
