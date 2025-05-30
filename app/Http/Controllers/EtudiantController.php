@@ -295,6 +295,7 @@ class EtudiantController extends Controller
 
         // Sécurisation du nom du poste
         $nom_du_poste = optional($entretien?->annonce)->nom_du_poste ?? 'Non disponible';
+ $duree = optional($entretien?->annonce)->duree ?? 'Non disponible';
 
         // Passer les résultats à la vue
         return view('etudiants.examen', [
@@ -304,8 +305,8 @@ class EtudiantController extends Controller
             'score' => $examen->score ?? 0,
             'total_questions' => $examen->total_questions ?? 0,
             'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
-            'pourcentage' => $examen ? round(($examen->bonnes_reponses / max($examen->total_questions, 1)) * 100, 2) : 0,
             'nom_du_poste' => $nom_du_poste,
+            'duree' => $duree,
             'entretiens_planifies' => $entretiens_planifies // Ajout de cette variable
         ]);
     }
