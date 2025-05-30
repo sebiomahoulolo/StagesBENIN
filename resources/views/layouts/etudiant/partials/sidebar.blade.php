@@ -82,7 +82,8 @@
                      <span>Canal d'annonces</span>
                  </a>
                  @if(Auth::user()->etudiant)
-                    <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}"> <i class="fas fa-chalkboard-teacher fa-fw"></i><span>Entretiens</span> </a> <!-- Icône modifiée -->
+                    <a href="{{ route('etudiants.entretiens.programmes') }}" class="menu-item {{ request()->routeIs('etudiants.entretien.*') ? 'active' : '' }}">
+                         <i class="fas fa-chalkboard-teacher fa-fw"></i><span>Entretiens</span> </a> <!-- Icône modifiée -->
                  @endif
                  <a href="{{ route('etudiants.complaints.index') }}" class="menu-item {{ request()->routeIs('etudiants.complaints.*') ? 'active' : '' }}">
                      <i class="fas fa-comment-dots fa-fw"></i> <!-- Icône modifiée -->

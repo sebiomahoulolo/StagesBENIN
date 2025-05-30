@@ -307,9 +307,9 @@
                     <span>💼</span>
                     <span>
                         <strong>Poste :</strong> 
-                        @foreach ($entretiens_planifies as $entretien)
+                        {{-- @foreach ($entretiens_planifies as $entretien)
                             {{ $entretien->annonce->nom_du_poste ?? 'Non défini' }}
-                        @endforeach
+                        @endforeach --}}
                     </span>
                 </div>
                 <div class="info-item timer">

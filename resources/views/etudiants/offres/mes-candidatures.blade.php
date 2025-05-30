@@ -89,7 +89,10 @@
         background-color: #28a745;
         color: white;
     }
-    
+     .badge-selectionner_panel {
+        background-color: #c12dee;
+        color: white;
+    }
     .badge-rejete {
         background-color: #dc3545;
         color: white;
@@ -242,6 +245,10 @@
                                                 @case('rejete')
                                                     Rejetée
                                                     @break
+                                                     @case('selectionner_panel')
+                                                                Selectionner par le panel
+                                                            @break
+
                                                 @default
                                                     {{ $candidature->statut }}
                                             @endswitch

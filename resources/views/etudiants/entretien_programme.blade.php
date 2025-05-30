@@ -114,59 +114,65 @@
     <div class="row">
         @forelse ($entretiens as $entretien)
             <div class="col-md-4 mb-4">
-                <div class="entretien-card">
+                <div class="card entretien-card p-3">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-briefcase me-2"></i>
-                       Poste :      {{ $entretien->nom_du_poste }}
+                            Poste : {{ $entretien->nom_du_poste }}
                         </h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-calendar me-2"></i>
-                                Date de l'entretien : <strong class="info-value">      {{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }} </strong>
-                            </div>
+                    <div class="card-body">
+                        <div class="info-item d-flex justify-content-between">
+                            <span class="info-label">
+                                <i class="fas fa-calendar me-2"></i> Date :
+                            </span>
+                            <span class="info-value">
+                                <strong>{{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }}</strong>
+                            </span>
                         </div>
 
-                         <div class="info-item ">
-    <div class="info-label">
-        <i class="fas fa-clock me-2"></i> Heure de démarrage : <strong class="info-value"> {{ $entretien->heure }}</strong> 
+                        <div class="info-item d-flex justify-content-between">
+                            <span class="info-label">
+                                <i class="fas fa-clock me-2"></i> Heure :
+                            </span>
+                            <span class="info-value">
+                                <strong>{{ $entretien->heure }}</strong>
+                            </span>
+                        </div>
+
+                        <div class="info-item d-flex justify-content-between">
+                            <span class="info-label">
+                                <i class="fas fa-clock me-2"></i> Durée :
+                            </span>
+                            <span class="info-value">
+                                <strong>{{ $entretien->duree }} min</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                        <span class="status-badge">
+                            <i class="fas fa-clock me-1"></i> Planifié
+                        </span>
+                        <a href="{{ route('etudiants.examen', ['etudiant_id' => $entretien->entretien_id]) }}"
+                           class="btn btn-entretien">
+                            <i class="fas fa-video me-2"></i> Passer l'entretien
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h4>Aucun entretien programmé</h4>
+                    <p class="text-muted">Vous n'avez aucun entretien prévu pour le moment.</p>
+                </div>
+            </div>
+        @endforelse
     </div>
 </div>
 
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-clock me-2"></i>
-                                Durée : <strong class="info-value"> {{ $entretien->duree }} minutes</strong>
-                            </div>
-                        </div>
-                    <div class="card-footer bg-light px-4">
-                        <div class="d-flex justify-content-between align-items-center px-3 py-3">
-                            <span class="status-badge">
-                                <i class="fas fa-clock me-1"></i>
-                                Planifié
-                            </span>
-
-                            <a href="{{ route('etudiants.examen', ['etudiant_id' => $entretien->entretien_id]) }}"
-                                class="btn btn-entretien">
-                                <i class="fas fa-video me-2"></i>
-                                Passer l'entretien
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="empty-state">
-                        <i class="fas fa-calendar-times"></i>
-                        <h4>Aucun entretien programmé</h4>
-                        <p class="text-muted">Vous n'avez aucun entretien programmé pour le moment.</p>
-                    </div>
-                </div>
-            @endforelse
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
