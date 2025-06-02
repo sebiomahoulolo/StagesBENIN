@@ -19,9 +19,9 @@ class OffreController extends Controller
 
         // Filtres
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('nom_du_poste', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                    ->orWhere('description', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -51,7 +51,7 @@ class OffreController extends Controller
 
         $annonces = $query->paginate(10);
         $secteurs = Secteur::orderBy('nom')->get();
-        $specialites = $request->filled('secteur_id') 
+        $specialites = $request->filled('secteur_id')
             ? Specialite::where('secteur_id', $request->secteur_id)->orderBy('nom')->get()
             : collect();
 
@@ -61,10 +61,10 @@ class OffreController extends Controller
     public function show(Annonce $annonce)
     {
         $annonce->load(['entreprise', 'secteur', 'specialite']);
-        
+
         // Incrémenter le nombre de vues
         $annonce->incrementViews();
-        
+
         // Vérifier si l'étudiant a déjà postulé
         $aPostule = false;
         if (auth()->check() && auth()->user()->etudiant) {
@@ -72,7 +72,7 @@ class OffreController extends Controller
                 ->where('annonce_id', $annonce->id)
                 ->exists();
         }
-        
+
         return view('etudiants.offres.show', compact('annonce', 'aPostule'));
     }
 
@@ -86,28 +86,30 @@ class OffreController extends Controller
             return redirect()->route('etudiants.offres.show', $annonce)
                 ->with('error', 'Cette offre n\'est plus disponible pour candidature.');
         }
-        
+
         // Vérifier si l'étudiant a déjà postulé
         $aPostule = auth()->user()->etudiant->candidatures()
             ->where('annonce_id', $annonce->id)
             ->exists();
-            
+        // dd($aPostule);
+
         if ($aPostule) {
             return redirect()->route('etudiants.offres.show', $annonce)
                 ->with('error', 'Vous avez déjà postulé à cette offre.');
         }
-        
+
         // Charger les informations nécessaires pour le formulaire
         $annonce->load(['entreprise', 'secteur', 'specialite']);
-        
+
         return view('etudiants.offres.postuler', compact('annonce'));
     }
-    
+
     /**
      * Traite la soumission du formulaire de candidature.
      */
     public function postulerSubmit(Request $request, Annonce $annonce)
     {
+        dd('flzfze');
         // Valider les données du formulaire
         $validated = $request->validate([
             'pretention_salariale' => 'required|numeric|min:0',
@@ -137,30 +139,30 @@ class OffreController extends Controller
         }
 
         // Enregistrer le CV
-       // Obtenir le fichier envoyé
-$file = $request->file('cv_file');
+        // Obtenir le fichier envoyé
+        $file = $request->file('cv_file');
 
-// Construire le chemin de destination
-$destinationPath = public_path('assets/cvs/candidatures/' . auth()->id());
+        // Construire le chemin de destination
+        $destinationPath = public_path('assets/cvs/candidatures/' . auth()->id());
 
-// Créer le dossier s’il n’existe pas
-if (!file_exists($destinationPath)) {
-    mkdir($destinationPath, 0755, true);
-}
+        // Créer le dossier s’il n’existe pas
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
 
-// Générer un nom de fichier unique
-$fileName = time() . '_' . $file->getClientOriginalName();
+        // Générer un nom de fichier unique
+        $fileName = time() . '_' . $file->getClientOriginalName();
 
-// Déplacer le fichier
-$file->move($destinationPath, $fileName);
+        // Déplacer le fichier
+        $file->move($destinationPath, $fileName);
 
-// Enregistrer le chemin relatif (ex: assets/cvs/candidatures/3/nomdufichier.pdf)
-$cvPath = 'cvs/candidatures/' . auth()->id() . '/' . $fileName;
+        // Enregistrer le chemin relatif (ex: assets/cvs/candidatures/3/nomdufichier.pdf)
+        $cvPath = 'cvs/candidatures/' . auth()->id() . '/' . $fileName;
 
         // Créer la candidature
         $candidature = new \App\Models\Candidature([
             'annonce_id' => $annonce->id,
-            'etudiant_id' => auth()->user()->id,
+            'etudiant_id' => auth()->user()->etudiant->id,
             'lettre_motivation' => $validated['lettre_motivation'],
             'cv_path' => $cvPath,
             'statut' => 'en_attente',
@@ -175,8 +177,8 @@ $cvPath = 'cvs/candidatures/' . auth()->id() . '/' . $fileName;
     public function mesCandidatures()
     {
         // Récupérer l'ID de l'utilisateur connecté
-        $userId = auth()->id();
-        
+        $userId = auth()->user()->etudiant->id;
+
         // Récupérer les candidatures où etudiant_id correspond à l'ID de l'utilisateur
         $candidatures = \App\Models\Candidature::where('etudiant_id', $userId)
             ->with(['annonce.entreprise', 'annonce.secteur', 'annonce.specialite'])
@@ -202,4 +204,4 @@ $cvPath = 'cvs/candidatures/' . auth()->id() . '/' . $fileName;
 
         return view('etudiants.offres.candidature-details', compact('candidature'));
     }
-} 
+}

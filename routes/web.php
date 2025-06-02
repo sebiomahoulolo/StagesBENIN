@@ -46,7 +46,9 @@ use App\Http\Middleware\EnsureUserHasRole; // Middleware de rôle
 // ROUTES PUBLIQUES (Accessibles à tous)
 // ========================================
 
-Route::get('/', function () { return view('index'); })->name('home'); // Accueil
+Route::get('/', function () {
+    return view('index');
+})->name('home'); // Accueil
 Route::post('/subscribe', [SubscriberController::class, 'subscribe'])->name('subscribe');
 Route::get('/generate-pdf/{id}', [EventController::class, 'generatePDF'])->name('generate.pdf');
 
@@ -135,12 +137,12 @@ Route::post('/contactez-stageesbenin', [ContactController::class, 'sendContactFo
 // =============================================
 
 // Inclut Login, Logout, Forgot Password, etc. de Breeze
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Routes d'inscription spécifiques (remplacent la route /register de Breeze)
 Route::middleware('guest')->group(function () {
     // Affichage des formulaires
-    Route::get('/register', function() {
+    Route::get('/register', function () {
         return view('auth.register-choice'); // Assurez-vous que ceci existe
     })->name('register');
 
@@ -151,8 +153,8 @@ Route::middleware('guest')->group(function () {
     Route::post('register/etudiant', [RegisteredUserController::class, 'storeEtudiant'])->name('register.etudiant.store');
     Route::post('register/recruteur', [RegisteredUserController::class, 'storeRecruteur'])->name('register.recruteur.store');
 
-     // Page de choix pour l'inscription (pointe vers /register)
-    Route::get('/register', function() {
+    // Page de choix pour l'inscription (pointe vers /register)
+    Route::get('/register', function () {
         return view('auth.register-choice'); // Créez cette vue
     })->name('register');
 });
@@ -200,7 +202,7 @@ Route::get('/dashboard', function () {
 
 // --- Groupe Admin ---
 // Utilisation du préfixe et nommage existant 'admin'
-Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard'); // Correspond à l'ancien GET /admin -> admin.dashboard
     Route::get('/manage-users', [AdminController::class, 'manageUsers'])->name('manage_users'); // Conserve admin.manage_users
 
@@ -252,7 +254,6 @@ Route::middleware(['auth', EnsureUserHasRole::class.':admin'])->prefix('admin')-
         Route::put('/{entretien}/update-status', [AdminController::class, 'updateStatus'])->name('update-status');
         Route::post('/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('storeQuestionnaire');
     });
-
 });
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
 Route::get('/events/{id}/verify/{reference}', [EventController::class, 'verifyTicket'])->name('events.verify');
@@ -267,11 +268,11 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     // Route pour la soumission de l'examen
     Route::post('/examen/{etudiant_id}/submit', [EtudiantController::class, 'submitExamen'])->name('examen.submit');
 
-Route::get('entretiens/programmes', [EtudiantController::class, 'entretiensProgrammes'])->name('entretiens.programmes');
+    Route::get('entretiens/programmes', [EtudiantController::class, 'entretiensProgrammes'])->name('entretiens.programmes');
 
 
     // Route pour le boostage
-    Route::get('/boostage', function() {
+    Route::get('/boostage', function () {
         return view('etudiants.boostage');
     })->name('boostage');
 
@@ -396,7 +397,7 @@ Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('
 Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
-Route::get('/boost', [AdminController::class, 'listBoosts']) ->name('admin.boost.index');
+Route::get('/boost', [AdminController::class, 'listBoosts'])->name('admin.boost.index');
 Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost.validate');
 
 Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
@@ -467,12 +468,12 @@ Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants
 // ROUTES POST PUBLIQUES ORIGINALES (MAINTENANT OBSOLÈTES/DÉPLACÉES)
 // ==================================================================
 
-  // Déplacé dans admin group
+// Déplacé dans admin group
 
- Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
- Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
- Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
- Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)
+Route::post('/entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store'); // Géré par register.recruteur.store
+Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store'); // Déplacé dans entreprises (recruteur) group
+Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store'); // Déplacé dans admin group (via resource)
+Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store'); // Déplacé dans admin group (via resource)
 Route::resource('actualites', ActualiteController::class);
 
 // Routes pour la messagerie avec middleware auth
