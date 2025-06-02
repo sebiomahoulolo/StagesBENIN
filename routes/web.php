@@ -411,6 +411,7 @@ Route::get('/admin/entreprises', [AdminController::class, 'entreprises'])->name(
 Route::get('/admin/catalogues', [AdminController::class, 'catalogues'])->name('admin.catalogues');
 Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('admin.etudiants.etudiants');
 Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
+Route::get('/admin/resultats_pratique', [AdminController::class, 'resultats_pratique'])->name('admin.resultats_pratique');
 Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
 Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
 Route::get('/admin/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('admin.cvtheque.cvtheque.secteur');

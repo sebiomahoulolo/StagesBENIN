@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Etudiants\OffreController;
 use App\Mail\SendMail;
 use App\Models\Actualite;
 use App\Models\Annonce;
-use App\Models\Event;
-use App\Models\CvProfile;
 use App\Models\Catalogue;
-use App\Models\Recrutement;
+use App\Models\CvProfile;
+use App\Models\Cvtheque;
 use App\Models\Entreprise;
-use App\Models\Tier;
-use App\Models\Specialite;
 use App\Models\Entretien;
+use App\Models\Etudiant;
+use App\Models\Event;
+use App\Models\Examen;
+use App\Models\Question;
+use App\Models\Recrutement;
+use App\Models\Secteur;
+use App\Models\Specialite;
+use App\Models\Tier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Etudiant;
 use Illuminate\Support\Facades\Log;
-use App\Models\Cvtheque;
-use App\Models\Question;
-use App\Models\Secteur;
 use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
@@ -186,6 +188,23 @@ class AdminController extends Controller
         // Retourner la vue avec les étudiants
         return view('admin.actualites', compact('actualites'));
     }
+
+    
+
+
+public function resultats_pratique() 
+{
+    // Récupérer tous les examens avec les informations des étudiants
+    $examens = Examen::with([
+        'etudiant:id,nom,niveau,formation'
+    ])->get();
+
+    return view('admin.resultats_pratique', compact('examens'));
+}
+
+
+
+
 
     public function entretiens()
     {

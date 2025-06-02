@@ -6,6 +6,23 @@
     <div class="content-area">
         <div class="container-fluid py-4">
             <!-- Section Programmer un entretien -->
+
+
+      
+<a href="{{ route('admin.resultats_pratique') }}" style="
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+">
+    Voir les résultats
+</a>
+<hr>
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card shadow-lg border-0 rounded-3">

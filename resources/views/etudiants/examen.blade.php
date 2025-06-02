@@ -304,9 +304,9 @@
 
             <div class="info-section">
                 <div class="info-item">
-                    <span>💼</span>
+                    <span></span>
                     <span>
-                        <strong>Poste :</strong> 
+                        <strong></strong> 
                         {{-- @foreach ($entretiens_planifies as $entretien)
                             {{ $entretien->annonce->nom_du_poste ?? 'Non défini' }}
                         @endforeach --}}
@@ -318,22 +318,25 @@
                 </div>
             </div>
 
-          <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id]) }}" method="POST">
+         <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id]) }}" method="POST">
     @csrf
     <input type="hidden" name="etudiant_id" value="{{ $etudiant->id }}">
 
+    @php $numeroQuestion = 1; @endphp
+
     @foreach ($questions as $question)
         <div class="question-container mb-4">
-            <p><strong>Question {{ $loop->iteration }} :</strong> {{ $question->question }}</p>
+            <p><strong>Question {{ $numeroQuestion }} :</strong> {{ $question->question }}</p>
 
             @php
                 $type = $question->type; // 'qcm' ou 'cas_pratique'
-                $reponses = $question->reponses; // relation hasMany('App\Models\Reponse')
-                $bonnes_reponses = $reponses->where('valide', 1);
+                $reponses = $question->reponses;
             @endphp
 
             {{-- QCM --}}
             @if ($type === 'qcm' && $reponses->count())
+                @php $bonnes_reponses = $reponses->where('valide', 1); @endphp
+
                 @if ($bonnes_reponses->count() === 1)
                     {{-- Choix unique (radio) --}}
                     @foreach ($reponses as $reponse)
@@ -364,12 +367,15 @@
                 <p class="text-danger">⚠️ Type de question inconnu.</p>
             @endif
         </div>
+
+        @php $numeroQuestion++; @endphp
     @endforeach
 
     <div class="btn-group">
-        <button type="submit" class="btn btn-primary">✅ Soumettre l'examen</button>
+        <button type="submit" class="btn btn-primary">✅ Soumettre l'entretien</button>
     </div>
 </form>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
