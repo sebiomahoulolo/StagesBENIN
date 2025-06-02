@@ -263,7 +263,7 @@ class AdminController extends Controller
                     ->where('question', $questionData['question'])
                     ->first();
 
-                if ($existingQuestion) {
+                if ($existingQuestion && $existingQuestion->type == 'qcm') {
                     // Mettre à jour la question existante
                     $existingQuestion->update([
                         'question' => $questionData['question'],
@@ -273,12 +273,17 @@ class AdminController extends Controller
                     // Supprimer les anciennes réponses
                     $existingQuestion->reponses()->delete();
 
-                    // Ajouter les nouvelles réponses
-                    foreach ($questionData['reponses'] as $reponseData) {
-                        $existingQuestion->reponses()->create([
-                            'texte' => $reponseData['texte'],
-                            'valide' => isset($reponseData['valide']) ? true : false,
-                        ]);
+                    // Vérifier si les réponses existent avant de les traiter
+                    if (isset($questionData['reponses']) && is_array($questionData['reponses'])) {
+                        // Ajouter les nouvelles réponses
+                        foreach ($questionData['reponses'] as $reponseData) {
+                            if (isset($reponseData['texte'])) {
+                                $existingQuestion->reponses()->create([
+                                    'texte' => $reponseData['texte'],
+                                    'valide' => isset($reponseData['valide']) ? true : false,
+                                ]);
+                            }
+                        }
                     }
                 } else {
                     // Créer une nouvelle question
@@ -288,12 +293,17 @@ class AdminController extends Controller
                         'type' => 'qcm'
                     ]);
 
-                    // Ajouter les réponses
-                    foreach ($questionData['reponses'] as $reponseData) {
-                        $question->reponses()->create([
-                            'texte' => $reponseData['texte'],
-                            'valide' => isset($reponseData['valide']) ? true : false,
-                        ]);
+                    // Vérifier si les réponses existent avant de les traiter
+                    if (isset($questionData['reponses']) && is_array($questionData['reponses'])) {
+                        // Ajouter les réponses
+                        foreach ($questionData['reponses'] as $reponseData) {
+                            if (isset($reponseData['texte'])) {
+                                $question->reponses()->create([
+                                    'texte' => $reponseData['texte'],
+                                    'valide' => isset($reponseData['valide']) ? true : false,
+                                ]);
+                            }
+                        }
                     }
                 }
             }

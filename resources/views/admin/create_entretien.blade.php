@@ -145,13 +145,7 @@
                                     placeholder="Entrer l'énoncé du cas pratique (minimum 200 caractères, maximum 800 caractères)"></textarea>
                             <small class="text-muted caractere-compteur">0/800 caractères</small>
                         </div>
-                        <div class="form-group mb-4">
-                            <label class="form-label">Réponse attendue</label>
-                            <textarea class="form-control form-control-lg"
-                                    name="data_cas_pratique[${casPratiqueIndex}][reponse]"
-                                    rows="4"
-                                    placeholder="Entrer la réponse attendue"></textarea>
-                        </div>
+                        
                     </div>
                 </div>
             `;
