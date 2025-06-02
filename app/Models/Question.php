@@ -17,6 +17,7 @@ class Question extends Model
     protected $fillable = [
         'entretien_id',
         'question',
+        'type',
         'created_at',
         'updated_at'
     ];

@@ -23,9 +23,14 @@
             <input type="hidden" name="annonce_id" id="annonce_id" class="form-control form-control-md" value="{{ $entretien->id }}" readonly>
 
             <!-- Bouton d'ajout -->
-            <button id="add-questionnaire" type="button" class="btn btn-primary my-3 btn-md w-100">
-                <i class="fas fa-plus-circle me-2"></i>Ajouter une question
-            </button>
+            <div class="d-flex gap-3 my-3">
+                <button id="add-questionnaire" type="button" class="btn btn-primary btn-md flex-grow-1">
+                    <i class="fas fa-plus-circle me-2"></i>Ajouter une question QCM
+                </button>
+                <button id="add-cas-pratique" type="button" class="btn btn-success btn-md flex-grow-1">
+                    <i class="fas fa-file-alt me-2"></i>Ajouter un cas pratique
+                </button>
+            </div>
 
             <!-- Conteneur des questionnaires -->
             <div id="qcm-container">
@@ -76,6 +81,10 @@
                 @endif
             </div>
 
+            <!-- Conteneur des cas pratiques -->
+            <div id="cas-pratique-container">
+            </div>
+
             <!-- Bouton pour envoyer le formulaire -->
             <button type="submit" class="btn btn-success btn-md w-100 my-4" id="submit-qcm">
                 <i class="fas fa-save me-2"></i>Enregistrer le QCM
@@ -87,10 +96,12 @@
 @push('scripts')
     <script>
         let questionIndex = {{ isset($questions) ? count($questions) : 0 }};
+        let casPratiqueIndex = 0;
 
         function toggleSubmitButton() {
             const hasQuestionnaire = $('#qcm-container .card').length > 0;
-            $('#submit-qcm').prop('disabled', !hasQuestionnaire);
+            const hasCasPratique = $('#cas-pratique-container .card').length > 0;
+            $('#submit-qcm').prop('disabled', !(hasQuestionnaire || hasCasPratique));
         }
 
         // Fonction pour générer une réponse
@@ -113,7 +124,31 @@
             `;
         }
 
-        // Au clic sur le bouton "Ajouter une questionnaire"
+        // Fonction pour générer un cas pratique
+        function generateCasPratique() {
+            return `
+                <div class="card my-4 shadow-lg rounded-3 cas-pratique-card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Cas Pratique ${casPratiqueIndex + 1}</h5>
+                        <button type="button" class="btn btn-light btn-sm remove-cas-pratique">
+                            <i class="fas fa-trash me-1"></i>Supprimer
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-4">
+                            <label class="form-label">Énoncé du cas pratique</label>
+                            <textarea class="form-control form-control-lg"
+                                    name="data_cas_pratique[${casPratiqueIndex}][question]"
+                                    rows="4"
+                                    placeholder="Entrer l'énoncé du cas pratique"></textarea>
+                        </div>
+                       
+                    </div>
+                </div>
+            `;
+        }
+
+        // Au clic sur le bouton "Ajouter une question QCM"
         $('#add-questionnaire').on('click', function() {
             let reponseIndex = 0;
 
@@ -147,6 +182,19 @@
             $('#qcm-container').append(card);
             toggleSubmitButton();
             questionIndex++;
+        });
+
+        // Au clic sur le bouton "Ajouter un cas pratique"
+        $('#add-cas-pratique').on('click', function() {
+            $('#cas-pratique-container').append(generateCasPratique());
+            toggleSubmitButton();
+            casPratiqueIndex++;
+        });
+
+        // Délégation pour supprimer un cas pratique
+        $(document).on('click', '.remove-cas-pratique', function() {
+            $(this).closest('.cas-pratique-card').remove();
+            toggleSubmitButton();
         });
 
         // Délégation pour ajouter une réponse
@@ -252,7 +300,7 @@
             font-weight: 500;
         }
 
-        .question-card {
+        .question-card, .cas-pratique-card {
             background-color: #fff;
             border-radius: 15px;
             overflow: hidden;
@@ -260,6 +308,10 @@
 
         .question-card .card-header {
             background: linear-gradient(45deg, #17a2b8, #138496);
+        }
+
+        .cas-pratique-card .card-header {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
         }
 
         .alert-info {
@@ -277,6 +329,11 @@
 
         .shadow-lg {
             box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
         }
     </style>
 @endpush

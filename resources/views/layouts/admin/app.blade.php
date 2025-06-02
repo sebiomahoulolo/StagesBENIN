@@ -553,7 +553,7 @@
     <option value="Baptême">Baptême</option>
     <option value="Soirée privée">Soirée privée</option>
     <option value="Retraite/Séjour">Retraite/Séjour</option>
-   
+
                        </select>
 
                      </div>
