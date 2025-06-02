@@ -137,12 +137,21 @@
                     <div class="card-body">
                         <div class="form-group mb-4">
                             <label class="form-label">Énoncé du cas pratique</label>
-                            <textarea class="form-control form-control-lg"
+                            <textarea class="form-control form-control-lg enonce-cas-pratique"
                                     name="data_cas_pratique[${casPratiqueIndex}][question]"
                                     rows="4"
-                                    placeholder="Entrer l'énoncé du cas pratique"></textarea>
+                                    minlength="200"
+                                    maxlength="800"
+                                    placeholder="Entrer l'énoncé du cas pratique (minimum 200 caractères, maximum 800 caractères)"></textarea>
+                            <small class="text-muted caractere-compteur">0/800 caractères</small>
                         </div>
-                       
+                        <div class="form-group mb-4">
+                            <label class="form-label">Réponse attendue</label>
+                            <textarea class="form-control form-control-lg"
+                                    name="data_cas_pratique[${casPratiqueIndex}][reponse]"
+                                    rows="4"
+                                    placeholder="Entrer la réponse attendue"></textarea>
+                        </div>
                     </div>
                 </div>
             `;
@@ -214,6 +223,46 @@
         $(document).on('click', '.remove-questionnaire', function() {
             $(this).closest('.card').remove();
             toggleSubmitButton();
+        });
+
+        // Gestion du compteur de caractères pour les cas pratiques
+        $(document).on('input', '.enonce-cas-pratique', function() {
+            const maxLength = 800;
+            const minLength = 200;
+            const currentLength = $(this).val().length;
+            const counter = $(this).siblings('.caractere-compteur');
+
+            counter.text(`${currentLength}/${maxLength} caractères`);
+
+            if (currentLength < minLength) {
+                counter.addClass('text-danger').removeClass('text-success');
+                $(this).addClass('is-invalid').removeClass('is-valid');
+            } else if (currentLength > maxLength) {
+                counter.addClass('text-danger').removeClass('text-success');
+                $(this).addClass('is-invalid').removeClass('is-valid');
+            } else {
+                counter.addClass('text-success').removeClass('text-danger');
+                $(this).addClass('is-valid').removeClass('is-invalid');
+            }
+        });
+
+        // Validation du formulaire avant soumission
+        $('#qcm-form').on('submit', function(e) {
+            const casPratiques = $('.enonce-cas-pratique');
+            let isValid = true;
+
+            casPratiques.each(function() {
+                const length = $(this).val().length;
+                if (length < 200 || length > 800) {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Veuillez respecter la limite de caractères pour les cas pratiques (200-800 caractères).');
+            }
         });
 
         // Initialiser l'état du bouton submit
