@@ -335,7 +335,7 @@
                 @else
                     <a href="{{ route('etudiants.offres.postuler', $annonce) }}" 
                        class="btn btn-postuler"
-                       onclick="return confirm('Êtes-vous sûr de vouloir postuler à cette offre ?')">
+                    >
                         <i class="fas fa-paper-plane me-2"></i>Postuler maintenant
                     </a>
                 @endif
