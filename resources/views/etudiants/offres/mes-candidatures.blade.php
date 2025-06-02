@@ -90,8 +90,14 @@
         color: white;
     }
      .badge-selectionner_panel {
-        background-color: #c12dee;
+        background-color: #f7c141;
         color: white;
+        
+    }
+      .badge-selectionner_panel p {
+       background-color:none;
+        color: rgb(21, 21, 23);
+        
     }
     .badge-rejete {
         background-color: #dc3545;
@@ -245,14 +251,16 @@
                                                 @case('rejete')
                                                     Rejetée
                                                     @break
-                                                     @case('selectionner_panel')
-                                                                Selectionner par le panel
-                                                            @break
-
+                                                    
+                                                @case('selectionner_panel')
+                                                    Sélectionné par le panel
+                                                    <p><strong>Vous serez contacté pour un entretien physique.</strong></p>
+                                                    @break
                                                 @default
                                                     {{ $candidature->statut }}
                                             @endswitch
                                         </span>
+                                        
                                     </div>
                                 </div>
                                 

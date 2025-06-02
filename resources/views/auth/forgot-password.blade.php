@@ -1,7 +1,12 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+
+    <h2 class="text-2xl font-semibold text-center mb-6 text-indigo-600">
+        StagesBENIN - Réinitialisation du mot de passe
+    </h2>
+  <div class="mb-4 text-sm text-gray-600">
+    {{ __('Mot de passe oublié ? Pas de problème. Indiquez simplement votre adresse e-mail et nous vous enverrons un lien de réinitialisation qui vous permettra d’en choisir un nouveau.') }}
+</div>
+
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />

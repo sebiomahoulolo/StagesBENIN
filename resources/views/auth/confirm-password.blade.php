@@ -1,6 +1,13 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+@extends('layouts.layout')
+
+{{-- Définit le titre spécifique de la page --}}
+@section('title', 'Connexion - StagesBENIN')
+
+{{-- Injecte les styles spécifiques pour cette page --}}
+@section('styles')
+
+<div class="mb-4 text-sm text-gray-600">
+        {{ __('Ceci est une zone sécurisée. Veuillez confirmer votre mot de passe avant de continuer.') }}
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}">
@@ -24,4 +31,7 @@
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+{{-- Pas de scripts spécifiques nécessaires pour le login simple, mais on garde la section vide --}}
+@section('scripts')
+@endsection
+

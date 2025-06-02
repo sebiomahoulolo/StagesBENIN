@@ -268,6 +268,8 @@ class EtudiantController extends Controller
     }
 
 
+    
+
 
     public function showExamen($etudiant_id)
     {
@@ -317,6 +319,7 @@ class EtudiantController extends Controller
             'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
             'nom_du_poste' => $nom_du_poste,
             'duree' => $duree,
+            'entretien' =>$entretien,
             'entretiens_planifies' => $entretiens_planifies // Ajout de cette variable
         ]);
     }

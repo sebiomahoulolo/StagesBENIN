@@ -366,8 +366,11 @@
     <!-- Section des résultats -->
     <div id="resultsSection" class="results-section {{ isset($examen) && $examen->score !== null ? 'active' : '' }}">
         @if(isset($examen) && $examen->score !== null)
-            <h2>Résultats de votre examen</h2>
-            
+        
+        <h2>Résultats de votre entretien</h2>
+             <div class="warning-alert">
+                    <strong>⚠️ Attention !</strong> Une note en dessous de 12/20 entraîne une disqualification automatique.
+                </div>   
             <div class="score-display">
                 <strong>Votre note : {{ $examen->score }}/20</strong>
             </div>

@@ -1,6 +1,6 @@
 @extends('layouts.etudiant.app')
 
-@section('title', 'Entretiens programmés')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <style>
@@ -115,16 +115,20 @@
         @forelse ($entretiens as $entretien)
             <div class="col-md-4 mb-4">
                 <div class="card entretien-card p-3">
+                    
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-briefcase me-2"></i>
                             Poste : {{ $entretien->nom_du_poste }}
-                        </h5>
+                        </h5><br>
+                         <div class="warning-alert">
+                    <strong>⚠️ Attention !</strong> Une note en dessous de 12/20 entraîne une disqualification automatique.
+                </div>   
                     </div>
                     <div class="card-body">
                         <div class="info-item d-flex justify-content-between">
                             <span class="info-label">
-                                <i class="fas fa-calendar me-2"></i> Date :
+                                <i class="fas fa-calendar me-2"></i> Date de démarrage :
                             </span>
                             <span class="info-value">
                                 <strong>{{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }}</strong>
@@ -154,10 +158,95 @@
                         <span class="status-badge">
                             <i class="fas fa-clock me-1"></i> Planifié
                         </span>
-                        <a href="{{ route('etudiants.examen', ['etudiant_id' => $entretien->entretien_id]) }}"
-                           class="btn btn-entretien">
-                            <i class="fas fa-video me-2"></i> Passer l'entretien
-                        </a>
+ @php
+    // Méthode 1: Si $entretien->date contient une date complète et $entretien->heure juste l'heure
+    $dateSeule = \Carbon\Carbon::parse($entretien->date)->format('Y-m-d');
+    $heureSeule = \Carbon\Carbon::parse($entretien->heure)->format('H:i:s');
+    $heureEntretien = \Carbon\Carbon::parse($dateSeule . ' ' . $heureSeule);
+    
+    
+@endphp
+
+<div id="entretien-wrapper-{{ $entretien->entretien_id }}"
+     class="entretien-wrapper"
+     data-debut="{{ $heureEntretien->format('Y-m-d\TH:i:s') }}"
+     data-id="{{ $entretien->entretien_id }}">
+    
+    <a href="{{ route('etudiants.examen', ['etudiant_id' => $entretien->entretien_id]) }}"
+       class="btn btn-entretien"
+       id="btn-entretien-{{ $entretien->entretien_id }}"
+       style="display: none;">
+        <i class="fas fa-video me-2"></i> Commencer l'entretien
+    </a>
+
+    <div id="compte-a-rebours-{{ $entretien->entretien_id }}" class="text-warning fw-bold"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wrappers = document.querySelectorAll('.entretien-wrapper');
+
+        wrappers.forEach(function(wrapper) {
+            const debut = new Date(wrapper.dataset.debut);
+            const id = wrapper.dataset.id;
+
+            const btn = document.getElementById('btn-entretien-' + id);
+            const compte = document.getElementById('compte-a-rebours-' + id);
+
+            // Vérification que les éléments existent
+            if (!btn || !compte) {
+                console.error('Éléments manquants pour l\'entretien ID:', id);
+                return;
+            }
+
+            function updateCountdown() {
+                const now = new Date();
+                const diff = debut - now;
+
+                if (diff <= 0) {
+                    btn.style.display = 'inline-block';
+                    compte.style.display = 'none';
+                    return;
+                }
+
+                const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const heures = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secondes = Math.floor((diff % (1000 * 60)) / 1000);
+
+                let texte = "L'entretien sera disponible dans ";
+                
+                if (jours > 0) {
+                    texte += `${jours} jour${jours !== 1 ? 's' : ''}, `;
+                }
+                
+                texte += `${heures} heure${heures !== 1 ? 's' : ''}, `;
+                texte += `${minutes} minute${minutes !== 1 ? 's' : ''}, `;
+                texte += `${secondes} seconde${secondes !== 1 ? 's' : ''}.`;
+
+                compte.textContent = texte;
+            }
+
+            // Vérification que la date est valide
+            if (isNaN(debut.getTime())) {
+                console.error('Date invalide pour l\'entretien ID:', id);
+                compte.textContent = 'Erreur de date';
+                return;
+            }
+
+            updateCountdown();
+            const intervalId = setInterval(updateCountdown, 1000);
+            
+            // Optionnel: nettoyer l'intervalle après un certain temps
+            setTimeout(() => {
+                clearInterval(intervalId);
+            }, 24 * 60 * 60 * 1000); // 24 heures
+        });
+    });
+</script>
+
+
+
                     </div>
                 </div>
             </div>
