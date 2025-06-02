@@ -318,31 +318,83 @@
                 </div>
             </div>
 
-            <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id]) }}" method="POST">
-                @csrf
-                <input type="hidden" name="etudiant_id" value="{{ $etudiant->id }}">
-                
-                @foreach ($questions as $question)
-                    <div class="question-container">
-                        <p><strong>Question {{ $loop->iteration }} :</strong> {{ $question->question }}</p>
+          <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id]) }}" method="POST">
+    @csrf
+    <input type="hidden" name="etudiant_id" value="{{ $etudiant->id }}">
 
-                        @if (!empty($question->options))
-                            @foreach ($question->options as $option)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="reponses[{{ $question->id }}]" value="{{ $option }}" required>
-                                    <label class="form-check-label">{{ $option }}</label>
-                                </div>
-                            @endforeach
-                        @else
-                            <p class="text-danger">⚠️ Aucune option disponible pour cette question.</p>
-                        @endif
-                    </div>
-                @endforeach
+    @foreach ($questions as $question)
+        <div class="question-container mb-4">
+            <p><strong>Question {{ $loop->iteration }} :</strong> {{ $question->question }}</p>
 
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" id="submitBtn">✅ Soumettre l'examen</button>
-                </div>
-            </form>
+            @php
+                $type = $question->type; // 'qcm' ou 'cas_pratique'
+                $reponses = $question->reponses; // relation hasMany('App\Models\Reponse')
+                $bonnes_reponses = $reponses->where('valide', 1);
+            @endphp
+
+            {{-- QCM --}}
+            @if ($type === 'qcm' && $reponses->count())
+                @if ($bonnes_reponses->count() === 1)
+                    {{-- Choix unique (radio) --}}
+                    @foreach ($reponses as $reponse)
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="reponses[{{ $question->id }}]" value="{{ $reponse->texte }}" required>
+                            <label class="form-check-label">{{ $reponse->texte }}</label>
+                        </div>
+                    @endforeach
+                @elseif ($bonnes_reponses->count() > 1)
+                    {{-- Choix multiple (checkbox) --}}
+                    @foreach ($reponses as $reponse)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="reponses[{{ $question->id }}][]" value="{{ $reponse->texte }}">
+                            <label class="form-check-label">{{ $reponse->texte }}</label>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-danger">⚠️ Aucune bonne réponse définie pour cette question.</p>
+                @endif
+
+            {{-- Cas pratique --}}
+            @elseif ($type === 'cas_pratique')
+                <textarea name="reponses[{{ $question->id }}]" class="form-control pratique-textarea" maxlength="340" rows="4" required></textarea>
+                <small class="text-muted"><span class="caracteres-restants">340</span> caractères restants</small>
+
+            {{-- Type non reconnu --}}
+            @else
+                <p class="text-danger">⚠️ Type de question inconnu.</p>
+            @endif
+        </div>
+    @endforeach
+
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">✅ Soumettre l'examen</button>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const textareas = document.querySelectorAll('textarea[maxlength="340"]');
+
+        textareas.forEach(function (textarea) {
+            // Création de l'affichage du compteur
+            const counter = document.createElement('small');
+            counter.classList.add('form-text', 'text-muted');
+            counter.innerText = `340 caractères restants`;
+            textarea.parentNode.appendChild(counter);
+
+            // Fonction de mise à jour du compteur
+            const updateCounter = () => {
+                const remaining = 340 - textarea.value.length;
+                counter.innerText = `${remaining} caractère${remaining !== 1 ? 's' : ''} restant${remaining !== 1 ? 's' : ''}`;
+                counter.style.color = remaining <= 10 ? 'red' : '#6c757d'; // rouge si proche de la limite
+            };
+
+            // Initialisation
+            textarea.addEventListener('input', updateCounter);
+        });
+    });
+</script>
+
         @else
             <div class="no-exam-message active">
                 <h2>📋 Aucun entretien disponible</h2>

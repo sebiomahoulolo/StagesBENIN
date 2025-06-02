@@ -82,7 +82,8 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="duree" class="form-label fw-bold">Durée (en minutes)</label>
-                                            <input type="number" name="duree" id="duree" min="1" max="120" step="1"
+                                            <input type="number" name="duree" id="duree" min="1"
+                                                max="120" step="1"
                                                 class="form-control form-control-md @error('duree') is-invalid @enderror"
                                                 value="{{ old('duree') }}">
                                             @error('duree')
@@ -130,52 +131,60 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ( $entretiens as $entretien )
+                                        @forelse ($entretiens as $entretien)
                                             <tr>
                                                 <td class="py-3">{{ $entretien->reference }}</td>
                                                 <td class="py-3">{{ $entretien->nom_du_poste }}</td>
                                                 <td class="py-3">{{ date('d-m-Y', strtotime($entretien->date)) }}</td>
-                                                <td class="py-3">{{ $entretien->heure  }}</td>
-                                                <td class="py-3">{{ $entretien->duree  }} minutes</td>
+                                                <td class="py-3">{{ $entretien->heure }}</td>
+                                                <td class="py-3">{{ $entretien->duree }} minutes</td>
                                                 <td class="py-3 flex flex-col gap-y-2">
                                                     @if ($entretien->status === 'en_attente')
                                                         <span class="badge bg-warning text-dark">En attente</span>
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#updateStatusModal{{ $entretien->id }}">
                                                             <i class="fas fa-edit me-2"></i>Modifier
                                                         </button>
                                                     @elseif($entretien->status === 'planifié')
                                                         <span class="badge bg-info text-dark">Planifié</span>
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#updateStatusModal{{ $entretien->id }}">
                                                             <i class="fas fa-edit me-2"></i>Modifier
                                                         </button>
                                                     @elseif($entretien->status === 'terminé')
                                                         <span class="badge bg-success text-white">Terminé</span>
                                                     @else
                                                         <span class="badge bg-secondary text-white">Inconnu</span>
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ $entretien->id }}">
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#updateStatusModal{{ $entretien->id }}">
                                                             <i class="fas fa-edit me-2"></i>Modifier
                                                         </button>
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($entretien->status === 'en_attente')
-                                                    <a href="{{ route('admin.entretiens.create', ['id' => $entretien->id]) }}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-edit me-2"></i>Créer le questionnaire
-                                                    </a>
+                                                        <a href="{{ route('admin.entretiens.create', ['id' => $entretien->id]) }}"
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-edit me-2"></i>Créer le questionnaire
+                                                        </a>
                                                     @endif
-                                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#viewEntretienModal{{ $entretien->id }}">
+                                                    <button type="button" class="btn btn-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#viewEntretienModal{{ $entretien->id }}">
                                                         <i class="fas fa-eye me-2"></i>Voir
                                                     </button>
                                                 </td>
                                             </tr>
-                                            @empty
+                                        @empty
                                             <tr>
                                                 <td colspan="6" class="text-center">
                                                     <h5>Aucun entretien trouvé</h5>
                                                 </td>
                                             </tr>
-                                            @endforelse
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -192,14 +201,16 @@
 
     @foreach ($entretiens as $entretien)
         <!-- Modal de modification du statut -->
-        <div class="modal fade" id="updateStatusModal{{ $entretien->id }}" tabindex="-1" aria-labelledby="updateStatusModalLabel{{ $entretien->id }}" aria-hidden="true">
+        <div class="modal fade" id="updateStatusModal{{ $entretien->id }}" tabindex="-1"
+            aria-labelledby="updateStatusModalLabel{{ $entretien->id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title" id="updateStatusModalLabel{{ $entretien->id }}">
                             <i class="fas fa-edit me-2"></i>Modifier le statut
                         </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <form action="{{ route('admin.entretiens.update-status', $entretien->id) }}" method="POST">
                         @csrf
@@ -208,11 +219,14 @@
                             <div class="mb-3">
                                 <label for="status{{ $entretien->id }}" class="form-label fw-bold">Statut</label>
                                 <select name="status" id="status{{ $entretien->id }}" class="form-select">
-                                    <option value="en_attente" {{ $entretien->status === 'en_attente' ? 'selected' : '' }}>En attente</option>
-                                    <option value="planifié" {{ $entretien->status === 'planifié' ? 'selected' : '' }}>Planifié</option>
-                                    <option value="terminé" {{ $entretien->status === 'terminé' ? 'selected' : '' }}>Terminé</option>
-                            </select>
-                        </div>
+                                    <option value="en_attente"
+                                        {{ $entretien->status === 'en_attente' ? 'selected' : '' }}>En attente</option>
+                                    <option value="planifié" {{ $entretien->status === 'planifié' ? 'selected' : '' }}>
+                                        Planifié</option>
+                                    <option value="terminé" {{ $entretien->status === 'terminé' ? 'selected' : '' }}>
+                                        Terminé</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -228,7 +242,8 @@
         </div>
 
         <!-- Modal de détails de l'entretien -->
-        <div class="modal fade" id="viewEntretienModal{{ $entretien->id }}" tabindex="-1" aria-labelledby="viewEntretienModalLabel{{ $entretien->id }}" aria-hidden="true">
+        <div class="modal fade" id="viewEntretienModal{{ $entretien->id }}" tabindex="-1"
+            aria-labelledby="viewEntretienModalLabel{{ $entretien->id }}" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
@@ -238,8 +253,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-        <div class="row">
-            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="mb-4">
                                     <h6 class="text-primary mb-3">Informations générales</h6>
                                     <ul class="list-group list-group-flush">
@@ -265,49 +280,59 @@
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">Statut:</span>
-                                            <span class="badge bg-{{ $entretien->status === 'en_attente' ? 'warning' : ($entretien->status === 'planifié' ? 'info' : 'success') }}">
+                                            <span
+                                                class="badge text-white bg-{{ $entretien->status === 'en_attente' ? 'warning' : ($entretien->status === 'planifié' ? 'info' : 'success') }}">
                                                 {{ $entretien->status === 'en_attente' ? 'En attente' : ($entretien->status === 'planifié' ? 'Planifié' : 'Terminé') }}
                                             </span>
                                         </li>
                                     </ul>
                                 </div>
-            </div>
-            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-4">
                                     <h6 class="text-primary mb-3">Questions du QCM</h6>
                                     @php
-                                        $questions = \App\Models\Question::where('entretien_id', $entretien->id)->with('reponses')->get();
+                                        $questions = \App\Models\Question::where('entretien_id', $entretien->id)
+                                            ->with('reponses')
+                                            ->get();
                                     @endphp
-                                    @if($questions->count() > 0)
+                                    @if ($questions->count() > 0)
                                         <div class="accordion" id="questionsAccordion{{ $entretien->id }}">
-                                            @foreach($questions as $index => $question)
+                                            @foreach ($questions as $index => $question)
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#question{{ $question->id }}">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#question{{ $question->id }}">
                                                             Question {{ $index + 1 }}
                                                         </button>
                                                     </h2>
-                                                    <div id="question{{ $question->id }}" class="accordion-collapse collapse" data-bs-parent="#questionsAccordion{{ $entretien->id }}">
+                                                    <div id="question{{ $question->id }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="#questionsAccordion{{ $entretien->id }}">
                                                         <div class="accordion-body">
                                                             <p class="fw-bold mb-3">{{ $question->question }}</p>
                                                             <ul class="list-group">
-                                                                @foreach($question->reponses as $reponse)
-                                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                @foreach ($question->reponses as $reponse)
+                                                                    <li
+                                                                        class="list-group-item d-flex justify-content-between align-items-center">
                                                                         {{ $reponse->texte }}
-                                                                        @if($reponse->valide)
-                                                                            <span class="badge bg-success">Bonne réponse</span>
+                                                                        @if ($reponse->valide)
+                                                                            <span class="badge bg-success">Bonne
+                                                                                réponse</span>
                                                                         @endif
                                                                     </li>
                                                                 @endforeach
                                                             </ul>
                                                         </div>
-            </div>
-        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         </div>
                                     @else
                                         <div class="alert alert-info">
-                                            <i class="fas fa-info-circle me-2"></i>Aucune question n'a été créée pour cet entretien.
+                                            <i class="fas fa-info-circle me-2"></i>Aucune question n'a été créée pour cet
+                                            entretien.
                                         </div>
                                     @endif
                                 </div>
@@ -317,12 +342,12 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i>Fermer
-                                        </button>
+                        </button>
                     </div>
                 </div>
             </div>
-                                </div>
-                    @endforeach
+        </div>
+    @endforeach
 
     <style>
         .content-area {

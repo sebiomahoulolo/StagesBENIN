@@ -307,23 +307,55 @@
 
                    
 
-                    <div class="action-buttons">
-                        @if(Auth::check() && Auth::user()->etudiant)
-                            @if($aPostule)
-                                <button class="btn btn-postuler-disabled" disabled>
-                                    <i class="fas fa-check-circle me-2"></i>Vous avez déjà postulé
-                                </button>
-                            @else
-                                <a href="{{ route('etudiants.offres.postuler', $annonce) }}" class="btn btn-postuler">
-                                    <i class="fas fa-paper-plane me-2"></i>Postuler
-                                </a>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-postuler">
-                                <i class="fas fa-sign-in-alt me-2"></i>Connectez-vous pour postuler
-                            </a>
-                        @endif
-                    </div>
+                   <div class="action-buttons">
+    @if(Auth::check())
+        @if(Auth::user()->etudiant)
+            @if($aPostule)
+                <button class="btn btn-postuler-disabled" disabled>
+                    <i class="fas fa-check-circle me-2"></i>Vous avez déjà postulé
+                </button>
+                @if(isset($candidature) && $candidature)
+                    <small class="text-muted d-block mt-2">
+                        <i class="fas fa-calendar-alt me-1"></i>
+                        Candidature envoyée le {{ $candidature->created_at->format('d/m/Y à H:i') }}
+                    </small>
+                    @if($candidature->statut)
+                        <small class="d-block mt-1">
+                            <span class="badge badge-{{ $candidature->statut == 'accepte' ? 'success' : ($candidature->statut == 'refuse' ? 'danger' : 'warning') }}">
+                                {{ ucfirst($candidature->statut) }}
+                            </span>
+                        </small>
+                    @endif
+                @endif
+            @else
+                @if($annonce->date_limite && \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($annonce->date_limite)))
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-clock me-2"></i>Date limite dépassée
+                    </button>
+                @else
+                    <a href="{{ route('etudiants.offres.postuler', $annonce) }}" 
+                       class="btn btn-postuler"
+                       onclick="return confirm('Êtes-vous sûr de vouloir postuler à cette offre ?')">
+                        <i class="fas fa-paper-plane me-2"></i>Postuler maintenant
+                    </a>
+                @endif
+            @endif
+        @else
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Vous devez compléter votre profil étudiant pour postuler.
+                <a href="{{ route('etudiant.profil.create') }}" class="btn btn-sm btn-outline-primary ms-2">
+                    Compléter le profil
+                </a>
+            </div>
+        @endif
+    @else
+        <a href="{{ route('login') }}" class="btn btn-postuler">
+            <i class="fas fa-sign-in-alt me-2"></i>Connectez-vous pour postuler
+        </a>
+    @endif
+</div>
+
 
                     <div class="social-share-section">
                         <h5 class="social-title">Partager cette offre</h5>

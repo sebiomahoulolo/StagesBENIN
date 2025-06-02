@@ -13,4 +13,4 @@ class SecteurController extends Controller
         $specialites = $secteur->specialites()->select('id', 'nom')->get();
         return response()->json($specialites);
     }
-} 
+}

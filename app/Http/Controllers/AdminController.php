@@ -255,46 +255,77 @@ class AdminController extends Controller
         $entretien = Entretien::findOrFail($annonce_id);
         $annonce = Annonce::findOrFail($entretien->annonce_id);
 
-        foreach ($request->input('data_questions') as $questionData) {
-            // Vérifier si la question existe déjà
-            $existingQuestion = Question::where('entretien_id', $annonce_id)
-                ->where('question', $questionData['question'])
-                ->first();
+        // Traitement des questions QCM
+        if ($request->has('data_questions')) {
+            foreach ($request->input('data_questions') as $questionData) {
+                // Vérifier si la question existe déjà
+                $existingQuestion = Question::where('entretien_id', $annonce_id)
+                    ->where('question', $questionData['question'])
+                    ->first();
 
-            if ($existingQuestion) {
-                // Mettre à jour la question existante
-                $existingQuestion->update([
-                    'question' => $questionData['question']
-                ]);
-
-                // Supprimer les anciennes réponses
-                $existingQuestion->reponses()->delete();
-
-                // Ajouter les nouvelles réponses
-                foreach ($questionData['reponses'] as $reponseData) {
-                    $existingQuestion->reponses()->create([
-                        'texte' => $reponseData['texte'],
-                        'valide' => isset($reponseData['valide']) ? true : false,
+                if ($existingQuestion) {
+                    // Mettre à jour la question existante
+                    $existingQuestion->update([
+                        'question' => $questionData['question'],
+                        'type' => 'qcm'
                     ]);
-                }
-            } else {
-                // Créer une nouvelle question
-                $question = Question::create([
-                    'entretien_id' => $annonce_id,
-                    'question' => $questionData['question'],
-                ]);
 
-                // Ajouter les réponses
-                foreach ($questionData['reponses'] as $reponseData) {
-                    $question->reponses()->create([
-                        'texte' => $reponseData['texte'],
-                        'valide' => isset($reponseData['valide']) ? true : false,
+                    // Supprimer les anciennes réponses
+                    $existingQuestion->reponses()->delete();
+
+                    // Ajouter les nouvelles réponses
+                    foreach ($questionData['reponses'] as $reponseData) {
+                        $existingQuestion->reponses()->create([
+                            'texte' => $reponseData['texte'],
+                            'valide' => isset($reponseData['valide']) ? true : false,
+                        ]);
+                    }
+                } else {
+                    // Créer une nouvelle question
+                    $question = Question::create([
+                        'entretien_id' => $annonce_id,
+                        'question' => $questionData['question'],
+                        'type' => 'qcm'
+                    ]);
+
+                    // Ajouter les réponses
+                    foreach ($questionData['reponses'] as $reponseData) {
+                        $question->reponses()->create([
+                            'texte' => $reponseData['texte'],
+                            'valide' => isset($reponseData['valide']) ? true : false,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // Traitement des cas pratiques
+        if ($request->has('data_cas_pratique')) {
+            foreach ($request->input('data_cas_pratique') as $casPratiqueData) {
+                // Vérifier si le cas pratique existe déjà
+                $existingCasPratique = Question::where('entretien_id', $annonce_id)
+                    ->where('question', $casPratiqueData['question'])
+                    ->where('type', 'cas_pratique')
+                    ->first();
+
+                if ($existingCasPratique) {
+                    // Mettre à jour le cas pratique existant
+                    $existingCasPratique->update([
+                        'question' => $casPratiqueData['question'],
+                        'type' => 'cas_pratique'
+                    ]);
+                } else {
+                    // Créer un nouveau cas pratique
+                    Question::create([
+                        'entretien_id' => $annonce_id,
+                        'question' => $casPratiqueData['question'],
+                        'type' => 'cas_pratique'
                     ]);
                 }
             }
         }
 
-        return redirect()->route('admin.entretiens.index')->with('success', 'QCM enregistré avec succès.');
+        return redirect()->route('admin.entretiens.index')->with('success', 'Questionnaire enregistré avec succès.');
     }
 
 
