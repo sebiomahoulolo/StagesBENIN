@@ -113,7 +113,7 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="etudiant_formation" class="form-label">Formation Actuelle</label>
-                        <input id="etudiant_formation" name="formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->formation) }}">
+                        <input id="etudiant_formation" name="formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->nom_specialite) }}">
                         @error('formation') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-md-6 form-group">

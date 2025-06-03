@@ -18,7 +18,12 @@ class ProfileController extends Controller
     {
         // Récupère l'utilisateur authentifié ET son profil étudiant associé
         $user = $request->user();
-        $etudiant = $user->etudiant()->first(); 
+        $etudiant = $user->etudiant()
+        ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
+        ->select('etudiants.*', 'specialites.nom as nom_specialite')
+        ->first();
+        
+        // dd($etudiant);
 
         // Si l'étudiant n'a pas de profil étudiant (ce qui ne devrait pas arriver ici)
         if (!$etudiant) {
