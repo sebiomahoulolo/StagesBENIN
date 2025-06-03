@@ -2,7 +2,7 @@
 
 <div class="form-section">
     <div class="form-section-header">
-        <h4>Expériences Professionnelles</h4>
+        <h4>Expériences Professionnelles <span class=" text-danger fw-bold">*</span></h4>
          <button type="button" wire:click="toggleAddForm" class="add-item-btn btn btn-sm {{ $showAddForm ? 'btn-secondary' : 'btn-primary' }}">
             <i class="fas {{ $showAddForm ? 'fa-times' : 'fa-plus' }}"></i>
             <span>{{ $showAddForm ? 'Fermer' : 'Ajouter' }}</span>

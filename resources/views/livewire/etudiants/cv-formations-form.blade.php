@@ -3,7 +3,7 @@
 <div class="form-section">
     {{-- En-tête de la section --}}
     <div class="form-section-header">
-        <h4>Formations</h4>
+        <h4>Formations <span class=" text-danger fw-bold">*</span></h4>
          <button type="button" wire:click="toggleAddForm" class="add-item-btn btn btn-sm {{ $showAddForm ? 'btn-secondary' : 'btn-primary' }}">
             <i class="fas {{ $showAddForm ? 'fa-times' : 'fa-plus' }}"></i>
             <span>{{ $showAddForm ? 'Fermer' : 'Ajouter' }}</span>
@@ -327,75 +327,75 @@
             max-width: 100%;
             margin-bottom: 1rem; /* Espace entre champs empilés */
         }
-        
+
         /* Ajuster le formulaire d'ajout pour mobile */
         .formation-add-form {
             padding: 1.25rem;
         }
-        
+
         /* Ajuster les boutons sur mobile */
         .d-flex.justify-content-end {
             flex-wrap: wrap;
         }
-        
+
         .d-flex.justify-content-end button {
             width: 100%;
             margin-left: 0 !important;
             margin-top: 0.5rem;
         }
-        
+
         .d-flex.justify-content-end button:first-child {
             margin-top: 0;
         }
-        
+
         /* Améliorer l'espace en mode édition */
         .editing-item .p-3 {
             padding: 1.25rem !important;
         }
-        
+
         /* Plus d'espace entre les groupes */
         .form-group {
             margin-bottom: 1.25rem;
         }
-        
+
         /* Bouton d'ajout en haut à droite */
         .add-item-btn {
             width: 100%;
         }
-        
+
         /* Rendre les boutons de soumission plus visibles */
         .mt-3.text-end {
             text-align: center !important;
         }
-        
+
         .mt-3.text-end button {
             width: 100%;
             padding: 0.5rem 1rem;
         }
     }
-    
+
     @media (max-width: 575.98px) {
         .formation-card-body { padding-right: 35px; }
         .btn-action-icon { width: 28px; height: 28px; }
         .btn-action-icon i { font-size: 0.8rem; }
-        
+
         /* Réduire davantage le padding sur les très petits écrans */
         .formation-add-form,
         .editing-item .p-3 {
             padding: 1rem !important;
         }
-        
+
         /* Adapter la taille du texte */
         .form-label,
         .form-control-sm {
             font-size: 0.85rem;
         }
-        
+
         /* Réduire l'espace entre les éléments */
         .formation-grid {
             gap: 0.5rem;
         }
-        
+
         /* Ajuster les textes des boutons */
         .btn-sm {
             font-size: 0.8rem;
