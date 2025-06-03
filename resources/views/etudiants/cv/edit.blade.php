@@ -64,7 +64,7 @@
         @endif
 
         {{-- PROGRESSION DU CV --}}
-        <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
+        {{-- <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
             <div class="progress-grid mt-3">
                 @php
                     $sections = [
@@ -141,7 +141,7 @@
                     restante{{ $cvProfile->calculateRemainingSections() > 1 ? 's' : '' }}
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <style>
             .progress-grid {
@@ -302,9 +302,9 @@
             @endisset
         </div>
         <div class="row">
-            @if ($cvProfile->calculateCompletion() > 89)
-                <a href="{{ route('candidat.dashboard') }}" class=" btn btn-primary my-3 w-100">Suivant</a>
-            @endif
+            {{-- @if ($cvProfile->calculateCompletion() > 89) --}}
+                <a href="{{ route('dashboard') }}" class=" btn btn-primary my-3 w-100">Aller sur le tableau de bord</a>
+            {{-- @endif --}}
         </div>
     </div>
 
