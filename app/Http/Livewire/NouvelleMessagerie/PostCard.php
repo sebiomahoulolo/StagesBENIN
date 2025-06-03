@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class PostCard extends Component
 {
@@ -36,7 +37,7 @@ class PostCard extends Component
     {
         // Recharge le post depuis la base de données
         $this->post = MessagePost::with(['user', 'attachments'])->find($this->post->id);
-        
+
         // Vérifier si la colonne parent_id existe avant de charger les relations hiérarchiques
         if (Schema::hasColumn('message_comments', 'parent_id')) {
             $this->post->load(['comments.user', 'comments.replies.user']);
@@ -75,18 +76,18 @@ class PostCard extends Component
 
         try {
             $token = Str::random(32);
-            
+
             MessageShareToken::create([
                 'user_id' => Auth::id(),
                 'post_id' => $this->post->id,
                 'token' => $token,
                 'comment' => $this->shareComment,
             ]);
-            
+
             $this->shareUrl = URL::route('messagerie-sociale.shared-post', ['token' => $token]);
             $this->shareComment = '';
             $this->isSubmitting = false;
-            
+
             // Mettre à jour le nombre de partages
             $this->post = $this->post->fresh();
         } catch (\Exception $e) {
@@ -108,14 +109,14 @@ class PostCard extends Component
                 'user_id' => Auth::id(),
                 'content' => $this->newComment,
             ]);
-            
+
             $this->post->comments()->save($comment);
             $this->newComment = '';
-            
+
             // Refresh les commentaires
             $this->refreshPost();
             $this->emit('refreshComments');
-            
+
             // Garder les commentaires ouverts
             $this->showComments = true;
         } catch (\Exception $e) {
@@ -128,11 +129,11 @@ class PostCard extends Component
     public function deleteComment($commentId)
     {
         $comment = MessageComment::find($commentId);
-        
+
         if (!$comment) {
             return;
         }
-        
+
         if (Gate::allows('delete-comment', $comment)) {
             // Supprimer également les réponses à ce commentaire si la colonne parent_id existe
             if (Schema::hasColumn('message_comments', 'parent_id')) {
@@ -140,9 +141,9 @@ class PostCard extends Component
                     MessageComment::where('parent_id', $comment->id)->delete();
                 }
             }
-            
+
             $comment->delete();
-            
+
             // Refresh les commentaires
             $this->refreshPost();
             $this->emit('refreshComments');
@@ -156,7 +157,7 @@ class PostCard extends Component
             session()->flash('error', 'La fonctionnalité de réponse aux commentaires n\'est pas encore disponible.');
             return;
         }
-        
+
         $this->replyToComment = $commentId;
         $this->replyContent = '';
     }
@@ -174,7 +175,7 @@ class PostCard extends Component
             session()->flash('error', 'La fonctionnalité de réponse aux commentaires n\'est pas encore disponible.');
             return;
         }
-        
+
         $this->validate([
             'replyContent' => ['required', 'string', 'max:500'],
         ]);
@@ -183,20 +184,20 @@ class PostCard extends Component
 
         try {
             $parentComment = MessageComment::find($this->replyToComment);
-            
+
             if ($parentComment) {
                 $reply = new MessageComment([
                     'user_id' => Auth::id(),
                     'content' => $this->replyContent,
                     'parent_id' => $this->replyToComment,
                 ]);
-                
+
                 $this->post->comments()->save($reply);
-                
+
                 // Réinitialiser le formulaire de réponse
                 $this->replyToComment = null;
                 $this->replyContent = '';
-                
+
                 // Refresh les commentaires
                 $this->refreshPost();
                 $this->emit('refreshComments');
@@ -214,11 +215,34 @@ class PostCard extends Component
         $this->commentsToShow = $this->post->comments->count();
     }
 
+    public function confirmDelete()
+    {
+        $this->emit('showDeleteModal');
+    }
+
     public function deletePost()
     {
-        if (Gate::allows('delete-post', $this->post)) {
+        if (!auth()->user()->can('delete-post', $this->post)) {
+            session()->flash('error', 'Vous n\'êtes pas autorisé à supprimer ce post.');
+            return;
+        }
+
+        try {
+            // Supprimer les fichiers joints
+            foreach ($this->post->attachments as $attachment) {
+                if (Storage::exists($attachment->path)) {
+                    Storage::delete($attachment->path);
+                }
+                $attachment->delete();
+            }
+
+            // Supprimer le post
             $this->post->delete();
-            $this->emit('postDeleted');
+
+            session()->flash('success', 'Le post a été supprimé avec succès.');
+            $this->emit('postDeleted', $this->post->id);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Une erreur est survenue lors de la suppression du post.');
         }
     }
 
@@ -226,9 +250,9 @@ class PostCard extends Component
     {
         // Passer l'information sur la colonne parent_id à la vue
         $hasParentIdColumn = Schema::hasColumn('message_comments', 'parent_id');
-        
+
         return view('livewire.nouvelle-messagerie.post-card', [
             'hasParentIdColumn' => $hasParentIdColumn
         ]);
     }
-} 
+}

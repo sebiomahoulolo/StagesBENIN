@@ -10,6 +10,7 @@ use App\Models\MessageShare;
 use App\Models\MessagePostAttachment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class MessagerieSocialeController extends Controller
 {
@@ -83,7 +84,7 @@ class MessagerieSocialeController extends Controller
     /**
      * Afficher le formulaire de création d'un post
      * Accessible uniquement pour les administrateurs et recruteurs
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function createPost()
@@ -148,7 +149,7 @@ class MessagerieSocialeController extends Controller
 
         $post->load(['user', 'comments.user', 'attachments']);
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             return view('nouvelle-messagerie.show-post', compact('post', 'share'));
         } elseif ($user->isEtudiant()) {
@@ -169,24 +170,24 @@ class MessagerieSocialeController extends Controller
      * @param  \App\Models\MessagePost  $post
      * @return \Illuminate\Http\Response
      */
-    public function updatePost(Request $request, MessagePost $post)
-    {
-        if (!Gate::allows('update-post', $post)) {
-            abort(403, 'Non autorisé à modifier ce post.');
-        }
+    // public function updatePost(Request $request, MessagePost $post)
+    // {
+    //     if (!Gate::allows('update-post', $post)) {
+    //         abort(403, 'Non autorisé à modifier ce post.');
+    //     }
 
-        $validatedData = $request->validate([
-            'content' => 'required|string|max:5000',
-        ]);
+    //     $validatedData = $request->validate([
+    //         'content' => 'required|string|max:5000',
+    //     ]);
 
-        $post->update([
-            'content' => $validatedData['content'],
-            'edited_at' => now(),
-        ]);
+    //     $post->update([
+    //         'content' => $validatedData['content'],
+    //         'edited_at' => now(),
+    //     ]);
 
-        session()->flash('success', 'Message mis à jour avec succès!');
-        return redirect()->route('messagerie-sociale.show-post', $post);
-    }
+    //     session()->flash('success', 'Message mis à jour avec succès!');
+    //     return redirect()->route('messagerie-sociale.show-post', $post);
+    // }
 
     /**
      * Supprimer un message
@@ -239,7 +240,7 @@ class MessagerieSocialeController extends Controller
 
     /**
      * Supprimer un commentaire
-     * 
+     *
      * @param MessageComment $comment
      * @return \Illuminate\Http\Response
      */
@@ -285,7 +286,98 @@ class MessagerieSocialeController extends Controller
 
         session()->flash('success', 'Message partagé avec succès!');
         session()->flash('share_url', $share->share_url);
-        
+
         return redirect()->route('messagerie-sociale.show-post', $post);
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un administrateur
+     */
+    private function isAdmin()
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un étudiant
+     */
+    private function isEtudiant()
+    {
+        return auth()->check() && auth()->user()->role === 'etudiant';
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un recruteur
+     */
+    private function isRecruteur()
+    {
+        return auth()->check() && auth()->user()->role === 'recruteur';
+    }
+
+    /**
+     * Afficher le formulaire d'édition d'un post
+     * Seulement disponible pour admin et entreprises
+     *
+     * @param  \App\Models\MessagePost  $post
+     * @return \Illuminate\View\View
+     */
+    public function editPost(MessagePost $post)
+    {
+        if (!Gate::allows('update-post', $post)) {
+            abort(403, 'Non autorisé à modifier ce post.');
+        }
+
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return view('nouvelle-messagerie.edit-post', compact('post'));
+        } elseif ($user->isRecruteur()) {
+            return view('nouvelle-messagerie.entreprise.edit-post', compact('post'));
+        } else {
+            // Vue par défaut
+            return view('nouvelle-messagerie.edit-post', compact('post'));
+        }
+    }
+
+    /**
+     * Met à jour un post existant
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $post
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updatePost(Request $request, $post)
+    {
+        $post = MessagePost::findOrFail($post);
+
+        // Vérifier si l'utilisateur est autorisé à modifier ce post
+        if (auth()->id() !== $post->user_id) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à modifier ce post.');
+        }
+
+        $validated = $request->validate([
+            'contenu' => 'required|string|max:1000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Mise à jour du contenu
+        $post->contenu = $validated['contenu'];
+
+        // Gestion de l'image si une nouvelle est fournie
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($post->image && Storage::exists($post->image)) {
+                Storage::delete($post->image);
+            }
+
+            // Sauvegarder la nouvelle image
+            $path = $request->file('image')->store('posts', 'public');
+            $post->image = $path;
+        }
+
+        $post->save();
+
+        return redirect()->route('messagerie-sociale.index')
+            ->with('success', 'Le post a été mis à jour avec succès.');
     }
 }

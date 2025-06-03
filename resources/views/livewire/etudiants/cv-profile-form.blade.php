@@ -1,6 +1,6 @@
 <div class="form-section">
     <div class="form-section-header">
-        <h4>Informations Générales</h4>
+        <h4>Informations Générales <span class=" text-danger fw-bold">*</span></h4>
 
     </div>
 
@@ -13,7 +13,7 @@
     {{-- Champs standards (inchangés) --}}
     <div class="row profile-form-row">
         <div class="col-md-6 form-group">
-            <label class="form-label">Nom Complet</label>
+            <label class="form-label">Nom Complet <span class=" text-danger fw-bold">*</span></label>
             <input type="text" class="form-control" value="{{ $etudiant->prenom ?? '' }} {{ $etudiant->nom ?? '' }}" readonly disabled>
         </div>
         <div class="col-md-6 form-group">
@@ -24,19 +24,19 @@
     </div>
     <div class="row profile-form-row">
         <div class="col-md-6 form-group">
-            <label for="profile_email_{{ $componentId }}" class="form-label">Email contact (CV)</label>
+            <label for="profile_email_{{ $componentId }}" class="form-label">Email contact (CV) <span class=" text-danger fw-bold">*</span></label>
             <input type="email" id="profile_email_{{ $componentId }}" wire:model.lazy="email_cv" class="form-control @error('email_cv') is-invalid @enderror" placeholder="Par défaut: {{ $etudiant->email ?? '' }}">
             @error('email_cv') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
         <div class="col-md-6 form-group">
-            <label for="profile_telephone_{{ $componentId }}" class="form-label">Téléphone (CV)</label>
+            <label for="profile_telephone_{{ $componentId }}" class="form-label">Téléphone (CV) <span class=" text-danger fw-bold">*</span></label>
             <input type="tel" id="profile_telephone_{{ $componentId }}" wire:model.lazy="telephone_cv" class="form-control @error('telephone_cv') is-invalid @enderror" placeholder="Par défaut: {{ $etudiant->telephone ?? '' }}">
             @error('telephone_cv') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
     </div>
      <div class="row profile-form-row">
         <div class="col-md-6 form-group">
-            <label for="profile_adresse_{{ $componentId }}" class="form-label">Adresse / Ville</label>
+            <label for="profile_adresse_{{ $componentId }}" class="form-label">Adresse / Ville <span class=" text-danger fw-bold">*</span></label>
             <input type="text" id="profile_adresse_{{ $componentId }}" wire:model.lazy="adresse" class="form-control @error('adresse') is-invalid @enderror">
             @error('adresse') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
@@ -71,8 +71,8 @@
     {{-- Ajout des nouveaux champs personnels --}}
     <div class="row profile-form-row">
         <div class="col-md-6 form-group">
-            <label for="profile_sit_mat_{{ $componentId }}" class="form-label">Situation Matrimoniale</label>
-            <select id="profile_sit_mat_{{ $componentId }}" wire:model.lazy="situation_matrimoniale" class="form-control @error('situation_matrimoniale') is-invalid @enderror">
+            <label for="profile_sit_mat_{{ $componentId }}" class="form-label">Situation Matrimoniale <span class=" text-danger fw-bold">*</span></label>
+            <select id="profile_sit_mat_{{ $componentId }}" wire:model.lazy="situation_matrimoniale" class="form-control @error('situation_matrimoniale') is-invalid @enderror" required>
                 <option value="">-- Choisir --</option>
                 <option value="Célibataire">Célibataire</option>
                 <option value="Marié(e)">Marié(e)</option>
@@ -83,28 +83,29 @@
             @error('situation_matrimoniale') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
         <div class="col-md-6 form-group">
-            <label for="profile_nationalite_{{ $componentId }}" class="form-label">Nationalité</label>
-            <input type="text" id="profile_nationalite_{{ $componentId }}" wire:model.lazy="nationalite" class="form-control @error('nationalite') is-invalid @enderror">
+            <label for="profile_nationalite_{{ $componentId }}" class="form-label">Nationalité <span class=" text-danger fw-bold">*</span></label>
+            <input type="text" id="profile_nationalite_{{ $componentId }}" wire:model.lazy="nationalite" class="form-control @error('nationalite') is-invalid @enderror" required>
             @error('nationalite') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
     </div>
     <div class="row profile-form-row">
         <div class="col-md-6 form-group">
-            <label for="profile_date_nais_{{ $componentId }}" class="form-label">Date de Naissance</label>
-            <input type="date" id="profile_date_nais_{{ $componentId }}" wire:model.lazy="date_naissance" class="form-control @error('date_naissance') is-invalid @enderror">
+            <label for="profile_date_nais_{{ $componentId }}" class="form-label">Date de Naissanc <span class=" text-danger fw-bold">*</span>e</label>
+            <input type="date" id="profile_date_nais_{{ $componentId }}" wire:model.lazy="date_naissance" class="form-control @error('date_naissance') is-invalid @enderror" required>
             @error('date_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
         <div class="col-md-6 form-group">
-            <label for="profile_lieu_nais_{{ $componentId }}" class="form-label">Lieu de Naissance</label>
-            <input type="text" id="profile_lieu_nais_{{ $componentId }}" wire:model.lazy="lieu_naissance" class="form-control @error('lieu_naissance') is-invalid @enderror">
+            <label for="profile_lieu_nais_{{ $componentId }}" class="form-label">Lieu de Naissance <span class=" text-danger fw-bold">*</span></label>
+            <input type="text" id="profile_lieu_nais_{{ $componentId }}" wire:model.lazy="lieu_naissance" class="form-control @error('lieu_naissance') is-invalid @enderror" required>
             @error('lieu_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
     </div>
 
     {{-- Remplacement de Trix par Textarea --}}
     <div class="form-group">
-        <label for="resume_profil_textarea_{{ $componentId }}" class="form-label">Résumé du Profil</label>
+        <label for="resume_profil_textarea_{{ $componentId }}" class="form-label">Résumé du Profil <span class=" text-danger fw-bold">*</span></label>
         <textarea id="resume_profil_textarea_{{ $componentId }}"
+        required
                   wire:model.lazy="resume_profil"
                   class="form-control @error('resume_profil') is-invalid @enderror"
                   rows="5" {{-- Ajuster si besoin --}}

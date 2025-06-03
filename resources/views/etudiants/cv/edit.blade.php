@@ -45,7 +45,7 @@
         <div class="d-flex justify-content-end mt-3">
             @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id; @endphp
             @if ($cvProfileId)
-                @if ($cvProfile->calculateCompletion() > 99)
+                @if ($cvProfile->calculateCompletion() > 66)
                     <a class=" px-4 py-2 bg-indigo-600 rounded-md text-white "
                         href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="btn btn-primary"
                         target="_blank">
@@ -56,7 +56,7 @@
             @endif
         </div>
 
-        @if ($cvProfile->calculateCompletion() < 89)
+        @if ($cvProfile->calculateCompletion() < 66)
             <div class="flex flex-col gap-4 w-full bg-indigo-500 alert alert-warning my-4">
                 <span class=" text-black">Toutes les sections doivent être complétées pour pouvoir visualiser le CV et
                     le tableau de bord de l' etudiant</span>
@@ -64,7 +64,7 @@
         @endif
 
         {{-- PROGRESSION DU CV --}}
-        <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
+        {{-- <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
             <div class="progress-grid mt-3">
                 @php
                     $sections = [
@@ -141,7 +141,7 @@
                     restante{{ $cvProfile->calculateRemainingSections() > 1 ? 's' : '' }}
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <style>
             .progress-grid {
@@ -302,9 +302,9 @@
             @endisset
         </div>
         <div class="row">
-            @if ($cvProfile->calculateCompletion() > 89)
-                <a href="{{ route('candidat.dashboard') }}" class=" btn btn-primary my-3 w-100">Suivant</a>
-            @endif
+            {{-- @if ($cvProfile->calculateCompletion() > 89) --}}
+                <a href="{{ route('dashboard') }}" class=" btn btn-primary my-3 w-100">Aller sur le tableau de bord</a>
+            {{-- @endif --}}
         </div>
     </div>
 

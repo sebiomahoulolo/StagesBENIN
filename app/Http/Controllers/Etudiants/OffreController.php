@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Etudiants;
 
 use App\Http\Controllers\Controller;
 use App\Models\Annonce;
+use App\Models\CvCompetence;
+use App\Models\CvExperience;
+use App\Models\CvFormation;
+use App\Models\CvLangue;
+use App\Models\CvProfile;
 use App\Models\Secteur;
 use App\Models\Specialite;
 use Illuminate\Http\Request;
@@ -81,6 +86,94 @@ class OffreController extends Controller
      */
     public function postuler(Annonce $annonce)
     {
+        $etudiant = auth()->user()->etudiant;
+        $etudiant_id = auth()->user()->etudiant->id;
+
+        // Vérifier si le profil CV existe
+        $cvProfile = CvProfile::where('etudiant_id', $etudiant_id)->first();
+
+        if($cvProfile->email === null && $cvProfile->lieu_naissance == null){
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)->with('warning', 'Veuillez compléter votre profil CV pour accéder au tableau de bord.');
+        }
+
+        // Vérifier les champs obligatoires du profil CV
+        if (!$cvProfile) {
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', 'Veuillez créer votre profil CV pour accéder au tableau de bord.');
+        }
+
+        $missingFields = [];
+
+        if ($cvProfile->titre_profil === null) {
+            $missingFields[] = 'le titre de votre profil';
+        }
+        if ($cvProfile->resume_profil === null) {
+            $missingFields[] = 'votre résumé professionnel';
+        }
+        if ($cvProfile->adresse === null) {
+            $missingFields[] = 'votre adresse';
+        }
+        if ($cvProfile->telephone_cv === null) {
+            $missingFields[] = 'votre numéro de téléphone';
+        }
+        if ($cvProfile->email_cv === null) {
+            $missingFields[] = 'votre email professionnel';
+        }
+        if ($cvProfile->date_naissance === null) {
+            $missingFields[] = 'votre date de naissance';
+        }
+        if ($cvProfile->lieu_naissance === null) {
+            $missingFields[] = 'votre lieu de naissance';
+        }
+        if ($cvProfile->nationalite === null) {
+            $missingFields[] = 'votre nationalité';
+        }
+        if ($cvProfile->situation_matrimoniale === null) {
+            $missingFields[] = 'votre situation matrimoniale';
+        }
+        
+
+        if (!empty($missingFields)) {
+            $message = 'Veuillez compléter les informations suivantes dans votre profil CV : ';
+            $message .= implode(', ', $missingFields);
+            $message .= '.';
+
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', $message);
+        }
+
+        // Vérifier si toutes les tables CV sont remplies
+        $missingSections = [];
+
+        $hasFormation = CvFormation::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasFormation) {
+            $missingSections[] = 'formations';
+        }
+
+        $hasExperience = CvExperience::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasExperience) {
+            $missingSections[] = 'expériences professionnelles';
+        }
+
+        $hasCompetence = CvCompetence::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasCompetence) {
+            $missingSections[] = 'compétences';
+        }
+
+        $hasLangue = CvLangue::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasLangue) {
+            $missingSections[] = 'langues';
+        }
+
+        if (!empty($missingSections)) {
+            $message = 'Veuillez ajouter vos ';
+            $message .= implode(', ', $missingSections);
+            $message .= ' dans votre CV.';
+
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', $message);
+        }
+
         // Vérifier si l'annonce est active
         if (!$annonce->est_active || $annonce->statut !== 'approuve' || $annonce->date_cloture < now()) {
             return redirect()->route('etudiants.offres.show', $annonce)
@@ -109,7 +202,7 @@ class OffreController extends Controller
      */
     public function postulerSubmit(Request $request, Annonce $annonce)
     {
-        // dd('flzfze');
+
         // Valider les données du formulaire
         $validated = $request->validate([
             'pretention_salariale' => 'required|numeric|min:0',

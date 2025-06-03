@@ -21,17 +21,17 @@
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
         }
-        
+
         .dashboard-header:hover {
             box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
-        
+
         .welcome-message h1 {
             color: #2563eb;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             margin-bottom: 0.5rem;
         }
-        
+
         .quick-links-section {
             margin-bottom: 1.5rem;
             background-color: #f9fafb;
@@ -39,7 +39,7 @@
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        
+
         .quick-links-title {
             font-size: 1.2rem;
             color: #374151;
@@ -47,18 +47,18 @@
             display: flex;
             align-items: center;
         }
-        
+
         .quick-links-title i {
             margin-right: 0.5rem;
             color: #2563eb;
         }
-        
+
         .quick-links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 1rem;
         }
-        
+
         .quick-link-item {
             display: flex;
             flex-direction: column;
@@ -72,26 +72,26 @@
             color: #4b5563;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        
+
         .quick-link-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             color: #2563eb;
         }
-        
+
         .quick-link-item i {
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
             color: #2563eb;
         }
-        
+
         .dashboard-cards {
             margin-bottom: 1.5rem;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1rem;
         }
-        
+
         .card {
             background: #fff;
             border-radius: 12px;
@@ -100,12 +100,12 @@
             transition: all 0.3s ease;
             border: 1px solid #0d6efd;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
-        
+
         .card-header {
             padding: 1.25rem;
             display: flex;
@@ -113,27 +113,27 @@
             border-bottom: 1px solid rgba(229, 231, 235, 0.5);
             background: linear-gradient(to right, rgba(249, 250, 251, 0.5), rgba(255, 255, 255, 0.8));
         }
-        
+
         .card-header i {
             font-size: 1.5rem;
             margin-right: 0.75rem;
         }
-        
+
         .card-title {
             margin: 0;
             font-size: 1.1rem;
             color: #1f2937;
             font-weight: 600;
         }
-        
+
         .card-content {
             padding: 1.5rem;
         }
-        
+
         .card-content strong {
             font-weight: 600;
         }
-        
+
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -142,7 +142,7 @@
             /* border-bottom: 1px solid #e5e7eb; */
             padding-bottom: 0.75rem;
         }
-        
+
         .section-title {
             font-size: 1.25rem;
             color: #111827;
@@ -151,12 +151,12 @@
             align-items: center;
             font-weight: 600;
         }
-        
+
         .section-title i {
             margin-right: 0.75rem;
             font-size: 1.2rem;
         }
-        
+
         .view-all {
             color: #2563eb;
             text-decoration: none;
@@ -166,22 +166,22 @@
             align-items: center;
             transition: all 0.2s ease;
         }
-        
+
         .view-all:hover {
             color: #1d4ed8;
             transform: translateX(3px);
         }
-        
+
         .view-all i {
             margin-left: 5px;
             font-size: 0.85rem;
             transition: transform 0.2s ease;
         }
-        
+
         .view-all:hover i {
             transform: translateX(3px);
         }
-        
+
         .activity-item, .event-item {
             display: flex;
             margin-bottom: 1rem;
@@ -191,12 +191,12 @@
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        
+
         .activity-item:hover, .event-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        
+
         .activity-icon, .event-icon {
             width: 40px;
             height: 40px;
@@ -208,11 +208,11 @@
             flex-shrink: 0;
             color: white;
         }
-        
+
         .activity-icon i, .event-icon i {
             font-size: 1rem;
         }
-        
+
         .progress-container {
             background-color: #e5e7eb;
             border-radius: 10px;
@@ -221,7 +221,7 @@
             margin-top: 0.5rem;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 8px;
             border-radius: 10px;
@@ -238,21 +238,21 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         @media (max-width: 1200px) {
             .main-functions-grid {
                 grid-template-columns: repeat(4, 1fr);
                 max-width: 900px;
             }
         }
-        
+
         @media (max-width: 992px) {
             .main-functions-grid {
                 grid-template-columns: repeat(3, 1fr);
                 max-width: 700px;
             }
         }
-        
+
         @media (max-width: 576px) {
             .main-functions-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -260,7 +260,7 @@
                 gap: 0.75rem;
             }
         }
-        
+
         .main-function-item {
             display: flex;
             flex-direction: column;
@@ -279,12 +279,12 @@
             margin: 0 auto;
             justify-content: center;
         }
-        
+
         .main-function-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 18px rgba(0,0,0,0.1);
         }
-        
+
         .main-function-icon {
             width: 50px;
             height: 50px;
@@ -295,20 +295,20 @@
             margin-bottom: 0.75rem;
             transition: all 0.3s ease;
         }
-        
+
         .main-function-item:hover .main-function-icon {
             color: white;
         }
-        
+
         .main-function-icon i {
             font-size: 1.4rem;
             transition: transform 0.3s ease;
         }
-        
+
         .main-function-item:hover .main-function-icon i {
             transform: scale(1.1);
         }
-        
+
         .main-function-title {
             font-weight: 500;
             font-size: 0.85rem;
@@ -321,7 +321,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
-        
+
         @media (max-width: 640px) {
             .main-function-title {
                 font-size: 0.75rem;
@@ -334,20 +334,20 @@
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         @media (max-width: 767px) {
             .stats-summary {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
-        
+
         @media (max-width: 480px) {
             .stats-summary {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 0.75rem;
             }
         }
-        
+
         .stat-card {
             background: #fff;
             border-radius: 12px;
@@ -357,12 +357,12 @@
             align-items: center;
             transition: all 0.3s ease;
         }
-        
+
         .stat-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 18px rgba(0,0,0,0.12);
         }
-        
+
         .stat-icon {
             width: 48px;
             height: 48px;
@@ -373,73 +373,73 @@
             margin-right: 1rem;
             flex-shrink: 0;
         }
-        
+
         .stat-icon i {
             font-size: 1.4rem;
             color: white;
         }
-        
+
         .stat-content h3 {
             margin: 0;
             font-size: 0.85rem;
             color: #6b7280;
             font-weight: 500;
         }
-        
+
         .stat-content p {
             margin: 0.25rem 0 0;
             font-size: 1.5rem;
             font-weight: 600;
             color: #111827;
         }
-        
+
         @media (max-width: 480px) {
             .stat-content p {
                 font-size: 1.25rem;
             }
         }
-        
+
         /* Palette de couleurs - Modification pour rendre les icônes toujours visibles */
         .color-blue {
             background-color: #2563eb;
             color: white;
         }
-        
+
         .color-green {
             background-color: #10b981;
             color: white;
         }
-        
+
         .color-orange {
             background-color: #f59e0b;
             color: white;
         }
-        
+
         .color-purple {
             background-color: #8b5cf6;
             color: white;
         }
-        
+
         .color-red {
             background-color: #ef4444;
             color: white;
         }
-        
+
         .color-teal {
             background-color: #14b8a6;
             color: white;
         }
-        
+
         .color-indigo {
             background-color: #4f46e5;
             color: white;
         }
-        
+
         .color-pink {
             background-color: #ec4899;
             color: white;
         }
-        
+
         /* Animation pour les éléments du dashboard */
         @keyframes fadeInUp {
             from {
@@ -451,27 +451,27 @@
                 transform: translateY(0);
             }
         }
-        
+
         .animate-fadeInUp {
             animation: fadeInUp 0.5s ease-out forwards;
         }
-        
+
         .delay-100 {
             animation-delay: 0.1s;
         }
-        
+
         .delay-200 {
             animation-delay: 0.2s;
         }
-        
+
         .delay-300 {
             animation-delay: 0.3s;
         }
-        
+
         .delay-400 {
             animation-delay: 0.4s;
         }
-        
+
         .section-container {
             /* background-color: #fff; */
             /* border-radius: 12px; */
@@ -480,7 +480,7 @@
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
         }
-        
+
         /* .section-container:hover {
             box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         } */
@@ -492,7 +492,7 @@
         <div class="section-header">
             <h2 class="section-title">Tableau de Bord</h2>
         </div>
-        
+
         <div class="main-functions-grid">
             {{-- Tableau de bord --}}
             <a href="{{ route('etudiants.dashboard') }}" class="main-function-item">
@@ -523,7 +523,7 @@
                 </div>
                 <span class="main-function-title">Éditeur CV</span>
             </a>
-            
+
             {{-- Offres --}}
             <a href="{{ route('etudiants.offres.index') }}" class="main-function-item">
                 <div class="main-function-icon color-orange">
@@ -547,7 +547,7 @@
                 </div>
                 <span class="main-function-title">Entreprises suivies</span>
             </a>
-            
+
             {{-- Messagerie --}}
             <a href="{{ route('messagerie-sociale.index') }}" class="main-function-item">
                 <div class="main-function-icon color-purple">
@@ -555,7 +555,7 @@
                 </div>
                 <span class="main-function-title">Messagerie</span>
             </a>
-            
+
             {{-- Entretiens --}}
             {{-- @if(Auth::user()->etudiant)
                 <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="main-function-item">
@@ -574,7 +574,7 @@
                 <span class="main-function-title">Entretiens</span>
             </a>
         @endif
-            
+
             {{-- Événements --}}
             <a href="{{ route('etudiants.evenements.upcoming') }}" class="main-function-item">
                 <div class="main-function-icon color-pink">
@@ -582,7 +582,7 @@
                 </div>
                 <span class="main-function-title">Événements</span>
             </a>
-            
+
             {{-- Agenda --}}
             <a href="#" class="main-function-item">
                 <div class="main-function-icon color-indigo">
@@ -623,7 +623,7 @@
                 <span class="main-function-title">Objectifs</span>
             </a>
 
-           
+
 
             {{-- Profil --}}
             <a href="{{ route('etudiants.profile.edit') }}" class="main-function-item">
@@ -632,7 +632,7 @@
                 </div>
                 <span class="main-function-title">Mon Profil</span>
             </a>
-            
+
             {{-- Plainte/Suggestion --}}
             <a href="{{ route('etudiants.complaints.create') }}" class="main-function-item">
                 <div class="main-function-icon color-red">
@@ -650,7 +650,7 @@
                 <span class="main-function-title">Déconnexion</span>
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
-            
+
         </div>
     </div>
 

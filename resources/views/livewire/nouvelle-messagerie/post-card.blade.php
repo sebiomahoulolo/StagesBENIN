@@ -18,7 +18,7 @@
                 </small>
             </div>
         </div>
-        
+
         @if(auth()->id() === $post->user_id || auth()->user()->isAdmin())
             <div class="dropdown">
                 <button class="btn btn-sm btn-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,7 +34,9 @@
                     @endcan
                     @can('delete-post', $post)
                         <li>
-                            <button class="dropdown-item text-danger" wire:click="deletePost" wire:loading.attr="disabled">
+                            <button class="dropdown-item text-danger"
+                                    wire:click="confirmDelete"
+                                    wire:loading.attr="disabled">
                                 <i class="fas fa-trash me-2"></i> Supprimer
                             </button>
                         </li>
@@ -43,12 +45,12 @@
             </div>
         @endif
     </div>
-    
+
     <div class="card-body">
         <div class="post-content mb-3">
             {!! nl2br(e($post->content)) !!}
         </div>
-        
+
         @if($post->attachments->count() > 0)
             <div class="post-attachments mb-3">
                 <div class="row g-2">
@@ -56,7 +58,7 @@
                         $attachmentsCount = $post->attachments->count();
                         $colClass = $attachmentsCount == 1 ? 'col-12' : ($attachmentsCount == 2 ? 'col-6' : 'col-md-4 col-sm-6');
                     @endphp
-                    
+
                     @foreach($post->attachments as $attachment)
                         <div class="{{ $colClass }}">
                             @if($attachment->isImage())
@@ -81,7 +83,7 @@
                 </div>
             </div>
         @endif
-        
+
         <div class="post-stats d-flex align-items-center text-muted mb-2 px-2">
             <div class="me-3">
                 @if(isset($hasParentIdColumn) && $hasParentIdColumn)
@@ -94,7 +96,7 @@
                 <i class="far fa-share-square me-1"></i> {{ $post->shares->count() }} partages
             </div>
         </div>
-        
+
         <div class="post-actions d-flex border-top border-bottom py-2 mb-3">
             <button class="btn btn-light flex-fill me-1 rounded-pill" wire:click="toggleComments">
                 <i class="far fa-comment me-1"></i> Commenter
@@ -103,7 +105,7 @@
                 <i class="far fa-share-square me-1"></i> Partager
             </button>
         </div>
-        
+
         @if($showShareForm)
             <div class="share-form mb-3">
                 <div class="card shadow-sm border">
@@ -125,11 +127,11 @@
                             <form wire:submit.prevent="sharePost">
                                 <div class="mb-3">
                                     <label for="shareComment" class="form-label">Commentaire (optionnel)</label>
-                                    <textarea 
-                                        id="shareComment" 
-                                        class="form-control @error('shareComment') is-invalid @enderror" 
-                                        wire:model.defer="shareComment" 
-                                        rows="2" 
+                                    <textarea
+                                        id="shareComment"
+                                        class="form-control @error('shareComment') is-invalid @enderror"
+                                        wire:model.defer="shareComment"
+                                        rows="2"
                                         placeholder="Ajouter un commentaire à votre partage..."
                                         @if($isSubmitting) disabled @endif
                                     ></textarea>
@@ -137,7 +139,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-light me-2" wire:click="toggleShareForm" @if($isSubmitting) disabled @endif>
                                         Annuler
@@ -157,7 +159,7 @@
                 </div>
             </div>
         @endif
-        
+
         @if($showComments)
             <div class="comments-section" id="comments-container">
                 @if($post->comments->count() > 0)
@@ -171,16 +173,16 @@
                             @endif
                         @endif
                     </div>
-                    
-                    @php 
-                        $displayedComments = 0; 
+
+                    @php
+                        $displayedComments = 0;
                         if(isset($hasParentIdColumn) && $hasParentIdColumn) {
                             $mainComments = $post->comments->whereNull('parent_id')->sortByDesc('created_at');
                         } else {
                             $mainComments = $post->comments->sortByDesc('created_at');
                         }
                     @endphp
-                    
+
                     @foreach($mainComments as $comment)
                         @if($displayedComments < $commentsToShow)
                             @php $displayedComments++; @endphp
@@ -225,7 +227,7 @@
                                                 </button>
                                             @endif
                                         </div>
-                                        
+
                                         @if(isset($hasParentIdColumn) && $hasParentIdColumn)
                                             <!-- Formulaire de réponse -->
                                             @if($replyToComment === $comment->id)
@@ -243,15 +245,15 @@
                                                         <div class="flex-grow-1">
                                                             <form wire:submit.prevent="submitReply">
                                                                 <div class="input-group">
-                                                                    <input 
-                                                                        type="text" 
-                                                                        class="form-control form-control-sm rounded-pill @error('replyContent') is-invalid @enderror" 
-                                                                        wire:model.defer="replyContent" 
+                                                                    <input
+                                                                        type="text"
+                                                                        class="form-control form-control-sm rounded-pill @error('replyContent') is-invalid @enderror"
+                                                                        wire:model.defer="replyContent"
                                                                         placeholder="Répondre à {{ $comment->user->name }}..."
                                                                         @if($isSubmitting) disabled @endif
                                                                     >
-                                                                    <button 
-                                                                        class="btn btn-sm btn-primary rounded-circle ms-1" 
+                                                                    <button
+                                                                        class="btn btn-sm btn-primary rounded-circle ms-1"
                                                                         type="submit"
                                                                         @if($isSubmitting) disabled @endif
                                                                     >
@@ -261,7 +263,7 @@
                                                                             <i class="fas fa-paper-plane"></i>
                                                                         @endif
                                                                     </button>
-                                                                    <button 
+                                                                    <button
                                                                         class="btn btn-sm btn-light rounded-circle ms-1"
                                                                         type="button"
                                                                         wire:click="cancelReply"
@@ -278,7 +280,7 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            
+
                                             <!-- Réponses aux commentaires -->
                                             @if($comment->replies && $comment->replies->count() > 0)
                                                 <div class="replies ms-4 mt-2">
@@ -328,7 +330,7 @@
                             </div>
                         @endif
                     @endforeach
-                    
+
                     @if($mainComments->count() > $commentsToShow)
                         <div class="text-center mb-3">
                             <button class="btn btn-outline-primary btn-sm rounded-pill" wire:click="showAllComments">
@@ -341,7 +343,7 @@
                         <p class="mb-0">Aucun commentaire. Soyez le premier à commenter!</p>
                     </div>
                 @endif
-                
+
                 <div class="add-comment mt-3">
                     <form wire:submit.prevent="addComment" class="d-flex">
                         <div class="flex-shrink-0 me-2">
@@ -355,15 +357,15 @@
                         </div>
                         <div class="flex-grow-1">
                             <div class="input-group">
-                                <input 
-                                    type="text" 
-                                    class="form-control rounded-pill @error('newComment') is-invalid @enderror" 
-                                    wire:model.defer="newComment" 
+                                <input
+                                    type="text"
+                                    class="form-control rounded-pill @error('newComment') is-invalid @enderror"
+                                    wire:model.defer="newComment"
                                     placeholder="Écrire un commentaire..."
                                     @if($isSubmitting) disabled @endif
                                 >
-                                <button 
-                                    class="btn btn-primary rounded-circle ms-2" 
+                                <button
+                                    class="btn btn-primary rounded-circle ms-2"
                                     type="submit"
                                     @if($isSubmitting) disabled @endif
                                 >
@@ -382,6 +384,31 @@
                 </div>
             </div>
         @endif
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" wire:ignore.self>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" wire:click="deletePost" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="deletePost">Supprimer</span>
+                    <span wire:loading wire:target="deletePost">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Suppression...
+                    </span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -470,7 +497,7 @@
     margin-top: 8px;
 }
 
-.post-card .comment .bg-light, 
+.post-card .comment .bg-light,
 .post-card .reply .bg-light {
     background-color: #f0f2f5 !important;
     border-radius: 18px !important;
@@ -563,15 +590,15 @@
     .post-card .card-header {
         padding: 10px 12px;
     }
-    
+
     .post-card .card-body {
         padding: 12px;
     }
-    
+
     .post-card h5.mb-0 {
         font-size: 14px;
     }
-    
+
     .post-card .post-content {
         font-size: 14px;
     }
@@ -617,17 +644,17 @@
         const shareUrlInput = document.getElementById(elementId);
         shareUrlInput.select();
         document.execCommand('copy');
-        
+
         // Afficher confirmation
         const confirmation = document.getElementById('copyConfirmation' + elementId.replace('shareUrl', ''));
         confirmation.classList.remove('d-none');
-        
+
         // Cacher après 2 secondes
         setTimeout(() => {
             confirmation.classList.add('d-none');
         }, 2000);
     }
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         // Gérer l'affichage du modal de commentaires si besoin
         const showAllCommentsBtn = document.getElementById('show-all-comments');
@@ -637,7 +664,7 @@
                 commentsModal.show();
             });
         }
-        
+
         // Animer les boutons lors du clic
         const buttons = document.querySelectorAll('.post-card .btn');
         buttons.forEach(button => {
@@ -649,7 +676,7 @@
             });
         });
     });
-    
+
     // Cette fonction est appelée via Livewire quand un nouveau commentaire est ajouté
     window.addEventListener('comment-added', event => {
         // Faire défiler vers le nouveau commentaire
@@ -658,4 +685,22 @@
             commentElement.scrollIntoView({ behavior: 'smooth' });
         }
     });
-</script> 
+</script>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('showDeleteModal', () => {
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        });
+
+        Livewire.on('postDeleted', () => {
+            var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            if (deleteModal) {
+                deleteModal.hide();
+            }
+        });
+    });
+</script>
+@endpush
