@@ -3,7 +3,7 @@
 @section('title', 'StagesBENIN')
 
 @push('styles')
-    <style>
+<style>
         .page-header {
             background: #4e73df;
             padding: 2rem 0;
@@ -17,7 +17,7 @@
             margin: 0;
         }
 
-        .entretien-card {
+    .entretien-card {
             border: 1px solid #e3e6f0;
             border-radius: 10px;
             background: white;
@@ -51,7 +51,7 @@
             font-weight: 500;
         }
 
-        .status-badge {
+    .status-badge {
             padding: 0.4rem 1rem;
             border-radius: 5px;
             font-size: 0.9rem;
@@ -92,33 +92,33 @@
             color: #4e73df;
             font-weight: 600;
             margin-bottom: 0.5rem;
-        }
-    </style>
+    }
+</style>
 @endpush
 
 @section('content')
     <div class="page-header">
         <div class="container-fluid">
             <div class="row align-items-center">
-                <div class="col-12">
+            <div class="col-12">
                     <h1 class="page-title">
-                        <i class="fas fa-calendar-check me-2"></i>
-                        Mes entretiens programmés
+                    <i class="fas fa-calendar-check me-2"></i>
+                    Mes entretiens programmés
                     </h1>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
 
 <div class="container-fluid">
-    <div class="row">
-        @forelse ($entretiens as $entretien)
-            <div class="col-md-4 mb-4">
+        <div class="row">
+            @forelse ($entretiens as $entretien)
+                <div class="col-md-4 mb-4">
                 <div class="card entretien-card p-3">
                     
                     <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-briefcase me-2"></i>
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-briefcase me-2"></i>
                             Poste : {{ $entretien->nom_du_poste }}
                         </h5><br>
                          <div class="warning-alert">
@@ -133,7 +133,7 @@
                             <span class="info-value">
                                 <strong>{{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }}</strong>
                             </span>
-                        </div>
+                            </div>
 
                         <div class="info-item d-flex justify-content-between">
                             <span class="info-label">
@@ -150,7 +150,7 @@
                             </span>
                             <span class="info-value">
                                 <strong>{{ $entretien->duree }} min</strong>
-                            </span>
+                                </span>
                         </div>
                     </div>
 
@@ -180,7 +180,7 @@
     </a>
 
     <div id="compte-a-rebours-{{ $entretien->entretien_id }}" class="text-warning fw-bold"></div>
-</div>
+                </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -248,24 +248,24 @@
 
 
                     </div>
+                    </div>
                 </div>
-            </div>
-        @empty
+            @empty
             <div class="col-12 text-center">
                 <div class="empty-state">
                     <i class="fas fa-calendar-times"></i>
                     <h4>Aucun entretien programmé</h4>
                     <p class="text-muted">Vous n'avez aucun entretien prévu pour le moment.</p>
                 </div>
-            </div>
-        @endforelse
+                </div>
+            @endforelse
+        </div>
     </div>
-</div>
 
 @endsection
 
 @push('scripts')
-    <script>
-        // Ajoutez ici vos scripts si nécessaire
-    </script>
+<script>
+    // Ajoutez ici vos scripts si nécessaire
+</script>
 @endpush

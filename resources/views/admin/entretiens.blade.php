@@ -242,8 +242,8 @@
                                         Planifié</option>
                                     <option value="terminé" {{ $entretien->status === 'terminé' ? 'selected' : '' }}>
                                         Terminé</option>
-                                </select>
-                            </div>
+                            </select>
+                        </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -270,8 +270,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6">
                                 <div class="mb-4">
                                     <h6 class="text-primary mb-3">Informations générales</h6>
                                     <ul class="list-group list-group-flush">
@@ -304,8 +304,8 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+            </div>
+            <div class="col-md-6">
                                 <div class="mb-4">
                                     <h6 class="text-primary mb-3">Questions du QCM</h6>
                                     @php
@@ -342,8 +342,8 @@
                                                                 @endforeach
                                                             </ul>
                                                         </div>
-                                                    </div>
-                                                </div>
+            </div>
+        </div>
                                             @endforeach
                                         </div>
                                     @else
@@ -359,12 +359,12 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i>Fermer
-                        </button>
+                                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    @endforeach
+                                </div>
+                    @endforeach
 
     <style>
         .content-area {

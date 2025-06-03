@@ -15,54 +15,62 @@ class AnnonceController extends Controller
     public function index(Request $request)
     {
         $query = Annonce::with(['entreprise', 'admin']);
-        
+
         // Filtrage par statut
         if ($request->has('statut') && in_array($request->statut, ['en_attente', 'approuve', 'rejete'])) {
             $query->where('statut', $request->statut);
         }
-        
+
         $annonces = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.annonces.index', compact('annonces'));
     }
 
-public function show($slug)
-{
-    // Récupérer l’annonce et ses relations
-    $annonce = Annonce::where('slug', $slug)
-                      ->with(['entreprise', 'secteur', 'specialite', 'admin'])
-                      ->firstOrFail();
+    public function show($slug)
+    {
+        // Récupérer l'annonce avec toutes ses relations
+        $annonce = Annonce::where('slug', $slug)
+            ->with([
+                'entreprise',
+                'secteur',
+                'specialite',
+                'admin',
+                'candidatures.etudiant.user',
+                'candidatures.etudiant.specialite',
+                'candidatures.etudiant.cvProfile.formations',
+                'candidatures.etudiant.cvProfile.experiences',
+                'candidatures.etudiant.cvProfile.competences'
+            ])
+            ->firstOrFail();
 
-    // Charger les candidatures avec toutes les relations nécessaires de l’étudiant
-    $candidatures = $annonce->candidatures()
-        ->with([
-            'etudiant.user',
-            'etudiant.specialite',
-            'etudiant.cvProfile.formations',
-            'etudiant.cvProfile.experiences',
-            'etudiant.cvProfile.competences',
-        ])
-        ->latest()
-        ->paginate(10);
+        // dd($annonce->candidatures);
 
+        // Récupérer les candidatures paginées
+        $candidatures = $annonce->candidatures()
+            ->with([
+                'etudiant.user',
+                'etudiant.specialite',
+                'etudiant.cvProfile.formations',
+                'etudiant.cvProfile.experiences',
+                'etudiant.cvProfile.competences'
+            ])
+            ->join('etudiants', 'etudiants.id', '=', 'candidatures.etudiant_id')
+            ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
+            ->select('candidatures.*', 'specialites.nom as nom')
+            ->latest()
+            ->paginate(10);
+        // dd($candidatures);
+
+        // dd($candidatures->etudiant->formations);
+
+        // Récupérer les examens des étudiants qui ont postulé
         $etudiantIds = $candidatures->pluck('etudiant.id')->filter()->toArray();
+        $examens = Examen::whereIn('etudiant_id', $etudiantIds)
+            ->get()
+            ->keyBy('etudiant_id');
 
-        $examens = Examen::whereIn('etudiant_id', $etudiantIds)->get()->keyBy('etudiant_id');
-
-        // dd($examens);
-
-
-    // Log pour débogage
-    \Log::info('Candidatures récupérées avec CV profiles');
-
-    return view('admin.annonces.show', compact('annonce', 'candidatures', 'examens'));
-}
-
-
-
-
-
-
+        return view('admin.annonces.show', compact('annonce', 'candidatures', 'examens'));
+    }
 
     public function approuver(Annonce $annonce)
     {
@@ -109,7 +117,7 @@ public function show($slug)
     {
         $entreprises = \App\Models\Entreprise::all();
         $specialites = \App\Models\Specialite::with('secteur')->get();
-        
+
         return view('admin.annonces.create', compact('entreprises', 'specialites'));
     }
 
@@ -132,7 +140,7 @@ public function show($slug)
 
             // Récupérer le secteur_id à partir de la spécialité sélectionnée
             $specialite = \App\Models\Specialite::findOrFail($validated['specialite_id']);
-            
+
             // Créer l'annonce avec le statut directement approuvé
             $annonce = new \App\Models\Annonce($validated);
             $annonce->entreprise = $validated['entreprise'];
@@ -156,8 +164,6 @@ public function show($slug)
         }
     }
 
-
-    
     public function edit(Annonce $annonce)
     {
         // Vérifier si l'annonce a été créée par l'admin connecté
@@ -168,7 +174,7 @@ public function show($slug)
 
         $entreprises = \App\Models\Entreprise::all();
         $specialites = \App\Models\Specialite::with('secteur')->get();
-        
+
         return view('admin.annonces.edit', compact('annonce', 'entreprises', 'specialites'));
     }
 
@@ -197,7 +203,7 @@ public function show($slug)
 
             // Récupérer le secteur_id à partir de la spécialité sélectionnée
             $specialite = \App\Models\Specialite::findOrFail($validated['specialite_id']);
-            
+
             $annonce->update([
                 'entreprise' => $validated['entreprise'],
                 'nom_du_poste' => $validated['nom_du_poste'],
@@ -244,4 +250,4 @@ public function show($slug)
                 ->with('error', 'Une erreur s\'est produite lors de la suppression de l\'annonce.');
         }
     }
-} 
+}

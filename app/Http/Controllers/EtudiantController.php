@@ -52,44 +52,34 @@ class EtudiantController extends Controller
         // Vérifier si le profil CV existe
         $cvProfile = CvProfile::where('etudiant_id', $etudiant_id)->first();
 
-        // Vérifier les champs obligatoires du profil CV
+        // Vérifier si le profil CV existe
         if (!$cvProfile) {
             return redirect()->route('etudiants.cv.edit', $etudiant_id)
                 ->with('warning', 'Veuillez créer votre profil CV pour accéder au tableau de bord.');
         }
 
-        $missingFields = [];
+        // Vérifier les champs obligatoires du profil CV
+        $requiredFields = [
+            'titre_profil' => 'le titre de votre profil',
+            'resume_profil' => 'votre résumé professionnel',
+            'adresse' => 'votre adresse',
+            'telephone_cv' => 'votre numéro de téléphone',
+            'email_cv' => 'votre email professionnel',
+            'date_naissance' => 'votre date de naissance',
+            'lieu_naissance' => 'votre lieu de naissance',
+            'nationalite' => 'votre nationalité',
+            'situation_matrimoniale' => 'votre situation matrimoniale'
+        ];
 
-        if ($cvProfile->titre_profil === null) {
-            $missingFields[] = 'le titre de votre profil';
-        }
-        if ($cvProfile->resume_profil === null) {
-            $missingFields[] = 'votre résumé professionnel';
-        }
-        if ($cvProfile->adresse === null) {
-            $missingFields[] = 'votre adresse';
-        }
-        if ($cvProfile->telephone_cv === null) {
-            $missingFields[] = 'votre numéro de téléphone';
-        }
-        if ($cvProfile->email_cv === null) {
-            $missingFields[] = 'votre email professionnel';
-        }
-        if ($cvProfile->date_naissance === null) {
-            $missingFields[] = 'votre date de naissance';
-        }
-        if ($cvProfile->lieu_naissance === null) {
-            $missingFields[] = 'votre lieu de naissance';
-        }
-        if ($cvProfile->nationalite === null) {
-            $missingFields[] = 'votre nationalité';
-        }
-        if ($cvProfile->situation_matrimoniale === null) {
-            $missingFields[] = 'votre situation matrimoniale';
+        $missingFields = [];
+        foreach ($requiredFields as $field => $label) {
+            if (empty($cvProfile->$field)) {
+                $missingFields[] = $label;
+            }
         }
 
         if (!empty($missingFields)) {
-            $message = 'Veuillez compléter les informations suivantes dans votre profil CV : ';
+            $message = 'Veuillez compléter les champs obligatoires suivants dans votre profil CV : ';
             $message .= implode(', ', $missingFields);
             $message .= '.';
 

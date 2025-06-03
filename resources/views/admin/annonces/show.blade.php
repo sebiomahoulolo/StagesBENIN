@@ -151,7 +151,7 @@
                                                     {{ $candidature->etudiant->user->name ?? 'Étudiant inconnu' }}
                                                 </td>
                                                 <td>
-                                                    {{ $candidature->etudiant->specialite->nom ?? 'Non spécifiée' }}
+                                                    {{ $candidature->nom ?? 'Non spécifiée' }}
                                                 </td>
                                                 <td>{{ $candidature->created_at->format('d/m/Y H:i') }}</td>
                                                 <td>
