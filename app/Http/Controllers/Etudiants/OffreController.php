@@ -109,7 +109,7 @@ class OffreController extends Controller
      */
     public function postulerSubmit(Request $request, Annonce $annonce)
     {
-        dd('flzfze');
+        // dd('flzfze');
         // Valider les données du formulaire
         $validated = $request->validate([
             'pretention_salariale' => 'required|numeric|min:0',
