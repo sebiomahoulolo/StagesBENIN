@@ -92,6 +92,10 @@ class OffreController extends Controller
         // Vérifier si le profil CV existe
         $cvProfile = CvProfile::where('etudiant_id', $etudiant_id)->first();
 
+        if($cvProfile->email === null && $cvProfile->lieu_naissance == null){
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)->with('warning', 'Veuillez compléter votre profil CV pour accéder au tableau de bord.');
+        }
+
         // Vérifier les champs obligatoires du profil CV
         if (!$cvProfile) {
             return redirect()->route('etudiants.cv.edit', $etudiant_id)
@@ -127,6 +131,7 @@ class OffreController extends Controller
         if ($cvProfile->situation_matrimoniale === null) {
             $missingFields[] = 'votre situation matrimoniale';
         }
+        
 
         if (!empty($missingFields)) {
             $message = 'Veuillez compléter les informations suivantes dans votre profil CV : ';
