@@ -148,7 +148,7 @@
                                         @foreach ($candidatures as $candidature)
                                             <tr>
                                                 <td>
-                                                    {{ $candidature->etudiant->user->name ?? 'Étudiant inconnu' }}
+                                                    {{ $candidature->nom_etudiant ?? 'Étudiant inconnu' }} {{ $candidature->prenom_etudiant ?? '' }}
                                                 </td>
                                                 <td>
                                                     {{ $candidature->nom ?? 'Non spécifiée' }}
