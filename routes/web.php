@@ -424,6 +424,10 @@ Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('
 Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
 Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 
+
+
+Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
+
 Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
 Route::get('/send-emails', [EmailController::class, 'sendEmails']);
 Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');

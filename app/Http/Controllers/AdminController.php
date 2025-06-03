@@ -194,15 +194,31 @@ class AdminController extends Controller
 
 public function resultats_pratique() 
 {
-    // Récupérer tous les examens avec les informations des étudiants
+    // Récupérer tous les examens avec les informations des étudiants, entretien et annonce
     $examens = Examen::with([
-        'etudiant:id,nom,niveau,formation'
+        'etudiant:id,nom,niveau,formation',
+           // Charge l'annonce liée à l'étudiant
     ])->get();
 
     return view('admin.resultats_pratique', compact('examens'));
 }
 
 
+
+public function noter(Request $request, $id)
+{
+    $request->validate([
+        'note' => 'required|numeric|min:1|max:9',
+        'commentaire' => 'nullable|string|max:1000',
+    ]);
+
+    $examen = Examen::findOrFail($id);
+    $examen->note_finale = $request->note;
+    $examen->commentaire = $request->commentaire;
+    $examen->save();
+
+    return redirect()->back()->with('success', 'Note enregistrée avec succès.');
+}
 
 
 

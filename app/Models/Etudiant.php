@@ -54,6 +54,15 @@ public function entreprise()
 {
     return $this->belongsTo(Entreprise::class);
 }
+public function entretien() {
+        return $this->hasOne(Entretien::class);
+    }
+
+    // Relation avec l'annonce (Un étudiant appartient à une annonce)
+    public function annonce() {
+        return $this->belongsTo(Annonce::class);
+    }
+
 
 /**
  * Obtenir les plaintes et suggestions soumises par l'étudiant.

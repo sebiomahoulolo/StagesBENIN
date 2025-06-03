@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Spécialités - StagesBENIN')
+@section('title', 'StagesBENIN')
 
 @push('styles')
     <style>
@@ -83,9 +83,6 @@
 
             <div class="search-container mb-4">
                 <div class="filter-section">
-                    {{-- <div class="search-input">
-                        <input type="text" id="cvSearch" class="form-control" placeholder="Rechercher un étudiant...">
-                    </div> --}}
                     <div class="niveau-select">
                         <select id="niveauFilter" class="form-select">
                             <option value="">Tous les niveaux</option>
@@ -111,17 +108,18 @@
                                 <th>Email</th>
                                 <th>Téléphone</th>
                                 <th>Niveau</th>
+                                <th>Date d'inscription</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($etudiants as $etudiant)
-                                <tr data-niveau="{{ $etudiant->niveau ?? '' }}">
-                                    <td>{{ $etudiant->prenom ?? 'Non spécifié' }} {{ $etudiant->nom ?? 'Non spécifié' }}
-                                    </td>
+                                <tr data-niveau="{{ $etudiant->niveau }}">
+                                    <td>{{ $etudiant->prenom ?? 'Non spécifié' }} {{ $etudiant->nom ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->email ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->telephone ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->niveau ?? 'Non spécifié' }}</td>
+                                    <td>{{ $etudiant->created_at->format('d/m/Y') }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <a href="{{ route('admin.cvtheque.view', $etudiant->id) }}"
@@ -142,50 +140,25 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Initialisation de Select2 pour le filtre de niveau
-            $('#niveauFilter').select2({
-                placeholder: 'Sélectionnez un niveau',
-                allowClear: true
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            const niveauFilter = document.getElementById('niveauFilter');
+            const tableRows = document.querySelectorAll('#cvTable tbody tr');
 
-            // Fonction de filtrage combinée
-            function filterTable() {
-                const searchTerm = $('#cvSearch').val().toLowerCase();
-                const selectedNiveau = $('#niveauFilter').val().toLowerCase();
+            function filtrerEtudiants() {
+                const niveauChoisi = niveauFilter.value;
 
-                $('#cvTable tbody tr').each(function() {
-                    const $row = $(this);
-                    const rowText = $row.text().toLowerCase();
-                    const rowNiveau = $row.data('niveau').toLowerCase();
-
-                    const matchesSearch = rowText.includes(searchTerm);
-                    const matchesNiveau = !selectedNiveau || rowNiveau === selectedNiveau;
-
-                    if (matchesSearch && matchesNiveau) {
-                        $row.show();
-                        // Mettre en surbrillance le texte recherché
-                        if (searchTerm) {
-                            $row.find('td').each(function() {
-                                const $cell = $(this);
-                                const cellText = $cell.text();
-                                if (cellText.toLowerCase().includes(searchTerm)) {
-                                    $cell.html(cellText.replace(
-                                        new RegExp(searchTerm, 'gi'),
-                                        match => `<span class="highlight">${match}</span>`
-                                    ));
-                                }
-                            });
-                        }
-                    } else {
-                        $row.hide();
-                    }
+                tableRows.forEach(row => {
+                    const niveau = row.getAttribute('data-niveau');
+                    row.style.display = (niveauChoisi === '' || niveau === niveauChoisi) ? '' : 'none';
                 });
             }
 
-            // Événements de recherche et de filtrage
-            $('#cvSearch').on('keyup', filterTable);
-            $('#niveauFilter').on('change', filterTable);
+            niveauFilter.addEventListener('change', filtrerEtudiants);
+
+            // Filtrage au chargement (si nécessaire)
+            filtrerEtudiants();
         });
     </script>
 @endpush
+
+

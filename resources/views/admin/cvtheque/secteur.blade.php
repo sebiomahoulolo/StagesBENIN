@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'CVthèque - StagesBENIN')
+@section('title', 'StagesBENIN')
 
 @push('styles')
 <style>

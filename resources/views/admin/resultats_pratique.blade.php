@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Résultats des Examens Pratiques</h3>
+                    <h3 class="card-title">Résultats des entretiens Pratiques</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped">
@@ -18,7 +18,7 @@
                                 <th>Nom</th>
                                 <th>Niveau</th>
                                 <th>Formation</th>
-                                <th>Note QCM</th>
+                                <th>Note de QCM</th>
                                 <th>Total Questions</th>
                                 <th>Bonnes Réponses</th>
                                 <th>Date Passage</th>
@@ -38,7 +38,7 @@
                                     </td>
                                     <td>{{ $examen->total_questions }}</td>
                                     <td>{{ $examen->bonnes_reponses }}</td>
-                                    <td>{{ $examen->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $examen->created_at->format('d/m/Y') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             {{-- Action Voir le CV --}}
@@ -66,7 +66,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">
-                                                    Noter l'examen de {{ $examen->etudiant->nom }}
+                                                    Noter l'entretien de {{ $examen->etudiant->nom }}
                                                 </h5>
                                                 <button type="button" class="close" data-dismiss="modal">
                                                     <span>&times;</span>
@@ -81,8 +81,8 @@
                                                         <strong>Niveau:</strong> {{ $examen->etudiant->niveau }}
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <strong>Date d'examen:</strong> {{ $examen->created_at->format('d/m/Y H:i') }}<br>
-                                                        <strong>Score actuel:</strong> {{ $examen->score }}/10<br>
+                                                        <strong>Date d'entretien:</strong> {{ $examen->created_at->format('d/m/Y H:i') }}<br>
+                                                        <strong>Note actuelle:</strong> {{ $examen->score }}/10<br>
                                                         <strong>Réponses correctes:</strong> {{ $examen->bonnes_reponses }}/{{ $examen->total_questions }}
                                                     </div>
                                                 </div>
@@ -128,7 +128,7 @@
                                                         @endforeach
                                                     @else
                                                         <div class="alert alert-info">
-                                                            Les détails des réponses ne sont pas disponibles pour cet examen.
+                                                            Les détails des réponses ne sont pas disponibles pour cet entretien.
                                                         </div>
                                                     @endif
                                                 </div>
@@ -136,7 +136,9 @@
                                                 <hr>
 
                                                 {{-- Formulaire de notation --}}
-                                                <form action="" method="POST">
+                                                <form id="formNote{{ $examen->id }}" 
+                                                      action="{{ route('admin.examens.noter', $examen->id) }}" 
+                                                      method="POST">
                                                     @csrf
                                                     <div class="form-group">
                                                         <label for="note{{ $examen->id }}">
@@ -166,8 +168,8 @@
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                                     Annuler
                                                 </button>
-                                                <button type="submit" 
-                                                        form="formNote{{ $examen->id }}" 
+                                                <button type="button" 
+                                                        onclick="document.getElementById('formNote{{ $examen->id }}').submit();" 
                                                         class="btn btn-success">
                                                     <i class="fas fa-save"></i> Enregistrer la note
                                                 </button>
@@ -177,7 +179,7 @@
                                 </div>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Aucun examen trouvé</td>
+                                    <td colspan="8" class="text-center">Aucun entretien trouvé</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -187,26 +189,4 @@
         </div>
     </div>
 </div>
-
-{{-- Script pour améliorer l'UX --}}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Soumettre le formulaire quand on clique sur le bouton de sauvegarde
-    document.querySelectorAll('[data-target^="#modalNoter"]').forEach(function(button) {
-        button.addEventListener('click', function() {
-            const modalId = this.getAttribute('data-target');
-            const modal = document.querySelector(modalId);
-            
-            // Ajouter l'événement de soumission au bouton de sauvegarde
-            const saveButton = modal.querySelector('.btn-success');
-            const form = modal.querySelector('form');
-            
-            saveButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                form.submit();
-            });
-        });
-    });
-});
-</script>
 @endsection

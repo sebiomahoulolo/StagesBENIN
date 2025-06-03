@@ -534,7 +534,7 @@
                         <!-- Cellule Contenu -->
                         <td class="header-content-cell">
                         <div class="header-content">
-                            <h1>{{ $cvProfile->nom_complet ?? 'Nom Prénom' }}</h1>
+                            <h1>{{ $cvProfile->etudiant->nom }} {{ $cvProfile->etudiant->prenom }} </h1>
                             @if($cvProfile->titre_profil)<h2>{{ $cvProfile->titre_profil }}</h2>@endif
                             <div class="contact-info">
                                 @if($cvProfile->contact_telephone)<div class="contact-item"><i class="fas fa-phone"></i> {{ $cvProfile->contact_telephone }}</div>@endif
