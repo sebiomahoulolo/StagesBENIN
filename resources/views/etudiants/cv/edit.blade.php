@@ -45,7 +45,7 @@
         <div class="d-flex justify-content-end mt-3">
             @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id; @endphp
             @if ($cvProfileId)
-                @if ($cvProfile->calculateCompletion() > 99)
+                @if ($cvProfile->calculateCompletion() > 66)
                     <a class=" px-4 py-2 bg-indigo-600 rounded-md text-white "
                         href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="btn btn-primary"
                         target="_blank">
@@ -56,7 +56,7 @@
             @endif
         </div>
 
-        @if ($cvProfile->calculateCompletion() < 89)
+        @if ($cvProfile->calculateCompletion() < 66)
             <div class="flex flex-col gap-4 w-full bg-indigo-500 alert alert-warning my-4">
                 <span class=" text-black">Toutes les sections doivent être complétées pour pouvoir visualiser le CV et
                     le tableau de bord de l' etudiant</span>

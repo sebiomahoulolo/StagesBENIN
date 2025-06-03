@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CvProfile;
 use App\Models\Entreprise;
 use App\Models\Entretien;
 use App\Models\Etudiant;
@@ -18,6 +19,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Models\CvFormation;
+use App\Models\CvExperience;
+use App\Models\CvCompetence;
+use App\Models\CvLangue;
 
 class EtudiantController extends Controller
 {
@@ -42,6 +47,87 @@ class EtudiantController extends Controller
     public function index(Request $request)
     {
         $etudiant = auth()->user()->etudiant;
+        $etudiant_id = auth()->user()->etudiant->id;
+
+        // Vérifier si le profil CV existe
+        $cvProfile = CvProfile::where('etudiant_id', $etudiant_id)->first();
+
+        // Vérifier les champs obligatoires du profil CV
+        if (!$cvProfile) {
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', 'Veuillez créer votre profil CV pour accéder au tableau de bord.');
+        }
+
+        $missingFields = [];
+
+        if ($cvProfile->titre_profil === null) {
+            $missingFields[] = 'le titre de votre profil';
+        }
+        if ($cvProfile->resume_profil === null) {
+            $missingFields[] = 'votre résumé professionnel';
+        }
+        if ($cvProfile->adresse === null) {
+            $missingFields[] = 'votre adresse';
+        }
+        if ($cvProfile->telephone_cv === null) {
+            $missingFields[] = 'votre numéro de téléphone';
+        }
+        if ($cvProfile->email_cv === null) {
+            $missingFields[] = 'votre email professionnel';
+        }
+        if ($cvProfile->date_naissance === null) {
+            $missingFields[] = 'votre date de naissance';
+        }
+        if ($cvProfile->lieu_naissance === null) {
+            $missingFields[] = 'votre lieu de naissance';
+        }
+        if ($cvProfile->nationalite === null) {
+            $missingFields[] = 'votre nationalité';
+        }
+        if ($cvProfile->situation_matrimoniale === null) {
+            $missingFields[] = 'votre situation matrimoniale';
+        }
+
+        if (!empty($missingFields)) {
+            $message = 'Veuillez compléter les informations suivantes dans votre profil CV : ';
+            $message .= implode(', ', $missingFields);
+            $message .= '.';
+
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', $message);
+        }
+
+        // Vérifier si toutes les tables CV sont remplies
+        $missingSections = [];
+
+        $hasFormation = CvFormation::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasFormation) {
+            $missingSections[] = 'formations';
+        }
+
+        $hasExperience = CvExperience::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasExperience) {
+            $missingSections[] = 'expériences professionnelles';
+        }
+
+        $hasCompetence = CvCompetence::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasCompetence) {
+            $missingSections[] = 'compétences';
+        }
+
+        $hasLangue = CvLangue::where('cv_profile_id', $cvProfile->id)->exists();
+        if (!$hasLangue) {
+            $missingSections[] = 'langues';
+        }
+
+        if (!empty($missingSections)) {
+            $message = 'Veuillez ajouter vos ';
+            $message .= implode(', ', $missingSections);
+            $message .= ' dans votre CV.';
+
+            return redirect()->route('etudiants.cv.edit', $etudiant_id)
+                ->with('warning', $message);
+        }
 
         $userId = $request->user()->id;
 
@@ -268,7 +354,7 @@ class EtudiantController extends Controller
     }
 
 
-    
+
 
 
     public function showExamen($etudiant_id)
@@ -299,7 +385,7 @@ class EtudiantController extends Controller
         $examen = Examen::where('etudiant_id', $etudiant->id)->first();
 
         // dd($etudiant->id);
-        
+
         // Récupérer l'entretien lié à l'étudiant via l'annonce et les candidatures
         $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
             $query->where('etudiant_id', $etudiant->id);
