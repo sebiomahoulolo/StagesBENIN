@@ -381,9 +381,9 @@
                     <h5 class="section-title mb-0">À propos de l'entreprise</h5>
                 </div>
                 <div class="offre-body">
-                    <h6 class="text-muted mb-3">{{ $annonce->entreprise  }}</h6>
-                    <p class="mb-4">{{ $annonce->description ?? 'Aucune description disponible' }}</p>
-                    <ul class="info-list">
+                    {{--<h6 class="text-muted mb-3">{{ $annonce->entreprise  }}</h6>
+                     <p class="mb-4">{{ $annonce->description ?? 'Aucune description disponible' }}</p>
+                    --}}<ul class="info-list"> 
                         <li>
                             <strong>Secteur:</strong>
                             <span>{{ $annonce->entreprise?->secteur ?? 'Non spécifié' }}</span>

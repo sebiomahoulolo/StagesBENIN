@@ -351,21 +351,20 @@
                  <div class="card-body">
                      <dl class="info-list">
                          {{-- Infos de l'étudiant --}}
-                         <dt><i class="fas fa-id-badge"></i> Matricule</dt><dd>{{ $etudiant->matricule ?? 'N/A' }}</dd>
-                         <dt><i class="fas fa-birthday-cake"></i> Naissance</dt><dd>{{ $etudiant->date_naissance ? $etudiant->date_naissance->format('d/m/Y') : 'N/A' }} {{ $etudiant->lieu_naissance ? ' à ' . $etudiant->lieu_naissance : '' }}</dd>
+                         {{-- <dt><i class="fas fa-id-badge"></i> Matricule</dt><dd>{{ $etudiant->matricule ?? 'N/A' }}</dd> 
+                         <dt><i class="fas fa-birthday-cake"></i> Naissance</dt><dd>{{ $etudiant->date_naissance ? $etudiant->date_naissance->format('d/m/Y') : 'N/A' }} {{ $etudiant->lieu_naissance ? ' à ' . $etudiant->lieu_naissance : '' }}</dd>--}}
                          <dt><i class="fas fa-envelope"></i> Email</dt><dd><a href="mailto:{{ $etudiant->email }}">{{ $etudiant->email ?? 'N/A' }}</a></dd>
                          <dt><i class="fas fa-phone"></i> Téléphone</dt><dd>{{ $etudiant->telephone ?? 'N/A' }}</dd>
-                         <dt><i class="fas fa-map-marker-alt"></i> Adresse</dt><dd>{{ $etudiant->adresse ?? 'N/A' }}</dd>
-                         <dt><i class="fas fa-university"></i> Filière</dt><dd>{{ $etudiant->filiere->nom ?? $etudiant->filiere ?? 'N/A' }}</dd>
+                         <dt><i class="fas fa-map-marked-alt"></i> Adresse </dt><dd>{{ $cvProfile->adresse ?? 'N/A' }}</dd>
+                        {{-- <dt><i class="fas fa-university"></i> Filière</dt><dd>{{ $etudiant->filiere->nom ?? $etudiant->filiere ?? 'N/A' }}</dd> --}}
                          <dt><i class="fas fa-layer-group"></i> Niveau</dt><dd>{{ $etudiant->niveau->nom ?? $etudiant->niveau ?? 'N/A' }}</dd>
 
                          @if($cvProfile)
                              <hr class="my-3" style="border-color: #e2e8f0;">
-                             <dt><i class="fas fa-flag"></i> Nationalité</dt><dd>{{ $cvProfile->nationalite ?? 'N/A' }}</dd>
+                             <dt><i class="fas fa-flag"></i> Nationalité</dt><dd>{{ $cvProfile->nationalite  }}</dd>
                              <dt><i class="fas fa-ring"></i> Situation</dt><dd>{{ $cvProfile->situation_matrimoniale ?? 'N/A' }}</dd>
-                              <dt><i class="fas fa-envelope-open-text"></i> Email (CV)</dt><dd><a href="mailto:{{ $cvProfile->contact_email }}">{{ $cvProfile->contact_email ?? 'N/A' }}</a></dd>
-                              <dt><i class="fas fa-mobile-alt"></i> Téléphone (CV)</dt><dd>{{ $cvProfile->contact_telephone ?? 'N/A' }}</dd>
-                              <dt><i class="fas fa-map-marked-alt"></i> Adresse (CV)</dt><dd>{{ $cvProfile->adresse ?? 'N/A' }}</dd>
+                              {{-- <dt><i class="fas fa-envelope-open-text"></i> Email (CV)</dt><dd><a href="mailto:{{ $cvProfile->contact_email }}">{{ $cvProfile->contact_email ?? 'N/A' }}</a></dd>
+                              <dt><i class="fas fa-mobile-alt"></i> Téléphone (CV)</dt><dd>{{ $cvProfile->contact_telephone ?? 'N/A' }}</dd> --}}
                               <dt><i class="fab fa-linkedin"></i> LinkedIn</dt>
                               <dd>@if($cvProfile->linkedin_url)<a href="{{ $cvProfile->linkedin_url }}" target="_blank" rel="noopener noreferrer">Voir Profil</a>@else N/A @endif</dd>
                               <dt><i class="fas fa-link"></i> Portfolio</dt>
