@@ -53,12 +53,11 @@
             <div class="col-md-4 col-lg-3 mb-4 specialite-item">
                 <div class="card specialite-card h-100">
                     <div class="card-body">
-                        {{-- <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title mb-0">{{ $specialite->nom }}</h5>
-                            <span class="badge bg-primary badge-count">
-                                {{ $specialite->nombre_etudiants ?? 0 }}
-                            </span>
-                        </div> --}}
+                           <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-primary badge-count">
+                    {{ $secteur->specialites->sum('nombre_etudiants') }}
+                </span>
+            </div>
                         <p class="card-text text-muted mb-2">
                             Secteur: {{ $secteur->nom ?? 'Non spécifié' }}
                         </p>

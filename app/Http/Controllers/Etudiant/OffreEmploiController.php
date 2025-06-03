@@ -109,7 +109,6 @@ class OffreEmploiController extends Controller
             
             $aPostule = $candidature !== null;
         }
-        
         $annonce->load('entreprise');
         
         return view('etudiants.offres.show', compact('annonce', 'aPostule', 'candidature'));
