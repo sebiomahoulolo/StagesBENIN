@@ -9,6 +9,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 // Pas besoin de Purifier pour les textarea simples
 
 class CvProfileForm extends Component
@@ -39,13 +40,13 @@ class CvProfileForm extends Component
     {
         $this->cvProfileId = $cvProfileId;
         $this->loadProfileData();
-        $this->etudiant = Auth::user()->etudiant()->firstOrFail();
+        $this->etudiant = Etudiant::findOrFail(Auth::user()->etudiant_id);
     }
 
     public function loadProfileData()
     {
         $profile = CvProfile::findOrFail($this->cvProfileId);
-        if ($profile->etudiant_id !== Auth::user()->etudiant?->id) {
+        if ($profile->etudiant_id !== Auth::user()->etudiant_id) {
             abort(403, 'Action non autorisée.');
         }
         $this->cvProfile = $profile;
@@ -98,28 +99,78 @@ class CvProfileForm extends Component
 
     public function save()
     {
-        $validatedData = $this->validate();
+        $this->validate([
+            'titre_profil' => 'required|string|max:255',
+            'email_cv' => 'required|email|max:255',
+            'telephone_cv' => 'required|string|max:20',
+            'adresse' => 'required|string|max:255',
+            'situation_matrimoniale' => 'required|string|in:Célibataire,Marié(e),Divorcé(e),Veuf(ve),Autre',
+            'nationalite' => 'required|string|max:100',
+            'date_naissance' => 'required|date',
+            'lieu_naissance' => 'required|string|max:255',
+            'resume_profil' => 'required|string|min:50',
+            'linkedin_url' => 'nullable|url|max:255',
+            'portfolio_url' => 'nullable|url|max:255',
+            'photo_cv' => 'nullable|image|max:2048|mimes:jpeg,png,jpg'
+        ], [
+            'titre_profil.required' => 'Le titre du profil est obligatoire',
+            'email_cv.required' => 'L\'email de contact est obligatoire',
+            'email_cv.email' => 'Veuillez entrer une adresse email valide',
+            'telephone_cv.required' => 'Le numéro de téléphone est obligatoire',
+            'adresse.required' => 'L\'adresse est obligatoire',
+            'situation_matrimoniale.required' => 'La situation matrimoniale est obligatoire',
+            'nationalite.required' => 'La nationalité est obligatoire',
+            'date_naissance.required' => 'La date de naissance est obligatoire',
+            'lieu_naissance.required' => 'Le lieu de naissance est obligatoire',
+            'resume_profil.required' => 'Le résumé du profil est obligatoire',
+            'resume_profil.min' => 'Le résumé doit contenir au moins 50 caractères',
+            'linkedin_url.url' => 'L\'URL LinkedIn doit être valide',
+            'portfolio_url.url' => 'L\'URL du portfolio doit être valide',
+            'photo_cv.image' => 'Le fichier doit être une image',
+            'photo_cv.max' => 'L\'image ne doit pas dépasser 2Mo',
+            'photo_cv.mimes' => 'L\'image doit être au format jpeg, png ou jpg'
+        ]);
 
-        // Gérer l'upload photo (inchangé)
-        if ($this->photo_cv) {
-            if ($this->cvProfile->photo_cv_path && Storage::disk('public')->exists($this->cvProfile->photo_cv_path)) {
-                Storage::disk('public')->delete($this->cvProfile->photo_cv_path);
+        try {
+            DB::beginTransaction();
+
+            $cvProfile = CvProfile::updateOrCreate(
+                ['etudiant_id' => $this->etudiant->id],
+                [
+                    'titre_profil' => $this->titre_profil,
+                    'email_cv' => $this->email_cv,
+                    'telephone_cv' => $this->telephone_cv,
+                    'adresse' => $this->adresse,
+                    'linkedin_url' => $this->linkedin_url,
+                    'portfolio_url' => $this->portfolio_url,
+                    'situation_matrimoniale' => $this->situation_matrimoniale,
+                    'nationalite' => $this->nationalite,
+                    'date_naissance' => $this->date_naissance,
+                    'lieu_naissance' => $this->lieu_naissance,
+                    'resume_profil' => $this->resume_profil
+                ]
+            );
+
+            if ($this->photo_cv) {
+                // Supprimer l'ancienne photo si elle existe
+                if ($cvProfile->photo_cv_path) {
+                    Storage::delete($cvProfile->photo_cv_path);
+                }
+
+                // Sauvegarder la nouvelle photo
+                $path = $this->photo_cv->store('cv-photos', 'public');
+                $cvProfile->update(['photo_cv_path' => $path]);
             }
-            $path = $this->photo_cv->store('cv_photos', 'public');
-            $validatedData['photo_cv_path'] = $path;
-            $this->photo_cv_path = $path; // MAJ pour la vue
-            $this->photo_cv = null;
-        } else {
-            unset($validatedData['photo_cv']);
+
+            DB::commit();
+
+            session()->flash('profile_form_message', 'Profil CV mis à jour avec succès !');
+            $this->emit('profileUpdated');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('error', 'Une erreur est survenue lors de la sauvegarde du profil.');
         }
-
-        // Le 'resume_profil' est déjà une chaîne simple venant du textarea
-        // Pas besoin de Purifier
-
-        $this->cvProfile->update($validatedData);
-        session()->flash('profile_form_message', 'Informations générales mises à jour.');
-         // Recharger pour s'assurer que la propriété $resume_profil reflète bien la DB (si strip_tags a modifié qqch)
-         $this->loadProfileData();
     }
 
     public function render()

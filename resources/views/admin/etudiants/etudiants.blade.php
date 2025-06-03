@@ -431,7 +431,7 @@
                             <td>{{ $etudiant->telephone ?: '-' }}</td>
                             <td>{{ $etudiant->niveau ?: '-' }}</td>
                             <td>{{ $etudiant->specialite_nom ?: '-' }}</td>
-                            <td>{{ $etudiant->created_at->format('d/m/Y') }}</td>
+                            <td>{{ $etudiant->created_at->format('d/m/Y H:i') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('admin.etudiants.show', $etudiant->id) }}"

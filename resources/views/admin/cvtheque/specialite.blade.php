@@ -119,7 +119,7 @@
                                     <td>{{ $etudiant->email ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->telephone ?? 'Non spécifié' }}</td>
                                     <td>{{ $etudiant->niveau ?? 'Non spécifié' }}</td>
-                                    <td>{{ $etudiant->created_at->format('d/m/Y') }}</td>
+                                    <td>{{ $etudiant->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <a href="{{ route('admin.cvtheque.view', $etudiant->id) }}"

@@ -151,7 +151,7 @@
                                                     {{ $candidature->etudiant->user->name ?? 'Étudiant inconnu' }}
                                                 </td>
                                                 <td>
-                                                    {{ $candidature->etudiant->specialite->nom ?? 'Non spécifiée' }}
+                                                    {{ $candidature->nom ?? 'Non spécifiée' }}
                                                 </td>
                                                 <td>{{ $candidature->created_at->format('d/m/Y H:i') }}</td>
                                                 <td>
@@ -250,9 +250,9 @@
                                                                             <p><strong>Email:</strong>
                                                                                 {{ $candidature->etudiant->user->email ?? 'Non disponible' }}
                                                                             </p>
-                                                                            <p><strong>Spécialité:</strong>
+                                                                            {{-- <p><strong>Spécialité:</strong>
                                                                                 {{ $candidature->etudiant->specialite->nom ?? 'Non spécifiée' }}
-                                                                            </p>
+                                                                            </p> --}}
                                                                         </div>
                                                                         <div class="col-md-6">
                                                                             <h6>Informations sur la candidature</h6>
