@@ -101,21 +101,21 @@
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="etudiant_date_naissance" class="form-label">Date de Naissance</label>
-                        <input id="etudiant_date_naissance" 
-                               name="date_naissance" 
-                               type="date" 
-                               class="form-control @error('date_naissance') is-invalid @enderror" 
+                        <input id="etudiant_date_naissance"
+                               name="date_naissance"
+                               type="date"
+                               class="form-control @error('date_naissance') is-invalid @enderror"
                                value="{{ old('date_naissance', $etudiant->date_naissance ?? '') }}"
                                max="{{ date('Y-m-d') }}">
                         @error('date_naissance') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 form-group">
+                    {{-- <div class="col-md-6 form-group">
                         <label for="etudiant_formation" class="form-label">Formation Actuelle</label>
                         <input  readonly id="etudiant_formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->nom_specialite) }}">
                         @error('formation') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                    </div>
+                    </div> --}}
                     <div class="col-md-6 form-group">
                         <label for="etudiant_niveau" class="form-label">Niveau d'Études</label>
                         <select id="etudiant_niveau" name="niveau" class="form-control @error('niveau') is-invalid @enderror">
@@ -135,7 +135,7 @@
                         <select id="formation" name="formation" class="form-control @error('specialite_id') is-invalid @enderror">
                             <option value="">Sélectionnez une spécialité</option>
                             @foreach(\App\Models\Specialite::all() as $specialite)
-                                <option value="{{ $specialite->id }}" {{ old('specialite_id', $etudiant->specialite_id) == $specialite->id ? 'selected' : '' }}>
+                                <option value="{{ $specialite->id }}" {{ old('formation', $etudiant->formation) == $specialite->id ? 'selected' : '' }}>
                                     {{ $specialite->nom }}
                                 </option>
                             @endforeach
@@ -185,7 +185,7 @@
                             <template x-if="photoPreview"><img :src="photoPreview" alt="Aperçu nouvelle photo"></template>
                             <template x-if="!photoPreview">
                                 @if ($etudiant->photo_path) <img src="{{ asset('assets/' . $etudiant->photo_path) }}" alt="Photo actuelle">
-                          
+
                                 @else <div class="placeholder"><i class="fas fa-user"></i></div>
                                 @endif
                             </template>

@@ -60,7 +60,7 @@ class AnnonceController extends Controller
                 'etudiants.telephone as etudiant_telephone',
                 'etudiants.date_naissance as etudiant_date_naissance'
             ])
-            ->latest('candidatures.created_at')
+            // ->latest('candidatures.created_at')
             ->paginate(10);
 
             // dd($candidatures);
