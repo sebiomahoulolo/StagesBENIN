@@ -38,6 +38,8 @@ class AnnonceController extends Controller
             ])
             ->firstOrFail();
 
+        // dd($annonce);
+
         // Récupérer les candidatures avec toutes les informations nécessaires
         $candidatures = $annonce->candidatures()
             ->with([
@@ -48,7 +50,7 @@ class AnnonceController extends Controller
                 'etudiant.cvProfile.competences'
             ])
             ->join('etudiants', 'etudiants.id', '=', 'candidatures.etudiant_id')
-            ->join('specialites', 'specialites.id', '=', 'etudiants.specialite_id')
+            ->join('specialites', 'specialites.id', '=', 'etudiants.formation')
             ->select([
                 'candidatures.*',
                 'specialites.nom as specialite_nom',
@@ -60,6 +62,8 @@ class AnnonceController extends Controller
             ])
             ->latest('candidatures.created_at')
             ->paginate(10);
+
+            // dd($candidatures);
 
         // Récupérer les examens des étudiants qui ont postulé
         $etudiantIds = $candidatures->pluck('etudiant_id')->filter()->toArray();

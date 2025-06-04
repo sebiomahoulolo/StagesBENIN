@@ -148,10 +148,10 @@
                                         @foreach ($candidatures as $candidature)
                                             <tr>
                                                 <td>
-                                                    {{ $candidature->nom_etudiant ?? 'Étudiant inconnu' }} {{ $candidature->prenom_etudiant ?? '' }}
+                                                    {{ $candidature->etudiant_prenom ?? 'Étudiant inconnu' }} {{ $candidature->etudiant_nom ?? '' }}
                                                 </td>
                                                 <td>
-                                                    {{ $candidature->nom ?? 'Non spécifiée' }}
+                                                    {{ $candidature->specialite_nom?? 'Non spécifiée' }}
                                                 </td>
                                                 <td>{{ $candidature->created_at->format('d/m/Y H:i') }}</td>
                                                 <td>
@@ -208,14 +208,14 @@
                                                     @php
                                                         $score = $examens[$candidature->etudiant->id]->score ?? null;
                                                     @endphp
-                                                
+
                                                     @if($score !== null)
                                                         {{ $score }} / 20
                                                     @else
                                                         <span class="text-muted">Pas de note</span>
                                                     @endif
                                                 </td>
-                                                
+
                                                 <td>
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-sm btn-outline-primary"
@@ -245,14 +245,15 @@
                                                                         <div class="col-md-6">
                                                                             <h6>Informations sur l'étudiant</h6>
                                                                             <p><strong>Nom:</strong>
-                                                                                {{ $candidature->etudiant->user->name ?? 'Étudiant inconnu' }}
+                                                                                {{ $candidature->etudiant_prenom ?? 'Étudiant inconnu' }}
+                                                                                {{ $candidature->etudiant_nom ?? 'Étudiant inconnu' }}
                                                                             </p>
                                                                             <p><strong>Email:</strong>
-                                                                                {{ $candidature->etudiant->user->email ?? 'Non disponible' }}
+                                                                                {{ $candidature->etudiant_email ?? 'Non disponible' }}
                                                                             </p>
-                                                                            {{-- <p><strong>Spécialité:</strong>
-                                                                                {{ $candidature->etudiant->specialite->nom ?? 'Non spécifiée' }}
-                                                                            </p> --}}
+                                                                            <p><strong>Spécialité:</strong>
+                                                                                {{ $candidature->specialite_nom ?? 'Non spécifiée' }}
+                                                                            </p>
                                                                         </div>
                                                                         <div class="col-md-6">
                                                                             <h6>Informations sur la candidature</h6>

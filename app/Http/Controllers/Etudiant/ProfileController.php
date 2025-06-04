@@ -30,13 +30,17 @@ class ProfileController extends Controller
             ->first();
         
         // Si l'étudiant n'a pas de profil étudiant (ce qui ne devrait pas arriver ici)
-        if (!$etudiant) {
-            $etudiant = Etudiant::create([
-                'user_id' => $user->id,
-                'nom' => $user->name,
-                'email' => $user->email
-            ]);
-        }
+      $etudiant = Etudiant::where('email', $user->email)->first();
+
+if (!$etudiant) {
+    $etudiant = Etudiant::create([
+        'user_id' => $user->id,
+        'nom' => $user->name,
+        'prenom' => $user->prenom ,
+        'email' => $user->email
+    ]);
+}
+
 
         // Formater la date de naissance au format Y-m-d pour l'input date
         if ($etudiant->date_naissance) {

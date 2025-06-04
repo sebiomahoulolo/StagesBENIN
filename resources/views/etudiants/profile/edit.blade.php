@@ -113,7 +113,7 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="etudiant_formation" class="form-label">Formation Actuelle</label>
-                        <input id="etudiant_formation" name="formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->nom_specialite) }}">
+                        <input  readonly id="etudiant_formation" type="text" class="form-control @error('formation') is-invalid @enderror" value="{{ old('formation', $etudiant->nom_specialite) }}">
                         @error('formation') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-md-6 form-group">
@@ -132,7 +132,7 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="etudiant_specialite" class="form-label">Spécialité</label>
-                        <select id="etudiant_specialite" name="specialite_id" class="form-control @error('specialite_id') is-invalid @enderror">
+                        <select id="formation" name="formation" class="form-control @error('specialite_id') is-invalid @enderror">
                             <option value="">Sélectionnez une spécialité</option>
                             @foreach(\App\Models\Specialite::all() as $specialite)
                                 <option value="{{ $specialite->id }}" {{ old('specialite_id', $etudiant->specialite_id) == $specialite->id ? 'selected' : '' }}>
