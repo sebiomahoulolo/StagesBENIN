@@ -113,29 +113,31 @@ class CvController extends Controller
     public function edit()
     {
         try {
-            $cvProfile = $this->getCurrentCvProfile();
-            Log::info("Chargement de la page edit (Livewire) pour CvProfile ID: " . $cvProfile->id);
-            
-            // Vérifier le pourcentage de complétion
-            $completion = $cvProfile->calculateCompletion();
-            
-            // Si le CV n'est pas à 100%, utiliser le layout de base
-            if ($completion < 100) {
-                return view('etudiants.cv.edit', [
-                    'cvProfile' => $cvProfile,
-                    'layout' => 'layouts.app'
-                ]);
+            $etudiant = auth()->user()->etudiant;
+            if (!$etudiant) {
+                Log::error("Tentative d'accès au CV sans profil étudiant pour User ID: " . Auth::id());
+                abort(403, 'Accès non autorisé. Aucun profil étudiant associé.');
             }
-            
-            // Sinon, utiliser le layout étudiant complet
+
+            // Récupérer ou créer le profil CV
+            $cvProfile = $etudiant->cvProfile()->first();
+            Log::info("Profil CV trouvé : " . ($cvProfile ? "Oui" : "Non"));
+
+            if (!$cvProfile) {
+                Log::info("Création d'un nouveau profil CV pour l'étudiant ID: " . $etudiant->id);
+                $cvProfile = $etudiant->cvProfile()->create(['etudiant_id' => $etudiant->id]);
+            }
+
+            Log::info("Chargement de la page edit (Livewire) pour CvProfile ID: " . $cvProfile->id);
+            Log::debug("Données du cvProfile : " . json_encode($cvProfile->toArray()));
+
             return view('etudiants.cv.edit', [
                 'cvProfile' => $cvProfile,
-                'layout' => 'layouts.etudiant.app'
             ]);
         } catch (\Exception $e) {
             Log::error("Erreur majeure lors du chargement de la page edit CV: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('etudiants.dashboard')
-                ->with('error', $e->getMessage()); // Affiche l'erreur spécifique
+                ->with('error', $e->getMessage());
         }
     }
 
@@ -300,7 +302,7 @@ class CvController extends Controller
     {
         try {
             $cvProfile = $this->getCurrentCvProfile();
-            
+
             // Valider les données du formulaire
             $validated = $request->validate([
                 'titre_profil' => 'nullable|string|max:255',
