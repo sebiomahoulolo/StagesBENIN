@@ -1,192 +1,221 @@
-{{-- Vue Blade corrigée - resultats_pratique.blade.php --}}
+{{-- Vue mise à jour - resultats_pratique.blade.php --}}
 @extends('layouts.admin.app')
 
-@section('title', 'StagesBENIN')
+@section('title', 'StagesBENIN - Résultats des entretiens')
 
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Résultats des entretiens Pratiques</h3>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-clipboard-list me-2"></i>
+                            Résultats des entretiens Pratiques
+                        </h3>
+                        
+                    </div>
                 </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Niveau</th>
-                                <th>Formation</th>
-                                <th>Note de QCM</th>
-                                <th>Total Questions</th>
-                                <th>Bonnes Réponses</th>
-                                <th>Date Passage</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($examens as $examen)
-                                <tr>
-                                    <td>{{ $examen->etudiant->nom ?? 'N/A' }}</td>
-                                    <td>{{ $examen->etudiant->niveau ?? 'N/A' }}</td>
-                                    <td>{{ $examen->etudiant->formation ?? 'N/A' }}</td>
-                                    <td>
-                                        <span class="{{ $examen->score >= 5 ? 'success' : 'danger' }}">
-                                            {{ $examen->score }}/10
-                                        </span>
-                                    </td>
-                                    <td>{{ $examen->total_questions }}</td>
-                                    <td>{{ $examen->bonnes_reponses }}</td>
-                                    <td>{{ $examen->created_at->format('d/m/Y') }}</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            {{-- Action Voir le CV --}}
-                                            <a href="{{ route('admin.cvtheque.view', $examen->etudiant->id) }}" 
-                                               class="btn btn-info btn-sm" 
-                                               title="Voir le CV">
-                                                <i class="fas fa-eye"></i> Voir
-                                            </a>
-                                            
-                                            {{-- Action Noter --}}
-                                            <button type="button" 
-                                                    class="btn btn-success btn-sm" 
-                                                    data-toggle="modal" 
-                                                    data-target="#modalNoter{{ $examen->id }}"
-                                                    title="Noter l'examen">
-                                                <i class="fas fa-star"></i> Noter
-                                            </button>
-                                        </div>
-                                    </td>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table">
+                                <tr >
+                                   <th scope="col">
+                                       Nom & Prénom
+                                    </th>
+                                    <th scope="col">
+                                       Niveau
+                                    </th>
+                                    <th scope="col">
+                                      Formation
+                                    </th>
+                                    <th scope="col">
+                                       Annonce d'entretiens
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        </i>Note total
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                       Date Passage
+                                    </th>
+                                    <th scope="col" class="text-center">Actions</th>
                                 </tr>
-
-                                {{-- Modal pour noter --}}
-                                <div class="modal fade" id="modalNoter{{ $examen->id }}" tabindex="-1" role="dialog">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    Noter l'entretien de {{ $examen->etudiant->nom }}
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal">
-                                                    <span>&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                {{-- Informations de l'étudiant --}}
-                                                <div class="row mb-3">
-                                                    <div class="col-md-6">
-                                                        <strong>Étudiant:</strong> {{ $examen->etudiant->nom }}<br>
-                                                        <strong>Formation:</strong> {{ $examen->etudiant->formation }}<br>
-                                                        <strong>Niveau:</strong> {{ $examen->etudiant->niveau }}
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <strong>Date d'entretien:</strong> {{ $examen->created_at->format('d/m/Y H:i') }}<br>
-                                                        <strong>Note actuelle:</strong> {{ $examen->score }}/10<br>
-                                                        <strong>Réponses correctes:</strong> {{ $examen->bonnes_reponses }}/{{ $examen->total_questions }}
-                                                    </div>
+                            </thead>
+                            <tbody>
+                                @forelse ($examens as $index => $examen)
+                                    <tr class="align-middle">
+                                     <td>
+                                            <div class="d-flex align-items-center">
+                                                
+                                                <div>
+                                                    <div class="fw-semibold">{{ $examen->etudiant->nom ?? 'N/A' }} {{ $examen->etudiant->prenom ?? '' }}</div>
+                                                  
                                                 </div>
-
-                                                <hr>
-
-                                                {{-- Questions et réponses --}}
-                                                <h6>Questions et Réponses:</h6>
-                                                <div class="accordion" id="accordionQuestions{{ $examen->id }}">
-                                                    @if(isset($examen->reponses_details) && is_array($examen->reponses_details))
-                                                        @foreach($examen->reponses_details as $index => $reponse)
-                                                            <div class="card">
-                                                                <div class="card-header" id="heading{{ $examen->id }}_{{ $index }}">
-                                                                    <h6 class="mb-0">
-                                                                        <button class="btn btn-link collapsed" type="button" 
-                                                                                data-toggle="collapse" 
-                                                                                data-target="#collapse{{ $examen->id }}_{{ $index }}">
-                                                                            Question {{ $index + 1 }}
-                                                                            <span class="badge badge-{{ $reponse['correct'] ? 'success' : 'danger' }} ml-2">
-                                                                                {{ $reponse['correct'] ? 'Correct' : 'Incorrect' }}
-                                                                            </span>
-                                                                        </button>
-                                                                    </h6>
-                                                                </div>
-                                                                <div id="collapse{{ $examen->id }}_{{ $index }}" 
-                                                                     class="collapse" 
-                                                                     data-parent="#accordionQuestions{{ $examen->id }}">
-                                                                    <div class="card-body">
-                                                                        <p><strong>Question:</strong> {{ $reponse['question'] }}</p>
-                                                                        <p><strong>Réponse donnée:</strong> 
-                                                                            <span class="text-{{ $reponse['correct'] ? 'success' : 'danger' }}">
-                                                                                {{ $reponse['reponse_donnee'] }}
-                                                                            </span>
-                                                                        </p>
-                                                                        @if(!$reponse['correct'])
-                                                                            <p><strong>Bonne réponse:</strong> 
-                                                                                <span class="text-success">{{ $reponse['bonne_reponse'] }}</span>
-                                                                            </p>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    @else
-                                                        <div class="alert alert-info">
-                                                            Les détails des réponses ne sont pas disponibles pour cet entretien.
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                                <hr>
-
-                                                {{-- Formulaire de notation --}}
-                                                <form id="formNote{{ $examen->id }}" 
-                                                      action="{{ route('admin.examens.noter', $examen->id) }}" 
-                                                      method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <label for="note{{ $examen->id }}">
-                                                            <strong>Attribuer une note finale:</strong>
-                                                        </label>
-                                                        <select name="note" id="note{{ $examen->id }}" class="form-control" required>
-                                                            <option value="">-- Sélectionner une note --</option>
-                                                            @for($i = 1; $i <= 9; $i++)
-                                                                <option value="{{ $i }}" {{ (isset($examen->note_finale) && $examen->note_finale == $i) ? 'selected' : '' }}>
-                                                                    {{ $i }}/9
-                                                                </option>
-                                                            @endfor
-                                                        </select>
-                                                    </div>
-                                                    
-                                                    <div class="form-group">
-                                                        <label for="commentaire{{ $examen->id }}">Commentaire (optionnel):</label>
-                                                        <textarea name="commentaire" 
-                                                                  id="commentaire{{ $examen->id }}" 
-                                                                  class="form-control" 
-                                                                  rows="3" 
-                                                                  placeholder="Commentaire sur la performance de l'étudiant...">{{ $examen->commentaire ?? '' }}</textarea>
-                                                    </div>
-                                                </form>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                    Annuler
-                                                </button>
-                                                <button type="button" 
-                                                        onclick="document.getElementById('formNote{{ $examen->id }}').submit();" 
-                                                        class="btn btn-success">
-                                                    <i class="fas fa-save"></i> Enregistrer la note
-                                                </button>
+                                        </td>
+                                        
+                                        <td>
+                                            <span class=" bg-info">{{ $examen->etudiant->niveau ?? 'N/A' }}</span>
+                                        </td>
+                                        
+                                        <td>
+                                            <span class="text-wrap">{{ $examen->etudiant->formation ?? 'N/A' }}</span>
+                                        </td>
+                                        
+                                        <td>
+                                            <span class="bg-secondary">{{ $examen->annonce->nom_du_poste ?? 'Non spécifié' }}</span>
+                                        </td>
+                                        
+                                        <td class="text-center">
+                                            <div class="score-container">
+                                                <span class=" fs-6 {{ $examen->score >= 5 ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $examen->score }}/10
+                                                </span>
+                                                {{-- <div class="progress mt-1" style="height: 4px;">
+                                                    <div class="progress-bar {{ $examen->score >= 5 ? 'bg-success' : 'bg-danger' }}" 
+                                                         style="width: {{ ($examen->score / 10) * 100 }}%"></div>
+                                                </div> --}}
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center">Aucun entretien trouvé</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                        </td>
+                                        
+                                        
+
+                                        
+                                        <td class="text-center">
+                                            <div class="text-muted">
+                                                
+                                                {{ $examen->created_at->format('d/m/Y') }}
+                                                <br>
+                                                <small>{{ $examen->created_at->format('H:i') }}</small>
+                                            </div>
+                                        </td>
+                                        
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group" aria-label="Actions">
+                                                <a href="{{ route('admin.cvtheque.view', $examen->etudiant->id) }}" 
+                                                   class="btn btn-outline-info btn-sm" 
+                                                   title="Voir le CV" 
+                                                   data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('admin.examens.noter', $examen->id) }}" 
+                                                   class="btn btn-outline-primary btn-sm" 
+                                                   title="Voir les détails" 
+                                                   data-bs-toggle="tooltip">
+                                                    <i class="fas fa-info-circle"></i> Noter
+                                                </a>
+                                                @if(isset($examen->note_pratique))
+                                                    <button type="button" 
+                                                            class="btn btn-outline-warning btn-sm" 
+                                                            title="Modifier la note" 
+                                                            data-bs-toggle="tooltip"
+                                                            onclick="openEditModal({{ $examen->id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="11" class="text-center py-5">
+                                            <div class="text-muted">
+                                                <i class="fas fa-inbox fa-3x mb-3"></i>
+                                                <h5>Aucun entretien trouvé</h5>
+                                                <p>Il n'y a pas encore d'entretiens pratiques enregistrés.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                
+                @if($examens->hasPages())
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                Affichage de {{ $examens->firstItem() }} à {{ $examens->lastItem() }} 
+                                sur {{ $examens->total() }} résultats
+                            </div>
+                            {{ $examens->links() }}
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
+
+
+@endsection
+
+{{-- Scripts pour améliorer l'expérience utilisateur --}}
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialisation des tooltips Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Animation des badges au survol
+    document.querySelectorAll('.badge').forEach(function(badge) {
+        badge.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.transition = 'transform 0.2s ease';
+        });
+        
+        badge.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+
+    // Animation des cartes de statistiques
+    document.querySelectorAll('.card').forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'transform 0.2s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Confirmation pour les actions sensibles
+    document.querySelectorAll('form[action*="supprimer"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Êtes-vous sûr de vouloir effectuer cette action ? Cette opération est irréversible.')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Fonction pour filtrer le tableau
+    function filterTable() {
+        // Implémentation du filtrage si nécessaire
+    }
+
+    // Gestion de l'impression
+    window.addEventListener('beforeprint', function() {
+        document.body.classList.add('printing');
+    });
+
+    window.addEventListener('afterprint', function() {
+        document.body.classList.remove('printing');
+    });
+});
+
+// Fonction pour ouvrir le modal d'édition
+function openEditModal(examenId) {
+    // Implémentation du modal d'édition
+    console.log('Ouvrir modal pour examen ID:', examenId);
+}
+</script>
 @endsection

@@ -34,18 +34,11 @@ class AnnonceController extends Controller
                 'entreprise',
                 'secteur',
                 'specialite',
-                'admin',
-                'candidatures.etudiant.user',
-                'candidatures.etudiant.specialite',
-                'candidatures.etudiant.cvProfile.formations',
-                'candidatures.etudiant.cvProfile.experiences',
-                'candidatures.etudiant.cvProfile.competences'
+                'admin'
             ])
             ->firstOrFail();
 
-        // dd($annonce->candidatures);
-
-        // Récupérer les candidatures paginées
+        // Récupérer les candidatures paginées avec toutes les relations nécessaires
         $candidatures = $annonce->candidatures()
             ->with([
                 'etudiant.user',
@@ -56,15 +49,15 @@ class AnnonceController extends Controller
             ])
             ->join('etudiants', 'etudiants.id', '=', 'candidatures.etudiant_id')
             ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
-            ->select('candidatures.*', 'specialites.nom as nom')
+            ->select('candidatures.*', 'specialites.nom as nom', 'etudiants.nom as nom_etudiant', 'etudiants.prenom as prenom_etudiant', 'etudiants.email as email_etudiant')
             ->latest()
             ->paginate(10);
-        // dd($candidatures);
 
-        // dd($candidatures->etudiant->formations);
+            // dd($candidatures);
 
         // Récupérer les examens des étudiants qui ont postulé
-        $etudiantIds = $candidatures->pluck('etudiant.id')->filter()->toArray();
+        $etudiantIds = $candidatures->pluck('etudiant_id')->filter()->toArray();
+
         $examens = Examen::whereIn('etudiant_id', $etudiantIds)
             ->get()
             ->keyBy('etudiant_id');

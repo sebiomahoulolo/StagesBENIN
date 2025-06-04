@@ -26,6 +26,15 @@ class Examen extends Model
      * Relation avec le modèle Etudiant
      */
 
+    /**
+     * Relationship with Annonce - ADD THIS METHOD
+     */
+    public function annonce()
+    {
+        return $this->belongsTo(Annonce::class);
+        // or if the foreign key isn't 'annonce_id', specify it:
+        // return $this->belongsTo(Annonce::class, 'your_foreign_key_column');
+    }
 
     public function entreprise()
     {

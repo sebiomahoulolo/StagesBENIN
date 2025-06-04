@@ -192,33 +192,104 @@ class AdminController extends Controller
     
 
 
-public function resultats_pratique() 
+
+    /**
+     * Afficher les résultats des entretiens pratiques
+     */
+    public function resultats_pratique(Request $request)
+    {
+        // Utiliser paginate() au lieu de get() pour avoir accès aux méthodes de pagination
+        $examens = Examen::with(['etudiant', 'annonce'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15); // 15 résultats par page
+        
+        return view('admin.resultats_pratique', compact('examens'));
+    }
+
+    /**
+     * Alternative avec filtres (optionnel)
+     */
+    public function resultats_pratique_avec_filtres(Request $request)
+    {
+        $query = Examen::with(['etudiant', 'annonce']);
+
+        // Filtres optionnels
+        if ($request->filled('statut')) {
+            switch ($request->statut) {
+                case 'admis':
+                    $query->where('note_finale', '>=', 10);
+                    break;
+                case 'non_admis':
+                    $query->where('note_finale', '<', 10)->whereNotNull('note_finale');
+                    break;
+                case 'en_attente':
+                    $query->whereNull('note_finale');
+                    break;
+            }
+        }
+
+        if ($request->filled('poste')) {
+            $query->whereHas('annonce', function($q) use ($request) {
+                $q->where('nom_du_poste', 'like', '%' . $request->poste . '%');
+            });
+        }
+
+        if ($request->filled('date_debut') && $request->filled('date_fin')) {
+            $query->whereBetween('created_at', [
+                $request->date_debut . ' 00:00:00',
+                $request->date_fin . ' 23:59:59'
+            ]);
+        }
+
+        $examens = $query->orderBy('created_at', 'desc')
+                        ->paginate(15)
+                        ->withQueryString(); // Conserve les paramètres de recherche dans la pagination
+
+        return view('admin.resultats_pratique', compact('examens'));
+    }
+
+
+public function noter_examen($id) 
 {
-    // Récupérer tous les examens avec les informations des étudiants, entretien et annonce
-    $examens = Examen::with([
-        'etudiant:id,nom,niveau,formation',
-           // Charge l'annonce liée à l'étudiant
-    ])->get();
+    // Récupérer l'examen spécifique avec l'étudiant et les questions liées
+    $examen = Examen::with(['etudiant:id,nom,niveau,formation', 'questions'])->findOrFail($id);
 
-    return view('admin.resultats_pratique', compact('examens'));
+    return view('admin.noter_examen', compact('examen'));
 }
-
-
 
 public function noter(Request $request, $id)
 {
-    $request->validate([
-        'note' => 'required|numeric|min:1|max:9',
-        'commentaire' => 'nullable|string|max:1000',
-    ]);
-
+    // Vérifier si l'examen existe
     $examen = Examen::findOrFail($id);
-    $examen->note_finale = $request->note;
-    $examen->commentaire = $request->commentaire;
-    $examen->save();
 
-    return redirect()->back()->with('success', 'Note enregistrée avec succès.');
-}
+    // Si c'est une requête POST, enregistrer les modifications
+    if ($request->isMethod('post')) {
+        $request->validate([
+            'note_pratique' => 'required|numeric|min:0|max:10',
+        ]);
+
+        // Récupérer la note QCM actuelle (avant modification)
+        $noteQCM = $examen->score;
+        $notePratique = $request->input('note_pratique');
+        
+        // Calculer la note finale
+        $noteFinale = ($noteQCM + $notePratique) / 2;
+
+        // Mise à jour : la note finale remplace le score
+        $examen->update([
+            'score' => $noteFinale,  // La note finale devient le nouveau score
+            'note_pratique' => $notePratique, // Optionnel : garder trace de la note pratique
+        ]);
+
+        return redirect()->back()->with('success', 'Note finale calculée et enregistrée avec succès.');
+    }
+
+    // Affichage des infos si la requête est GET
+    return view('admin.noter_examen', compact('examen'));
+} 
+
+
+
 
 
 

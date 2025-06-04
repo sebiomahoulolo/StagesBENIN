@@ -426,6 +426,8 @@ Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->
 
 
 
+
+Route::get('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
 Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
 
 Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
