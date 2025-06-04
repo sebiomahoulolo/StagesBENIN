@@ -18,16 +18,24 @@ class ProfileController extends Controller
     {
         // Récupère l'utilisateur authentifié ET son profil étudiant associé
         $user = $request->user();
-        $etudiant = $user->etudiant()
-        ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
-        ->select('etudiants.*', 'specialites.nom as nom_specialite')
-        ->first();
         
-        // dd($etudiant);
+        // Vérifier si l'utilisateur est un étudiant en vérifiant la relation
+        if (!$user->etudiant()->exists()) {
+            abort(403, 'Accès non autorisé. Vous devez être un étudiant pour accéder à cette page.');
+        }
 
+        $etudiant = $user->etudiant()
+            ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
+            ->select('etudiants.*', 'specialites.nom as nom_specialite')
+            ->first();
+        
         // Si l'étudiant n'a pas de profil étudiant (ce qui ne devrait pas arriver ici)
         if (!$etudiant) {
-            $etudiant = Etudiant::create(['user_id' => $user->id]);
+            $etudiant = Etudiant::create([
+                'user_id' => $user->id,
+                'nom' => $user->name,
+                'email' => $user->email
+            ]);
         }
 
         // Formater la date de naissance au format Y-m-d pour l'input date
@@ -35,9 +43,13 @@ class ProfileController extends Controller
             $etudiant->date_naissance = $etudiant->date_naissance->format('Y-m-d');
         }
 
+        // Récupérer le profil CV de l'étudiant
+        $cvProfile = $etudiant->cvProfile()->first();
+
         return view('etudiants.profile.edit', [
             'user' => $user,
             'etudiant' => $etudiant,
+            'cvProfile' => $cvProfile
         ]);
     }
 
@@ -117,4 +129,22 @@ class ProfileController extends Controller
     return redirect()->route('etudiants.profile.edit')->with('status', 'profile-photo-updated');
 }
 
+    /**
+     * Redirige vers la page d'édition du CV
+     */
+    public function editCv(Request $request)
+    {
+        $user = $request->user();
+        $etudiant = $user->etudiant()->firstOrFail();
+        $cvProfile = $etudiant->cvProfile()->first();
+
+        if (!$cvProfile) {
+            // Créer un nouveau profil CV si n'existe pas
+            $cvProfile = $etudiant->cvProfile()->create([
+                'etudiant_id' => $etudiant->id
+            ]);
+        }
+
+        return redirect()->route('etudiants.cv.edit', $cvProfile->id);
+    }
 }

@@ -44,6 +44,7 @@
         {{-- BOUTON DE VISUALISATION --}}
         <div class="d-flex justify-content-end mt-3">
             @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id; @endphp
+
             @if ($cvProfileId)
                 @if ($cvProfile->calculateCompletion() > 66)
                     <a class=" px-4 py-2 bg-indigo-600 rounded-md text-white "
@@ -56,12 +57,12 @@
             @endif
         </div>
 
-        @if ($cvProfile->calculateCompletion() < 66)
+        {{-- @if ($cvProfile->calculateCompletion() < 66)
             <div class="flex flex-col gap-4 w-full bg-indigo-500 alert alert-warning my-4">
                 <span class=" text-black">Toutes les sections doivent être complétées pour pouvoir visualiser le CV et
                     le tableau de bord de l' etudiant</span>
             </div>
-        @endif
+        @endif --}}
 
         {{-- PROGRESSION DU CV --}}
         {{-- <div class=" mb-4 flex flex-col justify-center items-center w-full mx-auto">
@@ -266,32 +267,33 @@
         <div class="cv-editor-container space-y-6 flex flex-col gap-4 w-full ">
             <p class="text-muted">Remplissez ou modifiez chaque section pour construire votre CV.</p>
             @isset($cvProfile)
+                {{-- @php dd($cvProfile); @endphp --}}
                 <div class="card shadow-sm">
-                    <div class="card-body" id="profil">@livewire('etudiants.cv-profile-form', ['cvProfileId' => $cvProfile->id], key('lw-profile-' . $cvProfile->id))</div>
+                    <div class="card-body" id="profil">@livewire('etudiants.cv-profile-form', ['cvProfileId' => $cvProfile->id], key('lw-profile-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="formations">@livewire('etudiants.cv-formations-form', ['cvProfileId' => $cvProfile->id], key('lw-formations-' . $cvProfile->id))</div>
+                    <div class="card-body" id="formations">@livewire('etudiants.cv-formations-form', ['cvProfileId' => $cvProfile->id], key('lw-formations-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="experiences">@livewire('etudiants.cv-experiences-form', ['cvProfileId' => $cvProfile->id], key('lw-experiences-' . $cvProfile->id))</div>
+                    <div class="card-body" id="experiences">@livewire('etudiants.cv-experiences-form', ['cvProfileId' => $cvProfile->id], key('lw-experiences-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="competencs">@livewire('etudiants.cv-competences-form', ['cvProfileId' => $cvProfile->id], key('lw-competences-' . $cvProfile->id))</div>
+                    <div class="card-body" id="competencs">@livewire('etudiants.cv-competences-form', ['cvProfileId' => $cvProfile->id], key('lw-competences-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="langues">@livewire('etudiants.cv-langues-form', ['cvProfileId' => $cvProfile->id], key('lw-langues-' . $cvProfile->id))</div>
+                    <div class="card-body" id="langues">@livewire('etudiants.cv-langues-form', ['cvProfileId' => $cvProfile->id], key('lw-langues-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="centres-interet">@livewire('etudiants.cv-centres-interet-form', ['cvProfileId' => $cvProfile->id], key('lw-interets-' . $cvProfile->id))</div>
+                    <div class="card-body" id="centres-interet">@livewire('etudiants.cv-centres-interet-form', ['cvProfileId' => $cvProfile->id], key('lw-interets-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="certifications">@livewire('etudiants.cv-certifications-form', ['cvProfileId' => $cvProfile->id], key('lw-certs-' . $cvProfile->id))</div>
+                    <div class="card-body" id="certifications">@livewire('etudiants.cv-certifications-form', ['cvProfileId' => $cvProfile->id], key('lw-certs-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="projets">@livewire('etudiants.cv-projets-form', ['cvProfileId' => $cvProfile->id], key('lw-projets-' . $cvProfile->id))</div>
+                    <div class="card-body" id="projets">@livewire('etudiants.cv-projets-form', ['cvProfileId' => $cvProfile->id], key('lw-projets-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="references">@livewire('etudiants.cv-references-form', ['cvProfileId' => $cvProfile->id], key('lw-references-' . $cvProfile->id))</div>
+                    <div class="card-body" id="references">@livewire('etudiants.cv-references-form', ['cvProfileId' => $cvProfile->id], key('lw-references-' . $cvProfile->etudiant_id))</div>
                 </div>
             @else
                 <div class="alert alert-danger">

@@ -3,7 +3,6 @@
         <h4>Informations Générales <span class=" text-danger fw-bold">*</span></h4>
 
     </div>
-
     @if (session()->has('profile_form_message'))
         <div class="alert alert-success" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)">
             {{ session('profile_form_message') }}
