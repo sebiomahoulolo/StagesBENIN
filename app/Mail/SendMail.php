@@ -18,17 +18,17 @@ class SendMail extends Mailable
      *
      * @return void
      */
-    public $details;
+    public $data;
 
-    public function __construct($details)
+    public function __construct($data)
     {
-        $this->details = $details;
+        $this->data = $data;
     }
 
     public function build()
     {
         // dd($this->details);
-        return $this->subject('Nouveau message de contact')
-                    ->view('admin.emails.send');
+        return $this->subject('Entretien programmer')
+                    ->view('emails.send', ['data' => $this->data]);
     }
 }

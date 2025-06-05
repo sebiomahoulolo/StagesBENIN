@@ -7,6 +7,7 @@ use App\Http\Controllers\Etudiants\OffreController;
 use App\Mail\SendMail;
 use App\Models\Actualite;
 use App\Models\Annonce;
+use App\Models\Candidature;
 use App\Models\Catalogue;
 use App\Models\CvProfile;
 use App\Models\Cvtheque;
@@ -27,6 +28,12 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
+    protected $emailController;
+
+    public function __construct(EmailController $emailController)
+    {
+        $this->emailController = $emailController;
+    }
 
     public function validateSubmittedTier(Request $request) // <-- Prend Request, pas Tier $tier
     {
@@ -189,9 +196,6 @@ class AdminController extends Controller
         return view('admin.actualites', compact('actualites'));
     }
 
-    
-
-
 
     /**
      * Afficher les résultats des entretiens pratiques
@@ -202,7 +206,7 @@ class AdminController extends Controller
         $examens = Examen::with(['etudiant', 'annonce'])
             ->orderBy('created_at', 'desc')
             ->paginate(15); // 15 résultats par page
-        
+
         return view('admin.resultats_pratique', compact('examens'));
     }
 
@@ -249,7 +253,7 @@ class AdminController extends Controller
     }
 
 
-public function noter_examen($id) 
+public function noter_examen($id)
 {
     // Récupérer l'examen spécifique avec l'étudiant et les questions liées
     $examen = Examen::with(['etudiant:id,nom,niveau,formation', 'questions'])->findOrFail($id);
@@ -271,7 +275,7 @@ public function noter(Request $request, $id)
         // Récupérer la note QCM actuelle (avant modification)
         $noteQCM = $examen->score;
         $notePratique = $request->input('note_pratique');
-        
+
         // Calculer la note finale
         $noteFinale = ($noteQCM + $notePratique) / 2;
 
@@ -286,11 +290,7 @@ public function noter(Request $request, $id)
 
     // Affichage des infos si la requête est GET
     return view('admin.noter_examen', compact('examen'));
-} 
-
-
-
-
+}
 
 
     public function entretiens()
@@ -575,19 +575,41 @@ public function noter(Request $request, $id)
         }
     }
 
-    public function sendEmail(Request $request)
+    public function sendEmail($data)
     {
         $details = [
             'title' => 'Mail de test',
             'body' => 'Ceci est un mail de test.'
         ];
 
-        Mail::to('aboudousaliou284@gmail.com')->send(new SendMail($details));
-        return redirect()->back()->with('success', 'Mail envoyé avec succès.');
+        Mail::to($data['email'])->send(new SendMail($data));
+        // return redirect()->back()->with('success', 'Mail envoyé avec succès.');
     }
 
     public function updateStatus(Request $request, Entretien $entretien)
     {
+        $annonce = Annonce::findOrFail($entretien->annonce_id);
+        if($request->status === 'planifié'){
+            $data = [
+                'reference' => $entretien->reference,
+                'date' => $entretien->date,
+                'heure' => $entretien->heure,
+                'duree' => $entretien->duree,
+                'annonce' => $annonce->nom_du_poste,
+                // 'etudiant' => $entretien->etudiant->nom . ' ' . $entretien->etudiant->prenom,
+            ];
+            $candidature = Candidature::where('annonce_id', $entretien->annonce_id)
+            ->where('statut', 'accepte')
+            ->get();
+
+            foreach($candidature as $candidat){
+                $data['etudiant'] = $candidat->etudiant->nom . ' ' . $candidat->etudiant->prenom;
+                $data['email'] = $candidat->etudiant->email;
+                $this->sendEmail($data);
+            }
+
+        }
+
         $validated = $request->validate([
             'status' => 'required|in:en_attente,planifié,terminé'
         ], [
