@@ -26,7 +26,7 @@
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Date de passage:</strong> {{ $examen->created_at->format('d/m/Y à H:i') }}</p>
                                <span class="badge badge-{{ $examen->score >= 5 ? 'success' : 'danger' }}">
-                                    {{ $examen->score }}/10
+                                    {{ $examen->score }}
                                 </span>
                             </p>
                         </div>

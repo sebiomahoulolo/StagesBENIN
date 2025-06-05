@@ -36,7 +36,7 @@ if (!$etudiant) {
     $etudiant = Etudiant::create([
         'user_id' => $user->id,
         'nom' => $user->name,
-        'prenom' => $user->prenom ,
+        'prenom' => $user->prenom,
         'email' => $user->email
     ]);
 }
