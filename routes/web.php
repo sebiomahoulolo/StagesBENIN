@@ -424,17 +424,13 @@ Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('
 Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
 Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 
-
-
-
 Route::get('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
-Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
+// Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
 
 Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
 Route::get('/send-emails', [EmailController::class, 'sendEmails']);
 Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');
 Route::post('/emails/message', [EmailController::class, 'envoyerMessage'])->name('emails.message');
-
 
 Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
 Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
@@ -452,8 +448,6 @@ Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
 Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
 // entretiens etudians
-
-
 
 // Géré par register.etudiant.store
 Route::get('/etudiants/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('etudiants.envoyer.examen');

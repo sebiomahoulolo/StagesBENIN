@@ -8,7 +8,7 @@
             <!-- Section Programmer un entretien -->
 
 
-      
+
 <a href="{{ route('admin.resultats_pratique') }}" style="
     display: inline-block;
     background-color: #007bff;
