@@ -33,15 +33,17 @@ class PageController extends Controller
 
     public function index()
     {
-        $actualites = Actualite::all();
+        $actualites = Actualite::orderBy('created_at', 'desc')->take(4)->get();
+
         $nombre_actualites = $actualites->count();
     
-        $evenements = Event::where('is_published', 1)->get();
+       $evenements = Event::where('is_published', 1)->orderBy('created_at', 'desc')->take(4)->get();
+
         $nombre_events = $evenements->count();
     
         
-        $annonces = Annonce::where('statut', 'approuve')->get();// Récupère toutes les offres
-        $nombre_offres = $annonces->count(); // Nombre total d'offres
+      $annonces = Annonce::where('statut', 'approuve')->orderBy('created_at', 'desc')->take(4)->get();
+$nombre_offres = $annonces->count(); // Nombre total d'offres
     
         return view('index', compact('actualites', 'nombre_actualites', 'evenements', 'nombre_events', 'annonces', 'nombre_offres'));
     }
