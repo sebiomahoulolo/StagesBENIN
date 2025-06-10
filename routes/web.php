@@ -596,3 +596,5 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/get-specialites', [App\Http\Controllers\Auth\RegisteredUserController::class, 'getSpecialites'])->name('get.specialites');
+
+Route::post('/admin/noter-cas-pratique/{examen}/{question}', [AdminController::class, 'noterCasPratique'])->name('admin.noter.cas.pratique');

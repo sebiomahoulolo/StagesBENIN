@@ -9,7 +9,7 @@
 
 
 
-<a href="{{ route('admin.resultats_pratique') }}" style="
+<!-- <a href="{{ route('admin.resultats_pratique') }}" style="
     display: inline-block;
     background-color: #007bff;
     color: white;
@@ -21,7 +21,7 @@
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 ">
     Voir les résultats
-</a>
+</a> -->
 <hr>
             <div class="row mb-4">
                 <div class="col-md-12">
@@ -145,6 +145,7 @@
                                             <th class="py-3">Durée Entretien</th>
                                             <th class="py-3">Statut</th>
                                             <th class="py-3">Actions</th>
+                                            <th class="py-3">Résultats</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -193,6 +194,16 @@
                                                         data-bs-target="#viewEntretienModal{{ $entretien->id }}">
                                                         <i class="fas fa-eye me-2"></i>Voir
                                                     </button>
+                                                </td>
+                                                <td>
+                                                    @if($entretien->status === 'planifié')
+                                                        <a href="{{ route('admin.resultats_pratique', ['search' => $entretien->nom_du_poste]) }}" 
+                                                           class="btn btn-info btn-sm" 
+                                                           title="Voir les résultats" 
+                                                           data-bs-toggle="tooltip">
+                                                            <i class="fas fa-chart-bar me-2"></i>Résultats
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty

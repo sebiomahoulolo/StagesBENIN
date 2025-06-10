@@ -1,7 +1,7 @@
 {{-- Vue mise à jour - resultats_pratique.blade.php --}}
 @extends('layouts.admin.app')
 
-@section('title', 'StagesBENIN - Résultats des entretiens')
+@section('title', 'StagesBENIN')
 
 @section('content')
 <div class="container-fluid">
@@ -14,114 +14,342 @@
                             <i class="fas fa-clipboard-list me-2"></i>
                             Résultats des entretiens Pratiques
                         </h3>
-                        
                     </div>
+                </div>
+
+                <!-- Section des filtres -->
+                <div class="card-body border-bottom">
+                    <form id="filterForm" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" name="search" placeholder="Rechercher..." value="{{ request('search') }}">
+                        </div>
+                      
+                       
+                    </form>
                 </div>
                 
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover table-striped mb-0">
                             <thead class="table">
-                                <tr >
-                                   <th scope="col">
-                                       Nom & Prénom
+                                <tr>
+                                    <th scope="col" class="sortable" data-sort="nom">
+                                        Nom & Prénom
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="niveau">
+                                        Niveau
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="formation">
+                                        Formation
+                                        <i class="fas fa-sort"></i>
                                     </th>
                                     <th scope="col">
-                                       Niveau
+                                         Date Passage et Heure
                                     </th>
-                                    <th scope="col">
-                                      Formation
+                                    <th scope="col" class="sortable" data-sort="score">
+                                        Note total
+                                        <i class="fas fa-sort"></i>
                                     </th>
-                                    <th scope="col">
-                                       Annonce d'entretiens
-                                    </th>
-                                    <th scope="col" class="text-center">
-                                        </i>Note total
-                                    </th>
-                                    <th scope="col" class="text-center">
-                                       Date Passage
-                                    </th>
+                                   
                                     <th scope="col" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($examens as $index => $examen)
                                     <tr class="align-middle">
-                                     <td>
+                                        <td>
                                             <div class="d-flex align-items-center">
-                                                
                                                 <div>
                                                     <div class="fw-semibold">{{ $examen->etudiant->nom ?? 'N/A' }} {{ $examen->etudiant->prenom ?? '' }}</div>
-                                                  
                                                 </div>
                                             </div>
                                         </td>
                                         
                                         <td>
-                                            <span class=" bg-info">{{ $examen->etudiant->niveau ?? 'N/A' }}</span>
+                                            <span class="bg-info">{{ $examen->etudiant->niveau ?? 'N/A' }}</span>
                                         </td>
                                         
                                         <td>
-                                            <span class="text-wrap">{{ getSpecialiteName($examen->etudiant->formation) }}</span>
+                                            <span class="text-wrap">
+                                                @php
+                                                    $specialite = \App\Models\Specialite::find($examen->etudiant->formation);
+                                                @endphp
+                                                {{ $specialite ? $specialite->nom : 'N/A' }}
+                                            </span>
                                         </td>
                                         
                                         <td>
-                                            <span class="bg-secondary">{{ $examen->annonce->nom_du_poste ?? 'Non spécifié' }}</span>
+                                            <br>
+                                            <small class="text-muted">
+                                                @php
+                                                    $candidature = $examen->etudiant->candidatures()
+                                                        ->whereHas('annonce', function($query) {
+                                                            $query->whereHas('entretiens');
+                                                        })
+                                                        ->first();
+                                                    
+                                                    $entretien = $candidature ? $candidature->annonce->entretiens->first() : null;
+                                                @endphp
+                                                @if($entretien)
+                                                    <i class="fas fa-calendar"></i> {{ is_string($entretien->date) ? $entretien->date : $entretien->date->format('d/m/Y') }}
+                                                    <i class="fas fa-clock ms-2"></i> {{ $entretien->heure }}
+                                                    <br>
+                                                    <i class="fas fa-hourglass-half"></i> {{ $entretien->duree }} min
+                                                @endif
+                                            </small>
                                         </td>
                                         
                                         <td class="text-center">
                                             <div class="score-container">
-                                                <span class=" fs-6 {{ $examen->score >= 5 ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ $examen->score }}/10
+                                                <span class="fs-6 {{ $examen->score >= 5 ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $examen->score }}
                                                 </span>
-                                                {{-- <div class="progress mt-1" style="height: 4px;">
-                                                    <div class="progress-bar {{ $examen->score >= 5 ? 'bg-success' : 'bg-danger' }}" 
-                                                         style="width: {{ ($examen->score / 10) * 100 }}%"></div>
-                                                </div> --}}
+                                              
                                             </div>
                                         </td>
                                         
-                                        
-
-                                        
-                                        <td class="text-center">
-                                            <div class="text-muted">
-                                                
-                                                {{ $examen->created_at->format('d/m/Y') }}
-                                                <br>
-                                                <small>{{ $examen->created_at->format('H:i') }}</small>
-                                            </div>
-                                        </td>
+                                      
                                         
                                         <td class="text-center">
-                                            <div class="btn-group" role="group" aria-label="Actions">
-                                                <a href="{{ route('admin.cvtheque.view', $examen->etudiant->id) }}" 
+                                              <a href="{{ route('admin.cvtheque.view', $examen->etudiant->id) }}" 
                                                    class="btn btn-outline-info btn-sm" 
                                                    title="Voir le CV" 
                                                    data-bs-toggle="tooltip">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="fas fa-eye"></i>CV
                                                 </a>
-                                                <a href="{{ route('admin.examens.noter', $examen->id) }}" 
-                                                   class="btn btn-outline-primary btn-sm" 
-                                                   title="Voir les détails" 
-                                                   data-bs-toggle="tooltip">
-                                                    <i class="fas fa-info-circle"></i> Noter
-                                                </a>
-                                                @if(isset($examen->note_pratique))
-                                                    <button type="button" 
-                                                            class="btn btn-outline-warning btn-sm" 
-                                                            title="Modifier la note" 
-                                                            data-bs-toggle="tooltip"
-                                                            onclick="openEditModal({{ $examen->id }})">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                @endif
-                                            </div>
+                                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $examen->id }}">
+                                                <i class="fas fa-eye me-2"></i>Noter
+                                            </button>
                                         </td>
                                     </tr>
+
+                                    <!-- Modal pour les détails -->
+                                    <div class="modal fade" id="detailsModal{{ $examen->id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ $examen->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-info text-white">
+                                                    <h5 class="modal-title" id="detailsModalLabel{{ $examen->id }}">
+                                                        <i class="fas fa-clipboard-list me-2"></i>
+                                                        Cas Pratiques - {{ $examen->etudiant->nom }} {{ $examen->etudiant->prenom }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row mb-4">
+                                                        <div class="col-md-6">
+                                                            <h6 class="text-primary mb-3">Informations de l'étudiant</h6>
+                                                            <ul class="list-group list-group-flush">
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="fw-bold">Nom:</span>
+                                                                    <span>{{ $examen->etudiant->nom }} {{ $examen->etudiant->prenom }}</span>
+                                                                </li>
+                                                               
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6 class="text-primary mb-3">Informations de l'entretien</h6>
+                                                            <ul class="list-group list-group-flush">
+                                                                @php
+                                                                    $candidature = $examen->etudiant->candidatures()
+                                                                        ->whereHas('annonce', function($query) {
+                                                                            $query->whereHas('entretiens');
+                                                                        })
+                                                                        ->first();
+                                                                    
+                                                                    $entretien = $candidature ? $candidature->annonce->entretiens->first() : null;
+                                                                @endphp
+                                                                @if($entretien)
+                                                                    <li class="list-group-item d-flex justify-content-between">
+                                                                        <span class="fw-bold">Date:</span>
+                                                                        <span>{{ is_string($entretien->date) ? $entretien->date : $entretien->date->format('d/m/Y') }}</span>
+                                                                    </li>
+                                                                    
+                                                                   
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <h6 class="text-primary mb-3">Cas pratiques</h6>
+                                                    <div class="accordion" id="questionsAccordion{{ $examen->id }}">
+                                                        @php
+                                                            // Récupération de l'entretien et de l'annonce
+                                                            $candidature = $examen->etudiant->candidatures()
+                                                                ->whereHas('annonce', function($query) {
+                                                                    $query->whereHas('entretiens');
+                                                                })
+                                                                ->first();
+                                                            
+                                                            $entretien = $candidature ? $candidature->annonce->entretiens->first() : null;
+                                                            
+                                                            // Décodage des réponses JSON avec meilleure gestion des erreurs
+                                                            $reponses = [];
+                                                            if ($examen->reponses) {
+                                                            try {
+                                                                    // Nettoyage du JSON si nécessaire
+                                                                    $cleanedJson = str_replace(['\\', '\"'], ['', '"'], $examen->reponses);
+                                                                    $reponses = json_decode($cleanedJson, true);
+                                                                    
+                                                                    // Si le décodage échoue, essayer une autre approche
+                                                                    if (json_last_error() !== JSON_ERROR_NONE) {
+                                                                        $reponses = json_decode($examen->reponses, true);
+                                                                    }
+                                                                    
+                                                                    // Si toujours pas de succès, essayer de parser manuellement
+                                                                    if (json_last_error() !== JSON_ERROR_NONE) {
+                                                                        $reponses = [];
+                                                                        $pairs = explode(',', trim($examen->reponses, '{}'));
+                                                                        foreach ($pairs as $pair) {
+                                                                            if (strpos($pair, ':') !== false) {
+                                                                                list($key, $value) = explode(':', $pair);
+                                                                                $key = trim(trim($key), '"\'');
+                                                                                $value = trim(trim($value), '"\'');
+                                                                                $reponses[$key] = $value;
+                                                                            }
+                                                                        }
+                                                                }
+                                                            } catch (\Exception $e) {
+                                                                $reponses = [];
+                                                                }
+                                                            }
+                                                            
+                                                            // Récupération des questions en utilisant les IDs des réponses
+                                                            $casPratiques = collect();
+                                                            if (!empty($reponses)) {
+                                                                $questionIds = array_keys($reponses);
+                                                                $casPratiques = \App\Models\Question::whereIn('id', $questionIds)
+                                                                    ->where('type', 'cas_pratique')
+                                                                    ->get();
+                                                            }
+                                                        @endphp
+                                                        
+                                                        @forelse($casPratiques as $index => $question)
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button {{ $index === 0 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#question{{ $question->id }}">
+                                                                        <strong>Cas pratique {{ $index + 1 }}</strong>
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="question{{ $question->id }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="mb-3">
+                                                                            <h6 class="text-primary">Énoncé :</h6>
+                                                                            <p class="mb-0">{{ $question->question }}</p>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <h6 class="text-success">Réponse de l'étudiant :</h6>
+                                                                            <p class="mb-0">{{ $reponses[$question->id] ?? 'Aucune réponse' }}</p>
+                                                                            </div>
+                                                                        
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @empty
+                                                            <div class="alert alert-warning">
+                                                                Aucun cas pratique trouvé pour cet examen
+                                                            </div>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                                <div class="mt-4">
+                                                    @php
+                                                        // Récupération de la candidature et de l'entretien programmé
+                                                        $candidature = $examen->etudiant->candidatures()
+                                                            ->whereHas('annonce', function($query) {
+                                                                $query->whereHas('entretiens', function($q) {
+                                                                    $q->where('status', 'planifié');
+                                                                });
+                                                            })
+                                                            ->first();
+                                                        
+                                                        $entretien = $candidature ? $candidature->annonce->entretiens()
+                                                            ->where('status', 'planifié')
+                                                            ->first() : null;
+                                                        
+                                                        // Récupération des questions de l'entretien programmé
+                                                        $questions = $entretien ? $entretien->questions()
+                                                            ->where('type', 'cas_pratique')
+                                                            ->get() : collect();
+                                                    @endphp
+                                                    @if($entretien && $questions->isNotEmpty())
+                                                        <div class="card">
+                                                            <div class="card-header bg-primary text-white">
+                                                                <h5 class="mb-0">
+                                                                    <i class="fas fa-star me-2"></i>
+                                                                    Système de notation - Entretien du {{ is_string($entretien->date) ? $entretien->date : $entretien->date->format('d/m/Y') }}
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                @foreach($questions as $question)
+                                                                    <div class="mb-4">
+                                                                        <h6 class="text-primary mb-3">Cas pratique {{ $loop->iteration }}</h6>
+                                                                        <form action="{{ route('admin.noter.cas.pratique', ['examen' => $examen->id, 'question' => $question->id]) }}" method="POST" class="notation-form" id="notationForm{{ $examen->id }}_{{ $question->id }}">
+                                                                            @csrf
+                                                                            <input type="hidden" name="examen_id" value="{{ $examen->id }}">
+                                                                            <input type="hidden" name="question_id" value="{{ $question->id }}">
+                                                                            <div class="row align-items-end">
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-group">
+                                                                                        <label for="note{{ $examen->id }}_{{ $question->id }}" class="form-label">Note sur 10</label>
+                                                                                        <input type="number" class="form-control" id="note{{ $examen->id }}_{{ $question->id }}" name="note" min="0" max="10" step="0.5" required>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <button type="submit" class="btn btn-primary w-100">
+                                                                                        <i class="fas fa-check me-2"></i>Valider la note
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="alert alert-warning">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            Aucun entretien programmé trouvé pour cet examen
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        <i class="fas fa-times me-2"></i>Fermer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Handle all notation forms
+                                        document.querySelectorAll('form[id^="notationForm"]').forEach(function(form) {
+                                            form.addEventListener('submit', function(e) {
+                                                e.preventDefault();
+                                                
+                                                // Récupérer le bouton de soumission
+                                                const submitButton = form.querySelector('button[type="submit"]');
+                                                
+                                                // Afficher le message de succès
+                                                const alertDiv = document.createElement('div');
+                                                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                                                alertDiv.innerHTML = `
+                                                    <i class="fas fa-check-circle me-2"></i>
+                                                    Note attribuée avec succès
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                `;
+                                                form.parentNode.insertBefore(alertDiv, form);
+                                            });
+                                        });
+                                    });
+                                    </script>
                                 @empty
                                     <tr>
-                                        <td colspan="11" class="text-center py-5">
+                                        <td colspan="7" class="text-center py-5">
                                             <div class="text-muted">
                                                 <i class="fas fa-inbox fa-3x mb-3"></i>
                                                 <h5>Aucun entretien trouvé</h5>
@@ -150,11 +378,8 @@
         </div>
     </div>
 </div>
-
-
 @endsection
 
-{{-- Scripts pour améliorer l'expérience utilisateur --}}
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -163,6 +388,40 @@ document.addEventListener('DOMContentLoaded', function() {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+
+    // Gestion du tri
+    document.querySelectorAll('.sortable').forEach(function(header) {
+        header.addEventListener('click', function() {
+            const sortBy = this.dataset.sort;
+            const currentDir = new URLSearchParams(window.location.search).get('sort_dir') || 'desc';
+            const newDir = currentDir === 'asc' ? 'desc' : 'asc';
+            
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort_by', sortBy);
+            url.searchParams.set('sort_dir', newDir);
+            window.location.href = url.toString();
+        });
+    });
+
+    // Gestion des formulaires de notation
+    document.querySelectorAll('.notation-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Récupérer le bouton de soumission
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            // Afficher le message de succès
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                Note attribuée avec succès
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            form.parentNode.insertBefore(alertDiv, form);
+            });
+        });
 
     // Animation des badges au survol
     document.querySelectorAll('.badge').forEach(function(badge) {
@@ -187,70 +446,56 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0)';
         });
     });
-
-    // Confirmation pour les actions sensibles
-    document.querySelectorAll('form[action*="supprimer"]').forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            if (!confirm('Êtes-vous sûr de vouloir effectuer cette action ? Cette opération est irréversible.')) {
-                e.preventDefault();
-            }
-        });
-    });
-
-    // Fonction pour filtrer le tableau
-    function filterTable() {
-        // Implémentation du filtrage si nécessaire
-    }
-
-    // Gestion de l'impression
-    window.addEventListener('beforeprint', function() {
-        document.body.classList.add('printing');
-    });
-
-    window.addEventListener('afterprint', function() {
-        document.body.classList.remove('printing');
-    });
 });
+</script>
 
-// Fonction pour ouvrir le modal d'édition
-function openEditModal(examenId) {
-    // Implémentation du modal d'édition
-    console.log('Ouvrir modal pour examen ID:', examenId);
+<style>
+.sortable {
+    cursor: pointer;
+    position: relative;
 }
 
-@php
-    function getSpecialiteName($id) {
-        $specialites = [
-            1 => 'Administrateur système',
-            2 => 'Assistant administratif',
-            3 => 'Assistant de direction',
-            4 => 'Assistant ressources humaines',
-            5 => 'Cadre ressources humaines',
-            6 => 'Chargé(e) de projet / Chef de projet',
-            7 => 'Conseiller/conseillère en ressources humaines',
-            8 => 'Directeur/directrice d\'établissement',
-            9 => 'Directeur/directrice des ressources humaines',
-            10 => 'Employé administratif',
-            11 => 'Manager / Superviseur/superviseuse',
-            12 => 'Réceptionniste',
-            13 => 'Responsable administratif',
-            14 => 'Responsable d\'exploitation',
-            15 => 'Responsable des ressources humaines',
-            16 => 'Secrétaire administratif',
-            17 => 'Agent d\'assurance',
-            18 => 'Analyste crédit',
-            19 => 'Analyste financier',
-            20 => 'Auditeur/auditrice',
-            21 => 'Cadre financier',
-            22 => 'Comptable',
-            23 => 'Conseiller/conseillère financier/financière',
-            24 => 'Contrôleur de gestion',
-            25 => 'Directeur/directrice financier/financière',
-            26 => 'Expert-comptable',
-            27 => 'Expert en assurance'
-        ];
-        return $specialites[$id] ?? 'N/A';
+.sortable:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.sortable i {
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+.sortable:hover i {
+    opacity: 1;
+}
+
+.table th {
+    white-space: nowrap;
+}
+
+.score-container {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.bg-success, .bg-danger {
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
     }
-@endphp
-</script>
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+</style>
 @endsection

@@ -202,54 +202,70 @@ class AdminController extends Controller
      */
     public function resultats_pratique(Request $request)
     {
-        // Utiliser paginate() au lieu de get() pour avoir accès aux méthodes de pagination
-        $examens = Examen::with(['etudiant', 'annonce'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15); // 15 résultats par page
+        $search = $request->input('search');
+        $annonce_id = $request->input('annonce_id');
+        
+        $query = Examen::query()
+            ->whereHas('etudiant.candidatures', function($q) use ($search, $annonce_id) {
+                $q->where('statut', 'accepte')
+                  ->whereHas('annonce', function($q2) use ($search, $annonce_id) {
+                      if ($search) {
+                          $q2->where('nom_du_poste', 'like', "%{$search}%");
+                      }
+                      if ($annonce_id) {
+                          $q2->where('id', $annonce_id);
+                      }
+                  });
+            })
+            ->with([
+                'etudiant.candidatures' => function($q) use ($annonce_id) {
+                    $q->where('statut', 'accepte')
+                      ->when($annonce_id, function($q2) use ($annonce_id) {
+                          $q2->where('annonce_id', $annonce_id);
+                      })
+                      ->with(['annonce.entretiens' => function($q) {
+                          $q->where('status', 'terminé')
+                            ->with(['questions' => function($q) {
+                                $q->where('type', 'cas_pratique');
+                            }]);
+                      }]);
+                }
+            ]);
 
-        return view('admin.resultats_pratique', compact('examens'));
+        $examens = $query->paginate(10);
+        
+        // Récupérer toutes les annonces pour le filtre
+        $annonces = Annonce::whereHas('candidatures', function($q) {
+            $q->where('statut', 'accepte');
+        })->get();
+
+        return view('admin.resultats_pratique', compact('examens', 'search', 'annonces'));
     }
 
-    /**
-     * Alternative avec filtres (optionnel)
-     */
-    public function resultats_pratique_avec_filtres(Request $request)
+    private function getReponseForQuestion($examen, $question)
     {
-        $query = Examen::with(['etudiant', 'annonce']);
-
-        // Filtres optionnels
-        if ($request->filled('statut')) {
-            switch ($request->statut) {
-                case 'admis':
-                    $query->where('note_finale', '>=', 10);
-                    break;
-                case 'non_admis':
-                    $query->where('note_finale', '<', 10)->whereNotNull('note_finale');
-                    break;
-                case 'en_attente':
-                    $query->whereNull('note_finale');
-                    break;
+        try {
+            $reponses = json_decode($examen->reponses, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $cleanedJson = str_replace('\\', '', $examen->reponses);
+                $reponses = json_decode($cleanedJson, true);
             }
+            
+            if (isset($reponses[$question->id])) {
+                return $reponses[$question->id];
+            }
+            
+            // Si pas trouvé par ID, essayer de trouver par index
+            $reponseKeys = array_keys($reponses);
+            $questionIndex = $question->id - 1; // Supposant que les IDs sont séquentiels
+            if (isset($reponseKeys[$questionIndex])) {
+                return $reponses[$reponseKeys[$questionIndex]];
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        if ($request->filled('poste')) {
-            $query->whereHas('annonce', function($q) use ($request) {
-                $q->where('nom_du_poste', 'like', '%' . $request->poste . '%');
-            });
-        }
-
-        if ($request->filled('date_debut') && $request->filled('date_fin')) {
-            $query->whereBetween('created_at', [
-                $request->date_debut . ' 00:00:00',
-                $request->date_fin . ' 23:59:59'
-            ]);
-        }
-
-        $examens = $query->orderBy('created_at', 'desc')
-                        ->paginate(15)
-                        ->withQueryString(); // Conserve les paramètres de recherche dans la pagination
-
-        return view('admin.resultats_pratique', compact('examens'));
     }
 
 
@@ -628,5 +644,44 @@ public function noter(Request $request, $id)
         //     return redirect()->back()
         //         ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
         // }
+    }
+
+    public function noterCasPratique(Request $request, Examen $examen, Question $question)
+    {
+        $request->validate([
+            'note' => 'required|numeric|min:0|max:10'
+        ]);
+
+        // Vérifier que la question est bien un cas pratique
+        if ($question->type !== 'cas_pratique') {
+            return back()->with('error', 'Cette question n\'est pas un cas pratique.');
+        }
+
+        // Vérifier que la question appartient bien à l'examen via l'entretien
+        $entretien = $examen->etudiant->candidatures->first()->annonce->entretiens->first();
+        if (!$entretien || !$entretien->questions()->where('id', $question->id)->exists()) {
+            return back()->with('error', 'Cette question n\'appartient pas à cet examen.');
+        }
+
+        try {
+            // Récupérer les notes existantes ou initialiser un tableau vide
+            $notes = json_decode($examen->note_pratique ?? '{}', true);
+            
+            // Mettre à jour la note pour cette question
+            $notes[$question->id] = $request->note;
+            
+            // Calculer la moyenne des notes
+            $moyenne = count($notes) > 0 ? array_sum($notes) / count($notes) : 0;
+            
+            // Mettre à jour l'examen
+            $examen->update([
+                'note_pratique' => json_encode($notes),
+                'note_finale' => ($examen->score + $moyenne) / 2
+            ]);
+
+            return back()->with('success', 'Note attribuée avec succès.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Une erreur est survenue lors de l\'attribution de la note.');
+        }
     }
 }

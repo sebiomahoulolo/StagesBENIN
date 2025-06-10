@@ -8,19 +8,31 @@ class Examen extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'user_id', 'score', 'total_questions', 'reponses', 'bonnes_reponses'];
- protected $casts = [
+    protected $fillable = [
+        'etudiant_id', 
+        'user_id', 
+        'score', 
+        'total_questions', 
+        'reponses', 
+        'bonnes_reponses',
+        'note_pratique',
+        'note_finale'
+    ];
+    protected $casts = [
         'reponses' => 'array',
-        'date_passage' => 'datetime'
+        'date_passage' => 'datetime',
+        'note_pratique' => 'float',
+        'note_finale' => 'float'
     ];
     public function etudiant()
     {
         return $this->belongsTo(Etudiant::class);
     }
 
-
-
-   
+    public function questions()
+    {
+        return $this->hasMany(Question::class, 'entretien_id', 'id');
+    }
 
     /**
      * Relation avec le modèle Etudiant

@@ -38,7 +38,7 @@
 
         <p>
             Vous êtes convoqué(e) à un entretien concernant l'annonce
-            <strong>« Développeur d'application web full stack »</strong>.
+            <strong>{{$data['annonce'] }}</strong>.
         </p>
 
         <p>Voici les détails de l'entretien :</p>

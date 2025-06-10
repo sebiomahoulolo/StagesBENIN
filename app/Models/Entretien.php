@@ -60,6 +60,11 @@ class Entretien extends Model
     return $this->belongsTo(Annonce::class, 'annonce_id');
 }
 
+    // Définir la relation avec les questions
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 
     public function candidatures()
     {
