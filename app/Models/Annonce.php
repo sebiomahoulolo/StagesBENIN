@@ -69,6 +69,12 @@ class Annonce extends Model
         return $this->belongsTo(Specialite::class); // Assurez-vous que Specialite existe
     }
 
+    // Relation avec les entretiens
+    public function entretiens()
+    {
+        return $this->hasMany(Entretien::class);
+    }
+
     // Méthode pour incrémenter les vues
     public function incrementViews()
     {

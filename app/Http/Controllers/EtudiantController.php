@@ -348,57 +348,54 @@ class EtudiantController extends Controller
 
 
     public function showExamen($etudiant_id)
-    {
-        // Trouver l'étudiant ou renvoyer une erreur
-        // $etudiant = Etudiant::findOrFail($etudiant_id);
+{
+    $user_id = Auth::user()->id;
 
-         $user_id = Auth::user()->id;
-
-            $etudiant = Etudiant::where('user_id', $user_id)->first();
-            // dd($etudiant);
-            $etudiant_id = $etudiant->id;
-
-        // Récupérer les entretiens "planifiés" avec leur annonce
-        $entretiens_planifies = Entretien::where('status', 'planifié')->with('annonce')->get();
-
-        // Récupérer les questions liées aux entretiens planifiés
-        $questions = Question::whereIn('entretien_id', $entretiens_planifies->pluck('id'))->with('reponses')->get();
-
-        // Assurer que les options sont bien formatées
-        foreach ($questions as $question) {
-            $question->options = is_string($question->options)
-                ? json_decode($question->options, true) ?? []
-                : ($question->reponses->pluck('texte')->toArray() ?? []);
-        }
-
-        // Récupérer le dernier examen de l'étudiant
-        $examen = Examen::where('etudiant_id', $etudiant->id)->first();
-
-        // dd($etudiant->id);
-
-        // Récupérer l'entretien lié à l'étudiant via l'annonce et les candidatures
-        $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
-            $query->where('etudiant_id', $etudiant->id);
-        })->with('annonce')->first();
-
-        // Sécurisation du nom du poste
-        $nom_du_poste = optional($entretien?->annonce)->nom_du_poste ?? 'Non disponible';
- $duree = optional($entretien?->annonce)->duree ?? 'Non disponible';
-
-        // Passer les résultats à la vue
-        return view('etudiants.examen', [
-            'etudiant' => $etudiant,
-            'questions' => $questions,
-            'examen' => $examen,
-            'score' => $examen->score ?? 0,
-            'total_questions' => $examen->total_questions ?? 0,
-            'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
-            'nom_du_poste' => $nom_du_poste,
-            'duree' => $duree,
-            'entretien' =>$entretien,
-            'entretiens_planifies' => $entretiens_planifies // Ajout de cette variable
-        ]);
+    // Récupérer l'étudiant
+    $etudiant = Etudiant::where('user_id', $user_id)->first();
+    if (!$etudiant) {
+        abort(404, "Étudiant non trouvé");
     }
+
+    // Récupérer l'entretien spécifique à l'étudiant via ses candidatures
+    $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
+        $query->where('etudiant_id', $etudiant->id);
+    })->with('annonce')->first();
+
+    if (!$entretien) {
+        abort(404, "Aucun entretien correspondant trouvé");
+    }
+
+    // Récupérer uniquement les questions liées à cet entretien
+    $questions = Question::where('entretien_id', $entretien->id)->with('reponses')->get();
+
+    // Assurer que les options sont bien formatées
+    foreach ($questions as $question) {
+        $question->options = is_string($question->options)
+            ? json_decode($question->options, true) ?? []
+            : ($question->reponses->pluck('texte')->toArray() ?? []);
+    }
+
+    // Récupérer le dernier examen de l'étudiant
+    $examen = Examen::where('etudiant_id', $etudiant->id)->first();
+
+    // Sécurisation du nom du poste
+    $nom_du_poste = optional($entretien->annonce)->nom_du_poste ?? 'Non disponible';
+    $duree = optional($entretien->annonce)->duree ?? 'Non disponible';
+
+    return view('etudiants.examen', [
+        'etudiant' => $etudiant,
+        'questions' => $questions,
+        'examen' => $examen,
+        'score' => $examen->score ?? 0,
+        'total_questions' => $examen->total_questions ?? 0,
+        'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
+        'nom_du_poste' => $nom_du_poste,
+        'duree' => $duree,
+        'entretien' => $entretien
+    ]);
+}
+
 
 
 

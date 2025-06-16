@@ -30,15 +30,18 @@ class ProfileController extends Controller
             ->first();
         
         // Si l'étudiant n'a pas de profil étudiant (ce qui ne devrait pas arriver ici)
-      $etudiant = Etudiant::where('email', $user->email)->first();
+      $etudiant = Etudiant::where('user_id', $user->id)->first();
 
 if (!$etudiant) {
     $etudiant = Etudiant::create([
         'user_id' => $user->id,
         'nom' => $user->name,
-        'prenom' => $user->prenom,
+        'prenom' => $user->prenom ?? 'Prénom Inconnu',
         'email' => $user->email
+        
     ]);
+    dd($user);
+
 }
 
 
