@@ -409,7 +409,7 @@
                                             <option>Abomey-Calavi</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-primary w-100 py-3">Rechercher</button>
+                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Rechercher</a>
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="pills-entreprise">
@@ -433,7 +433,7 @@
                                             <option>Professionnels</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-primary w-100 py-3">Publier une offre</button>
+                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Publier une offre</a>
                                 </form>
                             </div>
                         </div>
