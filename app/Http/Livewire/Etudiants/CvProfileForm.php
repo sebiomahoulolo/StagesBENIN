@@ -40,7 +40,7 @@ class CvProfileForm extends Component
     public function mount($cvProfileId)
     {
         try {
-            $this->cvProfileId = $cvProfileId;
+        $this->cvProfileId = $cvProfileId;
 
             // Vérifier que l'utilisateur est connecté et a un profil étudiant
             if (!Auth::check() || !Auth::user()->etudiant) {
@@ -49,7 +49,7 @@ class CvProfileForm extends Component
             }
 
             $this->etudiant = Auth::user()->etudiant;
-            $this->loadProfileData();
+        $this->loadProfileData();
         } catch (\Exception $e) {
             session()->flash('error', 'Une erreur est survenue lors du chargement du profil.');
             \Log::error("Erreur dans CvProfileForm::mount : " . $e->getMessage());
@@ -59,7 +59,7 @@ class CvProfileForm extends Component
     public function loadProfileData()
     {
         try {
-            $profile = CvProfile::findOrFail($this->cvProfileId);
+        $profile = CvProfile::findOrFail($this->cvProfileId);
 
             // Vérifier que le profil appartient à l'étudiant connecté
             if ($profile->etudiant_id !== $this->etudiant->id) {
@@ -67,21 +67,21 @@ class CvProfileForm extends Component
                 return;
             }
 
-            $this->cvProfile = $profile;
+        $this->cvProfile = $profile;
 
-            $this->titre_profil = $profile->titre_profil;
+        $this->titre_profil = $profile->titre_profil;
             $this->resume_profil = strip_tags($profile->resume_profil ?? '');
-            $this->adresse = $profile->adresse;
-            $this->telephone_cv = $profile->telephone_cv;
-            $this->email_cv = $profile->email_cv;
-            $this->linkedin_url = $profile->linkedin_url;
-            $this->portfolio_url = $profile->portfolio_url;
-            $this->photo_cv_path = $profile->photo_cv_path;
-            $this->photo_cv = null;
-            $this->situation_matrimoniale = $profile->situation_matrimoniale;
-            $this->nationalite = $profile->nationalite;
-            $this->date_naissance = $profile->date_naissance ? $profile->date_naissance->format('Y-m-d') : null;
-            $this->lieu_naissance = $profile->lieu_naissance;
+        $this->adresse = $profile->adresse;
+        $this->telephone_cv = $profile->telephone_cv;
+        $this->email_cv = $profile->email_cv;
+        $this->linkedin_url = $profile->linkedin_url;
+        $this->portfolio_url = $profile->portfolio_url;
+        $this->photo_cv_path = $profile->photo_cv_path;
+        $this->photo_cv = null;
+        $this->situation_matrimoniale = $profile->situation_matrimoniale;
+        $this->nationalite = $profile->nationalite;
+        $this->date_naissance = $profile->date_naissance ? $profile->date_naissance->format('Y-m-d') : null;
+        $this->lieu_naissance = $profile->lieu_naissance;
         } catch (\Exception $e) {
             session()->flash('error', 'Une erreur est survenue lors du chargement des données du profil.');
             \Log::error("Erreur dans CvProfileForm::loadProfileData : " . $e->getMessage());

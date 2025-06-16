@@ -38,8 +38,8 @@
         </div>
     </div> --}}
 
-      <!-- Header/Navbar Transparent -->
-      {{-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <!-- Header/Navbar Transparent -->
+    {{-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">
                 Stages<span>BENIN</span>
@@ -74,116 +74,213 @@
     </nav> --}}
 
     <!-- Hero Section -->
- 
-    <script>
-        const messages = [
-            "votre stage professionnel !.",
-            "vos futurs cadres !.",
-            "le stage de vos rêves !."
-        ];
 
-        let messageIndex = 0;
-        let charIndex = 0;
-        const textContainer = document.getElementById("animatedText");
-
-        function typeWriterEffect() {
-            if (charIndex < messages[messageIndex].length) {
-                textContainer.innerHTML += messages[messageIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriterEffect, 50);
-            } else {
-                setTimeout(() => {
-                    textContainer.innerHTML = "";
-                    charIndex = 0;
-                    messageIndex = (messageIndex + 1) % messages.length;
-                    typeWriterEffect();
-                }, 2000);
-            }
-        }
-
-        typeWriterEffect();
-    </script>
-
-    <div class="row">
+    
+<div class="container my-4">
+    <div class="row justify-content-center">
         <!-- Dernières Publications -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    💼Dernières offres disponibles (<h5 style="color: white; display: inline;">{{ $nombre_offres ?? 0 }}
-                    </h5>)
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="mb-2">
+                        <i class="fas fa-briefcase fa-2x"></i>
+                    </div>
+                    <h6 class="mb-1">Dernières offres disponibles</h6>
+                    <span class="badge bg-light text-dark fs-6">{{ $nombre_offres ?? 0 }}</span>
                 </div>
-                <div class="card-body text-start"> <!-- Alignement à gauche -->
-                    @if (isset($annonces) && $annonces->count() > 0)
-                        <ul class="list-unstyled">
-                            @foreach ($annonces as $annonce)
-                                <li class="text-primary bold">
-                                    {{ $annonce->nom_du_poste }} ({{ $annonce->type_de_poste }})
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text">Aucune offre n'est disponible pour le moment.</p>
-                    @endif
-                </div>
-                <div class="card-footer text-center">
-                    <a href=" {{ route('pages.offres') }}" class="btn btn-outline-primary">Consulter</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section des Événements -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    📅 Événements à venir (<h5 style="color: white; display: inline;">{{ $nombre_events ?? 0 }}</h5>)
-                </div>
-                <div class="card-body text-start"> <!-- Alignement à gauche -->
-                    @if (isset($evenements) && $evenements->count() > 0)
-                        <ul class="list-unstyled">
-
-                            @foreach ($evenements as $evenement)
-                                <li class="text-primary bold">{{ $evenement->title }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text">Aucun événement n'est disponible pour le moment.</p>
-                    @endif
-
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('pages.evenements') }}" class="btn btn-outline-primary">Voir plus</a>
+                <div class="card-body d-flex flex-column">
+                    <div class="flex-grow-1">
+                        @if (isset($annonces) && $annonces->count() > 0)
+                            <div class="mb-3">
+                                @foreach ($annonces->take(3) as $annonce)
+                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
+                                        <i class="fas fa-circle text-primary me-2" style="font-size: 8px;"></i>
+                                        <div>
+                                            <small class="text-primary fw-bold">{{ $annonce->nom_du_poste }}</small>
+                                            <br>
+                                            <small class="text-muted">{{ $annonce->type_de_poste }}</small>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @if($annonces->count() > 3)
+                                    <small class="text-muted">Et {{ $annonces->count() - 3 }} autres offres...</small>
+                                @endif
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="fas fa-exclamation-circle text-muted fa-2x mb-2"></i>
+                                <p class="text-muted mb-0">Aucune offre disponible</p>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{{ route('pages.offres') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-eye me-2"></i>Consulter
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-
-
-        <!-- Section des Actualités -->
-        <div class="col-md-4">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    📰 Marché public/privé (<h5 style="color: white; display: inline;">{{ $nombre_actualites }}</h5>)
+    
+        <!-- Événements -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="mb-2">
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                    </div>
+                    <h6 class="mb-1">Événements à venir</h6>
+                    <span class="badge bg-light text-dark fs-6">{{ $nombre_events ?? 0 }}</span>
                 </div>
-                <div class="card-body text-center">
-                    @if (isset($nombre_actualites) && $nombre_actualites > 0)
-                        <ul class="list-unstyled text-start"> <!-- Alignement à gauche -->
-                            @foreach ($actualites as $actualite)
-                                <li class="text-primary bold">{{ $actualite->titre }}</li>
-                                <!-- Titres en bleu et en gras -->
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text">Aucun marché public/privé n'est disponible pour le moment.</p>
-                        <!-- Message en rouge -->
-                    @endif
+                <div class="card-body d-flex flex-column">
+                    <div class="flex-grow-1">
+                        @if (isset($evenements) && $evenements->count() > 0)
+                            <div class="mb-3">
+                                @foreach ($evenements->take(3) as $evenement)
+                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
+                                        <i class="fas fa-clock text-warning me-2"></i>
+                                        <div>
+                                            <small class="text-primary fw-bold">{{ $evenement->title }}</small>
+                                            @if(isset($evenement->date))
+                                                <br>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($evenement->date)->format('d/m/Y') }}</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @if($evenements->count() > 3)
+                                    <small class="text-muted">Et {{ $evenements->count() - 3 }} autres événements...</small>
+                                @endif
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-times text-muted fa-2x mb-2"></i>
+                                <p class="text-muted mb-0">Aucun événement programmé</p>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{{ route('pages.evenements') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-arrow-right me-2"></i>Voir plus
+                        </a>
+                    </div>
                 </div>
-
-                <div class="card-footer text-center">
-                    <a href="{{ route('pages.actualites') }}
-                        " class="btn btn-outline-primary">Voir plus</a>
+            </div>
+        </div>
+    
+        <!-- Marchés publics/privés -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="mb-2">
+                        <i class="fas fa-handshake fa-2x"></i>
+                    </div>
+                    <h6 class="mb-1">Marchés public/privé</h6>
+                    <span class="badge bg-light text-dark fs-6">{{ $nombre_actualites ?? 0 }}</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="flex-grow-1">
+                        @if (isset($actualites) && $actualites->count() > 0)
+                            <div class="mb-3">
+                                @foreach ($actualites->take(3) as $actualite)
+                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
+                                        <i class="fas fa-file-contract text-success me-2"></i>
+                                        <div>
+                                            <small class="text-primary fw-bold">{{ Str::limit($actualite->titre, 40) }}</small>
+                                            @if(isset($actualite->date_publication))
+                                                <br>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($actualite->date_publication)->format('d/m/Y') }}</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @if($actualites->count() > 3)
+                                    <small class="text-muted">Et {{ $actualites->count() - 3 }} autres marchés...</small>
+                                @endif
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox text-muted fa-2x mb-2"></i>
+                                <p class="text-muted mb-0">Aucun marché disponible</p>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{{ route('pages.actualites') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Consulter
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- CSS personnalisé à ajouter dans votre fichier de styles -->
+    <style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    }
+    
+    .card-header {
+        border: none;
+        padding: 1.5rem 1rem;
+    }
+    
+    .bg-gradient {
+        position: relative;
+    }
+    
+    .bg-gradient::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .card:hover .bg-gradient::before {
+        opacity: 1;
+    }
+    
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .badge {
+        font-size: 1rem !important;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-4 {
+            margin-bottom: 2rem;
+        }
+    }
+    </style>
+</div>
+
     </div>
     <br>
     <section class="catalogue-section py-5"
@@ -211,9 +308,6 @@
             </div>
         </div>
     </section>
-
-
-
 
     <section class="services-section py-5" style="background-color:rgb(193, 220, 247);">
         <div class="container">
@@ -252,8 +346,6 @@
             </div>
         </div>
     </div>
-
-
 
     <section class="partenaires-section py-5">
         <div class="container">
@@ -322,9 +414,6 @@
                 </div>
             </div>
     </section>
-
-
-
     <div class="container">
         <div class="row">
             <!-- Nos Statistiques Section -->
@@ -514,9 +603,34 @@
         </div>
     </div>
 
+    <script>
+        const messages = [
+            "votre stage professionnel !.",
+            "vos futurs cadres !.",
+            "le stage de vos rêves !."
+        ];
 
+        let messageIndex = 0;
+        let charIndex = 0;
+        const textContainer = document.getElementById("animatedText");
 
+        function typeWriterEffect() {
+            if (charIndex < messages[messageIndex].length) {
+                textContainer.innerHTML += messages[messageIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriterEffect, 50);
+            } else {
+                setTimeout(() => {
+                    textContainer.innerHTML = "";
+                    charIndex = 0;
+                    messageIndex = (messageIndex + 1) % messages.length;
+                    typeWriterEffect();
+                }, 2000);
+            }
+        }
 
+        typeWriterEffect();
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const counters = document.querySelectorAll('.stat-count');

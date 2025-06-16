@@ -445,7 +445,6 @@
 
     <main class="container-fluid"> {{-- Ajout d'une marge pour l'espacement initial --}}
         {{-- Contenu spécifique de la page --}}
-
         @yield('content')
     </main>
 
