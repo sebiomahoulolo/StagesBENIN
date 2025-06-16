@@ -75,211 +75,247 @@
 
     <!-- Hero Section -->
 
-    
-<div class="container my-4">
-    <div class="row justify-content-center">
-        <!-- Dernières Publications -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-lg h-100">
-                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div class="mb-2">
-                        <i class="fas fa-briefcase fa-2x"></i>
-                    </div>
-                    <h6 class="mb-1">Dernières offres disponibles</h6>
-                    <span class="badge bg-light text-dark fs-6">{{ $nombre_offres ?? 0 }}</span>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <div class="flex-grow-1">
-                        @if (isset($annonces) && $annonces->count() > 0)
+
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <!-- Dernières Publications -->
+            <div class="row justify-content-center">
+                <!-- Dernières Publications -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="category-card card h-100 border-0 text-center p-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card-body">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h5 class="category-title">Offres d'emploi</h5>
                             <div class="mb-3">
-                                @foreach ($annonces->take(3) as $annonce)
-                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
-                                        <i class="fas fa-circle text-primary me-2" style="font-size: 8px;"></i>
-                                        <div>
-                                            <small class="text-primary fw-bold">{{ $annonce->nom_du_poste }}</small>
-                                            <br>
-                                            <small class="text-muted">{{ $annonce->type_de_poste }}</small>
-                                        </div>
+                                <span class="badge bg-primary fs-6">{{ $nombre_offres ?? 0 }} offres</span>
+                            </div>
+                            <div class="category-content mb-3">
+                                @if (isset($annonces) && $annonces->count() > 0)
+                                    <div class="text-start">
+                                        @foreach ($annonces->take(2) as $annonce)
+                                            <div class="mb-2 p-2 bg-light rounded">
+                                                <small
+                                                    class="text-primary fw-bold d-block">{{ Str::limit($annonce->nom_du_poste, 30) }}</small>
+                                                <small class="text-muted">{{ $annonce->type_de_poste }}</small>
+                                            </div>
+                                        @endforeach
+                                        @if ($annonces->count() > 2)
+                                            <small class="text-muted">{{ $annonces->count() - 2 }} autres offres
+                                                disponibles</small>
+                                        @endif
                                     </div>
-                                @endforeach
-                                @if($annonces->count() > 3)
-                                    <small class="text-muted">Et {{ $annonces->count() - 3 }} autres offres...</small>
+                                @else
+                                    <p class="category-text text-muted">
+                                        Aucune offre disponible pour le moment
+                                    </p>
                                 @endif
                             </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="fas fa-exclamation-circle text-muted fa-2x mb-2"></i>
-                                <p class="text-muted mb-0">Aucune offre disponible</p>
-                            </div>
-                        @endif
+                            <a href="{{ route('pages.offres') }}" class="category-link">
+                                Consulter <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="mt-auto">
-                        <a href="{{ route('pages.offres') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-eye me-2"></i>Consulter
-                        </a>
+                </div>
+
+                <!-- Événements -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="category-card card h-100 border-0 text-center p-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card-body">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h5 class="category-title">Événements</h5>
+                            <div class="mb-3">
+                                <span class="badge bg-success fs-6">{{ $nombre_events ?? 0 }} événements</span>
+                            </div>
+                            <div class="category-content mb-3">
+                                @if (isset($evenements) && $evenements->count() > 0)
+                                    <div class="text-start">
+                                        @foreach ($evenements->take(2) as $evenement)
+                                            <div class="mb-2 p-2 bg-light rounded">
+                                                <small
+                                                    class="text-primary fw-bold d-block">{{ Str::limit($evenement->title, 35) }}</small>
+                                                @if (isset($evenement->date))
+                                                    <small
+                                                        class="text-muted">{{ \Carbon\Carbon::parse($evenement->date)->format('d/m/Y') }}</small>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        @if ($evenements->count() > 2)
+                                            <small class="text-muted">{{ $evenements->count() - 2 }} autres
+                                                événements</small>
+                                        @endif
+                                    </div>
+                                @else
+                                    <p class="category-text text-muted">
+                                        Aucun événement programmé actuellement
+                                    </p>
+                                @endif
+                            </div>
+                            <a href="{{ route('pages.evenements') }}" class="category-link">
+                                Voir plus <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marchés publics/privés -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="category-card card h-100 border-0 text-center p-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card-body">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h5 class="category-title">Marchés publics</h5>
+                            <div class="mb-3">
+                                <span class="badge bg-info fs-6">{{ $nombre_actualites ?? 0 }} marchés</span>
+                            </div>
+                            <div class="category-content mb-3">
+                                @if (isset($actualites) && $actualites->count() > 0)
+                                    <div class="text-start">
+                                        @foreach ($actualites->take(2) as $actualite)
+                                            <div class="mb-2 p-2 bg-light rounded">
+                                                <small
+                                                    class="text-primary fw-bold d-block">{{ Str::limit($actualite->titre, 35) }}</small>
+                                                @if (isset($actualite->date_publication))
+                                                    <small
+                                                        class="text-muted">{{ \Carbon\Carbon::parse($actualite->date_publication)->format('d/m/Y') }}</small>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        @if ($actualites->count() > 2)
+                                            <small class="text-muted">{{ $actualites->count() - 2 }} autres marchés</small>
+                                        @endif
+                                    </div>
+                                @else
+                                    <p class="category-text text-muted">
+                                        Aucun marché disponible pour le moment
+                                    </p>
+                                @endif
+                            </div>
+                            <a href="{{ route('pages.actualites') }}" class="category-link">
+                                Consulter <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    
-        <!-- Événements -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-lg h-100">
-                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <div class="mb-2">
-                        <i class="fas fa-calendar-alt fa-2x"></i>
-                    </div>
-                    <h6 class="mb-1">Événements à venir</h6>
-                    <span class="badge bg-light text-dark fs-6">{{ $nombre_events ?? 0 }}</span>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <div class="flex-grow-1">
-                        @if (isset($evenements) && $evenements->count() > 0)
-                            <div class="mb-3">
-                                @foreach ($evenements->take(3) as $evenement)
-                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
-                                        <i class="fas fa-clock text-warning me-2"></i>
-                                        <div>
-                                            <small class="text-primary fw-bold">{{ $evenement->title }}</small>
-                                            @if(isset($evenement->date))
-                                                <br>
-                                                <small class="text-muted">{{ \Carbon\Carbon::parse($evenement->date)->format('d/m/Y') }}</small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                                @if($evenements->count() > 3)
-                                    <small class="text-muted">Et {{ $evenements->count() - 3 }} autres événements...</small>
-                                @endif
-                            </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="fas fa-calendar-times text-muted fa-2x mb-2"></i>
-                                <p class="text-muted mb-0">Aucun événement programmé</p>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="mt-auto">
-                        <a href="{{ route('pages.evenements') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-arrow-right me-2"></i>Voir plus
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Marchés publics/privés -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-lg h-100">
-                <div class="card-header bg-gradient text-white text-center position-relative" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                    <div class="mb-2">
-                        <i class="fas fa-handshake fa-2x"></i>
-                    </div>
-                    <h6 class="mb-1">Marchés public/privé</h6>
-                    <span class="badge bg-light text-dark fs-6">{{ $nombre_actualites ?? 0 }}</span>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <div class="flex-grow-1">
-                        @if (isset($actualites) && $actualites->count() > 0)
-                            <div class="mb-3">
-                                @foreach ($actualites->take(3) as $actualite)
-                                    <div class="d-flex align-items-center mb-2 p-2 bg-light rounded">
-                                        <i class="fas fa-file-contract text-success me-2"></i>
-                                        <div>
-                                            <small class="text-primary fw-bold">{{ Str::limit($actualite->titre, 40) }}</small>
-                                            @if(isset($actualite->date_publication))
-                                                <br>
-                                                <small class="text-muted">{{ \Carbon\Carbon::parse($actualite->date_publication)->format('d/m/Y') }}</small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                                @if($actualites->count() > 3)
-                                    <small class="text-muted">Et {{ $actualites->count() - 3 }} autres marchés...</small>
-                                @endif
-                            </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="fas fa-inbox text-muted fa-2x mb-2"></i>
-                                <p class="text-muted mb-0">Aucun marché disponible</p>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="mt-auto">
-                        <a href="{{ route('pages.actualites') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-search me-2"></i>Consulter
-                        </a>
-                    </div>
-                </div>
-            </div>
+
+            <!-- CSS pour les category-cards (à ajouter si pas déjà présent) -->
+            <style>
+                .category-card {
+                    background: #fff;
+                    border-radius: 15px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    transition: all 0.3s ease;
+                    overflow: hidden;
+                }
+
+                .category-card:hover {
+                    transform: translateY(-10px);
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+                }
+
+                .category-icon {
+                    width: 80px;
+                    height: 80px;
+                    margin: 0 auto;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 2rem;
+                    transition: all 0.3s ease;
+                }
+
+                .category-card:hover .category-icon {
+                    transform: scale(1.1);
+                    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+                }
+
+                .category-title {
+                    color: #2c3e50;
+                    font-weight: 600;
+                    margin-bottom: 1rem;
+                }
+
+                .category-text {
+                    color: #7f8c8d;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                    margin-bottom: 1.5rem;
+                }
+
+                .category-content {
+                    min-height: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                }
+
+                .category-link {
+                    color: #667eea;
+                    text-decoration: none;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .category-link:hover {
+                    color: #764ba2;
+                    text-decoration: none;
+                    transform: translateX(5px);
+                }
+
+                .category-link i {
+                    transition: transform 0.3s ease;
+                }
+
+                .category-link:hover i {
+                    transform: translateX(3px);
+                }
+
+                .badge {
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-weight: 500;
+                }
+
+                .category-content .bg-light {
+                    border-left: 3px solid #667eea;
+                    transition: all 0.3s ease;
+                }
+
+                .category-content .bg-light:hover {
+                    border-left-color: #764ba2;
+                    background: #f8f9fa !important;
+                }
+
+                @media (max-width: 768px) {
+                    .category-icon {
+                        width: 60px;
+                        height: 60px;
+                        font-size: 1.5rem;
+                    }
+
+                    .category-title {
+                        font-size: 1.1rem;
+                    }
+
+                    .category-text {
+                        font-size: 0.9rem;
+                    }
+                }
+            </style>
+
         </div>
     </div>
-    
-    <!-- CSS personnalisé à ajouter dans votre fichier de styles -->
-    <style>
-    .card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-    }
-    
-    .card-header {
-        border: none;
-        padding: 1.5rem 1rem;
-    }
-    
-    .bg-gradient {
-        position: relative;
-    }
-    
-    .bg-gradient::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .card:hover .bg-gradient::before {
-        opacity: 1;
-    }
-    
-    .btn {
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        transition: all 0.3s ease;
-    }
-    
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    
-    .badge {
-        font-size: 1rem !important;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-    }
-    
-    @media (max-width: 768px) {
-        .col-md-4 {
-            margin-bottom: 2rem;
-        }
-    }
-    </style>
-</div>
 
     </div>
     <br>

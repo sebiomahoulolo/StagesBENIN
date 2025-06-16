@@ -30,3 +30,14 @@ main {
         min-height: calc(100vh - 70px - 200px); /* Ajustement pour mobile */
     }
 }
+p{
+    font-weight: 300;
+}
+
+li{
+    font-weight: 500;
+}
+
+h1{
+    font-weight: 500;
+}

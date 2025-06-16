@@ -6,14 +6,18 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>@yield('title', config('app.name', 'StagesBENIN'))</title>
- <!-- Ajout de l'icône -->
-<link rel="icon" type="image/png" href="{{ asset('assets/images/logostagesbenin.jpg') }}">
+        
+
+        <!-- Ajout de l'icône -->
+        <link rel="icon" type="image/png" href="{{ asset('assets/images/logostagesbenin.jpg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
+        
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -39,10 +43,12 @@
             <main>
                 @yield('content')
             </main>
+            
         </div>
 
         <!-- Toastr JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
         <script>

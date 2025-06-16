@@ -42,6 +42,7 @@
                 transform: translateY(0);
             }
         }
+       
 
         .animate-fadeInUp {
             animation: fadeInUp 1s ease-out forwards;
@@ -364,7 +365,7 @@
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <h1 class="hero-title animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">Trouvez le
                         stage idéal pour lancer votre carrière</h1>
-                    <p class="hero-subtitle animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+                    <p class="hero-subtitle animate__animated animate__fadeInUp" style="animation-delay: 0.5s; font-weight: 500;">
                         StagesBENIN connecte les talents béninois aux meilleures opportunités professionnelles.
                         Accélérez votre insertion grâce à nos programmes de coaching personnalisés.
                     </p>
