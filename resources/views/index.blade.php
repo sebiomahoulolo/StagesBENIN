@@ -2,8 +2,9 @@
 
 @section('title', 'StagesBENIN')
 
+
 @section('content')
-    <div
+    {{-- <div
         style=" background-image: url('{{ asset('assets/images/Outils-de-recrutements.png') }}'); background-size: cover; background-attachment: fixed;">
         <div style="text-align: center; padding: 20px;">
             <p style="font-size: 17px; font-weight: bold; color: rgb(14, 40, 145); display: inline;">
@@ -35,8 +36,45 @@
                 <a href="{{ route('register') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">INSCRIPTION</a>
             </div>
         </div>
-    </div>
+    </div> --}}
 
+      <!-- Header/Navbar Transparent -->
+      {{-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">
+                Stages<span>BENIN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item animate__animated animate__fadeInDown" style="animation-delay: 0.1s;">
+                        <a class="nav-link active" href="#">Accueil</a>
+                    </li>
+                    <li class="nav-item animate__animated animate__fadeInDown" style="animation-delay: 0.2s;">
+                        <a class="nav-link" href="#">Stages</a>
+                    </li>
+                    <li class="nav-item animate__animated animate__fadeInDown" style="animation-delay: 0.3s;">
+                        <a class="nav-link" href="#">Entreprises</a>
+                    </li>
+                    <li class="nav-item animate__animated animate__fadeInDown" style="animation-delay: 0.4s;">
+                        <a class="nav-link" href="#">Coaching</a>
+                    </li>
+                    <li class="nav-item animate__animated animate__fadeInDown" style="animation-delay: 0.5s;">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    <a href="#" class="btn btn-outline-light animate__animated animate__fadeInRight" style="animation-delay: 0.4s;">Connexion</a>
+                    <a href="#" class="btn btn-primary animate__animated animate__fadeInRight" style="animation-delay: 0.5s;">Inscription</a>
+                </div>
+            </div>
+        </div>
+    </nav> --}}
+
+    <!-- Hero Section -->
+ 
     <script>
         const messages = [
             "votre stage professionnel !.",
@@ -141,7 +179,7 @@
 
                 <div class="card-footer text-center">
                     <a href="{{ route('pages.actualites') }}
-" class="btn btn-outline-primary">Voir plus</a>
+                        " class="btn btn-outline-primary">Voir plus</a>
                 </div>
             </div>
         </div>
@@ -173,10 +211,6 @@
             </div>
         </div>
     </section>
-
-
-
-
 
 
 

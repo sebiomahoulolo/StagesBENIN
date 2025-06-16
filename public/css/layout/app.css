@@ -15,7 +15,12 @@
 
 /* ===== Reset & Base ===== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background-color: var(--body-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; font-size: 1rem; }
+body { background-color: var(--body-bg);
+    padding-top: 0px;
+     /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+      color: #333;
+      line-height: 1.6; font-size: 1rem; 
+}
 a { text-decoration: none; color: var(--primary-color); }
 a:hover { text-decoration: underline; }
 
