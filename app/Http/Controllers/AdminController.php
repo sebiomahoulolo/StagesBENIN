@@ -204,38 +204,38 @@ class AdminController extends Controller
     {
         $search = $request->input('search');
         $annonce_id = $request->input('annonce_id');
-        
+
         $query = Examen::query()
-            ->whereHas('etudiant.candidatures', function($q) use ($search, $annonce_id) {
+            ->whereHas('etudiant.candidatures', function ($q) use ($search, $annonce_id) {
                 $q->where('statut', 'accepte')
-                  ->whereHas('annonce', function($q2) use ($search, $annonce_id) {
-                      if ($search) {
-                          $q2->where('nom_du_poste', 'like', "%{$search}%");
-                      }
-                      if ($annonce_id) {
-                          $q2->where('id', $annonce_id);
-                      }
-                  });
+                    ->whereHas('annonce', function ($q2) use ($search, $annonce_id) {
+                        if ($search) {
+                            $q2->where('nom_du_poste', 'like', "%{$search}%");
+                        }
+                        if ($annonce_id) {
+                            $q2->where('id', $annonce_id);
+                        }
+                    });
             })
             ->with([
-                'etudiant.candidatures' => function($q) use ($annonce_id) {
+                'etudiant.candidatures' => function ($q) use ($annonce_id) {
                     $q->where('statut', 'accepte')
-                      ->when($annonce_id, function($q2) use ($annonce_id) {
-                          $q2->where('annonce_id', $annonce_id);
-                      })
-                      ->with(['annonce.entretiens' => function($q) {
-                          $q->where('status', 'terminé')
-                            ->with(['questions' => function($q) {
-                                $q->where('type', 'cas_pratique');
-                            }]);
-                      }]);
+                        ->when($annonce_id, function ($q2) use ($annonce_id) {
+                            $q2->where('annonce_id', $annonce_id);
+                        })
+                        ->with(['annonce.entretiens' => function ($q) {
+                            $q->where('status', 'terminé')
+                                ->with(['questions' => function ($q) {
+                                    $q->where('type', 'cas_pratique');
+                                }]);
+                        }]);
                 }
             ]);
 
         $examens = $query->paginate(10);
-        
+
         // Récupérer toutes les annonces pour le filtre
-        $annonces = Annonce::whereHas('candidatures', function($q) {
+        $annonces = Annonce::whereHas('candidatures', function ($q) {
             $q->where('statut', 'accepte');
         })->get();
 
@@ -250,18 +250,18 @@ class AdminController extends Controller
                 $cleanedJson = str_replace('\\', '', $examen->reponses);
                 $reponses = json_decode($cleanedJson, true);
             }
-            
+
             if (isset($reponses[$question->id])) {
                 return $reponses[$question->id];
             }
-            
+
             // Si pas trouvé par ID, essayer de trouver par index
             $reponseKeys = array_keys($reponses);
             $questionIndex = $question->id - 1; // Supposant que les IDs sont séquentiels
             if (isset($reponseKeys[$questionIndex])) {
                 return $reponses[$reponseKeys[$questionIndex]];
             }
-            
+
             return null;
         } catch (\Exception $e) {
             return null;
@@ -269,44 +269,44 @@ class AdminController extends Controller
     }
 
 
-public function noter_examen($id)
-{
-    // Récupérer l'examen spécifique avec l'étudiant et les questions liées
-    $examen = Examen::with(['etudiant:id,nom,niveau,formation', 'questions'])->findOrFail($id);
+    public function noter_examen($id)
+    {
+        // Récupérer l'examen spécifique avec l'étudiant et les questions liées
+        $examen = Examen::with(['etudiant:id,nom,niveau,formation', 'questions'])->findOrFail($id);
 
-    return view('admin.noter_examen', compact('examen'));
-}
-
-public function noter(Request $request, $id)
-{
-    // Vérifier si l'examen existe
-    $examen = Examen::findOrFail($id);
-
-    // Si c'est une requête POST, enregistrer les modifications
-    if ($request->isMethod('post')) {
-        $request->validate([
-            'note_pratique' => 'required|numeric|min:0|max:10',
-        ]);
-
-        // Récupérer la note QCM actuelle (avant modification)
-        $noteQCM = $examen->score;
-        $notePratique = $request->input('note_pratique');
-
-        // Calculer la note finale
-        $noteFinale = ($noteQCM + $notePratique) / 2;
-
-        // Mise à jour : la note finale remplace le score
-        $examen->update([
-            'score' => $noteFinale,  // La note finale devient le nouveau score
-            'note_pratique' => $notePratique, // Optionnel : garder trace de la note pratique
-        ]);
-
-        return redirect()->back()->with('success', 'Note finale calculée et enregistrée avec succès.');
+        return view('admin.noter_examen', compact('examen'));
     }
 
-    // Affichage des infos si la requête est GET
-    return view('admin.noter_examen', compact('examen'));
-}
+    public function noter(Request $request, $id)
+    {
+        // Vérifier si l'examen existe
+        $examen = Examen::findOrFail($id);
+
+        // Si c'est une requête POST, enregistrer les modifications
+        if ($request->isMethod('post')) {
+            $request->validate([
+                'note_pratique' => 'required|numeric|min:0|max:10',
+            ]);
+
+            // Récupérer la note QCM actuelle (avant modification)
+            $noteQCM = $examen->score;
+            $notePratique = $request->input('note_pratique');
+
+            // Calculer la note finale
+            $noteFinale = ($noteQCM + $notePratique) / 2;
+
+            // Mise à jour : la note finale remplace le score
+            $examen->update([
+                'score' => $noteFinale,  // La note finale devient le nouveau score
+                'note_pratique' => $notePratique, // Optionnel : garder trace de la note pratique
+            ]);
+
+            return redirect()->back()->with('success', 'Note finale calculée et enregistrée avec succès.');
+        }
+
+        // Affichage des infos si la requête est GET
+        return view('admin.noter_examen', compact('examen'));
+    }
 
 
     public function entretiens()
@@ -320,12 +320,13 @@ public function noter(Request $request, $id)
         // Récupérer les ID des annonces déjà utilisées dans les entretiens
         $annonceIdsDejaUtilisees = Entretien::pluck('annonce_id')->toArray();
 
-        // Récupérer toutes les annonces SAUF celles déjà programmées
-        $annonces = Annonce::whereNotIn('id', $annonceIdsDejaUtilisees)->get();
+        // Récupérer les annonces non utilisées et dont la date de clôture est à venir
+        $annonces = Annonce::whereNotIn('id', $annonceIdsDejaUtilisees)
+            ->where('date_cloture', '>=', now())
+            ->get();
 
         return view('admin.entretiens', compact('entretiens', 'annonces'));
     }
-
 
     public function storeEntretien(Request $request)
     {
@@ -370,6 +371,25 @@ public function noter(Request $request, $id)
                 ->with('error', 'Une erreur est survenue lors de la programmation de l\'entretien.');
         }
     }
+    public function updateEntretien(Request $request, $id)
+    {
+
+        $entretien = Entretien::findOrFail($id);
+        // dd($request->all());
+        $request->validate([
+            'date' => 'required|date|after_or_equal:today',
+            'heure' => 'required|date_format:H:i',
+            'duree' => 'required|integer|min:1|max:120',
+            // 'statut' => 'required|in:en_attente,confirme,annule,planifie,termine',
+        ]);
+
+        // dd($entretien);
+
+        $entretien->update($request->only('date', 'heure', 'duree'));
+
+        return redirect()->back()->with('success', 'Entretien mis à jour avec succès.');
+    }
+
 
     public function storeQuestionnaire(Request $request)
     {
@@ -605,7 +625,7 @@ public function noter(Request $request, $id)
     public function updateStatus(Request $request, Entretien $entretien)
     {
         $annonce = Annonce::findOrFail($entretien->annonce_id);
-        if($request->status === 'planifié'){
+        if ($request->status === 'planifié') {
             $data = [
                 'reference' => $entretien->reference,
                 'date' => $entretien->date,
@@ -615,15 +635,14 @@ public function noter(Request $request, $id)
                 // 'etudiant' => $entretien->etudiant->nom . ' ' . $entretien->etudiant->prenom,
             ];
             $candidature = Candidature::where('annonce_id', $entretien->annonce_id)
-            ->where('statut', 'accepte')
-            ->get();
+                ->where('statut', 'accepte')
+                ->get();
 
-            foreach($candidature as $candidat){
+            foreach ($candidature as $candidat) {
                 $data['etudiant'] = $candidat->etudiant->nom . ' ' . $candidat->etudiant->prenom;
                 $data['email'] = $candidat->etudiant->email;
                 $this->sendEmail($data);
             }
-
         }
 
         $validated = $request->validate([
@@ -666,13 +685,13 @@ public function noter(Request $request, $id)
         try {
             // Récupérer les notes existantes ou initialiser un tableau vide
             $notes = json_decode($examen->note_pratique ?? '{}', true);
-            
+
             // Mettre à jour la note pour cette question
             $notes[$question->id] = $request->note;
-            
+
             // Calculer la moyenne des notes
             $moyenne = count($notes) > 0 ? array_sum($notes) / count($notes) : 0;
-            
+
             // Mettre à jour l'examen
             $examen->update([
                 'note_pratique' => json_encode($notes),

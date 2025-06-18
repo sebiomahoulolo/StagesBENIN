@@ -16,7 +16,7 @@ class Entretien extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'date', 'lieu', 'commentaires', 'user_id', 'reference', 'annonce_id', 'heure', 'duree', 'status'];
+    protected $fillable = ['annonce_id' , 'date', 'lieu', 'commentaires', 'user_id', 'reference', 'heure', 'duree', 'status'];
 
 
 
@@ -54,7 +54,7 @@ class Entretien extends Model
     }
 
     // Définir la relation avec l'annonce
-   
+
     public function annonce()
 {
     return $this->belongsTo(Annonce::class, 'annonce_id');

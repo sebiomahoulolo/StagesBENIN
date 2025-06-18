@@ -253,6 +253,7 @@ Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->prefix('admin'
         Route::get('/create/{id}', [AdminController::class, 'createEntretien'])->name('create');
         Route::put('/{entretien}/update-status', [AdminController::class, 'updateStatus'])->name('update-status');
         Route::post('/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('storeQuestionnaire');
+        Route::put('/updateQuestionnaire/{id}', [AdminController::class,'updateEntretien'])->name('updateQuestionnaire');
     });
 });
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
