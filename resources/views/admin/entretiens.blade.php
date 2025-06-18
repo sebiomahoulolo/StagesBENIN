@@ -9,7 +9,7 @@
 
 
 
-<!-- <a href="{{ route('admin.resultats_pratique') }}" style="
+            <!-- <a href="{{ route('admin.resultats_pratique') }}" style="
     display: inline-block;
     background-color: #007bff;
     color: white;
@@ -20,9 +20,9 @@
     text-decoration: none;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 ">
-    Voir les résultats
-</a> -->
-<hr>
+                    Voir les résultats
+                </a> -->
+            <hr>
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card shadow-lg border-0 rounded-3">
@@ -196,11 +196,10 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    @if($entretien->status === 'planifié')
-                                                        <a href="{{ route('admin.resultats_pratique', ['search' => $entretien->nom_du_poste]) }}" 
-                                                           class="btn btn-info btn-sm" 
-                                                           title="Voir les résultats" 
-                                                           data-bs-toggle="tooltip">
+                                                    @if ($entretien->status === 'planifié')
+                                                        <a href="{{ route('admin.resultats_pratique', ['search' => $entretien->nom_du_poste]) }}"
+                                                            class="btn btn-info btn-sm" title="Voir les résultats"
+                                                            data-bs-toggle="tooltip">
                                                             <i class="fas fa-chart-bar me-2"></i>Résultats
                                                         </a>
                                                     @endif
@@ -253,8 +252,8 @@
                                         Planifié</option>
                                     <option value="terminé" {{ $entretien->status === 'terminé' ? 'selected' : '' }}>
                                         Terminé</option>
-                            </select>
-                        </div>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -270,20 +269,25 @@
         </div>
 
         <!-- Modal de détails de l'entretien -->
-        <div class="modal fade" id="viewEntretienModal{{ $entretien->id }}" tabindex="-1"
-            aria-labelledby="viewEntretienModalLabel{{ $entretien->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title" id="viewEntretienModalLabel{{ $entretien->id }}">
-                            <i class="fas fa-info-circle me-2"></i>Détails de l'entretien
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-        <div class="row">
-            <div class="col-md-6">
-                                <div class="mb-4">
+        <form action="{{ route('admin.entretiens.updateQuestionnaire', $entretien->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="modal fade" id="viewEntretienModal{{ $entretien->id }}" tabindex="-1"
+                aria-labelledby="viewEntretienModalLabel{{ $entretien->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning text-dark">
+                            <h5 class="modal-title" id="viewEntretienModalLabel{{ $entretien->id }}">
+                                <i class="fas fa-info-circle me-2"></i>Détails de l'entretien
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
                                     <h6 class="text-primary mb-3">Informations générales</h6>
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -296,15 +300,20 @@
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">Date:</span>
-                                            <span>{{ date('d-m-Y', strtotime($entretien->date)) }}</span>
+                                            <input type="date" name="date" class="form-control"
+                                                value="{{ $entretien->date ? \Carbon\Carbon::parse($entretien->date)->format('Y-m-d') : '' }}"
+                                                min="{{ \Carbon\Carbon::parse($entretien->date)->format('Y-m-d') }}">
+
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">Heure:</span>
-                                            <span>{{ $entretien->heure }}</span>
+                                            <input type="time" name="heure" class="form-control"
+                                                value="{{ $entretien->heure ? \Carbon\Carbon::parse($entretien->heure)->format('H:i') : '' }}">
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span class="fw-bold">Durée:</span>
-                                            <span>{{ $entretien->duree }} minutes</span>
+                                            <span class="fw-bold">Durée (min):</span>
+                                            <input type="number" name="duree" class="form-control" min="1"
+                                                max="120" value="{{ $entretien->duree }}">
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">Statut:</span>
@@ -315,67 +324,73 @@
                                         </li>
                                     </ul>
                                 </div>
-            </div>
-            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <h6 class="text-primary mb-3">Questions du QCM</h6>
-                                    @php
-                                        $questions = \App\Models\Question::where('entretien_id', $entretien->id)
-                                            ->with('reponses')
-                                            ->get();
-                                    @endphp
-                                    @if ($questions->count() > 0)
-                                        <div class="accordion" id="questionsAccordion{{ $entretien->id }}">
-                                            @foreach ($questions as $index => $question)
-                                                <div class="accordion-item">
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse"
-                                                            data-bs-target="#question{{ $question->id }}">
-                                                            Question {{ $index + 1 }}
-                                                        </button>
-                                                    </h2>
-                                                    <div id="question{{ $question->id }}"
-                                                        class="accordion-collapse collapse"
-                                                        data-bs-parent="#questionsAccordion{{ $entretien->id }}">
-                                                        <div class="accordion-body">
-                                                            <p class="fw-bold mb-3">{{ $question->question }}</p>
-                                                            <ul class="list-group">
-                                                                @foreach ($question->reponses as $reponse)
-                                                                    <li
-                                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                                        {{ $reponse->texte }}
-                                                                        @if ($reponse->valide)
-                                                                            <span class="badge bg-success">Bonne
-                                                                                réponse</span>
-                                                                        @endif
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
+
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <h6 class="text-primary mb-3">Questions du QCM</h6>
+                                        @php
+                                            $questions = \App\Models\Question::where('entretien_id', $entretien->id)
+                                                ->with('reponses')
+                                                ->get();
+                                        @endphp
+                                        @if ($questions->count() > 0)
+                                            <div class="accordion" id="questionsAccordion{{ $entretien->id }}">
+                                                @foreach ($questions as $index => $question)
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header">
+                                                            <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#question{{ $question->id }}">
+                                                                Question {{ $index + 1 }}
+                                                            </button>
+                                                        </h2>
+                                                        <div id="question{{ $question->id }}"
+                                                            class="accordion-collapse collapse"
+                                                            data-bs-parent="#questionsAccordion{{ $entretien->id }}">
+                                                            <div class="accordion-body">
+                                                                <p class="fw-bold mb-3">{{ $question->question }}</p>
+                                                                <ul class="list-group">
+                                                                    @foreach ($question->reponses as $reponse)
+                                                                        <li
+                                                                            class="list-group-item d-flex justify-content-between align-items-center">
+                                                                            {{ $reponse->texte }}
+                                                                            @if ($reponse->valide)
+                                                                                <span class="badge bg-success">Bonne
+                                                                                    réponse</span>
+                                                                            @endif
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
                                                         </div>
-            </div>
-        </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="alert alert-info">
-                                            <i class="fas fa-info-circle me-2"></i>Aucune question n'a été créée pour cet
-                                            entretien.
-                                        </div>
-                                    @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>Aucune question n'a été créée pour
+                                                cet
+                                                entretien.
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-2"></i>Fermer
-                                        </button>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Modifier
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Fermer
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-                                </div>
-                    @endforeach
+        </form>
+    @endforeach
 
     <style>
         .content-area {
