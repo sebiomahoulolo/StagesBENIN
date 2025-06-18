@@ -347,54 +347,15 @@ class EtudiantController extends Controller
 
 
 
-    public function showExamen($etudiant_id)
-{
-    $user_id = Auth::user()->id;
-
-    // Récupérer l'étudiant
-    $etudiant = Etudiant::where('user_id', $user_id)->first();
-    if (!$etudiant) {
-        abort(404, "Étudiant non trouvé");
+    public function showExamen($etudiant_id, $entretien_id)
+    {
+        $etudiant = Etudiant::findOrFail($etudiant_id);
+        $entretien = Entretien::where('id', $entretien_id)
+            ->where('etudiant_id', $etudiant->id)
+            ->firstOrFail();
+        $questions = Question::where('entretien_id', $entretien->id)->get();
+        return view('etudiants.examen', compact('etudiant', 'questions', 'entretien'));
     }
-
-    // Récupérer l'entretien spécifique à l'étudiant via ses candidatures
-    $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
-        $query->where('etudiant_id', $etudiant->id);
-    })->with('annonce')->first();
-
-    if (!$entretien) {
-        abort(404, "Aucun entretien correspondant trouvé");
-    }
-
-    // Récupérer uniquement les questions liées à cet entretien
-    $questions = Question::where('entretien_id', $entretien->id)->with('reponses')->get();
-
-    // Assurer que les options sont bien formatées
-    foreach ($questions as $question) {
-        $question->options = is_string($question->options)
-            ? json_decode($question->options, true) ?? []
-            : ($question->reponses->pluck('texte')->toArray() ?? []);
-    }
-
-    // Récupérer le dernier examen de l'étudiant
-    $examen = Examen::where('etudiant_id', $etudiant->id)->first();
-
-    // Sécurisation du nom du poste
-    $nom_du_poste = optional($entretien->annonce)->nom_du_poste ?? 'Non disponible';
-    $duree = optional($entretien->annonce)->duree ?? 'Non disponible';
-
-    return view('etudiants.examen', [
-        'etudiant' => $etudiant,
-        'questions' => $questions,
-        'examen' => $examen,
-        'score' => $examen->score ?? 0,
-        'total_questions' => $examen->total_questions ?? 0,
-        'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
-        'nom_du_poste' => $nom_du_poste,
-        'duree' => $duree,
-        'entretien' => $entretien
-    ]);
-}
 
 
 
@@ -429,7 +390,7 @@ class EtudiantController extends Controller
 
 
     // Dans votre contrôleur d'examen
-    public function submitExamen(Request $request)
+    public function submitExamen(Request $request, $etudiant_id, $entretien_id)
     {
         try {
             $user_id = Auth::user()->id;
@@ -476,9 +437,31 @@ class EtudiantController extends Controller
             // Calcul du score sur 20
             $score_sur_20 = ($total_questions > 0) ? round(($bonnes_reponses / $total_questions) * 20, 2) : 0;
 
+            // Récupérer l'entretien_id depuis la requête ou le trouver dynamiquement
+            $entretien_id = $request->input('entretien_id');
+            if (!$entretien_id) {
+                // Si non transmis, on cherche l'entretien du jour (ou le plus proche à venir)
+                $entretien = Entretien::where('etudiant_id', $etudiant_id)
+                    ->whereDate('date', now()->toDateString())
+                    ->orderBy('date', 'desc')
+                    ->first();
+                if (!$entretien) {
+                    // Si aucun aujourd'hui, on prend le plus récent
+                    $entretien = Entretien::where('etudiant_id', $etudiant_id)
+                        ->orderBy('date', 'desc')
+                        ->first();
+                }
+                if ($entretien) {
+                    $entretien_id = $entretien->id;
+                } else {
+                    return back()->with('error', 'Aucun entretien trouvé pour cet étudiant.');
+                }
+            }
+
             // Sauvegarde en base de données
             $examen = Examen::create([
                 'etudiant_id' => $etudiant_id,
+                'entretien_id' => $entretien_id,
                 'score' => $score_sur_20,
                 'total_questions' => $total_questions,
                 'bonnes_reponses' => $bonnes_reponses,

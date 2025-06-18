@@ -314,13 +314,14 @@
                 </div>
                 <div class="info-item timer">
                     <span>⏰</span>
-                    <span><strong>Temps restant :</strong> <span id="countdown">{{ $entretien->duree ?? '30:00' }}</span></span>
+                    <span><strong>Temps restant :</strong> <span id="countdown">{{ isset($entretien) && $entretien->duree ? $entretien->duree : '30:00' }}</span></span>
                 </div>
             </div>
 
-         <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id]) }}" method="POST">
+         <form id="examForm" action="{{ route('etudiants.examen.submit', ['etudiant_id' => $etudiant->id, 'entretien_id' => $entretien->id]) }}" method="POST">
     @csrf
     <input type="hidden" name="etudiant_id" value="{{ $etudiant->id }}">
+    <input type="hidden" name="entretien_id" value="{{ $entretien->id }}">
 
     @php $numeroQuestion = 1; @endphp
 

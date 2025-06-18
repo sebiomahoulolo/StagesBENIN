@@ -455,7 +455,8 @@ Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat
 // Route::get('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'createEntretien'])->name('etudiants.entretiens');
 Route::post('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('etudiants.entretiens');
 // Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
-Route::get('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
+Route::get('/etudiants/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
+Route::post('/etudiants/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
 Route::post('/etudiants/{id}/accepter', [EtudiantController::class, 'accepterCandidature'])->name('candidatures.accepter');
 Route::post('/etudiants/{id}/rejeter', [EtudiantController::class, 'rejeterCandidature'])->name('candidatures.rejeter');
 Route::patch('/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('etudiants.toggleStatus');

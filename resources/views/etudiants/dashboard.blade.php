@@ -557,15 +557,6 @@
             </a>
 
             {{-- Entretiens --}}
-            {{-- @if(Auth::user()->etudiant)
-                <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="main-function-item">
-                    <div class="main-function-icon color-green">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <span class="main-function-title">Entretiens</span>
-                </a>
-            @endif --}}
-
             @if(Auth::user()->etudiant)
             <a href="{{ route('etudiants.entretiens.programmes') }}" class="main-function-item">
                 <div class="main-function-icon color-green">
@@ -661,7 +652,9 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">Activité récente</h2>
-                    <a href="#" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a> {{-- TODO: Mettre la route vers la page d'activité complète --}}
+                    @if(Auth::user()->etudiant)
+                        <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
+                    @endif
                 </div>
                 <div class="activity-list">
                     {{-- TODO: Remplacer par une boucle sur les données réelles ($recentActivities par exemple) --}}

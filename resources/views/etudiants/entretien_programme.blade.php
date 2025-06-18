@@ -206,6 +206,7 @@
                 if (diff <= 0) {
                     btn.style.display = 'inline-block';
                     compte.style.display = 'none';
+                    btn.innerHTML = '<i class="fas fa-poll me-2"></i> Voir mon résultat';
                     return;
                 }
 

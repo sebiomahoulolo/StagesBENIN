@@ -9,6 +9,7 @@ class Examen extends Model
     use HasFactory;
 
     protected $fillable = [
+        'entretien_id', 
         'etudiant_id', 
         'user_id', 
         'score', 

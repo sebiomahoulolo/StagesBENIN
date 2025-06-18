@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('score');
             $table->integer('total_questions');
+            $table->unsignedBigInteger('entretien_id');
+            $table->foreign('entretien_id')->references('id')->on('entretiens')->onDelete('cascade');
             $table->timestamps();
         });
     }

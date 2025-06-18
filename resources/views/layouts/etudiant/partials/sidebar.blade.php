@@ -93,6 +93,11 @@
                     <i class="fas fa-calendar-alt fa-fw"></i>
                     <span>Agenda</span>
                  </a>
+                 @if(Auth::user()->etudiant)
+                    <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}">
+                        <i class="fas fa-comments fa-fw"></i><span>QCM/Examen</span>
+                    </a>
+                 @endif
              </div>
          </div>
 
