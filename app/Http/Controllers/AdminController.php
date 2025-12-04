@@ -175,13 +175,14 @@ class AdminController extends Controller
 
     public function etudiants()
     {
-        // Récupérer les étudiants depuis la base de données
-        $etudiants = Etudiant::join('specialites', 'etudiants.formation', '=', 'specialites.id')
-            ->select('etudiants.*', 'specialites.nom as specialite_nom')
-            ->paginate(10);
+        // Récupérer uniquement les étudiants ayant au moins un paiement approuvé
+        $etudiants = \App\Models\Etudiant::whereHas('paiements', function($q) {
+            $q->where('status', 'approved');
+        })
+        ->join('specialites', 'etudiants.formation', '=', 'specialites.id')
+        ->select('etudiants.*', 'specialites.nom as specialite_nom')
+        ->paginate(10);
         $specialites = \App\Models\Specialite::with('secteur')->get();
-
-        // dd($etudiants);
 
         // Retourner la vue avec les étudiants
         return view('admin.etudiants.etudiants', compact('etudiants', 'specialites'));
@@ -202,45 +203,52 @@ class AdminController extends Controller
      */
     public function resultats_pratique(Request $request)
     {
-        $search = $request->input('search');
-        $annonce_id = $request->input('annonce_id');
+        $search       = $request->input('search');        // filtre sur le titre du poste
+        $annonce_id   = $request->input('annonce_id');    // filtre sur l’annonce
+        $entretien_id = $request->input('entretien_id');  // filtre direct sur examens.entretien_id
+        $etudiant_id  = $request->input('etudiant_id');   // filtre direct sur examens.etudiant_id
 
-        $query = Examen::query()
-            ->whereHas('etudiant.candidatures', function ($q) use ($search, $annonce_id) {
-                $q->where('statut', 'accepte')
-                    ->whereHas('annonce', function ($q2) use ($search, $annonce_id) {
-                        if ($search) {
-                            $q2->where('nom_du_poste', 'like', "%{$search}%");
-                        }
-                        if ($annonce_id) {
-                            $q2->where('id', $annonce_id);
-                        }
-                    });
+        $examens = Examen::query()
+
+            /* --- 1.  Filtrage direct dans la table examens --- */
+            ->when($etudiant_id,  fn($q) => $q->where('etudiant_id',  $etudiant_id))
+            ->when($entretien_id, fn($q) => $q->where('entretien_id', $entretien_id))
+
+            /* --- 2.  S’assurer que l’entretien est bien rattaché à l’annonce voulue --- */
+            ->when($annonce_id || $search, function ($q) use ($annonce_id, $search) {
+                $q->whereHas('entretien.annonce', function ($q2) use ($annonce_id, $search) {
+                    if ($annonce_id) {
+                        $q2->where('id', $annonce_id);
+                    }
+                    if ($search) {
+                        $q2->where('nom_du_poste', 'like', "%{$search}%");
+                    }
+                });
             })
+
+            /* --- 3.  Garder seulement les étudiants dont la candidature est “acceptée” --- */
+            ->whereHas('etudiant.candidatures', function ($q) use ($annonce_id) {
+                $q->where('statut', 'accepte')
+                    ->when($annonce_id, fn($q2) => $q2->where('annonce_id', $annonce_id));
+            })
+
+            /* --- 4.  Chargement des relations utiles --- */
             ->with([
-                'etudiant.candidatures' => function ($q) use ($annonce_id) {
-                    $q->where('statut', 'accepte')
-                        ->when($annonce_id, function ($q2) use ($annonce_id) {
-                            $q2->where('annonce_id', $annonce_id);
-                        })
-                        ->with(['annonce.entretiens' => function ($q) {
-                            $q->where('status', 'terminé')
-                                ->with(['questions' => function ($q) {
-                                    $q->where('type', 'cas_pratique');
-                                }]);
-                        }]);
-                }
-            ]);
+                'etudiant',
+                'entretien' => function ($q) {
+                    $q->where('status', 'terminé')
+                        ->with(['questions' => fn($q3) => $q3->where('type', 'cas_pratique')]);
+                },
+            ])
 
-        $examens = $query->paginate(10);
+            ->paginate(10);
 
-        // Récupérer toutes les annonces pour le filtre
-        $annonces = Annonce::whereHas('candidatures', function ($q) {
-            $q->where('statut', 'accepte');
-        })->get();
+        /* --- 5.  Annonces disponibles pour la liste déroulante de filtre --- */
+        $annonces = Annonce::whereHas('candidatures', fn($q) => $q->where('statut', 'accepte'))->get();
 
         return view('admin.resultats_pratique', compact('examens', 'search', 'annonces'));
     }
+
 
     private function getReponseForQuestion($examen, $question)
     {
@@ -613,10 +621,6 @@ class AdminController extends Controller
 
     public function sendEmail($data)
     {
-        $details = [
-            'title' => 'Mail de test',
-            'body' => 'Ceci est un mail de test.'
-        ];
 
         Mail::to($data['email'])->send(new SendMail($data));
         // return redirect()->back()->with('success', 'Mail envoyé avec succès.');
@@ -624,6 +628,7 @@ class AdminController extends Controller
 
     public function updateStatus(Request $request, Entretien $entretien)
     {
+        // dd($request->all());
         $annonce = Annonce::findOrFail($entretien->annonce_id);
         if ($request->status === 'planifié') {
             $data = [
@@ -634,13 +639,16 @@ class AdminController extends Controller
                 'annonce' => $annonce->nom_du_poste,
                 // 'etudiant' => $entretien->etudiant->nom . ' ' . $entretien->etudiant->prenom,
             ];
-            $candidature = Candidature::where('annonce_id', $entretien->annonce_id)
-                ->where('statut', 'accepte')
+            $candidature = Candidature::join('etudiants', 'candidatures.etudiant_id', '=', 'etudiants.id')
+                ->where('candidatures.annonce_id', $entretien->annonce_id)
+                ->where('candidatures.statut', 'accepte')
+                ->select('candidatures.*', 'etudiants.nom', 'etudiants.prenom', 'etudiants.email',)
                 ->get();
+            // dd($candidature);
 
             foreach ($candidature as $candidat) {
-                $data['etudiant'] = $candidat->etudiant->nom . ' ' . $candidat->etudiant->prenom;
-                $data['email'] = $candidat->etudiant->email;
+                $data['etudiant'] = $candidat->nom . ' ' . $candidat->prenom;
+                $data['email'] = $candidat->email;
                 $this->sendEmail($data);
             }
         }
@@ -652,17 +660,17 @@ class AdminController extends Controller
             'status.in' => 'Le statut sélectionné est invalide'
         ]);
 
-        // try {
+        try {
         $entretien->update([
             'status' => $validated['status']
         ]);
 
         return redirect()->back()
             ->with('success', 'Le statut de l\'entretien a été mis à jour avec succès.');
-        // } catch (\Exception $e) {
-        //     return redirect()->back()
-        //         ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
-        // }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Une erreur est survenue lors de la mise à jour du statut.');
+        }
     }
 
     public function noterCasPratique(Request $request, Examen $examen, Question $question)

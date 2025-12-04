@@ -487,11 +487,66 @@
     </style>
 @endpush
 
+@php
+    $etudiant = isset($etudiant) ? $etudiant : (Auth::user()->etudiant ?? null);
+    $abonnement = $etudiant ? $etudiant->abonnementActif() : null;
+   
+@endphp
+
     {{-- Section des fonctions principales (tirées de la sidebar) --}}
     <div class="section-container animate-fadeInUp delay-100">
         <div class="section-header">
             <h2 class="section-title">Tableau de Bord</h2>
         </div>
+
+        {{-- Bloc d'information sur l'abonnement étudiant --}}
+        @php
+            $etudiant = isset($etudiant) ? $etudiant : (Auth::user()->etudiant ?? null);
+            $abonnement = $etudiant ? $etudiant->abonnementActif() : null;
+            $joursRestants = $etudiant ? $etudiant->joursRestantsAbonnement() : null;
+        @endphp
+        <div class="mb-4">
+            @if($abonnement)
+                <div class="alert alert-{{ $joursRestants > 0 ? 'success' : 'danger' }}" style="border-radius: 10px;">
+                    <strong>Abonnement : </strong>
+                    @if($abonnement->montant == 500)
+                        <span>Simple (30 jours, accès limité)</span>
+                    @elseif($abonnement->montant == 5000)
+                        <span>Premium (365 jours, accès complet)</span>
+                    @else
+                        <span>Inconnu</span>
+                    @endif
+                    <br>
+                    <strong>Montant payé :</strong> {{ number_format($abonnement->montant, 0, ',', ' ') }} XOF
+                  <br>
+                    @php
+                        $dateExpiration = null;
+                        if($abonnement) {
+                            $dateExpiration = ($abonnement->montant == 5000)
+                                ? \Carbon\Carbon::parse($abonnement->created_at)->addDays(365)
+                                : \Carbon\Carbon::parse($abonnement->created_at)->addDays(30);
+                        }
+                    @endphp
+                    <strong>Date d'expiration :</strong> {{ $dateExpiration ? $dateExpiration->format('d/m/Y') : '-' }}
+                    <br>
+                    <strong>Jours restants :</strong> {{ $joursRestants > 0 ? $joursRestants : 0 }}
+                    @if($joursRestants <= 0)
+                        <br><span class="text-danger">Votre abonnement a expiré. Veuillez renouveler pour continuer à profiter des services.</span>
+                    @endif
+                </div>
+            @else
+                <div class="alert alert-warning" style="border-radius: 10px;">
+                    <strong>Vous n'avez pas d'abonnement actif.</strong> Certaines fonctionnalités sont restreintes. <a href="{{ route('paiement.choix', ['etudiant' => $etudiant->id]) }}" class="btn btn-sm btn-primary ms-2">Souscrire maintenant</a>
+                </div>
+            @endif
+        </div>
+
+        {{-- Message d'encouragement à compléter le CV (sauf pour les abonnements 500 XOF) --}}
+        @if($abonnement && $abonnement->montant != 500)
+            <div class="alert alert-info" style="border-radius: 10px;">
+                <strong>Astuce :</strong> Pour maximiser vos chances, pensez à <a href="{{ Auth::user()->etudiant?->cvProfile?->id ? route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant->cvProfile->id]) : route('etudiants.cv.edit', ['cvProfile' => 'new']) }}" class="alert-link">compléter ou mettre à jour votre CV</a> !
+            </div>
+        @endif
 
         <div class="main-functions-grid">
             {{-- Tableau de bord --}}
@@ -517,12 +572,14 @@
             </a>
 
             {{-- Éditeur CV --}}
+            @if(!$abonnement || $abonnement->montant != 500)
             <a href="{{ Auth::user()->etudiant?->cvProfile?->id ? route('etudiants.cv.edit', ['cvProfile' => Auth::user()->etudiant->cvProfile->id]) : route('etudiants.cv.edit', ['cvProfile' => 'new']) }}" class="main-function-item">
                 <div class="main-function-icon color-teal">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <span class="main-function-title">Éditeur CV</span>
             </a>
+            @endif
 
             {{-- Offres --}}
             <a href="{{ route('etudiants.offres.index') }}" class="main-function-item">
@@ -557,14 +614,24 @@
             </a>
 
             {{-- Entretiens --}}
-            @if(Auth::user()->etudiant)
-            <a href="{{ route('etudiants.entretiens.programmes') }}" class="main-function-item">
-                <div class="main-function-icon color-green">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <span class="main-function-title">Entretiens</span>
-            </a>
-        @endif
+            @if(isset($entretiens) && $entretiens->count())
+                @foreach($entretiens as $entretien)
+                    <a href="{{ route('etudiants.examen', ['etudiant_id' => $etudiant->id, 'entretien_id' => $entretien->id ?? $entretien->entretien_id]) }}" class="main-function-item">
+                        <div class="main-function-icon color-green">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <span class="main-function-title">Test de niveau du {{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }}</span>
+                    </a>
+                @endforeach
+            @else
+                <a href="{{ route('etudiants.entretiens.programmes') }}" class="main-function-item">
+                    <div class="main-function-icon color-green">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="main-function-title">Test de niveau</span>
+
+                </a>
+            @endif
 
             {{-- Événements --}}
             <a href="{{ route('etudiants.evenements.upcoming') }}" class="main-function-item">
@@ -652,8 +719,12 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">Activité récente</h2>
-                    @if(Auth::user()->etudiant)
-                        <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="view-all">Voir tout <i class="fas fa-arrow-right"></i></a>
+                    @if(isset($entretiens) && $entretiens->count())
+                        @foreach($entretiens as $entretien)
+                            <a href="{{ route('etudiants.examen', ['etudiant_id' => $etudiant->id, 'entretien_id' => $entretien->id ?? $entretien->entretien_id]) }}" class="view-all">
+                                Voir mon entretien du {{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }} <i class="fas fa-arrow-right"></i>
+                            </a>
+                        @endforeach
                     @endif
                 </div>
                 <div class="activity-list">

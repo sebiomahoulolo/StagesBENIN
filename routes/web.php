@@ -1,40 +1,49 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; // Importez Auth
-use App\Http\Controllers\BoostController;
+use App\Http\Controllers\ActualiteController;
+use App\Http\Controllers\Admin\AnnonceController as AdminAnnonceController;
+use App\Http\Controllers\Admin\CandidatureController;
 
 // --- Contrôleurs Publics / Communs ---
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\SubscriberController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Admin\ComplaintSuggestionController as AdminComplaintController; // Contrôleur plaintes/suggestions admin
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\PasswordController; // Import PasswordController
+use App\Http\Controllers\Auth\RegisteredUserController; // Votre contrôleur d'inscription modifié
+use App\Http\Controllers\BoostController;
 
 // --- Contrôleurs Spécifiques (seront utilisés dans les groupes protégés) ---
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\EtudiantController;
-use App\Http\Controllers\Entreprises\EntrepriseController;
-use App\Http\Controllers\Entreprises\AnnonceController;
-use App\Http\Controllers\Admin\AnnonceController as AdminAnnonceController;
-// use App\Http\Controllers\EntrepriseController;
-use App\Http\Controllers\RecrutementController;
-use App\Http\Controllers\ActualiteController;
 use App\Http\Controllers\CatalogueController;
-use App\Http\Controllers\Etudiant\CvController; // Contrôleur CV Étudiant
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\EntrepriseMessagerieSocialeController;
+use App\Http\Controllers\Entreprises\AnnonceController;
+// use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\Entreprises\DemandeEmployeController;
+use App\Http\Controllers\Entreprises\EntrepriseController;
 use App\Http\Controllers\Etudiant\ComplaintSuggestionController as EtudiantComplaintController; // Contrôleur plaintes/suggestions étudiant
-use App\Http\Controllers\Admin\ComplaintSuggestionController as AdminComplaintController; // Contrôleur plaintes/suggestions admin
+use App\Http\Controllers\Etudiant\CvController; // Contrôleur CV Étudiant
+use App\Http\Controllers\Etudiant\ProfileController as EtudiantProfileController;
+use App\Http\Controllers\EtudiantController;
+use App\Http\Controllers\Etudiants\OffreController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\FedaPayWebhookController;
+use App\Http\Controllers\MailController;
 
 // --- Contrôleurs d'Authentification (Breeze & Modifiés) ---
-use App\Http\Controllers\Auth\RegisteredUserController; // Votre contrôleur d'inscription modifié
-use App\Http\Controllers\Etudiant\ProfileController as EtudiantProfileController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProfileController; // Breeze Profile Controller
-use App\Http\Controllers\Auth\PasswordController; // Import PasswordController
 use App\Http\Controllers\ProfileSetupController; // Import ProfileSetupController
+use App\Http\Controllers\RecrutementController;
 
 // --- Middleware ---
+use App\Http\Controllers\SubscriberController;
 use App\Http\Middleware\EnsureUserHasRole; // Middleware de rôle
+use Illuminate\Support\Facades\Auth; // Importez Auth
+use Illuminate\Support\Facades\Route;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +68,9 @@ Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.cat
 Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche');
 Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres');
 // routes/web.php
-
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    
+});
 
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
@@ -83,7 +94,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
 });
 
-Route::get('/admin/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('admin.cv.download');
+Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->get('/admin/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('admin.cv.download');
 Route::get('/catalogues', [PageController::class, 'catalogue'])->name('pages.catalogue');
 Route::get('/les marchés public et privé', [PageController::class, 'marche'])->name('pages.marche');
 Route::get('/offres', [PageController::class, 'offres'])->name('pages.offres');
@@ -117,6 +128,12 @@ Route::get('/pee', [PageController::class, 'pee'])->name('pages.pee');
 Route::get('/paps', [PageController::class, 'paps'])->name('pages.paps');
 Route::get('/paps1', [PageController::class, 'paps1'])->name('pages.desc_paas1');
 Route::get('/paps2', [PageController::class, 'paps2'])->name('pages.desc_paas2');
+
+
+Route::get('/postuleroffres', [PageController::class, 'formulaire'])->name('pages.formulaire');
+Route::post('/submit-application', [PageController::class, 'submitApplication'])->name('submit.application');
+
+
 Route::get('/evenements/{event}', [PageController::class, 'showEventDetails'])->name('pages.details_events');
 Route::get('/paps3', [PageController::class, 'paps3'])->name('pages.desc_paas3');
 // Routes Publiques pour les Événements
@@ -159,7 +176,7 @@ Route::middleware('guest')->group(function () {
     })->name('register');
 });
 
-Route::get('/etudiants/boost-status', [BoostController::class, 'status'])->name('etudiants.boost-status');
+Route::middleware(['auth', 'role:etudiant'])->get('/etudiants/boost-status', [BoostController::class, 'status'])->name('etudiants.boost-status');
 
 Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants/boostage')->name('etudiants.boostage.')->group(function () {
     Route::get('/status', [BoostController::class, 'status'])->name('status');
@@ -255,13 +272,52 @@ Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->prefix('admin'
         Route::post('/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('storeQuestionnaire');
         Route::put('/updateQuestionnaire/{id}', [AdminController::class,'updateEntretien'])->name('updateQuestionnaire');
     });
+
+    // Routes supplémentaires admin sécurisées
+    Route::get('/etudiants/{id}/cv-pdf', [CvController::class, 'exportPdf'])->name('cv.download');
+    Route::get('/boost', [AdminController::class, 'listBoosts'])->name('boost.index');
+    Route::patch('/boost', [AdminController::class, 'validateSubmittedTier'])->name('boost.validate');
+    Route::get('/boost', [AdminController::class, 'boost'])->name('boost');
+    Route::get('/recrutements', [AdminController::class, 'recrutements'])->name('recrutements');
+    Route::get('/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('entreprises_partenaires');
+    Route::get('/evenements', [AdminController::class, 'evenements'])->name('evenements');
+    Route::get('/entreprises', [AdminController::class, 'entreprises'])->name('entreprises');
+    Route::get('/catalogues', [AdminController::class, 'catalogues'])->name('catalogues');
+    Route::get('/etudiants', [AdminController::class, 'etudiants'])->name('etudiants.etudiants');
+    Route::get('/actualites', [AdminController::class, 'actualites'])->name('actualites');
+    Route::get('/resultats_pratique', [AdminController::class, 'resultats_pratique'])->name('resultats_pratique');
+    Route::get('/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('cvtheque.cvtheque.secteur');
+    Route::get('/cvtheque/{id}', [AdminController::class, 'cvtheque'])->name('cvtheque.cvtheque');
+    Route::get('/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('cvtheque.specialite');
+    Route::get('/cv/{id}', [CvController::class, 'view'])->name('cvtheque.view');
+    Route::get('/cv/{id}/download', [CvController::class, 'download'])->name('cvtheque.download');
+    Route::patch('/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('etudiants.toggleStatus');
+    Route::delete('/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+    Route::get('/examens/{id}/noter', [AdminController::class, 'noter'])->name('examens.noter');
+    Route::post('/send', [AdminController::class, 'sendEmail'])->name('sendmail');
+    Route::post('/catalogues/{id}/block', [CatalogueController::class, 'block'])->name('catalogues.block');
+    Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
+    Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');
+    Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenements.update');
+    Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::post('/noter-cas-pratique/{examen}/{question}', [AdminController::class, 'noterCasPratique'])->name('noter.cas.pratique');
+    Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
+    Route::put('/catalogue/{id}', [CatalogueController::class, 'update'])->name('catalogue.update');
+    Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
+    Route::get('/send-emails', [EmailController::class, 'sendEmails'])->name('send-emails');
+    Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');
+    Route::post('/emails/message', [EmailController::class, 'envoyerMessage'])->name('emails.message');
+    Route::post('/actualites', [ActualiteController::class, 'store'])->name('actualites.store');
+    Route::post('/catalogue', [CatalogueController::class, 'store'])->name('catalogue.store');
+    Route::resource('actualites', ActualiteController::class);
 });
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket'])->name('events.generate-ticket');
 Route::get('/events/{id}/verify/{reference}', [EventController::class, 'verifyTicket'])->name('events.verify');
 
 Route::get('/events/{id}/generate-ticket', [EventController::class, 'generateTicket']);
 
-Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudiants.')->group(function () {
+Route::middleware(['auth', 'role:etudiant', 'check.abonnement'])->prefix('etudiants')->name('etudiants.')->group(function () {
 
     // ... Route pour le dashboard étudiant ...
     Route::get('/dashboard', [EtudiantController::class, 'index'])->name('dashboard');
@@ -318,6 +374,21 @@ Route::middleware(['auth', 'role:etudiant'])->prefix('etudiants')->name('etudian
     Route::post('/offres/{annonce}/postuler', [App\Http\Controllers\Etudiants\OffreController::class, 'postulerSubmit'])->name('offres.postuler.submit');
     Route::get('/mes-candidatures', [App\Http\Controllers\Etudiants\OffreController::class, 'mesCandidatures'])->name('candidatures.index');
     Route::get('/candidatures/{id}', [App\Http\Controllers\Etudiants\OffreController::class, 'showCandidature'])->name('candidatures.show');
+
+    // Routes supplémentaires étudiant sécurisées
+    Route::get('/{id}/envoyer-examen', [EtudiantController::class, 'envoyerExamen'])->name('envoyer.examen');
+    Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat'])->name('candidat.dashboard');
+    Route::post('/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('entretiens');
+    Route::get('/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'showExamen'])->name('examen');
+    Route::post('/{id}/accepter', [EtudiantController::class, 'accepterCandidature'])->name('candidatures.accepter');
+    Route::post('/{id}/rejeter', [EtudiantController::class, 'rejeterCandidature'])->name('candidatures.rejeter');
+    Route::patch('/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('toggleStatus');
+    Route::get('/{id}', [EtudiantController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [EtudiantController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [EtudiantController::class, 'update'])->name('update');
+    Route::delete('/{id}', [EtudiantController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/cv', [EtudiantController::class, 'downloadCV'])->name('cv.download');
+    Route::post('/', [EtudiantController::class, 'store'])->name('store');
 }); // Fin du groupe étudiant
 
 
@@ -370,6 +441,17 @@ Route::middleware(['auth', 'role:recruteur'])->prefix('entreprises')->name('entr
     Route::prefix('messagerie-sociale')->name('messagerie-sociale.')->group(function () {
         Route::post('/store-post', [App\Http\Controllers\EntrepriseMessagerieSocialeController::class, 'storePost'])->name('store-post');
     });
+
+    // Routes supplémentaires recruteur sécurisées
+    Route::get('/create', [EntrepriseController::class, 'create'])->name('create');
+    Route::post('/', [EntrepriseController::class, 'store'])->name('store');
+    Route::get('/{id}', [EntrepriseController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [EntrepriseController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [EntrepriseController::class, 'update'])->name('update');
+    Route::delete('/{id}', [EntrepriseController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/contact', [EntrepriseController::class, 'contact'])->name('contact');
+    Route::get('/{id}/follow', [EntrepriseController::class, 'follow'])->name('follow');
+    Route::post('/recrutements', [RecrutementController::class, 'store'])->name('recrutements.store');
 });
 
 // Routes du profil entreprise
@@ -398,54 +480,56 @@ Route::put('/entreprises/{id}', [EntrepriseController::class, 'update'])->name('
 Route::delete('/entreprises/{id}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
 Route::get('/entreprises/{id}/contact', [EntrepriseController::class, 'contact'])->name('entreprises.contact');
 Route::get('/entreprises/{id}/follow', [EntrepriseController::class, 'follow'])->name('entreprises.follow');
-Route::get('/boost', [AdminController::class, 'listBoosts'])->name('admin.boost.index');
-Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost.validate');
+// Routes admin supplémentaires sécurisées
+Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->group(function () {
+    Route::get('/boost', [AdminController::class, 'listBoosts'])->name('admin.boost.index');
+    Route::patch('/admin/boost', [AdminController::class, 'validateSubmittedTier'])->name('admin.boost.validate');
+    Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
+    Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
+    // Route::get('/admin/entretiens/create/{id}', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
+    // Route::post('/admin/entretiens/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('admin.entretiens.storeQuestionnaire');
+    // Route::post('/admin/entretiens/store', [AdminController::class, 'storeEntretien'])->name('admin.entretiens.store');
+    // Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
+    Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
+    Route::get('/admin/evenements', [AdminController::class, 'evenements'])->name('admin.evenements');
+    Route::get('/admin/entreprises', [AdminController::class, 'entreprises'])->name('admin.entreprises');
+    Route::get('/admin/catalogues', [AdminController::class, 'catalogues'])->name('admin.catalogues');
+    Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('admin.etudiants.etudiants');
+    Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
+    Route::get('/admin/resultats_pratique', [AdminController::class, 'resultats_pratique'])->name('admin.resultats_pratique');
+    Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
+    Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
+    Route::get('/admin/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('admin.cvtheque.cvtheque.secteur');
+    Route::get('/admin/cvtheque/{id}', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
+    Route::get('/admin/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('admin.cvtheque.specialite');
+    Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
+    Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
+    // Route pour changer le statut de l'étudiant (bloquer/débloquer)
+    Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
+    Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
+    Route::get('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
+    // Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
+    Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
+    Route::get('/send-emails', [EmailController::class, 'sendEmails']);
+    Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');
+    Route::post('/emails/message', [EmailController::class, 'envoyerMessage'])->name('emails.message');
+    Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
+    Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
+    Route::post('/admin/catalogues/{id}/block', [CatalogueController::class, 'block'])->name('catalogues.block');
+});
 
-Route::get('/admin/boost', [AdminController::class, 'boost'])->name('admin.boost');
-Route::get('/admin/recrutements', [AdminController::class, 'recrutements'])->name('admin.recrutements');
-// Route::get('/admin/entretiens/create/{id}', [AdminController::class, 'createEntretien'])->name('admin.entretiens.create');
-// Route::post('/admin/entretiens/storeQuestionnaire', [AdminController::class, 'storeQuestionnaire'])->name('admin.entretiens.storeQuestionnaire');
-// Route::post('/admin/entretiens/store', [AdminController::class, 'storeEntretien'])->name('admin.entretiens.store');
-// Route::get('/admin/entretiens', [AdminController::class, 'entretiens'])->name('admin.entretiens');
-Route::get('/admin/entreprises_partenaires', [AdminController::class, 'entreprises_partenaires'])->name('admin.entreprises_partenaires');
-Route::get('/admin/evenements', [AdminController::class, 'evenements'])->name('admin.evenements');
-Route::get('/admin/entreprises', [AdminController::class, 'entreprises'])->name('admin.entreprises');
-Route::get('/admin/catalogues', [AdminController::class, 'catalogues'])->name('admin.catalogues');
-Route::get('/admin/etudiants', [AdminController::class, 'etudiants'])->name('admin.etudiants.etudiants');
-Route::get('/admin/actualites', [AdminController::class, 'actualites'])->name('admin.actualites');
-Route::get('/admin/resultats_pratique', [AdminController::class, 'resultats_pratique'])->name('admin.resultats_pratique');
-Route::get('admin/actualites', [ActualiteController::class, 'index'])->name('admin.actualites');
-Route::get('admin/evenements', [EventController::class, 'events'])->name('admin.evenements');
-Route::get('/admin/cvtheque/secteur', [AdminController::class, 'cvthequeSeteur'])->name('admin.cvtheque.cvtheque.secteur');
-Route::get('/admin/cvtheque/{id}', [AdminController::class, 'cvtheque'])->name('admin.cvtheque.cvtheque');
-Route::get('/admin/cvtheque/{id}/specialite', [AdminController::class, 'specialite'])->name('admin.cvtheque.specialite');
-Route::get('/admin/cv/{id}', [CvController::class, 'view'])->name('admin.cvtheque.view');
-Route::get('/admin/cv/{id}/download', [CvController::class, 'download'])->name('admin.cvtheque.download');
-// Route pour changer le statut de l'étudiant (bloquer/débloquer)
-Route::patch('/admin/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('admin.etudiants.toggleStatus');
-Route::delete('/admin/etudiants/{id}', [EtudiantController::class, 'destroy'])->name('admin.etudiants.destroy');
+//evenements - routes admin sécurisées
+Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->group(function () {
+    Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
+    Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');
+    Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenements.update');
+    Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+});
 
-Route::get('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
-// Route::post('/admin/examens/{id}/noter', [AdminController::class, 'noter'])->name('admin.examens.noter');
-
-Route::post('/admin/send', [AdminController::class, 'sendEmail'])->name('admin.sendmail');
-Route::get('/send-emails', [EmailController::class, 'sendEmails']);
-Route::post('/emails/offres', [EmailController::class, 'envoyerOffres'])->name('emails.offres');
-Route::post('/emails/message', [EmailController::class, 'envoyerMessage'])->name('emails.message');
-
-Route::get('/catalogue/{id}/edit', [CatalogueController::class, 'edit'])->name('catalogue.edit');
-Route::delete('/catalogue/{id}', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
-Route::post('/admin/catalogues/{id}/block', [CatalogueController::class, 'block'])->name('catalogues.block');
-
-//evenements
-Route::patch('/evenements/{id}/toggle-status', [EventController::class, 'toggleStatus'])->name('evenements.toggleStatus');
+// Route publique pour voir un événement
 Route::get('/evenements/{id}', [EventController::class, 'show'])->name('evenements.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-
-Route::get('/evenements/{id}/edit', [EventController::class, 'edit'])->name('evenements.edit');
-Route::put('/evenements/{id}', [EventController::class, 'update'])->name('evenements.update');
-Route::delete('/evenements/{id}', [EventController::class, 'destroy'])->name('evenements.destroy');
-Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
 Route::post('/fedapay/webhook', [FedaPayWebhookController::class, 'handle']);
 // entretiens etudians
@@ -457,7 +541,7 @@ Route::get('/candidat/dashboard', [EtudiantController::class, 'dashboardCandidat
 Route::post('/etudiants/{etudiant_id}/entretiens', [EtudiantController::class, 'storeEntretien'])->name('etudiants.entretiens');
 // Route::post('/etudiants/{etudiant_id}/examen', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
 Route::get('/etudiants/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'showExamen'])->name('etudiants.examen');
-Route::post('/etudiants/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
+// Route::post('/etudiants/{etudiant_id}/examen/{entretien_id}', [EtudiantController::class, 'submitExamen'])->name('etudiants.examen.submit');
 Route::post('/etudiants/{id}/accepter', [EtudiantController::class, 'accepterCandidature'])->name('candidatures.accepter');
 Route::post('/etudiants/{id}/rejeter', [EtudiantController::class, 'rejeterCandidature'])->name('candidatures.rejeter');
 Route::patch('/etudiants/{id}/toggle-status', [EtudiantController::class, 'toggleStatus'])->name('etudiants.toggleStatus');
@@ -599,4 +683,32 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/get-specialites', [App\Http\Controllers\Auth\RegisteredUserController::class, 'getSpecialites'])->name('get.specialites');
 
-Route::post('/admin/noter-cas-pratique/{examen}/{question}', [AdminController::class, 'noterCasPratique'])->name('admin.noter.cas.pratique');
+// Route admin sécurisée pour noter les cas pratiques
+Route::middleware(['auth', EnsureUserHasRole::class . ':admin'])->post('/admin/noter-cas-pratique/{examen}/{question}', [AdminController::class, 'noterCasPratique'])->name('admin.noter.cas.pratique');
+
+Route::post('/paiement/process', [PaiementController::class, 'process'])->name('paiement.process');
+Route::post('/paiement/callback', [PaiementController::class, 'callback'])->name('paiement.callback');
+
+// Route pour lancer le paiement d'abonnement (auth obligatoire)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/paiement/abonnement', [PaiementController::class, 'payerAbonnement'])->name('paiement.abonnement');
+});
+
+// Route pour lancer le paiement d'abonnement pour un étudiant spécifique
+Route::get('/paiement/abonnement/etudiant/{id}', [\App\Http\Controllers\PaiementController::class, 'payerAbonnementEtudiant'])->name('paiement.abonnement.etudiant');
+
+// Route de test API FedaPay (à supprimer en production)
+Route::get('/paiement/test-fedapay', [PaiementController::class, 'testFedaPayApi'])->name('paiement.test-fedapay');
+
+
+Route::match(['get', 'post'], '/fedapay-callback', [PaiementController::class, 'callbackFedaPay'])->name('fedapay.callback');
+// Route pour initier le paiement (GET)
+Route::get('/paiement/initier/{etudiant}/{formule}', [\App\Http\Controllers\PaiementController::class, 'initierPaiement'])->name('paiement.initier');
+// Route pour le callback FedaPay (GET et POST)
+Route::match(['get', 'post'], '/paiement/callback', [\App\Http\Controllers\PaiementController::class, 'callbackFedaPay'])->name('paiement.callback');
+Route::get('/paiement/{etudiant}/{formule}', [\App\Http\Controllers\PaiementController::class, 'showForm'])->name('paiement.form');
+// Choix de la formule d'abonnement (affichage)
+Route::get('/paiement/{etudiant}', [App\Http\Controllers\PaiementController::class, 'choix'])->name('paiement.choix');
+
+// Lancement du paiement FedaPay
+Route::post('/paiement/feadapay', [App\Http\Controllers\PaiementController::class, 'feadapay'])->name('paiement.feadapay');

@@ -4,39 +4,90 @@
 
 
 @section('content')
-    {{-- <div
-        style=" background-image: url('{{ asset('assets/images/Outils-de-recrutements.png') }}'); background-size: cover; background-attachment: fixed;">
-        <div style="text-align: center; padding: 20px;">
-            <p style="font-size: 17px; font-weight: bold; color: rgb(14, 40, 145); display: inline;">
-                Le moyen le plus simple d'obtenir
-            </p>
-            <p id="animatedText" style="font-size: 17px; font-weight: bold; color:rgb(14, 40, 145); display: inline;"></p>
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h1 class="hero-title animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">Trouvez le
+                        stage idéal pour lancer votre carrière</h1>
+                    <p class="hero-subtitle animate__animated animate__fadeInUp" style="animation-delay: 0.5s; font-weight: 500;">
+                        StagesBENIN connecte les talents béninois aux meilleures opportunités professionnelles.
+                        Accélérez votre insertion grâce à nos programmes de coaching personnalisés.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeInUp"
+                        style="animation-delay: 0.7s;">
+                        <a href="#" class="btn btn-light btn-lg px-4 py-3">Voir les offres</a>
+                        <a href="#" class="btn btn-outline-light btn-lg px-4 py-3">En savoir plus</a>
         </div>
-        <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-            <p style="font-size: 16px; color:rgb(14, 40, 145); line-height: 1.5;">
-                Trouvez votre chemin vers une carrière épanouissante grâce à notre plateforme de recrutement et d’insertion
-                professionnelle,
-                où les opportunités s’ouvrent à vous et les talents sont valorisés.
-            </p>
         </div>
-        <div class="container mt-4">
-            <!-- Barre de recherche -->
-            <div class="row mb-4">
-                <div class="col-md-8 mx-auto">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Rechercher un stage, une entreprise...">
-                        <button class="btn btn-primary">Rechercher</button>
+                <div class="col-lg-6">
+                    <div class="search-card animate__animated animate__fadeIn" style="animation-delay: 0.8s;">
+                        <ul class="nav nav-pills search-tabs mb-4" id="pills-tab">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active text-black" id="pills-stage-tab" data-bs-toggle="pill"
+                                    data-bs-target="#pills-stage">Stagiaire</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link text-black" id="pills-entreprise-tab" data-bs-toggle="pill"
+                                    data-bs-target="#pills-entreprise">Entreprise</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-stage">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Domaine</label>
+                                        <select class="form-select">
+                                            <option selected>Tous les domaines</option>
+                                            <option>Informatique</option>
+                                            <option>Marketing</option>
+                                            <option>Finance</option>
+                                            <option>Santé</option>
+                                        </select>
+                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Localisation</label>
+                                        <select class="form-select">
+                                            <option selected>Tout le Bénin</option>
+                                            <option>Cotonou</option>
+                                            <option>Porto-Novo</option>
+                                            <option>Parakou</option>
+                                            <option>Abomey-Calavi</option>
+                                        </select>
+                </div>
+                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Rechercher</a>
+                                </form>
+            </div>
+                            <div class="tab-pane fade" id="pills-entreprise">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Secteur d'activité</label>
+                                        <select class="form-select">
+                                            <option selected>Tous les secteurs</option>
+                                            <option>Technologie</option>
+                                            <option>Commerce</option>
+                                            <option>Industrie</option>
+                                            <option>Services</option>
+                                        </select>
+            </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Type de profil</label>
+                                        <select class="form-select">
+                                            <option selected>Tous les profils</option>
+                                            <option>Étudiants</option>
+                                            <option>Jeunes diplômés</option>
+                                            <option>Professionnels</option>
+                                        </select>
+        </div>
+                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Publier une offre</a>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="text-center my-4 md-d-flex md-justify-content-center gap-4">
-                <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">RECRUTER EMPLOYE /
-                    STAGIAIRE</a>
-                <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 fw-bold rounded m-2">CONNEXION</a>
-                <a href="{{ route('register') }}" class="btn btn-primary px-4 py-2 fw-bold rounded">INSCRIPTION</a>
-            </div>
         </div>
-    </div> --}}
+    </section>
 
     <!-- Header/Navbar Transparent -->
     {{-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
@@ -360,7 +411,7 @@
                 <!-- Texte à droite -->
                 <div class="col-md-6">
                     <p class="">
-                        StagesBENIN est une entreprise spécialisée dans l’insertion professionnelle et la visibilité
+                        StagesBENIN est une entreprise spécialisée dans l'insertion professionnelle et la visibilité
                         digitale des entreprises.
                     </p>
                     <p class=" mb-4">

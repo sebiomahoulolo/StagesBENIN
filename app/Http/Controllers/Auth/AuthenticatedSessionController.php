@@ -37,8 +37,18 @@ class AuthenticatedSessionController extends Controller
             // Rediriger vers le dashboard Admin
             return redirect()->intended(route('admin.dashboard', [], false)); // Route nommée du dashboard admin
         } elseif ($user->isEtudiant()) {
-            // Rediriger vers le dashboard Etudiant
-            return redirect()->intended(route('etudiants.dashboard', [], false)); // Route nommée du dashboard étudiant
+            $etudiant = $user->etudiant;
+            if ($etudiant) {
+                if ($etudiant->abonnementActif()) {
+                    return redirect()->intended(route('etudiants.dashboard', [], false));
+                }
+                // Redirige vers la page de choix de formule
+                return redirect()->route('paiement.choix', [
+                    'etudiant' => $etudiant->id,
+                ])->with('error', 'Veuillez choisir une formule pour accéder à votre espace.');
+            }
+            // Si pas d'objet étudiant, fallback dashboard
+            return redirect()->intended(route('etudiants.dashboard', [], false));
         } elseif ($user->isRecruteur()) {
              // Rediriger vers le dashboard Recruteur
              return redirect()->intended(route('entreprises.dashboard', [], false)); // Route nommée du dashboard recruteur

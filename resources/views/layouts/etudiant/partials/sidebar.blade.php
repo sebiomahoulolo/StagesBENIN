@@ -24,19 +24,25 @@
             <i class="fas fa-user-circle fa-fw"></i><span>Mon Profil</span>
         </a>
          
-        {{-- Section CV --}}
-        <div x-data="{ open: {{ request()->routeIs('etudiants.cv.*') ? 'true' : 'false' }} }"> <!-- Simplification de la condition d'ouverture -->
-            <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('etudiants.cv.*') ? 'active' : '' }}">
-                <i class="fas fa-id-card fa-fw"></i> <!-- Icône plus appropriée pour CV -->
-                <span>Mon CV</span>
-                 <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
-            </button>
-            <div x-show="open" class="menu-section-content">
-                @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id ?? 0; @endphp
-                <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-edit fa-fw"></i><span>Éditeur CV</span> </a> <!-- Icône modifiée -->
-                <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
+        @php
+            $etudiant = Auth::user()->etudiant ?? null;
+            $abonnement = $etudiant ? $etudiant->abonnementActif() : null;
+        @endphp
+        @if(!$abonnement || $abonnement->montant != 500)
+            {{-- Section CV --}}
+            <div x-data="{ open: {{ request()->routeIs('etudiants.cv.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="menu-section-toggle {{ request()->routeIs('etudiants.cv.*') ? 'active' : '' }}">
+                    <i class="fas fa-id-card fa-fw"></i>
+                    <span>Mon CV</span>
+                    <i class="fas fa-chevron-down fa-fw transition-transform" :class="{ 'rotate-180': open }"></i>
+                </button>
+                <div x-show="open" class="menu-section-content">
+                    @php $cvProfileId = Auth::user()->etudiant?->cvProfile?->id ?? 0; @endphp
+                    <a href="{{ route('etudiants.cv.edit', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.edit') ? 'active' : '' }}"> <i class="fas fa-edit fa-fw"></i><span>Éditeur CV</span> </a>
+                    <a href="{{ route('etudiants.cv.show', ['cvProfile' => $cvProfileId]) }}" class="menu-item {{ request()->routeIs('etudiants.cv.show') ? 'active' : '' }}"> <i class="fas fa-eye fa-fw"></i><span>Visualiser CV</span> </a>
+                </div>
             </div>
-        </div>
+        @endif
 
         {{-- Section Opportunités --}}
         <div x-data="{ open: {{ request()->routeIs('opportunites.*') || request()->routeIs('etudiants.offres.*') || request()->routeIs('etudiants.candidatures.*') || request()->routeIs('etudiants.evenements.*') ? 'true' : 'false' }} }">
@@ -93,11 +99,13 @@
                     <i class="fas fa-calendar-alt fa-fw"></i>
                     <span>Agenda</span>
                  </a>
-                 @if(Auth::user()->etudiant)
-                    <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}">
-                        <i class="fas fa-comments fa-fw"></i><span>QCM/Examen</span>
-                    </a>
-                 @endif
+                 {{-- @if(Auth::user()->etudiant && isset($entretiens) && $entretiens->count())
+                    @foreach($entretiens as $entretien)
+                        <a href="{{ route('etudiants.examen', ['etudiant_id' => Auth::user()->etudiant->id, 'entretien_id' => $entretien->id ?? $entretien->entretien_id]) }}" class="menu-item {{ request()->routeIs('etudiants.examen') ? 'active' : '' }}">
+                            <i class="fas fa-comments fa-fw"></i><span>QCM/Examen ({{ \Carbon\Carbon::parse($entretien->date)->format('d/m/Y') }})</span>
+                        </a>
+                    @endforeach
+                 @endif --}}
              </div>
          </div>
 

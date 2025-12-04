@@ -102,7 +102,7 @@
         }
 
         .navbar .nav-link {
-            color: white !important;
+           
             font-weight: 500;
             margin: 0 10px;
             position: relative;
@@ -359,91 +359,6 @@
 
     <!-- Header/Navbar Transparent -->
     @include('components.navbar')
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0">
-                    <h1 class="hero-title animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">Trouvez le
-                        stage idéal pour lancer votre carrière</h1>
-                    <p class="hero-subtitle animate__animated animate__fadeInUp" style="animation-delay: 0.5s; font-weight: 500;">
-                        StagesBENIN connecte les talents béninois aux meilleures opportunités professionnelles.
-                        Accélérez votre insertion grâce à nos programmes de coaching personnalisés.
-                    </p>
-                    <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeInUp"
-                        style="animation-delay: 0.7s;">
-                        <a href="#" class="btn btn-light btn-lg px-4 py-3">Voir les offres</a>
-                        <a href="#" class="btn btn-outline-light btn-lg px-4 py-3">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="search-card animate__animated animate__fadeIn" style="animation-delay: 0.8s;">
-                        <ul class="nav nav-pills search-tabs mb-4" id="pills-tab">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active text-black" id="pills-stage-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-stage">Stagiaire</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link text-black" id="pills-entreprise-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-entreprise">Entreprise</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-stage">
-                                <form>
-                                    <div class="mb-3">
-                                        <label class="form-label">Domaine</label>
-                                        <select class="form-select">
-                                            <option selected>Tous les domaines</option>
-                                            <option>Informatique</option>
-                                            <option>Marketing</option>
-                                            <option>Finance</option>
-                                            <option>Santé</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Localisation</label>
-                                        <select class="form-select">
-                                            <option selected>Tout le Bénin</option>
-                                            <option>Cotonou</option>
-                                            <option>Porto-Novo</option>
-                                            <option>Parakou</option>
-                                            <option>Abomey-Calavi</option>
-                                        </select>
-                                    </div>
-                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Rechercher</a>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="pills-entreprise">
-                                <form>
-                                    <div class="mb-3">
-                                        <label class="form-label">Secteur d'activité</label>
-                                        <select class="form-select">
-                                            <option selected>Tous les secteurs</option>
-                                            <option>Technologie</option>
-                                            <option>Commerce</option>
-                                            <option>Industrie</option>
-                                            <option>Services</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Type de profil</label>
-                                        <select class="form-select">
-                                            <option selected>Tous les profils</option>
-                                            <option>Étudiants</option>
-                                            <option>Jeunes diplômés</option>
-                                            <option>Professionnels</option>
-                                        </select>
-                                    </div>
-                                    <a href="{{route('pages.offres')}}" class="btn btn-primary w-100 py-3">Publier une offre</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <main class="container-fluid"> {{-- Ajout d'une marge pour l'espacement initial --}}
         {{-- Contenu spécifique de la page --}}
         @yield('content')

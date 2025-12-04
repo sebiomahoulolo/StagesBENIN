@@ -3,6 +3,8 @@
 @section('title', 'Ajouter un événement - StagesBENIN')
 
 @section('content')
+<br><br><br>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <style>
     h2, h4 {

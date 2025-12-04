@@ -1,18 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 use App\Models\Catalogue;
 use App\Models\Actualite;
 use App\Models\Avis;
 use App\Models\Secteur;
 use App\Models\Category;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Event;
 use App\Models\Annonce;
 use App\Models\Specialite;
 use Illuminate\Http\Request;
 class PageController extends Controller
 {
-    
+// L'import Log est déjà présent
     public function create()
     {
         return view('event-form'); // ou le nom de ta vue exacte
@@ -103,6 +105,71 @@ $nombre_offres = $annonces->count(); // Nombre total d'offres
     {
         return view('pages.publication'); 
     }
+    
+    
+    
+       public function formulaire()
+    {
+        return view('pages.formulaire'); 
+    }
+    
+    
+public function submitApplication(Request $request)
+{
+    Log::info('Début de la soumission', ['ip' => $request->ip()]);
+
+    try {
+        $validated = $request->validate([
+            'poste' => 'required|string|max:255',
+            'civilite' => 'required|string|in:M.,Mme,Mlle',
+            'nom' => 'required|string|max:100',
+            'prenom' => 'required|string|max:100',
+            'email' => 'required|email|max:100',
+            'telephone' => 'required|string|max:20',
+            'adresse' => 'required|string|max:255',
+            'ville' => 'required|string|max:100',
+            'naissance' => 'required|date',
+            'niveau' => 'required|string|max:50',
+            'diplome' => 'required|string|max:100',
+            'experience' => 'nullable|integer|min:0',
+            'competences' => 'nullable|string',
+            'motivation' => 'required|string|min:50',
+            'dossier' => 'required|file|mimes:pdf|max:5120',
+            'consentement' => 'required|accepted'
+        ]);
+
+        Log::info('Validation réussie', $validated);
+
+        // Envoi direct par email sans stockage
+        Mail::send('emails.application', ['data' => $validated], function($message) use ($validated, $request) {
+            $message->to('depot@stagesbenin.com')
+                    ->subject('Nouvelle candidature - ' . $validated['poste'])
+                    ->attach($request->file('dossier')->getRealPath(), [
+                        'as' => 'Candidature_'.$validated['nom'].'_'.$validated['prenom'].'.pdf',
+                        'mime' => 'application/pdf'
+                    ]);
+        });
+
+        Log::info('Email envoyé avec succès');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Votre candidature a bien été envoyée'
+        ]);
+
+    } catch (\Throwable $e) {
+        Log::error('Erreur soumission', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'data' => $request->all()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Une erreur technique est survenue. Veuillez réessayer.'
+        ], 500);
+    }
+}
 
     public function services()
     {

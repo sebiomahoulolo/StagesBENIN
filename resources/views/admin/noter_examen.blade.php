@@ -12,7 +12,7 @@
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">
-                            <i class="fas fa-star"></i> Notation de l'entretien
+                            <i class="fas fa-star"></i> Notation du test
                         </h4>
                        
                     </div>
@@ -70,7 +70,7 @@
 @else
     <div class="alert alert-warning">
         <i class="fas fa-exclamation-triangle"></i> 
-        Les réponses ne sont pas disponibles pour cet examen.
+        Les réponses ne sont pas disponibles pour cet text.
     </div>
 @endif
 

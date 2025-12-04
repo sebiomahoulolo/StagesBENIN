@@ -351,17 +351,53 @@
             </div>
 
             <div class="stat-card">
-                <i class="fas fa-user-plus"></i>
-                <h5>Inscrits aujourd'hui</h5>
-                <p>{{ \App\Models\Etudiant::whereDate('created_at', now()->toDateString())->count() }}</p>
+                <i class="fas fa-user-check"></i>
+                <h5>Total d'étudiants ayant payé </h5>
+                <p>
+                    @php
+                        $nbAbonnes = \App\Models\Paiement::where('status', 'approved')->distinct('etudiant_id')->count('etudiant_id');
+                    @endphp
+                    {{ $nbAbonnes }}
+                </p>
             </div>
 
             <div class="stat-card">
-                <i class="fas fa-calendar-week"></i>
-                <h5>Cette semaine</h5>
-                <p>{{ \App\Models\Etudiant::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count() }}
-                </p>
-            </div>
+    <i class="fas fa-user-check"></i>
+    <h5>Étudiants ayant pas payé  ou en cours</h5>
+    <p>
+        @php
+            use App\Models\Etudiant;
+            use App\Models\Paiement;
+
+            $nbAbonnes = \App\Models\Etudiant::whereHas('paiements', function ($query) {
+                $query->where('status', 'pending');
+            })->orWhereDoesntHave('paiements')->count();
+        @endphp
+        {{ $nbAbonnes }}
+    </p>
+</div>
+
+
+
+            <div class="stat-card">
+    <i class="fas fa-user-plus"></i>
+    <h5>Inscrits aujourd'hui et ayant payé</h5>
+    <p>
+        @php
+
+            $nbInscritsPayes = Etudiant::whereDate('created_at', now()->toDateString())
+                ->whereHas('paiements', function ($query) {
+                    $query->where('status', 'approved'); // ou 'success' selon ton système
+                })
+                ->count();
+        @endphp
+
+        {{ $nbInscritsPayes }}
+    </p>
+</div>
+
+           
+
 
             <div class="stat-card">
                 <i class="fas fa-calendar-alt"></i>

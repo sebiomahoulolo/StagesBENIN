@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6 text-center alert alert-info">
-            <h4>Etablir le QCM pour l'entretien {{ $entretien->reference }}</h4>
+            <h4>Etablir le QCM pour le test de niveau {{ $entretien->reference }}</h4>
         </div>
         <div class="col-md-3"></div>
     </div>

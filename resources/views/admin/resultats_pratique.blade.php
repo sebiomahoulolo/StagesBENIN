@@ -12,7 +12,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
                             <i class="fas fa-clipboard-list me-2"></i>
-                            Résultats des entretiens Pratiques
+                            Résultats du test Pratiques
                         </h3>
                     </div>
                 </div>
@@ -33,39 +33,35 @@
                         <table class="table table-hover table-striped mb-0">
                             <thead class="table">
                                 <tr>
-                                    <th scope="col" class="sortable" data-sort="nom">
-                                        Nom & Prénom
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th scope="col" class="sortable" data-sort="niveau">
-                                        Niveau
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th scope="col" class="sortable" data-sort="formation">
-                                        Formation
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th scope="col">
-                                         Date Passage et Heure
-                                    </th>
-                                    <th scope="col" class="sortable" data-sort="score">
-                                        Note total
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                   
+                                    {{-- <th scope="col">Test</th> --}}
+                                    <th scope="col">Nom & Prénom</th>
+                                    {{-- <th scope="col">Annonce</th> --}}
+                                    <th scope="col">Niveau</th>
+                                    <th scope="col">Formation</th>
+                                    <th scope="col">Date Passage et Heure</th>
+                                    <th scope="col">Note total</th>
                                     <th scope="col" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($examens as $index => $examen)
                                     <tr class="align-middle">
+                                        {{-- <td>
+                                            @php $entretien = $examen->entretien ?? null; @endphp
+                                            @if($entretien)
+                                                <span class="fw-semibold">{{ $entretien->reference ?? $entretien->id }}</span><br>
+                                                <small class="text-muted">{{ is_string($entretien->date) ? $entretien->date : ($entretien->date ? $entretien->date->format('d/m/Y') : '') }}</small>
+                                            @else
+                                                <span class="text-muted">N/A</span>
+                                            @endif
+                                        </td> --}}
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <div class="fw-semibold">{{ $examen->etudiant->nom ?? 'N/A' }} {{ $examen->etudiant->prenom ?? '' }}</div>
-                                                </div>
-                                            </div>
+                                            <div class="fw-semibold">{{ $examen->etudiant->nom ?? 'N/A' }} {{ $examen->etudiant->prenom ?? '' }}</div>
                                         </td>
+                                        {{-- <td>
+                                            @php $annonce = $entretien && $entretien->annonce ? $entretien->annonce : null; @endphp
+                                            {{ $annonce ? $annonce->nom_du_poste : 'N/A' }}
+                                        </td> --}}
                                         
                                         <td>
                                             <span class="bg-info">{{ $examen->etudiant->niveau ?? 'N/A' }}</span>
@@ -149,7 +145,7 @@
                                                             </ul>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <h6 class="text-primary mb-3">Informations de l'entretien</h6>
+                                                            <h6 class="text-primary mb-3">Informations du test</h6>
                                                             <ul class="list-group list-group-flush">
                                                                 @php
                                                                     $candidature = $examen->etudiant->candidatures()
@@ -279,7 +275,7 @@
                                                             <div class="card-header bg-primary text-white">
                                                                 <h5 class="mb-0">
                                                                     <i class="fas fa-star me-2"></i>
-                                                                    Système de notation - Entretien du {{ is_string($entretien->date) ? $entretien->date : $entretien->date->format('d/m/Y') }}
+                                                                    Système de notation - Test du {{ is_string($entretien->date) ? $entretien->date : $entretien->date->format('d/m/Y') }}
                                                                 </h5>
                                                             </div>
                                                             <div class="card-body">
@@ -311,7 +307,7 @@
                                                     @else
                                                         <div class="alert alert-warning">
                                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                                            Aucun entretien programmé trouvé pour cet examen
+                                                            Aucun test programmé
                                                         </div>
                                                     @endif
                                                 </div>
@@ -352,8 +348,8 @@
                                         <td colspan="7" class="text-center py-5">
                                             <div class="text-muted">
                                                 <i class="fas fa-inbox fa-3x mb-3"></i>
-                                                <h5>Aucun entretien trouvé</h5>
-                                                <p>Il n'y a pas encore d'entretiens pratiques enregistrés.</p>
+                                                <h5>Aucun test trouvé</h5>
+                                                <p>Il n'y a pas encore test pratiques enregistrés.</p>
                                             </div>
                                         </td>
                                     </tr>

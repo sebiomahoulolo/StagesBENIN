@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6abe9f6534bea188ca2c479e46c94f88",
+    "content-hash": "38725a27e85bb12919649d17abaa5bd0",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1258,16 +1258,16 @@
         },
         {
             "name": "fedapay/fedapay-php",
-            "version": "0.4.5",
+            "version": "0.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fedapay/fedapay-php.git",
-                "reference": "0d9ff1c96a0f717460513f50e4ae7d9800221a92"
+                "reference": "150c196ae7778b10ab04dc82cd882cf1a3c332ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fedapay/fedapay-php/zipball/0d9ff1c96a0f717460513f50e4ae7d9800221a92",
-                "reference": "0d9ff1c96a0f717460513f50e4ae7d9800221a92",
+                "url": "https://api.github.com/repos/fedapay/fedapay-php/zipball/150c196ae7778b10ab04dc82cd882cf1a3c332ce",
+                "reference": "150c196ae7778b10ab04dc82cd882cf1a3c332ce",
                 "shasum": ""
             },
             "require": {
@@ -1305,9 +1305,9 @@
             ],
             "support": {
                 "issues": "https://github.com/fedapay/fedapay-php/issues",
-                "source": "https://github.com/fedapay/fedapay-php/tree/0.4.5"
+                "source": "https://github.com/fedapay/fedapay-php/tree/0.4.7"
             },
-            "time": "2025-01-28T19:40:47+00:00"
+            "time": "2025-05-17T08:05:46+00:00"
         },
         {
             "name": "fruitcake/php-cors",

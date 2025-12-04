@@ -3,6 +3,8 @@
 @section('title', 'StagesBENIN')
 
 @push('styles')
+<br><br><br>
+
     @section('content')
 
 

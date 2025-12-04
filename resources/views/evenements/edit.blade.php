@@ -4,6 +4,7 @@
 
 @push('styles')
     @section('content')
+<br><br><br>
 
 <style>
     .container {

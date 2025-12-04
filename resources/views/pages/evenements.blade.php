@@ -1,8 +1,11 @@
 @extends('layouts.layout')
+<br><br><br>
+<br><br><br>
 
 @section('title', 'StagesBENIN')
 
 @section('content')
+
 
 @php
     // Récupération des événements publiés uniquement

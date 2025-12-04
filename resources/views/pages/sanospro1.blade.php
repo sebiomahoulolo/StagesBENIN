@@ -1,6 +1,7 @@
 @extends('layouts.layout')
 
 @section('title', 'StagesBEIN')
+<br><br><br>
 
 @push('styles') {{-- Push specific styles to a stack defined in your layout --}}
 <style>

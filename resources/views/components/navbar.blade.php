@@ -11,14 +11,13 @@
        <a href="https://www.tiktok.com/@stagesbenin6?_t=8lH68SpT4HG&_r=1" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok"></i></a>
        <a href="https://wa.me/22966693956" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i></a>
     </div>
-    
 </div>
 
 <!-- Navbar (Toujours visible) -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm"> {{-- Ajout bg-white et shadow --}}
     <div class="container-fluid">
         <a class="navbar-brand ms-5" href="{{ url('/') }}">
-            <img src="{{ asset('assets/images/stagebenin.png') }}" alt="StagesBENIN Logo" class="navbar-logo"> {{-- Classe ajoutée pour cibler le logo --}}
+            <img src="{{ asset('assets/images/EmploiBenin.png') }}" alt="StagesBENIN Logo" class="navbar-logo"> {{-- Classe ajoutée pour cibler le logo --}}
         </a>
         <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

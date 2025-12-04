@@ -49,75 +49,8 @@ class EtudiantController extends Controller
         $etudiant = auth()->user()->etudiant;
         $etudiant_id = auth()->user()->etudiant->id;
 
-        // Vérifier si le profil CV existe
-        $cvProfile = CvProfile::where('etudiant_id', $etudiant_id)->first();
-
-        // Vérifier si le profil CV existe
-        if (!$cvProfile) {
-            return redirect()->route('etudiants.cv.edit', $etudiant_id)
-                ->with('warning', 'Veuillez créer votre profil CV pour accéder au tableau de bord.');
-        }
-
-        // Vérifier les champs obligatoires du profil CV
-        $requiredFields = [
-            'titre_profil' => 'le titre de votre profil',
-            'resume_profil' => 'votre résumé professionnel',
-            'adresse' => 'votre adresse',
-            'telephone_cv' => 'votre numéro de téléphone',
-            'email_cv' => 'votre email professionnel',
-            'date_naissance' => 'votre date de naissance',
-            'lieu_naissance' => 'votre lieu de naissance',
-            'nationalite' => 'votre nationalité',
-            'situation_matrimoniale' => 'votre situation matrimoniale'
-        ];
-
-        $missingFields = [];
-        foreach ($requiredFields as $field => $label) {
-            if (empty($cvProfile->$field)) {
-                $missingFields[] = $label;
-            }
-        }
-
-        if (!empty($missingFields)) {
-            $message = 'Veuillez compléter les champs obligatoires suivants dans votre profil CV : ';
-            $message .= implode(', ', $missingFields);
-            $message .= '.';
-
-            return redirect()->route('etudiants.cv.edit', $etudiant_id)
-                ->with('warning', $message);
-        }
-
-        // Vérifier si toutes les tables CV sont remplies
-        $missingSections = [];
-
-        $hasFormation = CvFormation::where('cv_profile_id', $cvProfile->id)->exists();
-        if (!$hasFormation) {
-            $missingSections[] = 'formations';
-        }
-
-        $hasExperience = CvExperience::where('cv_profile_id', $cvProfile->id)->exists();
-        if (!$hasExperience) {
-            $missingSections[] = 'expériences professionnelles';
-        }
-
-        $hasCompetence = CvCompetence::where('cv_profile_id', $cvProfile->id)->exists();
-        if (!$hasCompetence) {
-            $missingSections[] = 'compétences';
-        }
-
-        $hasLangue = CvLangue::where('cv_profile_id', $cvProfile->id)->exists();
-        if (!$hasLangue) {
-            $missingSections[] = 'langues';
-        }
-
-        if (!empty($missingSections)) {
-            $message = 'Veuillez ajouter vos ';
-            $message .= implode(', ', $missingSections);
-            $message .= ' dans votre CV.';
-
-            return redirect()->route('etudiants.cv.edit', $etudiant_id)
-                ->with('warning', $message);
-        }
+        // Désormais, on n'impose plus la création ou la complétion du CV pour accéder au dashboard.
+        // On peut éventuellement afficher un message d'information dans la vue si besoin.
 
         $userId = $request->user()->id;
 
@@ -161,6 +94,10 @@ class EtudiantController extends Controller
 
     public function entretiensProgrammes()
     {
+        $user_id = Auth::id();
+
+        // dd($user_id);
+        $etudiant = Etudiant::where('user_id', $user_id)->first();
         $entretiens = Entretien::join('annonces', 'entretiens.annonce_id', '=', 'annonces.id')
             ->join('candidatures', 'annonces.id', '=', 'candidatures.annonce_id')
             ->join('etudiants', 'candidatures.etudiant_id', '=', 'etudiants.id')
@@ -174,11 +111,13 @@ class EtudiantController extends Controller
                 DB::raw('MAX(entretiens.reference) as reference'),
                 DB::raw('MAX(entretiens.status) as status'),
                 DB::raw('MAX(etudiants.nom) as nom'),
-                DB::raw('MAX(etudiants.prenom) as prenom')
+                DB::raw('MAX(etudiants.prenom) as prenom'),
+                DB::raw('MAX(etudiants.id) as etudiant_id')
             )
             ->where('entretiens.status', 'planifié')
             ->where('candidatures.statut', 'accepte')
             ->groupBy('annonces.id', 'annonces.nom_du_poste')
+            ->where('etudiants.id', $etudiant->id) // Filtrer par l'étudiant connecté
             ->orderBy('date', 'asc')
             ->get();
 
@@ -349,12 +288,55 @@ class EtudiantController extends Controller
 
     public function showExamen($etudiant_id, $entretien_id)
     {
-        $etudiant = Etudiant::findOrFail($etudiant_id);
-        $entretien = Entretien::where('id', $entretien_id)
-            ->where('etudiant_id', $etudiant->id)
-            ->firstOrFail();
-        $questions = Question::where('entretien_id', $entretien->id)->get();
-        return view('etudiants.examen', compact('etudiant', 'questions', 'entretien'));
+
+        // dd($entretien_id);
+        $user_id = Auth::user()->id;
+
+        // Récupérer l'étudiant
+        $etudiant = Etudiant::where('user_id', $user_id)->first();
+        if (!$etudiant) {
+            abort(404, "Étudiant non trouvé");
+        }
+
+        // Récupérer l'entretien spécifique à l'étudiant via ses candidatures
+        $entretien = Entretien::find($entretien_id);
+        // $entretien = Entretien::whereHas('annonce.candidatures', function ($query) use ($etudiant) {
+        //     $query->where('etudiant_id', $etudiant->id);
+        // })->with('annonce')->first();
+
+        if (!$entretien) {
+            abort(404, "Aucun entretien correspondant trouvé");
+        }
+
+        // Récupérer uniquement les questions liées à cet entretien
+        $questions = Question::where('entretien_id', $entretien_id)->with('reponses')->get();
+
+        // Assurer que les options sont bien formatées
+        foreach ($questions as $question) {
+            $question->options = is_string($question->options)
+                ? json_decode($question->options, true) ?? []
+                : ($question->reponses->pluck('texte')->toArray() ?? []);
+        }
+
+        $examen = Examen::where('etudiant_id', $etudiant->id)
+            ->where('entretien_id', $entretien_id)
+            ->first();
+
+        // Sécurisation du nom du poste
+        $nom_du_poste = optional($entretien->annonce)->nom_du_poste ?? 'Non disponible';
+        $duree = optional($entretien->annonce)->duree ?? 'Non disponible';
+
+        return view('etudiants.examen', [
+            'etudiant' => $etudiant,
+            'questions' => $questions,
+            'examen' => $examen,
+            'score' => $examen->score ?? 0,
+            'total_questions' => $examen->total_questions ?? 0,
+            'bonnes_reponses' => $examen->bonnes_reponses ?? 0,
+            'nom_du_poste' => $nom_du_poste,
+            'duree' => $duree,
+            'entretien' => $entretien
+        ]);
     }
 
 
@@ -390,123 +372,93 @@ class EtudiantController extends Controller
 
 
     // Dans votre contrôleur d'examen
-    public function submitExamen(Request $request, $etudiant_id, $entretien_id)
+    public function submitExamen(Request $request, $etudiant_id)
     {
-        try {
-            $user_id = Auth::user()->id;
+        // dd($request->all());
+        $entretien_id = $request->input('entretien_id');
+        $etudiant_id = $request->input('etudiant_id');
+        // try {
+        $user_id = Auth::id();
 
-            $etudiant = Etudiant::where('user_id', $user_id)->first();
-            // dd($etudiant);
-            $etudiant_id = $etudiant->id;
+        $etudiant = Etudiant::where('user_id', $user_id)
+            ->where('id', $etudiant_id)
+            ->firstOrFail();
 
-            if(!$etudiant){
-                return  back()->with('error', 'Étudiant non défini.');
-            }
+        $entretien = Entretien::where('id', $entretien_id)
+            ->whereHas('annonce.candidatures', function ($query) use ($etudiant) {
+                $query->where('etudiant_id', $etudiant->id);
+            })
+            ->firstOrFail();
 
-            $reponses = collect($request->input('reponses', []));
+        $reponses = collect($request->input('reponses', []));
+        $questions = Question::whereIn('id', $reponses->keys())
+            ->where('entretien_id', $entretien->id)
+            ->with('reponses')
+            ->get();
 
-            $questions = Question::whereIn('id', $reponses->keys())->get();
-            $total_questions = $questions->count();
-            $bonnes_reponses = 0;
+        $total_questions = $questions->count();
+        $bonnes_reponses = 0;
 
-            foreach ($questions as $question) {
-                $reponse_etudiant = $reponses->get($question->id);
+        foreach ($questions as $question) {
+            $reponse_etudiant = $reponses->get($question->id);
 
-                if ($reponse_etudiant) {
-                    // Récupérer les bonnes réponses validées
-                    $reponses_valides = \App\Models\Reponse::where('question_id', $question->id)
-                        ->where('valide', 1)
-                        ->pluck('texte')
+            $reponses_valides = $question->reponses()
+                ->where('valide', 1)
+                ->pluck('texte')
+                ->map(fn($val) => strtolower(trim($val)))
+                ->toArray();
+
+            if ($reponse_etudiant) {
+                if (is_array($reponse_etudiant)) {
+                    $reponse_etudiant = collect($reponse_etudiant)
                         ->map(fn($val) => strtolower(trim($val)))
+                        ->sort()
                         ->toArray();
 
-                    // Vérifier les réponses
-                    if (is_array($reponse_etudiant)) {
-                        $reponse_etudiant = collect($reponse_etudiant)->map(fn($val) => strtolower(trim($val)))->sort()->toArray();
-                        if ($reponse_etudiant === collect($reponses_valides)->sort()->toArray()) {
-                            $bonnes_reponses++;
-                        }
-                    } else {
-                        if (in_array(strtolower(trim($reponse_etudiant)), $reponses_valides)) {
-                            $bonnes_reponses++;
-                        }
+                    if ($reponse_etudiant === collect($reponses_valides)->sort()->toArray()) {
+                        $bonnes_reponses++;
+                    }
+                } else {
+                    if (in_array(strtolower(trim($reponse_etudiant)), $reponses_valides)) {
+                        $bonnes_reponses++;
                     }
                 }
             }
-
-            // Calcul du score sur 20
-            $score_sur_20 = ($total_questions > 0) ? round(($bonnes_reponses / $total_questions) * 20, 2) : 0;
-
-            // Récupérer l'entretien_id depuis la requête ou le trouver dynamiquement
-            $entretien_id = $request->input('entretien_id');
-            if (!$entretien_id) {
-                // Si non transmis, on cherche l'entretien du jour (ou le plus proche à venir)
-                $entretien = Entretien::where('etudiant_id', $etudiant_id)
-                    ->whereDate('date', now()->toDateString())
-                    ->orderBy('date', 'desc')
-                    ->first();
-                if (!$entretien) {
-                    // Si aucun aujourd'hui, on prend le plus récent
-                    $entretien = Entretien::where('etudiant_id', $etudiant_id)
-                        ->orderBy('date', 'desc')
-                        ->first();
-                }
-                if ($entretien) {
-                    $entretien_id = $entretien->id;
-                } else {
-                    return back()->with('error', 'Aucun entretien trouvé pour cet étudiant.');
-                }
-            }
-
-            // Sauvegarde en base de données
-            $examen = Examen::create([
-                'etudiant_id' => $etudiant_id,
-                'entretien_id' => $entretien_id,
-                'score' => $score_sur_20,
-                'total_questions' => $total_questions,
-                'bonnes_reponses' => $bonnes_reponses,
-                'reponses' => json_encode($reponses),
-                'date_passage' => now(),
-            ]);
-
-            // Stocker les informations dans la session
-            session(['score' => $score_sur_20]);
-            session(['total_questions' => $total_questions]);
-            session(['bonnes_reponses' => $bonnes_reponses]);
-
-
-            // // Récupérer l'entretien lié à cet étudiant
-            // $entretien = \App\Models\Entretien::where('etudiant_id', $etudiant_id)
-            //     ->with('annonce')
-            //     ->first();
-
-            // Passer le nom du poste à la vue
-            // $nomPoste = $entretien ? $entretien->annonce->nom_du_poste : 'Non spécifié';
-
-            // Récupérer les questions pour l'examen
-            $questions = Question::whereIn('id', $reponses->keys())
-                ->with('reponses')
-                ->get();
-
-            // Assurer que les options sont bien formatées
-            foreach ($questions as $question) {
-                $question->options = is_string($question->options)
-                    ? json_decode($question->options, true) ?? []
-                    : ($question->reponses->pluck('texte')->toArray() ?? []);
-            }
-
-            return view('etudiants.examen', [
-                'etudiant' => $etudiant,
-                'questions' => $questions,
-                'score' => $score_sur_20,
-                'total_questions' => $total_questions,
-                'bonnes_reponses' => $bonnes_reponses,
-                'pourcentage' => round(($bonnes_reponses / max($total_questions, 1)) * 100, 2),
-                'examen' => $examen,
-            ]);
-        } catch (\Exception $e) {
-            \Log::error("Erreur lors de l'enregistrement de l'examen : " . $e->getMessage());
-            return back()->with('error', 'Une erreur est survenue lors de la soumission de l\'examen.');
         }
+
+        $score_sur_20 = $total_questions > 0
+            ? round(($bonnes_reponses / $total_questions) * 20, 2)
+            : 0;
+
+        $examen = Examen::create([
+            'etudiant_id' => $etudiant->id,
+            'entretien_id' => $entretien->id,
+            'score' => $score_sur_20,
+            'total_questions' => $total_questions,
+            'bonnes_reponses' => $bonnes_reponses,
+            'reponses' => json_encode($reponses),
+            'date_passage' => now(),
+        ]);
+
+        foreach ($questions as $question) {
+            $question->options = is_string($question->options)
+                ? json_decode($question->options, true) ?? []
+                : ($question->reponses->pluck('texte')->toArray() ?? []);
+        }
+
+        return view('etudiants.examen', [
+            'etudiant' => $etudiant,
+            'entretien' => $entretien,
+            'questions' => $questions,
+            'score' => $score_sur_20,
+            'total_questions' => $total_questions,
+            'bonnes_reponses' => $bonnes_reponses,
+            'pourcentage' => round(($bonnes_reponses / max($total_questions, 1)) * 100, 2),
+            'examen' => $examen
+        ]);
+        // } catch (\Exception $e) {
+        //     \Log::error("Erreur soumission examen [entretien $entretien_id] : " . $e->getMessage());
+        //     return back()->with('error', 'Une erreur est survenue lors de la soumission de l\'examen.');
+        // }
     }
 }

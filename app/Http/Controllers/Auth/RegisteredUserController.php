@@ -37,7 +37,6 @@ class RegisteredUserController extends Controller
      */
     public function storeEtudiant(Request $request): RedirectResponse
     {
-
         $request->validate([
             'nom' => ['required', 'string', 'max:100'],
             'prenom' => ['required', 'string', 'max:100'],
@@ -46,10 +45,8 @@ class RegisteredUserController extends Controller
             'telephone' => ['required', 'string', 'min:8', 'max:15'],
             'specialite_id' => ['required', 'string', 'max:100'],
             'niveau' => ['required', 'string', 'max:100'],
-            'type_emploi' => ['required', 'string', 'max:100'],
+            'formule' => ['required', 'string'],
         ]);
-
-        // dd($request->all());
 
         $user = User::create([
             'name' => $request->nom . ' ' . $request->prenom,
@@ -58,26 +55,35 @@ class RegisteredUserController extends Controller
             'role' => User::ROLE_ETUDIANT,
         ]);
 
-        $etudiant = Etudiant::create([
-            'user_id' => $user->id,
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-            'telephone' => $request->telephone,
-            'formation' => $request->specialite_id,
-            'niveau' => $request->niveau,
-            'type_emploi' => $request->type_emploi,
-        ]);
+        try {
+            $etudiant = Etudiant::create([
+                'user_id' => $user->id,
+                'nom' => $request->nom,
+                'prenom' => $request->prenom,
+                'email' => $request->email,
+                'telephone' => $request->telephone,
+                'formation' => $request->specialite_id,
+                'niveau' => $request->niveau,
+            ]);
+            \Log::info('Etudiant créé', ['etudiant' => $etudiant]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur création étudiant', ['message' => $e->getMessage()]);
+            throw $e;
+        }
 
         // Créer le profil CV pour l'étudiant
         $cvProfile = $etudiant->cvProfile()->create([]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Marquer la session comme venant de l'inscription
+        session(['just_registered' => true]);
 
-        // Rediriger vers l'édition du CV avec un message d'avertissement
-        return redirect()->route('etudiants.cv.edit')->with('warning', 'Bienvenue ! Pour continuer, veuillez compléter votre CV. Cette étape est importante pour augmenter vos chances de décrocher un stage.');
+        // Rediriger vers la page de récapitulatif de paiement (GET)
+        return redirect()->route('paiement.form', [
+            'etudiant' => $etudiant->id,
+            'formule' => $request->formule,
+        ]);
     }
 
     /**

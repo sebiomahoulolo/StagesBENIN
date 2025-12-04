@@ -3,6 +3,8 @@
 @section('title', 'StagesBENIN')
 
 @section('content')
+<br><br><br>
+
  <style>
         body {
             background-color: #f4f6f9;

@@ -27,7 +27,7 @@
                 <div class="col-md-12">
                     <div class="card shadow-lg border-0 rounded-3">
                         <div class="card-header bg-primary text-white py-3">
-                            <h4 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Programmer un entretien</h4>
+                            <h4 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Programmer un test de niveau</h4>
                         </div>
                         <div class="card-body p-4">
                             @if (session('success'))
@@ -141,8 +141,8 @@
                                             <th class="py-3">Refernece</th>
                                             <th class="py-3">Annonce</th>
                                             <th class="py-3">Date</th>
-                                            <th class="py-3">Heure Entretien</th>
-                                            <th class="py-3">Durée Entretien</th>
+                                            <th class="py-3">Heure Test</th>
+                                            <th class="py-3">Durée Test</th>
                                             <th class="py-3">Statut</th>
                                             <th class="py-3">Actions</th>
                                             <th class="py-3">Résultats</th>
@@ -208,7 +208,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="6" class="text-center">
-                                                    <h5>Aucun entretien trouvé</h5>
+                                                    <h5>Aucun test trouvé</h5>
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -279,7 +279,7 @@
                     <div class="modal-content">
                         <div class="modal-header bg-warning text-dark">
                             <h5 class="modal-title" id="viewEntretienModalLabel{{ $entretien->id }}">
-                                <i class="fas fa-info-circle me-2"></i>Détails de l'entretien
+                                <i class="fas fa-info-circle me-2"></i>Détails du test de niveau
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -302,7 +302,7 @@
                                             <span class="fw-bold">Date:</span>
                                             <input type="date" name="date" class="form-control"
                                                 value="{{ $entretien->date ? \Carbon\Carbon::parse($entretien->date)->format('Y-m-d') : '' }}"
-                                                min="{{ \Carbon\Carbon::parse($entretien->date)->format('Y-m-d') }}">
+                                            >
 
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -370,7 +370,7 @@
                                             <div class="alert alert-info">
                                                 <i class="fas fa-info-circle me-2"></i>Aucune question n'a été créée pour
                                                 cet
-                                                entretien.
+                                                test de niveau.
                                             </div>
                                         @endif
                                     </div>

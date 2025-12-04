@@ -1,6 +1,8 @@
 @extends('layouts.layout')
 @section('title', 'StagesBENIN')
 @section('content')
+<br><br><br>
+
 <style>
     /* Base styles */
     * {

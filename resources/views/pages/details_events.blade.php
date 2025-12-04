@@ -3,6 +3,8 @@
 @section('title', 'StagesBENIN - ' . $event->title)
 
 @section('content')
+<br><br><br>
+
 <style>
     body {
         background-color: #f8f9fa;

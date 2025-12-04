@@ -94,7 +94,7 @@
 </style>
 
 <div class="container">
-    <h1 class="section-title">📅 Planifier un Entretien</h1>
+    <h1 class="section-title">📅 Planifier un Test de niveau</h1>
 
     <div class="row">
         <!-- Colonne de gauche : Formulaire d'entretien -->
@@ -104,7 +104,7 @@
                 <input type="hidden" name="etudiant_id" value="{{ $etudiant->id }}">
 
                 <div class="form-group">
-                    <label for="date" class="form-label">Date de l'entretien :</label>
+                    <label for="date" class="form-label">Date du test :</label>
                     <input type="datetime-local" name="date" id="date" class="form-control" required>
                 </div>
 
@@ -124,7 +124,7 @@
                         Annuler
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        📅 Confirmer l'entretien
+                        📅 Confirmer le test
                     </button>
                 </div>
             </form>
@@ -134,7 +134,7 @@
         <!-- Résultats de l'entretien -->
 <div class="col-md-6">
     <div class="result-container">
-        <h2 class="text-center">📊 Résultats de l’Entretien</h2>
+        <h2 class="text-center">📊 Résultats du test</h2>
 
         <table class="table table-striped table-bordered text-center">
             <thead class="thead-dark">
@@ -161,7 +161,7 @@
                     
                 @else
                     <tr>
-                        <td colspan="2" class="text-danger"><strong>⚠️ Aucun résultat disponible pour cet entretien.</strong></td>
+                        <td colspan="2" class="text-danger"><strong>⚠️ Aucun résultat disponible pour cet test.</strong></td>
                     </tr>
                 @endif
             </tbody>

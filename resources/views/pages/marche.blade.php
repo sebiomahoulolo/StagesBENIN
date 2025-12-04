@@ -1,6 +1,8 @@
 @extends('layouts.layout')
 @section('title', 'StagesBENIN')
 @section('content')
+<br><br><br>
+
 <div class="container py-5">
     <div class="row mb-5">
         <div class="col-12">

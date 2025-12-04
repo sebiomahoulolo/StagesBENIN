@@ -272,7 +272,7 @@
                     <div class="card-body" id="profil">@livewire('etudiants.cv-profile-form', ['cvProfileId' => $cvProfile->id], key('lw-profile-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
-                    <div class="card-body" id="formations">@livewire('cv-formations-form', ['cvProfileId' => $cvProfile->id], key('lw-formations-' . $cvProfile->etudiant_id))</div>
+                    <div class="card-body" id="formations">@livewire('etudiants.cv-formations-form', ['cvProfileId' => $cvProfile->id], key('lw-formations-' . $cvProfile->etudiant_id))</div>
                 </div>
                 <div class="card shadow-sm">
                     <div class="card-body" id="experiences">@livewire('etudiants.cv-experiences-form', ['cvProfileId' => $cvProfile->id], key('lw-experiences-' . $cvProfile->etudiant_id))</div>

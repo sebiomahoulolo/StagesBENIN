@@ -8,6 +8,7 @@
     {{-- Réutilise le CSS de l'inscription pour l'instant --}}
     <link rel="stylesheet" href="{{ asset('css/register-etudiant.css') }}">
 @endsection
+<br><br><br>
 
 {{-- Contenu principal de la page --}}
 @section('content')

@@ -88,4 +88,38 @@ public function specialite()
     return $this->belongsTo(Specialite::class);
 }
 
+    /**
+     * Retourne tous les paiements de l'étudiant
+     */
+    public function paiements()
+    {
+        return $this->hasMany(\App\Models\Paiement::class, 'etudiant_id');
+    }
+
+    /**
+     * Retourne le dernier paiement valide (abonnement actif)
+     */
+    public function abonnementActif()
+    {
+        $now = \Carbon\Carbon::now();
+        return $this->paiements()
+            ->where('status', 'approved') // optionnel, filtre sur les paiements validés
+            ->orderByDesc('created_at')
+            ->first();
+    }
+
+    /**
+     * Retourne le nombre de jours restants sur l’abonnement actif
+     */
+    public function joursRestantsAbonnement()
+    {
+        $abonnement = $this->abonnementActif();
+        if (!$abonnement) return 0;
+        $dateDebut = $abonnement->created_at;
+        $dateFin = $abonnement->montant == 5000
+            ? $dateDebut->copy()->addDays(365)
+            : $dateDebut->copy()->addDays(30);
+        $now = \Carbon\Carbon::now();
+        return $dateFin->isFuture() ? $now->diffInDays($dateFin, false) : 0;
+    }
 }

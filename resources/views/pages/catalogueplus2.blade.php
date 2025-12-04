@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+<br><br><br>
 
 @section('title', 'StagesBENIN')
 

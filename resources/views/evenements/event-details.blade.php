@@ -4,6 +4,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Ticket - {{ $event->title }}</title>
+    <br><br><br>
+
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;

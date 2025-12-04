@@ -1,8 +1,11 @@
  @extends('layouts.layout')
+<br><br><br>
 
  @section('title', 'StagesBENIN')
 
  @push('styles')
+ <br><br><br>
+
      <!-- Select2 CSS -->
      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
      <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
@@ -107,6 +110,11 @@
                                  Offres disponibles
                              @endif
                          </h5>
+                         
+                          <a href="{{ route('pages.formulaire') }}"
+                                                 class="btn btn-primary btn-sm btn-voir-offre">
+                                                 Postuler maintenant <i class="fas fa-arrow-right ms-1"></i>
+                                             </a>
                          <a href="{{ route('etudiants.candidatures.index') }}" class="btn btn-outline-primary btn-sm">
                              <i class="fas fa-file-alt me-1"></i> Mes candidatures
                          </a>

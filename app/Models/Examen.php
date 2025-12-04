@@ -53,4 +53,12 @@ class Examen extends Model
     {
         return $this->belongsTo(Entreprise::class);
     }
+
+
+
+public function entretien()
+{
+    return $this->belongsTo(Entretien::class);
+}
+
 }

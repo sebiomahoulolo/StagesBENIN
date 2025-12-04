@@ -13,6 +13,8 @@
 
 {{-- Contenu principal de la page --}}
 @section('content')
+<br><br><br>
+
 <main id="content" class="site-main">
     {{-- Section contenant le formulaire --}}
     <section class="candidate-signup-section"> {{-- Reuse class or create new --}}

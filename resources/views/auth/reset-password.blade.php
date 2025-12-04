@@ -1,39 +1,47 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+        <h2 class="text-center text-primary mb-4">
+            StagesBENIN - Nouveau mot de passe
+        </h2>
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+        <!-- Si tu veux un petit texte explicatif -->
+        <p class="text-center text-muted mb-4">
+            {{ __('Veuillez saisir votre nouveau mot de passe ci-dessous.') }}
+        </p>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <form method="POST" action="{{ route('password.store') }}">
+            @csrf
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <!-- Jeton de réinitialisation -->
+            <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <!-- Adresse Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">{{ __('Email') }}</label>
+                <input type="email" id="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" class="form-control">
+                <x-input-error :messages="$errors->get('email')" class="text-danger small mt-1" />
+            </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
+            <!-- Nouveau mot de passe -->
+            <div class="mb-3">
+                <label for="password" class="form-label">{{ __('Nouveau mot de passe') }}</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password" class="form-control">
+                <x-input-error :messages="$errors->get('password')" class="text-danger small mt-1" />
+            </div>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+            <!-- Confirmation mot de passe -->
+            <div class="mb-4">
+                <label for="password_confirmation" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" class="form-control">
+                <x-input-error :messages="$errors->get('password_confirmation')" class="text-danger small mt-1" />
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                    {{ __('Réinitialiser le mot de passe') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

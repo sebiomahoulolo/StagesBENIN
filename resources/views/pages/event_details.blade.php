@@ -3,6 +3,8 @@
 @section('title', 'StagesBENIN')
 
 @section('content')
+<br><br><br>
+
 <div class="event-detail-container">
     <div class="event-header">
         <div class="event-back">

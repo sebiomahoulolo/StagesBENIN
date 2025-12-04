@@ -6,6 +6,8 @@
 
 {{-- Ajoute les styles CSS spécifiques à cette page --}}
 @section('styles')
+<br><br><br>
+<br><br><br>
 <style>
     /* == Styles spécifiques à la page d'inscription == */
     /* (On ne garde QUE les styles nécessaires pour le contenu principal) */

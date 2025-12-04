@@ -3,6 +3,7 @@
 @section('title', 'StagesBENIN')
 
 @push('styles')
+<br><br><br>
 <style>
     .offre-detail {
         background-color: #fff;

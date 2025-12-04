@@ -1,4 +1,6 @@
 @extends('layouts.layout')
+<br><br><br>
+
 @section('title', 'StagesBENIN - Marchés Publics et Privés')
 @section('content')
 <div class="container-fluid py-5">

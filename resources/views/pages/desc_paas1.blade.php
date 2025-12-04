@@ -3,6 +3,8 @@
 @section('title', 'StagesBENIN')
 
 @section('content')
+<br><br><br>
+
 <style>
    body {
         font-family: 'Times New Roman', Times, serif;
